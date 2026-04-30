@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://bke5c6mi4xgmf"]
+
+[node name="MainMenu" type="Node3D" unique_id=1762461589]
+
+[node name="Control" type="Control" parent="." unique_id=1428329567]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Control" unique_id=1491382376]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 30.0
+offset_right = 534.0
+offset_bottom = 307.0
+theme_override_font_sizes/font_size = 32
+text = "Murder Floor"
+
+[node name="Button" type="Button" parent="Control" unique_id=366574516]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 103.0
+offset_right = 228.0
+offset_bottom = 134.0
+text = "Button"
+
+[node name="Button2" type="Button" parent="Control" unique_id=813151550]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 153.0
+offset_right = 229.0
+offset_bottom = 184.0
+text = "Button"
+
+[node name="Button3" type="Button" parent="Control" unique_id=1029871538]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 197.0
+offset_right = 230.0
+offset_bottom = 228.0
+text = "Button"
+
+[node name="Button4" type="Button" parent="Control" unique_id=468588015]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 242.0
+offset_right = 230.0
+offset_bottom = 273.0
+text = "Button"
