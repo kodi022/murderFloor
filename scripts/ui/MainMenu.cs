@@ -1,6 +1,3 @@
-using Godot;
-using System;
-
 namespace MurderFloor;
 
 public partial class Menu : Node3D
