@@ -1,50 +1,117 @@
 [gd_scene format=3 uid="uid://bke5c6mi4xgmf"]
 
+[ext_resource type="Script" uid="uid://bjiir7s2s2u21" path="res://scripts/ui/mainmenu/MainMenu.cs" id="1_yqorp"]
+[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug.tres" id="2_0ykhv"]
+
 [node name="MainMenu" type="Node3D" unique_id=1762461589]
 
-[node name="Control" type="Control" parent="." unique_id=1428329567]
+[node name="Control" type="Control" parent="." unique_id=1428329567 node_paths=PackedStringArray("camera", "cameraMenuPositionNode", "cameraLocalPositionNode", "cameraOnlinePositionNode", "cameraOptionsPositionNode", "buttonsList")]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -8.5
+offset_right = 17.0
+offset_bottom = 8.5
+grow_vertical = 2
+script = ExtResource("1_yqorp")
+camera = NodePath("../Camera3D")
+cameraMenuPositionNode = NodePath("../MenuPosition")
+cameraLocalPositionNode = NodePath("../LocalPosition")
+cameraOnlinePositionNode = NodePath("../OnlinePosition")
+cameraOptionsPositionNode = NodePath("../OptionsPosition")
+buttonsList = NodePath("ButtonList")
 
 [node name="Label" type="Label" parent="Control" unique_id=1491382376]
 layout_mode = 0
-offset_left = 29.0
-offset_top = 30.0
-offset_right = 534.0
-offset_bottom = 307.0
+offset_left = 28.0
+offset_top = -110.5
+offset_right = 533.0
+offset_bottom = 166.5
 theme_override_font_sizes/font_size = 32
 text = "Murder Floor"
 
-[node name="Button" type="Button" parent="Control" unique_id=366574516]
+[node name="ButtonList" type="Panel" parent="Control" unique_id=1661430189]
 layout_mode = 0
-offset_left = 35.0
-offset_top = 103.0
-offset_right = 228.0
-offset_bottom = 134.0
-text = "Button"
+offset_left = 31.0
+offset_top = -65.5
+offset_right = 224.0
+offset_bottom = 89.5
 
-[node name="Button2" type="Button" parent="Control" unique_id=813151550]
+[node name="Button" type="Button" parent="Control/ButtonList" unique_id=366574516]
 layout_mode = 0
-offset_left = 36.0
-offset_top = 153.0
-offset_right = 229.0
-offset_bottom = 184.0
-text = "Button"
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 186.0
+offset_bottom = 37.0
+text = "Local"
 
-[node name="Button3" type="Button" parent="Control" unique_id=1029871538]
+[node name="Button2" type="Button" parent="Control/ButtonList" unique_id=813151550]
 layout_mode = 0
-offset_left = 37.0
-offset_top = 197.0
-offset_right = 230.0
-offset_bottom = 228.0
-text = "Button"
+offset_left = 6.0
+offset_top = 42.0
+offset_right = 186.0
+offset_bottom = 73.0
+text = "Online"
 
-[node name="Button4" type="Button" parent="Control" unique_id=468588015]
+[node name="Button3" type="Button" parent="Control/ButtonList" unique_id=1029871538]
 layout_mode = 0
-offset_left = 37.0
-offset_top = 242.0
-offset_right = 230.0
-offset_bottom = 273.0
-text = "Button"
+offset_left = 7.0
+offset_top = 79.0
+offset_right = 187.0
+offset_bottom = 110.0
+text = "Options
+"
+
+[node name="Button4" type="Button" parent="Control/ButtonList" unique_id=468588015]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 117.0
+offset_right = 187.0
+offset_bottom = 148.0
+text = "Exit
+"
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2079605383]
+transform = Transform3D(0.9099613, 0.043347247, 0.4124215, 0, 0.9945219, -0.104528464, -0.41469324, 0.09511685, 0.9049764, 0.5841905, 0.48084188, 1.4111874)
+fov = 30.0
+
+[node name="MenuPosition" type="Node3D" parent="." unique_id=1647525171]
+transform = Transform3D(0.9099613, 0.043347247, 0.41242152, 0, 0.9945219, -0.104528464, -0.41469324, 0.09511685, 0.9049764, 0.5841905, 0.48084188, 1.4111874)
+
+[node name="LocalPosition" type="Node3D" parent="." unique_id=378294700]
+transform = Transform3D(0.6570011, 0.12178234, 0.7439884, 0.043347247, 0.9791314, -0.19855165, -0.7526424, 0.16269849, 0.6380115, 1.7186284, 0.8115404, -0.2074883)
+
+[node name="OnlinePosition" type="Node3D" parent="." unique_id=1558586294]
+transform = Transform3D(0.6570011, 0.12178234, 0.7439884, 0.043347247, 0.9791314, -0.19855165, -0.7526424, 0.16269849, 0.6380115, -0.77302384, 0.8115404, 0.70890236)
+
+[node name="OptionsPosition" type="Node3D" parent="." unique_id=535555842]
+transform = Transform3D(0.83201194, -0.39061674, 0.39392206, 0.20746633, 0.87764436, 0.43208575, -0.51450336, -0.27777496, 0.81125045, 0.6020174, 1.3613317, 0.6940243)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1737427734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7625351, -0.24224854, -0.8673401)
+size = Vector3(6.810684, 0.5155029, 4.61969)
+material = ExtResource("2_0ykhv")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGBox3D" unique_id=1629958678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2765756, 1.2433486, -0.65657187)
+sides = 16
+material = ExtResource("2_0ykhv")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D" unique_id=123919977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8448875, 1.0549644, -0.95187855)
+size = Vector3(3.590149, 1.6571045, 0.65478516)
+material = ExtResource("2_0ykhv")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D/CSGBox3D" unique_id=1084682083]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22929311, 1.0617851, 1.111064)
+size = Vector3(6.199295, 0.5068054, 2.8908997)
+material = ExtResource("2_0ykhv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1453834677]
+transform = Transform3D(-0.7507039, 0.26780933, 0.6039221, 0.641788, 0.078818165, 0.762821, 0.15669054, 0.9602426, -0.23104592, 2.8371449, 0.64910185, -0.81869984)
+light_energy = 1.451
+light_indirect_energy = 0.04
+light_volumetric_fog_energy = 0.0
+directional_shadow_mode = 0
+directional_shadow_max_distance = 27.7

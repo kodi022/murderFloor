@@ -5,7 +5,7 @@ public partial class Player : CharacterBody3D
     [Export]
     private Camera3D camera;
 
-    [Export(PropertyHint.Range, "1,100,0.1")]
+    [Export(PropertyHint.Range, "1,500,0.01")]
     private float sensitivity = 50f;
 
     private Vector3 lastVel;
@@ -26,10 +26,10 @@ public partial class Player : CharacterBody3D
         {
             var viewportTransform = GetTree().Root.GetFinalTransform();
             var relative = ((InputEventMouseMotion)eventMouseMotion.XformedBy(viewportTransform)).Relative;
-            viewPitch -= relative.Y * 0.0002f * sensitivity;
+            viewPitch -= relative.Y * 0.0001f * sensitivity;
             viewPitch = float.Clamp(viewPitch, -1.3f, 1.3f);
 
-            viewYaw -= relative.X * 0.0002f * sensitivity;
+            viewYaw -= relative.X * 0.0001f * sensitivity;
         }
     }
 
@@ -50,7 +50,7 @@ public partial class Player : CharacterBody3D
         var wishMove = new Vector3(forward, -1f, strafe);
         wishMove = wishMove.Normalized();
         wishMove = wishMove.Rotated(Vector3.Up, viewYaw + 1.570796326794896f);
-        lastVel *= new Vector3(0.90f, 0.95f, 0.90f);
+        lastVel *= new Vector3(0.86f, 0.95f, 0.86f);
         lastVel += wishMove;
 
         Velocity = lastVel;
