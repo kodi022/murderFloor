@@ -39,22 +39,26 @@ public partial class MainMenu : Control
 
 	private void LocalButton()
 	{
+		if (OpenUIName == "local") return;
+
+		OpenUIName = "local";
 		cameraTargetTransform = cameraLocalPositionNode.Transform;
+		SwitchUI("res://scenes/ui/mainmenu/MainMenuLocal.tscn");
+
 		NetworkManager.Current.ServerIP = default;
 		NetworkManager.Current.Port = default;
 		NetworkManager.Current.CreateServer();
-		GetTree().ChangeSceneToFile("res://scenes/Dev.tscn");
+
+		//GetTree().ChangeSceneToFile("res://scenes/Dev.tscn");
 	}
 
 	private void OnlineButton()
 	{
 		if (OpenUIName == "online") return;
 
-		cameraTargetTransform = cameraOnlinePositionNode.Transform;
-		OpenUI?.Free();
-		OpenUI = GD.Load<PackedScene>("res://scenes/ui/mainmenu/MainMenuOnline.tscn").Instantiate();
-		GetTree().Root.AddChild(OpenUI);
 		OpenUIName = "online";
+		cameraTargetTransform = cameraOnlinePositionNode.Transform;
+		SwitchUI("res://scenes/ui/mainmenu/MainMenuOnline.tscn");
 		//Rpc("LoadGame", "res://scenes/Dev.tscn");
 	}
 
@@ -62,15 +66,26 @@ public partial class MainMenu : Control
 	{
 		if (OpenUIName == "options") return;
 
-		cameraTargetTransform = cameraOptionsPositionNode.Transform;
-		OpenUI?.Free();
-		//OpenUI = GD.Load<PackedScene>("res://scenes/ui/mainmenu/MainMenuOnline.tscn").Instantiate();
 		OpenUIName = "options";
+		cameraTargetTransform = cameraOptionsPositionNode.Transform;
+		SwitchUI("res://scenes/ui/mainmenu/MainMenuOptions.tscn");
 	}
 
 	private void ExitButton()
 	{
-		NetworkManager.Current.CloseServer();
+		if (OpenUIName == "exit") return;
 
+		OpenUIName = "exit";
+		cameraTargetTransform = cameraMenuPositionNode.Transform;
+		SwitchUI("res://scenes/ui/mainmenu/MainMenuExit.tscn");
+		//NetworkManager.Current.CloseServer();
+	}
+
+	private void SwitchUI(string path)
+	{
+		OpenUI?.Free();
+		OpenUI = null;
+		OpenUI = GD.Load<PackedScene>(path).Instantiate();
+		GetTree().Root.AddChild(OpenUI);
 	}
 }

@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dup246up0nlse"]
+
+[ext_resource type="Script" uid="uid://co1anr1gpaxbi" path="res://scripts/ui/mainmenu/MainMenuLocal.cs" id="1_s1hgd"]
+
+[node name="MainMenuLocal" type="Control" unique_id=1403306179]
+layout_mode = 3
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="." unique_id=1356561104 node_paths=PackedStringArray("startButton")]
+layout_mode = 1
+offset_left = 240.0
+offset_top = -90.0
+offset_right = 480.0
+offset_bottom = 90.0
+script = ExtResource("1_s1hgd")
+startButton = NodePath("Button")
+
+[node name="Label" type="Label" parent="Panel" unique_id=1950389832]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 9.0
+offset_right = 213.0
+offset_bottom = 32.0
+text = "Play solo against the guys "
+
+[node name="Button" type="Button" parent="Panel" unique_id=1287348204]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 35.0
+offset_right = 111.0
+offset_bottom = 66.0
+text = "Play
+"

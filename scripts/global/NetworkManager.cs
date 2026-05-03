@@ -12,6 +12,8 @@ public partial class NetworkManager : Node
     public string ServerIP { get; set; } = default;
     public int Port { get; set; } = default;
 
+    public bool Playing { get; set; } = false;
+
     // servers ID is always 1
     // server is at Multiplayer.MultiplayerPeer
 
@@ -94,7 +96,7 @@ public partial class NetworkManager : Node
     // When the server decides to start the game from a UI scene,
     // do Rpc(Lobby.MethodName.LoadGame, filePath);
     [Rpc(CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void LoadGame(string gameScenePath)
+    public void LoadGame(string gameScenePath)
     {
         GetTree().ChangeSceneToFile(gameScenePath);
     }
@@ -149,6 +151,7 @@ public partial class NetworkManager : Node
 
     private void OnServerDisconnected()
     {
+        // ! return to menu if not in
         Multiplayer.MultiplayerPeer = null;
         _players.Clear();
         EmitSignal("ServerDisconnected");
