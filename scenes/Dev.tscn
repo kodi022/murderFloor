@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://d1oh4hfgqd4q7"]
 
 [ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug.tres" id="1_l1fi7"]
-[ext_resource type="PackedScene" uid="uid://7iw4twbox4f7" path="res://scenes/Player.tscn" id="2_gmxd1"]
 
 [node name="Dev" type="Node3D" unique_id=2094419847]
 
@@ -62,6 +61,3 @@ size = Vector3(5.293335, 6.179199, 5.895508)
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2068227031]
 transform = Transform3D(0.73122287, -0.5771171, 0.36366075, -0.022016406, 0.5128736, 0.8581818, -0.6817833, -0.6355285, 0.3623188, 0, 14.932693, 0)
 shadow_enabled = true
-
-[node name="Player" parent="." unique_id=1326344894 instance=ExtResource("2_gmxd1")]
-sensitivity = 15.0

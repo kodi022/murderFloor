@@ -4,22 +4,34 @@ public partial class Player : CharacterBody3D
 {
     [Export]
     private Camera3D camera;
+    [Export]
+    private Node3D body;
 
     [Export(PropertyHint.Range, "1,500,0.01")]
     private float sensitivity = 50f;
 
     private Vector3 lastVel;
-    private float viewYaw = 0f, viewPitch = 0f;
+
+    [Export]
+    private float viewYaw = 0f;
+    [Export]
+    private float viewPitch = 0f;
 
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
 
     public override void _Ready()
     {
+        if (!IsMultiplayerAuthority()) return;
+
+        body.Free();
         Input.UseAccumulatedInput = false;
+        camera.Current = true;
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (!IsMultiplayerAuthority()) return;
+
         if (mouseMode != Input.MouseModeEnum.Captured) return;
 
         if (@event is InputEventMouseMotion eventMouseMotion)
@@ -35,15 +47,24 @@ public partial class Player : CharacterBody3D
 
     public override void _Process(double delta)
     {
+        if (!IsMultiplayerAuthority()) return;
+
+        Input.MouseMode = mouseMode;
+
         if (Input.IsActionJustPressed("exit"))
         {
             if (mouseMode == Input.MouseModeEnum.Captured) mouseMode = Input.MouseModeEnum.Visible;
             else mouseMode = Input.MouseModeEnum.Captured;
         }
-        Input.MouseMode = mouseMode;
 
         camera.Rotation = new Vector3(viewPitch, 0, 0);
         Rotation = new Vector3(0, viewYaw, 0);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        //GD.Print(Name + IsMultiplayerAuthority());
+        if (!IsMultiplayerAuthority()) return;
 
         var forward = Input.GetAxis("backward", "forward");
         var strafe = Input.GetAxis("left", "right");

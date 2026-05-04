@@ -1,18 +1,49 @@
 [gd_scene format=3 uid="uid://7iw4twbox4f7"]
 
 [ext_resource type="Script" uid="uid://cxa4injtgdy3b" path="res://scripts/player/Player.cs" id="1_p0vlq"]
+[ext_resource type="Script" uid="uid://d2w4c0hridjs" path="res://scripts/ui/HUD.cs" id="2_v6fml"]
+[ext_resource type="PackedScene" uid="uid://blv5ckqcbegfo" path="res://models/player.blend" id="3_3li8b"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 radius = 0.45
 height = 1.8
 
-[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("camera")]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3li8b"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("camera", "body")]
 script = ExtResource("1_p0vlq")
 camera = NodePath("Camera3D")
+body = NodePath("MeshBody")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1562406550]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6064053, 0)
+
+[node name="MeshBody" parent="." unique_id=959782382 instance=ExtResource("3_3li8b")]
+transform = Transform3D(-1.5298985e-08, 0, 0.35, 0, 0.35, 0, -0.35, 0, -1.5298985e-08, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2091879547]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_5q5h1")
+
+[node name="Control" type="Control" parent="." unique_id=785356984 node_paths=PackedStringArray("playersLabel")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_v6fml")
+playersLabel = NodePath("Label")
+
+[node name="Label" type="Label" parent="Control" unique_id=552030591]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "AAAAAAAAAAAAA"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1615894267]
+replication_config = SubResource("SceneReplicationConfig_3li8b")

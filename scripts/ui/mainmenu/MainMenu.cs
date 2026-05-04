@@ -45,10 +45,6 @@ public partial class MainMenu : Control
 		cameraTargetTransform = cameraLocalPositionNode.Transform;
 		SwitchUI("res://scenes/ui/mainmenu/MainMenuLocal.tscn");
 
-		NetworkManager.Current.ServerIP = default;
-		NetworkManager.Current.Port = default;
-		NetworkManager.Current.CreateServer();
-
 		//GetTree().ChangeSceneToFile("res://scenes/Dev.tscn");
 	}
 
@@ -86,6 +82,6 @@ public partial class MainMenu : Control
 		OpenUI?.Free();
 		OpenUI = null;
 		OpenUI = GD.Load<PackedScene>(path).Instantiate();
-		GetTree().Root.AddChild(OpenUI);
+		GetParent().AddChild(OpenUI);
 	}
 }

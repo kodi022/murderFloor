@@ -10,6 +10,9 @@ public partial class MainMenuLocal : Panel
     {
         startButton.ButtonDown += () =>
         {
+            NetworkManager.Current.ServerIP = default;
+            NetworkManager.Current.Port = default;
+            NetworkManager.Current.CreateServer(true);
             NetworkManager.Current.LoadGame("res://scenes/Dev.tscn");
         };
     }

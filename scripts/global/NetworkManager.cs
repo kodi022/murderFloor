@@ -29,24 +29,25 @@ public partial class NetworkManager : Node
 
     // This will contain player info for every player,
     // with the keys being each player's unique IDs.
-    private Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>> _players = new Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>>();
+    public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>> _players = new Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>>();
 
     // This is the local player info. This should be modified locally
     // before the connection is made. It will be passed to every other peer.
     // For example, the value of "name" can be set to something the player
     // entered in a UI scene.
-    private Godot.Collections.Dictionary<string, string> _playerInfo = new()
+    public Godot.Collections.Dictionary<string, string> _playerInfo = new()
     {
         { "Name", "PlayerName" },
+        { "Coolness", "3" },
     };
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
         Current = this;
-        Multiplayer.PeerConnected += OnPlayerConnected;
-        Multiplayer.PeerDisconnected += OnPlayerDisconnected;
-        Multiplayer.ConnectedToServer += OnConnectOk;
-        Multiplayer.ConnectionFailed += OnConnectionFail;
+        Multiplayer.PeerConnected += OnPeerConnected;
+        Multiplayer.PeerDisconnected += OnPeerDisconnected;
+        Multiplayer.ConnectedToServer += OnConnectedToServer;
+        Multiplayer.ConnectionFailed += OnConnectionFailed;
         Multiplayer.ServerDisconnected += OnServerDisconnected;
     }
 
@@ -73,16 +74,17 @@ public partial class NetworkManager : Node
         return Error.Ok;
     }
 
-    public Error CreateServer()
+    public Error CreateServer(bool lan = false)
     {
         var peer = new ENetMultiplayerPeer();
-        Error error = peer.CreateServer(Port, MaxConnections);
+        Error error = peer.CreateServer(Port, lan ? 1 : MaxConnections);
 
         if (error != Error.Ok) return error;
 
         Multiplayer.MultiplayerPeer = peer;
         _players[1] = _playerInfo;
-        EmitSignal("PlayerConnected", 1, _playerInfo);
+        OnConnectedToServer();
+
         return Error.Ok;
     }
 
@@ -101,59 +103,76 @@ public partial class NetworkManager : Node
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 
-    // Every peer will call this when they have loaded the game scene.
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void PlayerLoaded()
+    // ! WHERE DO I SPAWN PLAYERS FOR CLIENTS
+
+    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer connects with a new peer. 
+    // ID is the peer ID of the new peer. 
+    // Clients get notified when other clients connect to the same server. 
+    // Upon connecting to a server, a client also receives this signal for the server (with ID being 1).
+    private void OnPeerConnected(long id)
     {
-        if (Multiplayer.IsServer())
-        {
-            _playersLoaded += 1;
-            if (_playersLoaded == _players.Count)
-            {
-                //GetNode<Game>("/root/Game").StartGame();
-                _playersLoaded = 0;
-            }
-        }
+        GD.Print("OnPeerConnected " + id);
+
+        RpcId(id, "SendInfoToPeer", _playerInfo);
+        _players[id] = _playerInfo;
+        var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
+        player.Name = id.ToString();
+        player.SetMultiplayerAuthority((int)id);
+        AddChild(player);
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void RegisterPlayer(Godot.Collections.Dictionary<string, string> newPlayerInfo)
+    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
+    // Clients get notified when other clients disconnect from the same server.
+    private void OnPeerDisconnected(long id)
     {
-        int newPlayerId = Multiplayer.GetRemoteSenderId();
-        _players[newPlayerId] = newPlayerInfo;
-        EmitSignal("PlayerConnected", newPlayerId, newPlayerInfo);
-    }
-
-    // When a peer connects, send them my player info.
-    // This allows transfer of all desired data for each player, not only the unique ID.
-    private void OnPlayerConnected(long id)
-    {
-        RpcId(id, "RegisterPlayer", _playerInfo);
-    }
-
-    private void OnPlayerDisconnected(long id)
-    {
+        GD.Print("OnPeerDisconnected " + id);
         _players.Remove(id);
-        EmitSignal("PlayerDisconnected", id);
     }
 
-    private void OnConnectOk()
+    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
+    // Only emitted on clients.
+    private void OnConnectedToServer()
     {
-        int peerId = Multiplayer.GetUniqueId();
-        _players[peerId] = _playerInfo;
-        EmitSignal("PlayerConnected", peerId, _playerInfo);
+        GD.Print("OnConnectedToServer");
+
+        int id = Multiplayer.GetUniqueId();
+        _players[id] = _playerInfo;
+        var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
+        player.Name = id.ToString();
+        player.SetMultiplayerAuthority((int)id);
+        AddChild(player);
     }
 
-    private void OnConnectionFail()
+    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer fails to establish a connection to a server. 
+    // Only emitted on clients.
+    private void OnConnectionFailed()
     {
+        // ! return to menu if not in
+        GD.Print("OnConnectionFailed");
         Multiplayer.MultiplayerPeer = null;
     }
 
+    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from server. 
+    // Only emitted on clients.
     private void OnServerDisconnected()
     {
+        GD.Print("OnServerDisconnected");
         // ! return to menu if not in
         Multiplayer.MultiplayerPeer = null;
         _players.Clear();
-        EmitSignal("ServerDisconnected");
+    }
+
+    [Rpc(TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SpawnPeersSelf(Godot.Collections.Dictionary<string, string> newPlayerInfo)
+    {
+        int newPlayerId = Multiplayer.GetRemoteSenderId();
+        _players[newPlayerId] = newPlayerInfo;
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SendInfoToPeer(Godot.Collections.Dictionary<string, string> newPlayerInfo)
+    {
+        int newPlayerId = Multiplayer.GetRemoteSenderId();
+        _players[newPlayerId] = newPlayerInfo;
     }
 }
