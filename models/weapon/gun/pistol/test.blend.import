@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cuicgv7pctn4f"
-path="res://.godot/imported/player_skeleton.blend-45341c17f679a2cdd89328654b9a85b4.scn"
+uid="uid://brnw0fhy3d2ty"
+path="res://.godot/imported/test.blend-b3722500fb4700bc93a68415d79f0448.scn"
 
 [deps]
 
-source_file="res://models/player_skeleton.blend"
-dest_files=["res://.godot/imported/player_skeleton.blend-45341c17f679a2cdd89328654b9a85b4.scn"]
+source_file="res://models/weapon/gun/pistol/test.blend"
+dest_files=["res://.godot/imported/test.blend-b3722500fb4700bc93a68415d79f0448.scn"]
 
 [params]
 
@@ -37,16 +37,7 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={
-"nodes": {
-"PATH:height_reference": {
-"import/skip_import": true
-},
-"PATH:picture_reference": {
-"import/skip_import": true
-}
-}
-}
+_subresources={}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true
