@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-NetworkManager="*uid://cs5qysldxqm75"
+Autoload="*uid://c6mxbt58tuyu6"
 
 [dotnet]
 
