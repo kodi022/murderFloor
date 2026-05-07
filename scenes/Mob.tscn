@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://pqbd3i4lbv5o"]
+
+[ext_resource type="PackedScene" uid="uid://b7tt2ol7g5j0b" path="res://objects/mob/MFProjectBaseRetop.fbx" id="1_sup6k"]
+
+[node name="Mob" type="Node3D" unique_id=2118347435]
+
+[node name="KFProjectBaseRETOP" parent="." unique_id=1079369812 instance=ExtResource("1_sup6k")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 1.3283632, 0)

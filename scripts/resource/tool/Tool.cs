@@ -12,6 +12,11 @@ public partial class Tool : Resource
     [Export]
     public string NameLocalizationKey { get; set; } = "#empty";
 
+    [Export]
+    public PackedScene MeshScene { get; set; }
+    [Export]
+    public string HoldTypeAnimation { get; set; } = "holdtype_pistol";
+
     public virtual void FirePrimary() { }
     public virtual void FireSecondary() { }
     public virtual void FireReload() { }

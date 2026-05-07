@@ -4,8 +4,22 @@ public partial class Player : CharacterBody3D
 {
     [Export]
     private Camera3D camera;
+
     [Export]
-    private Node3D body;
+    private Node3D handPoint;
+
+    [Export]
+    private Node3D worldModels;
+    private Node3D worldBodyScene;
+    private Node3D worldTool;
+    private Skeleton3D worldSkeleton;
+    private AnimationPlayer worldAnimationPlayer;
+
+    private Node3D viewModels;
+    private Node3D viewBodyScene;
+    private Node3D viewTool;
+    private Skeleton3D viewSkeleton;
+    private AnimationPlayer viewAnimationPlayer;
 
     [Export(PropertyHint.Range, "1,500,0.01")]
     private float sensitivity = 50f;
@@ -21,11 +35,24 @@ public partial class Player : CharacterBody3D
 
     public override void _Ready()
     {
+        worldBodyScene = (Node3D)worldModels.GetChild(0);
+        worldTool = (Node3D)worldModels.GetChild(1);
+        worldSkeleton = (Skeleton3D)worldBodyScene.GetChild(0).GetChild(0);
+        worldAnimationPlayer = (AnimationPlayer)worldBodyScene.GetChild(1);
+
         if (!IsMultiplayerAuthority()) return;
 
-        body.Free();
-        Input.UseAccumulatedInput = false;
+        worldModels.Free();
+
         camera.Current = true;
+        Input.UseAccumulatedInput = false;
+
+        viewModels = (Node3D)GD.Load<PackedScene>("res://scenes/PlayerViewmodel.tscn").Instantiate();
+        viewBodyScene = (Node3D)viewModels.GetChild(0);
+        viewTool = (Node3D)viewModels.GetChild(1);
+        viewSkeleton = (Skeleton3D)viewBodyScene.GetChild(0).GetChild(0);
+        viewAnimationPlayer = (AnimationPlayer)viewBodyScene.GetChild(1);
+        handPoint.AddChild(viewModels);
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -47,6 +74,8 @@ public partial class Player : CharacterBody3D
 
     public override void _Process(double delta)
     {
+        //animationPlayer.Play("idle");
+
         if (!IsMultiplayerAuthority()) return;
 
         Input.MouseMode = mouseMode;
