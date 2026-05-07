@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cxa4injtgdy3b" path="res://scripts/player/Player.cs" id="1_p0vlq"]
 [ext_resource type="Script" uid="uid://d2w4c0hridjs" path="res://scripts/ui/HUD.cs" id="2_v6fml"]
 [ext_resource type="PackedScene" uid="uid://blv5ckqcbegfo" path="res://models/player.blend" id="3_3li8b"]
+[ext_resource type="PackedScene" uid="uid://brnw0fhy3d2ty" path="res://models/tool/gun/pistol/test.blend" id="4_mdl7e"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 radius = 0.45
@@ -24,8 +25,10 @@ body = NodePath("MeshBody")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1562406550]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6064053, 0)
 
+[node name="test" parent="Camera3D" unique_id=1661340406 instance=ExtResource("4_mdl7e")]
+transform = Transform3D(-0.1, 0, -8.742278e-09, 0, 0.1, 0, 8.742278e-09, 0, -0.1, 0.2282393, -0.25534618, -0.5621889)
+
 [node name="MeshBody" parent="." unique_id=959782382 instance=ExtResource("3_3li8b")]
-transform = Transform3D(-1.5298985e-08, 0, 0.35, 0, 0.35, 0, -0.35, 0, -1.5298985e-08, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2091879547]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
