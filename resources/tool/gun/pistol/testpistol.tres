@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://jy2aiqd7llx"]
+
+[ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_y34yl"]
+
+[resource]
+script = ExtResource("1_y34yl")
+ResourceId = "testpistol"
+metadata/_custom_type_script = "uid://dh0saosikvolb"
