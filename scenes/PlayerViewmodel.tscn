@@ -1,14 +1,10 @@
 [gd_scene format=3 uid="uid://cec4drtl6kw8"]
 
 [ext_resource type="PackedScene" uid="uid://blv5ckqcbegfo" path="res://objects/player/player.blend" id="1_7me46"]
-[ext_resource type="PackedScene" uid="uid://ikpllj7i4gtk" path="res://objects/tool/gun/assaultrifle/testassaultrifle/testassaultrifle.blend" id="2_7me46"]
 
 [node name="PlayerViewmodel" type="Node3D" unique_id=356872480]
 
 [node name="BodyScene" parent="." unique_id=2078824574 instance=ExtResource("1_7me46")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11324997, -1.2563078, 0.540689)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11324997, -1.2563078, -0.8331654)
 
 [node name="Tool" type="Node3D" parent="." unique_id=206140853]
-
-[node name="gun" parent="Tool" unique_id=292634247 instance=ExtResource("2_7me46")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)

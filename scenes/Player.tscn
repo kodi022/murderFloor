@@ -19,16 +19,16 @@ properties/2/path = NodePath(".:viewPitch")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("camera", "handPoint", "worldModels")]
+[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("worldModels", "camera", "viewHandPoint")]
 script = ExtResource("1_p0vlq")
-camera = NodePath("Camera3D")
-handPoint = NodePath("Camera3D/HandPoint")
 worldModels = NodePath("WorldModels")
+camera = NodePath("Camera3D")
+viewHandPoint = NodePath("Camera3D/ViewHandPoint")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1562406550]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6398373, 0)
 
-[node name="HandPoint" type="Node3D" parent="Camera3D" unique_id=762411817]
+[node name="ViewHandPoint" type="Node3D" parent="Camera3D" unique_id=762411817]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16088803, -0.16339028, -0.4340977)
 
 [node name="WorldModels" type="Node3D" parent="." unique_id=1236057200]

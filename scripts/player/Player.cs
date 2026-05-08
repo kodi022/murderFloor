@@ -3,17 +3,21 @@ namespace MurderFloor;
 public partial class Player : CharacterBody3D
 {
     [Export]
-    private Camera3D camera;
-
-    [Export]
-    private Node3D handPoint;
-
-    [Export]
     private Node3D worldModels;
+
+    private BoneAttachment3D worldHandBone;
+
     private Node3D worldBodyScene;
     private Node3D worldTool;
     private Skeleton3D worldSkeleton;
     private AnimationPlayer worldAnimationPlayer;
+
+    [Export]
+    private Camera3D camera;
+    [Export]
+    private Node3D viewHandPoint;
+
+    private BoneAttachment3D viewHandBone;
 
     private Node3D viewModels;
     private Node3D viewBodyScene;
@@ -35,10 +39,14 @@ public partial class Player : CharacterBody3D
 
     public override void _Ready()
     {
-        worldBodyScene = (Node3D)worldModels.GetChild(0);
-        worldTool = (Node3D)worldModels.GetChild(1);
-        worldSkeleton = (Skeleton3D)worldBodyScene.GetChild(0).GetChild(0);
-        worldAnimationPlayer = (AnimationPlayer)worldBodyScene.GetChild(1);
+        // worldBodyScene = (Node3D)worldModels.GetChild(0);
+        // worldTool = (Node3D)worldModels.GetChild(1);
+        // worldSkeleton = (Skeleton3D)worldBodyScene.GetChild(0).GetChild(0);
+        // worldAnimationPlayer = (AnimationPlayer)worldBodyScene.GetChild(1);
+
+        // worldHandBone = new BoneAttachment3D();
+        // worldSkeleton.AddChild(worldHandBone);
+        // worldHandBone.BoneName = "forearm_right";
 
         if (!IsMultiplayerAuthority()) return;
 
@@ -47,12 +55,25 @@ public partial class Player : CharacterBody3D
         camera.Current = true;
         Input.UseAccumulatedInput = false;
 
+        var tool = ResourceManager.ToolRegistry.GetResourceReference("base:testassaultrifle");
+
         viewModels = (Node3D)GD.Load<PackedScene>("res://scenes/PlayerViewmodel.tscn").Instantiate();
         viewBodyScene = (Node3D)viewModels.GetChild(0);
         viewTool = (Node3D)viewModels.GetChild(1);
         viewSkeleton = (Skeleton3D)viewBodyScene.GetChild(0).GetChild(0);
-        viewAnimationPlayer = (AnimationPlayer)viewBodyScene.GetChild(1);
-        handPoint.AddChild(viewModels);
+        //viewAnimationPlayer = (AnimationPlayer)viewBodyScene.GetChild(1);
+        viewHandPoint.AddChild(viewModels);
+        viewSkeleton.SetBonePoseScale(viewSkeleton.FindBone("spine_3"), new Vector3(2, 2, 2));
+
+        viewHandBone = new BoneAttachment3D();
+        viewSkeleton.AddChild(viewHandBone);
+        viewHandBone.BoneName = "finger_middle_base_right";
+        viewTool.GetParent().RemoveChild(viewTool);
+        viewTool.Owner = null;
+        viewHandBone.AddChild(viewTool);
+        viewTool.Owner = viewHandBone;
+
+        viewTool.AddChild(tool.MeshScene.Instantiate());
     }
 
     public override void _UnhandledInput(InputEvent @event)

@@ -4,6 +4,8 @@ namespace MurderFloor;
 public partial class ToolFirearm : Tool
 {
     [Export]
+    public FirearmTypeEnum FirearmType { get; private set; }
+    [Export]
     public float RPM { get; private set; }
     [Export]
     public float MagSize { get; private set; }
@@ -21,4 +23,37 @@ public partial class ToolFirearm : Tool
     public bool Shotgun { get; private set; }
     [Export]
     public int PelletCount { get; private set; } = 8;
+
+    // order by size/power of weapon
+    public enum FirearmTypeEnum
+    {
+        Pistol,
+        Revolver,
+        SMG,
+        PDW,
+        Carbine,
+        AR,
+        Shotgun,
+        DMR,
+        Special
+    }
+
+    public enum SlotEnum
+    {
+        Secondary,
+        Primary,
+        Special
+    }
+
+    public SlotEnum GetSlot()
+    {
+        if ((int)FirearmType <= (int)FirearmTypeEnum.Revolver)
+        {
+            return SlotEnum.Secondary;
+        }
+
+        if (FirearmType == FirearmTypeEnum.Special) return SlotEnum.Special;
+
+        return SlotEnum.Primary;
+    }
 }
