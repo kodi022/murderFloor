@@ -4,5 +4,8 @@
 
 [resource]
 script = ExtResource("1_y34yl")
+RPM = 400.0
+MagSize = 12.0
+UseInGame = false
 ResourceId = "testpistol"
 metadata/_custom_type_script = "uid://dh0saosikvolb"

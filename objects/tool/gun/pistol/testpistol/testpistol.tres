@@ -1,9 +1,9 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://cyx5s560dn066"]
 
-[ext_resource type="Texture2D" uid="uid://dcud1xc6yvv5v" path="res://images/tool/gun/pistol/Gun_base.png" id="1_pnjlp"]
-[ext_resource type="Texture2D" uid="uid://yt6xl4jtoard" path="res://images/tool/gun/pistol/Gun_metal.png" id="2_qr6kv"]
-[ext_resource type="Texture2D" uid="uid://ct3xgipx1msh6" path="res://images/tool/gun/pistol/Gun_nor.png" id="3_0w8up"]
-[ext_resource type="Texture2D" uid="uid://cln0raaiaax5f" path="res://images/tool/gun/pistol/Gun_rough.png" id="4_gdlrc"]
+[ext_resource type="Texture2D" uid="uid://dcud1xc6yvv5v" path="res://objects/tool/gun/pistol/testpistol/Gun_base.png" id="1_pnjlp"]
+[ext_resource type="Texture2D" uid="uid://yt6xl4jtoard" path="res://objects/tool/gun/pistol/testpistol/Gun_metal.png" id="2_qr6kv"]
+[ext_resource type="Texture2D" uid="uid://ct3xgipx1msh6" path="res://objects/tool/gun/pistol/testpistol/Gun_nor.png" id="3_0w8up"]
+[ext_resource type="Texture2D" uid="uid://cln0raaiaax5f" path="res://objects/tool/gun/pistol/testpistol/Gun_rough.png" id="4_gdlrc"]
 
 [resource]
 albedo_texture = ExtResource("1_pnjlp")

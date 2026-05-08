@@ -4,7 +4,7 @@ namespace MurderFloor;
 public partial class ToolFirearmProjectile : ToolFirearm
 {
     [Export]
-    public PackedScene ProjectileScene { get; set; }
+    public PackedScene ProjectileScene { get; private set; }
     [Export]
-    public float ProjectileVelocity { get; set; }
+    public float ProjectileVelocity { get; private set; }
 }

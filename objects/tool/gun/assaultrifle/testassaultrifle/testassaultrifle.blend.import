@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://brnw0fhy3d2ty"
-path="res://.godot/imported/test.blend-f0055e5d1b9e284c500828af923e7aee.scn"
+uid="uid://ikpllj7i4gtk"
+path="res://.godot/imported/testassaultrifle.blend-3458b2fc03cbebe131fc68f78e50da9e.scn"
 
 [deps]
 
-source_file="res://objects/tool/gun/pistol/testpistol/test.blend"
-dest_files=["res://.godot/imported/test.blend-f0055e5d1b9e284c500828af923e7aee.scn"]
+source_file="res://objects/tool/gun/assaultrifle/testassaultrifle/testassaultrifle.blend"
+dest_files=["res://.godot/imported/testassaultrifle.blend-3458b2fc03cbebe131fc68f78e50da9e.scn"]
 
 [params]
 
@@ -37,15 +37,7 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={
-"materials": {
-"Material": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://objects/tool/gun/pistol/testpistol/testpistol.tres",
-"use_external/path": "uid://cyx5s560dn066"
-}
-}
-}
+_subresources={}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true

@@ -51,6 +51,12 @@ public partial class NetworkManager : Node
         Multiplayer.ServerDisconnected += OnServerDisconnected;
     }
 
+    // i know this is shit, too bad
+    public override void _Ready()
+    {
+        ResourceManager.Ready();
+    }
+
     public Error JoinServer()
     {
         string IP = ServerIP;

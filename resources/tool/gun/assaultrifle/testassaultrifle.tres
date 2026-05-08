@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://dsojdot1duxlo"]
+
+[ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_jtlsn"]
+
+[resource]
+script = ExtResource("1_jtlsn")
+RPM = 800.0
+MagSize = 30.0
+UseInGame = false
+ResourceId = "testassaultrifle"
+metadata/_custom_type_script = "uid://dh0saosikvolb"

@@ -4,11 +4,11 @@ namespace MurderFloor;
 public partial class ToolFirearmHitscan : ToolFirearm
 {
     [Export]
-    public Vector2 Damages { get; set; } = new Vector2(10f, 4f);
+    public Vector2 Damages { get; private set; } = new Vector2(10f, 4f);
     [Export]
-    public Vector2 FalloffRanges { get; set; } = new Vector2(40f, 50f);
+    public Vector2 FalloffRanges { get; private set; } = new Vector2(40f, 50f);
     [Export]
-    public float MaxRange = 80f;
+    public float MaxRange { get; private set; } = 80f;
     [Export]
-    public Vector2 DegreeSpread { get; set; } = new Vector2(3f, 3f);
+    public Vector2 DegreeSpread { get; private set; } = new Vector2(3f, 3f);
 }

@@ -1,21 +1,17 @@
 namespace MurderFloor;
 
 [GlobalClass]
-public partial class Tool : Resource
+public partial class Tool : MFResource
 {
     [Export]
-    public string PackageId { get; set; } = "base";
+    public bool UseInGame { get; private set; } = true;
     [Export]
-    public string ResourceId { get; set; } = "";
-    [Export]
-    public bool UseInGame { get; set; } = true;
-    [Export]
-    public string NameLocalizationKey { get; set; } = "#empty";
+    public string NameLocalizationKey { get; private set; } = "#empty";
 
     [Export]
-    public PackedScene MeshScene { get; set; }
+    public PackedScene MeshScene { get; private set; }
     [Export]
-    public string HoldTypeAnimation { get; set; } = "holdtype_pistol";
+    public string HoldTypeAnimation { get; private set; } = "holdtype_pistol";
 
     public virtual void FirePrimary() { }
     public virtual void FireSecondary() { }

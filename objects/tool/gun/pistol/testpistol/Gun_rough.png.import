@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcud1xc6yvv5v"
-path.s3tc="res://.godot/imported/Gun_base.png-e00d7c5f3c78f8699e2a0cfe7b761b95.s3tc.ctex"
+uid="uid://cln0raaiaax5f"
+path.s3tc="res://.godot/imported/Gun_rough.png-5c38ed93064b5c1b0390f748c1517009.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/tool/gun/pistol/Gun_base.png"
-dest_files=["res://.godot/imported/Gun_base.png-e00d7c5f3c78f8699e2a0cfe7b761b95.s3tc.ctex"]
+source_file="res://objects/tool/gun/pistol/testpistol/Gun_rough.png"
+dest_files=["res://.godot/imported/Gun_rough.png-5c38ed93064b5c1b0390f748c1517009.s3tc.ctex"]
 
 [params]
 

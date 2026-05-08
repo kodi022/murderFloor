@@ -4,21 +4,21 @@ namespace MurderFloor;
 public partial class ToolFirearm : Tool
 {
     [Export]
-    public float RPM { get; set; }
+    public float RPM { get; private set; }
     [Export]
-    public float MagSize { get; set; }
+    public float MagSize { get; private set; }
     [Export]
-    public float HoldingSpeed { get; set; } = 1f;
+    public float HoldingSpeed { get; private set; } = 1f;
 
     [Export, ExportSubgroup("ManualFire (boltaction or pump)")]
-    public bool ManualFire { get; set; }
+    public bool ManualFire { get; private set; }
     [Export]
-    public string ManualFireAnimationName { get; set; }
+    public string ManualFireAnimationName { get; private set; }
     [Export(hintString: "Time before weapon can be fired again")]
-    public int ManualFireTimeMs { get; set; }
+    public int ManualFireTimeMs { get; private set; }
 
     [Export, ExportSubgroup("Shotgun")]
-    public bool Shotgun { get; set; }
+    public bool Shotgun { get; private set; }
     [Export]
-    public int PelletCount { get; set; } = 8;
+    public int PelletCount { get; private set; } = 8;
 }

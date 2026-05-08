@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cec4drtl6kw8"]
 
 [ext_resource type="PackedScene" uid="uid://blv5ckqcbegfo" path="res://objects/player/player.blend" id="1_7me46"]
-[ext_resource type="PackedScene" uid="uid://ikpllj7i4gtk" path="res://objects/tool/gun/assaultrifle/gun.blend" id="2_7me46"]
+[ext_resource type="PackedScene" uid="uid://ikpllj7i4gtk" path="res://objects/tool/gun/assaultrifle/testassaultrifle/testassaultrifle.blend" id="2_7me46"]
 
 [node name="PlayerViewmodel" type="Node3D" unique_id=356872480]
 
