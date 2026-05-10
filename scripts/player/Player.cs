@@ -62,12 +62,12 @@ public partial class Player : CharacterBody3D
         viewTool = (Node3D)viewModels.GetChild(1);
         viewSkeleton = (Skeleton3D)viewBodyScene.GetChild(0).GetChild(0);
         //viewAnimationPlayer = (AnimationPlayer)viewBodyScene.GetChild(1);
-        viewHandPoint.AddChild(viewModels);
-        viewSkeleton.SetBonePoseScale(viewSkeleton.FindBone("spine_3"), new Vector3(2, 2, 2));
 
+        viewHandPoint.AddChild(viewModels);
+        //viewSkeleton.SetBonePoseScale(viewSkeleton.FindBone("spine_3"), new Vector3(2, 2, 2));
         viewHandBone = new BoneAttachment3D();
         viewSkeleton.AddChild(viewHandBone);
-        viewHandBone.BoneName = "finger_middle_base_right";
+        viewHandBone.BoneName = "Hand.R";
         viewTool.GetParent().RemoveChild(viewTool);
         viewTool.Owner = null;
         viewHandBone.AddChild(viewTool);

@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://7iw4twbox4f7"]
 
 [ext_resource type="Script" uid="uid://cxa4injtgdy3b" path="res://scripts/player/Player.cs" id="1_p0vlq"]
+[ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://objects/player/KincheePlayer.blend" id="2_3li8b"]
 [ext_resource type="Script" uid="uid://d2w4c0hridjs" path="res://scripts/ui/HUD.cs" id="2_v6fml"]
-[ext_resource type="PackedScene" uid="uid://blv5ckqcbegfo" path="res://objects/player/player.blend" id="3_3li8b"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
 radius = 0.45
@@ -33,7 +33,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16088803, -0.16339028, -0.4
 
 [node name="WorldModels" type="Node3D" parent="." unique_id=1236057200]
 
-[node name="BodyScene" parent="WorldModels" unique_id=2078824574 instance=ExtResource("3_3li8b")]
+[node name="KincheePlayer" parent="WorldModels" unique_id=1986082162 instance=ExtResource("2_3li8b")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="Tool" type="Node3D" parent="WorldModels" unique_id=1101096359]
 
