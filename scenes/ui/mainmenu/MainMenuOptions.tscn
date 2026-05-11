@@ -1,11 +1,14 @@
 [gd_scene format=3 uid="uid://1nuxsnywgq4i"]
 
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_ekuey"]
+
 [node name="MainMenuOptions" type="Control" unique_id=645713087]
 layout_mode = 3
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 grow_vertical = 2
+theme = ExtResource("1_ekuey")
 
 [node name="Panel" type="Panel" parent="." unique_id=1376491844]
 layout_mode = 0

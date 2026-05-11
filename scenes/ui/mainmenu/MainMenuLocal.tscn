@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dup246up0nlse"]
 
 [ext_resource type="Script" uid="uid://co1anr1gpaxbi" path="res://scripts/ui/mainmenu/MainMenuLocal.cs" id="1_s1hgd"]
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_uiovs"]
 
 [node name="MainMenuLocal" type="Control" unique_id=1403306179]
 layout_mode = 3
@@ -8,6 +9,7 @@ anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 grow_vertical = 2
+theme = ExtResource("1_uiovs")
 
 [node name="Panel" type="Panel" parent="." unique_id=1356561104 node_paths=PackedStringArray("startButton")]
 layout_mode = 1

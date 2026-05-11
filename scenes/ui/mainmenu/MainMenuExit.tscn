@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bt6wfi8qx3y68"]
 
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_87y3x"]
 [ext_resource type="Script" uid="uid://blwd7mohtyo8" path="res://scripts/ui/mainmenu/MainMenuExitButton.cs" id="1_sit60"]
 
 [node name="MainMenuExit" type="Control" unique_id=1139399830]
@@ -8,6 +9,7 @@ anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 grow_vertical = 2
+theme = ExtResource("1_87y3x")
 
 [node name="Panel" type="Panel" parent="." unique_id=2023250606]
 layout_mode = 0

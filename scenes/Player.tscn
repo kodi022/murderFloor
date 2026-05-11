@@ -1,37 +1,43 @@
 [gd_scene format=3 uid="uid://7iw4twbox4f7"]
 
-[ext_resource type="Script" uid="uid://cxa4injtgdy3b" path="res://scripts/player/Player.cs" id="1_p0vlq"]
+[ext_resource type="Script" uid="uid://cxa4injtgdy3b" path="res://scripts/pawn/player/Player.cs" id="1_p0vlq"]
 [ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://objects/player/KincheePlayer.blend" id="2_3li8b"]
 [ext_resource type="PackedScene" uid="uid://cclji8rued6d6" path="res://scenes/ui/HUD.tscn" id="2_mdl7e"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
-radius = 0.45
+radius = 0.4
 height = 1.8
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3li8b"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:viewPitch")
 properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:viewPitch")
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:rotation:y")
 properties/2/spawn = true
-properties/2/replication_mode = 1
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:MaxHealth")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath(".:Health")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath(".:Armor")
+properties/5/spawn = true
+properties/5/replication_mode = 2
 
-[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("worldModels", "camera", "viewHandPoint")]
+[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("worldModels", "camera")]
 script = ExtResource("1_p0vlq")
 worldModels = NodePath("WorldModels")
 camera = NodePath("Camera3D")
-viewHandPoint = NodePath("Camera3D/ViewHandPoint")
+sensitivity = 25.0
 
 [node name="Hud" parent="." unique_id=392130317 instance=ExtResource("2_mdl7e")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1562406550]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6398373, 0)
-
-[node name="ViewHandPoint" type="Node3D" parent="Camera3D" unique_id=762411817]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16088803, -0.16339028, -0.4340977)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5995214, 0)
 
 [node name="WorldModels" type="Node3D" parent="." unique_id=1236057200]
 

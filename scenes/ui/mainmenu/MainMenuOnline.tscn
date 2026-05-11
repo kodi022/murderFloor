@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bbe2bekq7igce"]
 
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_oficc"]
 [ext_resource type="Script" uid="uid://bt256idgq6ipu" path="res://scripts/ui/mainmenu/MainMenuOnline.cs" id="1_ufkyb"]
 
 [node name="MainMenuOnline" type="Control" unique_id=702033383]
@@ -8,6 +9,7 @@ anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 grow_vertical = 2
+theme = ExtResource("1_oficc")
 
 [node name="Panel" type="Panel" parent="." unique_id=1967849019 node_paths=PackedStringArray("joinButton", "hostButton", "IPline", "portLine", "nameLine", "coolLine")]
 layout_mode = 0

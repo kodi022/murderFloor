@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://cclji8rued6d6"]
 
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_atyv1"]
 [ext_resource type="Script" uid="uid://d2w4c0hridjs" path="res://scripts/ui/HUD.cs" id="1_kw0id"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ll6g"]
@@ -18,23 +19,31 @@ border_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atyv1"]
 bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
 
-[node name="Hud" type="Control" unique_id=392130317 node_paths=PackedStringArray("playersLabel", "healthBarPanel")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ed8p"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 6
+
+[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("playersLabel", "healthBarPanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_atyv1")
 script = ExtResource("1_kw0id")
 playersLabel = NodePath("Label")
 healthBarPanel = NodePath("Center-Bottom/Panel/Panel/healthbarPanel")
 
 [node name="Label" type="Label" parent="." unique_id=1590626653]
 layout_mode = 0
-offset_left = 22.0
-offset_top = 25.0
-offset_right = 160.0
-offset_bottom = 48.0
+offset_top = 312.00403
+offset_right = 1152.0
+offset_bottom = 335.00403
 text = "AAAAAAAAAAAAA"
 
 [node name="Center-Bottom" type="Control" parent="." unique_id=21373683]
@@ -46,20 +55,14 @@ anchor_right = 0.5
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 
 [node name="Panel" type="Panel" parent="Center-Bottom" unique_id=1130721444]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
+layout_mode = 0
 offset_left = -80.0
 offset_top = -20.0
 offset_right = 80.0
 offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
 
 [node name="border" type="Panel" parent="Center-Bottom/Panel" unique_id=1956631621]
@@ -81,4 +84,57 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ig75s")
 layout_mode = 0
 offset_right = 156.0
 offset_bottom = 6.0
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_atyv1")
+
+[node name="Center" type="Control" parent="." unique_id=1976695130]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EmptyCrosshair" type="Panel" parent="Center" unique_id=5846930]
+visible = false
+layout_mode = 0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_4ed8p")
+
+[node name="GunCrosshair" type="Panel" parent="Center" unique_id=269181378]
+layout_mode = 0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 1.0
+offset_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_4ed8p")
+
+[node name="Panel" type="Panel" parent="Center/GunCrosshair" unique_id=1603221185]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -1.0
+offset_right = 16.0
+offset_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Panel2" type="Panel" parent="Center/GunCrosshair" unique_id=278238092]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -1.0
+offset_right = -6.0
+offset_bottom = 1.0
+grow_vertical = 2

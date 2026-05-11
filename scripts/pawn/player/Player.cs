@@ -3,10 +3,20 @@ namespace MurderFloor;
 public partial class Player : CharacterBody3D, IPawn
 {
     public static Player Self { get; private set; }
+    public static List<Player> AllPlayers { get; private set; } = [];
 
-    public float MaxHealth { get; set; } = 100;
-    public float Health { get; set; } = 100;
-    public float Armor { get; set; } = 50;
+    [Export]
+    public float MaxHealth { get; set; } = 100f;
+    [Export]
+    public float Health { get; set; } = 100f;
+    [Export]
+    public float Armor { get; set; } = 50f;
+
+    public Vector3 CameraPositionBump { get; set; }
+    public Vector3 CameraRotationBump { get; set; }
+
+    public Vector3 ViewModelPositionBump { get; set; }
+    public Vector3 ViewModelRotationBump { get; set; }
 
     // world
     [Export]
@@ -22,8 +32,6 @@ public partial class Player : CharacterBody3D, IPawn
     // view
     [Export]
     private Camera3D camera;
-    [Export]
-    private Node3D viewHandPoint;
 
     private BoneAttachment3D viewHandBone;
 
@@ -54,24 +62,23 @@ public partial class Player : CharacterBody3D, IPawn
 
         // worldHandBone = new BoneAttachment3D();
         // worldSkeleton.AddChild(worldHandBone);
-        // worldHandBone.BoneName = "forearm_right";
+        // worldHandBone.BoneName = "Hand.R";
 
         if (!IsMultiplayerAuthority()) return;
-        Self = this;
+
         worldModels.Free();
-        camera.Current = true;
-        Input.UseAccumulatedInput = false;
 
         var tool = ResourceManager.ToolRegistry.GetResourceReference("base:testassaultrifle");
 
         viewModels = (Node3D)GD.Load<PackedScene>("res://scenes/PlayerViewmodel.tscn").Instantiate();
+        viewModels.Position = Vector3.Zero;
+        viewModels.Rotation = Vector3.Zero;
         viewBodyScene = (Node3D)viewModels.GetChild(0);
         viewTool = (Node3D)viewModels.GetChild(1);
         viewSkeleton = (Skeleton3D)viewBodyScene.GetChild(0).GetChild(0);
+        camera.AddChild(viewModels);
         //viewAnimationPlayer = (AnimationPlayer)viewBodyScene.GetChild(1);
 
-        viewHandPoint.AddChild(viewModels);
-        //viewSkeleton.SetBonePoseScale(viewSkeleton.FindBone("spine_3"), new Vector3(2, 2, 2));
         viewHandBone = new BoneAttachment3D();
         viewSkeleton.AddChild(viewHandBone);
         viewHandBone.BoneName = "Hand.R";
@@ -79,24 +86,38 @@ public partial class Player : CharacterBody3D, IPawn
         viewTool.Owner = null;
         viewHandBone.AddChild(viewTool);
         viewTool.Owner = viewHandBone;
-
         viewTool.AddChild(tool.MeshScene.Instantiate());
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _EnterTree()
+    {
+        AllPlayers.Add(this);
+
+        if (!IsMultiplayerAuthority()) return;
+        Self = this;
+        camera.Current = true;
+        Input.UseAccumulatedInput = false;
+    }
+
+    public override void _ExitTree()
+    {
+        AllPlayers.Remove(this);
+    }
+
+    public override void _Input(InputEvent @event)
     {
         if (!IsMultiplayerAuthority()) return;
-
         if (mouseMode != Input.MouseModeEnum.Captured) return;
 
         if (@event is InputEventMouseMotion eventMouseMotion)
         {
-            var viewportTransform = GetTree().Root.GetFinalTransform();
-            var relative = ((InputEventMouseMotion)eventMouseMotion.XformedBy(viewportTransform)).Relative;
-            viewPitch -= relative.Y * 0.0001f * sensitivity;
+            viewPitch -= eventMouseMotion.ScreenRelative.Y * 0.0001f * sensitivity;
             viewPitch = float.Clamp(viewPitch, -1.3f, 1.3f);
 
-            viewYaw -= relative.X * 0.0001f * sensitivity;
+            viewYaw -= eventMouseMotion.ScreenRelative.X * 0.0001f * sensitivity;
+
+            camera.Rotation = new Vector3(viewPitch, 0, 0);
+            Rotation = new Vector3(0, viewYaw, 0);
         }
     }
 
@@ -113,20 +134,21 @@ public partial class Player : CharacterBody3D, IPawn
             if (mouseMode == Input.MouseModeEnum.Captured) mouseMode = Input.MouseModeEnum.Visible;
             else mouseMode = Input.MouseModeEnum.Captured;
         }
-
-        camera.Rotation = new Vector3(viewPitch, 0, 0);
-        Rotation = new Vector3(0, viewYaw, 0);
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        //GD.Print(Name + IsMultiplayerAuthority());
         if (!IsMultiplayerAuthority()) return;
+
+        if (Input.IsActionJustPressed("jump"))
+        {
+            lastVel.Y = 16f;
+        }
 
         var forward = Input.GetAxis("backward", "forward");
         var strafe = Input.GetAxis("left", "right");
-        var wishMove = new Vector3(forward, -1f, strafe);
-        wishMove = wishMove.Normalized();
+        var wishMove = new Vector3(forward, 0f, strafe).Normalized();
+        wishMove.Y = -0.8f;
         wishMove = wishMove.Rotated(Vector3.Up, viewYaw + 1.570796326794896f);
         lastVel *= new Vector3(0.86f, 0.95f, 0.86f);
         lastVel += wishMove;

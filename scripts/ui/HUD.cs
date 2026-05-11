@@ -17,6 +17,7 @@ public partial class HUD : Control
         }
         playersLabel.Text = players;
 
-        healthBarPanel.SetPosition(new Vector2(-10, 0));
+        var move = Player.Self.MaxHealth - Player.Self.Health;
+        healthBarPanel.SetPosition(new Vector2(-move * healthBarPanel.Size.X, 0));
     }
 }

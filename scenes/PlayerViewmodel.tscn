@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://cec4drtl6kw8"]
 
-[ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://objects/player/KincheePlayer.blend" id="1_kou45"]
+[ext_resource type="PackedScene" uid="uid://b85on0trpihqi" path="res://scenes/PlayerViewmodelBody.tscn" id="1_kou45"]
 
 [node name="PlayerViewmodel" type="Node3D" unique_id=356872480]
 
-[node name="KincheePlayer" parent="." unique_id=1986082162 instance=ExtResource("1_kou45")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+[node name="KincheePlayer" parent="." unique_id=51662591 instance=ExtResource("1_kou45")]
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, -0.97917944, 0.18275881)
 
 [node name="Tool" type="Node3D" parent="." unique_id=206140853]

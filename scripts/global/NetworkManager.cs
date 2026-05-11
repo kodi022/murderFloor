@@ -124,7 +124,7 @@ public partial class NetworkManager : Node
         var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
         player.Name = id.ToString();
         player.SetMultiplayerAuthority((int)id);
-        AddChild(player);
+        GetTree().Root.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
@@ -146,7 +146,7 @@ public partial class NetworkManager : Node
         var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
         player.Name = id.ToString();
         player.SetMultiplayerAuthority((int)id);
-        AddChild(player);
+        GetTree().Root.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer fails to establish a connection to a server. 
