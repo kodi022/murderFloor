@@ -1,7 +1,14 @@
 namespace MurderFloor;
 
-public partial class Player : CharacterBody3D
+public partial class Player : CharacterBody3D, IPawn
 {
+    public static Player Self { get; private set; }
+
+    public float MaxHealth { get; set; } = 100;
+    public float Health { get; set; } = 100;
+    public float Armor { get; set; } = 50;
+
+    // world
     [Export]
     private Node3D worldModels;
 
@@ -12,6 +19,7 @@ public partial class Player : CharacterBody3D
     private Skeleton3D worldSkeleton;
     private AnimationPlayer worldAnimationPlayer;
 
+    // view
     [Export]
     private Camera3D camera;
     [Export]
@@ -49,9 +57,8 @@ public partial class Player : CharacterBody3D
         // worldHandBone.BoneName = "forearm_right";
 
         if (!IsMultiplayerAuthority()) return;
-
+        Self = this;
         worldModels.Free();
-
         camera.Current = true;
         Input.UseAccumulatedInput = false;
 

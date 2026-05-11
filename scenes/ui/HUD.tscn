@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://cclji8rued6d6"]
+
+[ext_resource type="Script" uid="uid://d2w4c0hridjs" path="res://scripts/ui/HUD.cs" id="1_kw0id"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ll6g"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw0id"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig75s"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atyv1"]
+bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
+
+[node name="Hud" type="Control" unique_id=392130317 node_paths=PackedStringArray("playersLabel", "healthBarPanel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kw0id")
+playersLabel = NodePath("Label")
+healthBarPanel = NodePath("Center-Bottom/Panel/Panel/healthbarPanel")
+
+[node name="Label" type="Label" parent="." unique_id=1590626653]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 25.0
+offset_right = 160.0
+offset_bottom = 48.0
+text = "AAAAAAAAAAAAA"
+
+[node name="Center-Bottom" type="Control" parent="." unique_id=21373683]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Panel" type="Panel" parent="Center-Bottom" unique_id=1130721444]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -20.0
+offset_right = 80.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
+
+[node name="border" type="Panel" parent="Center-Bottom/Panel" unique_id=1956631621]
+layout_mode = 0
+offset_right = 160.0
+offset_bottom = 10.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="Panel" type="Panel" parent="Center-Bottom/Panel" unique_id=1615737957]
+clip_children = 1
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 158.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ig75s")
+
+[node name="healthbarPanel" type="Panel" parent="Center-Bottom/Panel/Panel" unique_id=463223751]
+layout_mode = 0
+offset_right = 156.0
+offset_bottom = 6.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_atyv1")
