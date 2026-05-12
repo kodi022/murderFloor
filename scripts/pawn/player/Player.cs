@@ -147,10 +147,10 @@ public partial class Player : CharacterBody3D, IPawn
 
         var forward = Input.GetAxis("backward", "forward");
         var strafe = Input.GetAxis("left", "right");
-        var wishMove = new Vector3(forward, 0f, strafe).Normalized();
+        var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.80f;
         wishMove.Y = -0.8f;
         wishMove = wishMove.Rotated(Vector3.Up, viewYaw + 1.570796326794896f);
-        lastVel *= new Vector3(0.86f, 0.95f, 0.86f);
+        lastVel *= new Vector3(0.80f, 0.95f, 0.80f);
         lastVel += wishMove;
 
         Velocity = lastVel;

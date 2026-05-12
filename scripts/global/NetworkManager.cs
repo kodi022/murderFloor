@@ -109,8 +109,6 @@ public partial class NetworkManager : Node
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 
-    // ! WHERE DO I SPAWN PLAYERS FOR CLIENTS
-
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer connects with a new peer. 
     // ID is the peer ID of the new peer. 
     // Clients get notified when other clients connect to the same server. 
@@ -122,7 +120,7 @@ public partial class NetworkManager : Node
         RpcId(id, "SendInfoToPeer", _playerInfo);
         _players[id] = _playerInfo;
         var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
-        player.Name = id.ToString();
+        player.Name = "plr_" + id.ToString();
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
     }
@@ -144,7 +142,7 @@ public partial class NetworkManager : Node
         int id = Multiplayer.GetUniqueId();
         _players[id] = _playerInfo;
         var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
-        player.Name = id.ToString();
+        player.Name = "plr_" + id.ToString();
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
     }
@@ -153,9 +151,9 @@ public partial class NetworkManager : Node
     // Only emitted on clients.
     private void OnConnectionFailed()
     {
-        // ! return to menu if not in
         GD.Print("OnConnectionFailed");
         Multiplayer.MultiplayerPeer = null;
+        Rpc("LoadGame", "res://scenes/MainMenu.tscn");
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from server. 
@@ -163,9 +161,9 @@ public partial class NetworkManager : Node
     private void OnServerDisconnected()
     {
         GD.Print("OnServerDisconnected");
-        // ! return to menu if not in
         Multiplayer.MultiplayerPeer = null;
         _players.Clear();
+        Rpc("LoadGame", "res://scenes/MainMenu.tscn");
     }
 
     [Rpc(TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -180,5 +178,19 @@ public partial class NetworkManager : Node
     {
         int newPlayerId = Multiplayer.GetRemoteSenderId();
         _players[newPlayerId] = newPlayerInfo;
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void PlayerLoaded()
+    {
+        if (Multiplayer.IsServer())
+        {
+            _playersLoaded += 1;
+            if (_playersLoaded == _players.Count)
+            {
+                Game.StartGame();
+                _playersLoaded = 0;
+            }
+        }
     }
 }
