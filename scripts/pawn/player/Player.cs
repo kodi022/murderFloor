@@ -1,22 +1,21 @@
 namespace MurderFloor;
 
-public partial class Player : CharacterBody3D, IPawn
+public partial class Player : Pawn
 {
     public static Player Self { get; private set; }
     public static List<Player> AllPlayers { get; private set; } = [];
-
-    [Export]
-    public float MaxHealth { get; set; } = 100f;
-    [Export]
-    public float Health { get; set; } = 100f;
-    [Export]
-    public float Armor { get; set; } = 50f;
 
     public Vector3 CameraPositionBump { get; set; }
     public Vector3 CameraRotationBump { get; set; }
 
     public Vector3 ViewModelPositionBump { get; set; }
     public Vector3 ViewModelRotationBump { get; set; }
+
+    public List<Tool> PrimaryTools { get; private set; } = [];
+    public List<Tool> SecondaryTools { get; private set; } = [];
+    public List<Tool> GadgetTools { get; private set; } = [];
+
+    public Tool SelectedTool { get; private set; } = null;
 
     // world
     [Export]

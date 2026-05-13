@@ -1,15 +1,10 @@
+using System.Runtime.Intrinsics;
+
 namespace MurderFloor;
 
-public partial class Mob : CharacterBody3D, IPawn
+public partial class LiveMob : Pawn
 {
-    [Export]
-    public float MaxHealth { get; set; } = 50f;
-    [Export]
-    public float Health { get; set; } = 50f;
-    [Export]
-    public float Armor { get; set; } = 0f;
-
-    public int MobProcessOffset { get; set; } = 0;
+    //public Mob MobResource { get; set; }
 
     public bool Active
     {
@@ -23,7 +18,7 @@ public partial class Mob : CharacterBody3D, IPawn
         }
     }
 
-    private bool _active = false;
+    public int MobProcessOffset { get; set; } = 0;
 
     private static readonly RandomNumberGenerator mobRng = new();
 
@@ -32,9 +27,11 @@ public partial class Mob : CharacterBody3D, IPawn
     [Export]
     private NavigationAgent3D navigationAgent3D;
 
-    private Player targetPlayer;
-
+    private bool _active;
+    private Pawn targetPawn;
     private ulong lastCheckpointTime;
+    private ulong lastTargetUpdateTime;
+
     public override void _Ready()
     {
         Active = false;
@@ -43,11 +40,26 @@ public partial class Mob : CharacterBody3D, IPawn
         navigationAgent3D.WaypointReached += (a) => { lastCheckpointTime = Time.GetTicksMsec(); };
     }
 
+    public void ActivateAsType(Vector3 location, int mobResourceId)
+    {
+
+    }
+
     public override void _PhysicsProcess(double delta)
     {
         if (!IsMultiplayerAuthority()) return;
 
         if (NavigationServer3D.MapGetIterationId(navigationAgent3D.GetNavigationMap()) == 0) return;
+
+        navigationAgent3D.TargetPosition = targetPawn?.GlobalPosition ?? GlobalPosition;
+
+        //if (navigationAgent3D.IsTargetReached()) return;
+
+        if (10000ul < Time.GetTicksMsec() - lastTargetUpdateTime)
+        {
+            ChangeNavigationTarget();
+            return;
+        }
 
         if (20000ul < Time.GetTicksMsec() - lastCheckpointTime)
         {
@@ -72,6 +84,7 @@ public partial class Mob : CharacterBody3D, IPawn
     private void Unstuck()
     {
         var map = navigationAgent3D.GetNavigationMap();
+        lastCheckpointTime = Time.GetTicksMsec();
         for (int i = 0; i < 1000; i++)
         {
             var grow = 1 + (i * 0.01f);
@@ -80,7 +93,6 @@ public partial class Mob : CharacterBody3D, IPawn
             if ((rand - point).LengthSquared() < 4)
             {
                 GlobalPosition = point;
-                lastCheckpointTime = Time.GetTicksMsec();
                 break;
             }
         }
@@ -88,21 +100,28 @@ public partial class Mob : CharacterBody3D, IPawn
 
     private void ChangeNavigationTarget()
     {
-        navigationAgent3D.TargetPosition = new Vector3(mobRng.Randfn() * 10, mobRng.Randfn() * 10, mobRng.Randfn() * 10);
+        lastTargetUpdateTime = Time.GetTicksMsec();
+        // weight on highest damage dealers?
 
-        // var nearestDist = 0f;
-        // Player nearestPlr = null;
-        // foreach (var plr in Player.AllPlayers)
-        // {
-        //     var dist = (GlobalPosition - plr.GlobalPosition).LengthSquared();
+        //navigationAgent3D.TargetPosition = new Vector3(mobRng.Randfn() * 10, mobRng.Randfn() * 10, mobRng.Randfn() * 10);
 
-        //     if (dist < nearestDist)
-        //     {
-        //         nearestDist = dist;
-        //         nearestPlr = plr;
-        //     }
-        // }
+        // if not team attack
 
-        // targetPlayer = nearestPlr;
+        // else find teammate pawns
+        GD.Print(Player.AllPlayers.Count);
+        var nearestDist = 999999f;
+        Player nearestPlr = null;
+        foreach (var plr in Player.AllPlayers)
+        {
+            var dist = (GlobalPosition - plr.GlobalPosition).LengthSquared();
+
+            if (dist < nearestDist)
+            {
+                nearestDist = dist;
+                nearestPlr = plr;
+            }
+        }
+
+        targetPawn = nearestPlr;
     }
 }

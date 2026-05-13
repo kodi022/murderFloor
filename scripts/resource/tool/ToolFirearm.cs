@@ -35,14 +35,16 @@ public partial class ToolFirearm : Tool
         AR,
         Shotgun,
         DMR,
-        Special
+        Special,
+        Melee
     }
 
     public enum SlotEnum
     {
         Secondary,
         Primary,
-        Special
+        Special,
+        Melee
     }
 
     public SlotEnum GetSlot()
@@ -53,6 +55,7 @@ public partial class ToolFirearm : Tool
         }
 
         if (FirearmType == FirearmTypeEnum.Special) return SlotEnum.Special;
+        if (FirearmType == FirearmTypeEnum.Melee) return SlotEnum.Melee;
 
         return SlotEnum.Primary;
     }

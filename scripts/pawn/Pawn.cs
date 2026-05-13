@@ -1,16 +1,20 @@
 namespace MurderFloor;
 
-public interface IPawn
+public partial class Pawn : CharacterBody3D
 {
+    [Export]
     public float MaxHealth { get; set; }
+    [Export]
     public float Health { get; set; }
+    [Export]
     public float Armor { get; set; }
 
     // "attacker": "player id OR 0 if mob"
     // "attackerName": "player name OR mob name"
     // "weapon": "weaponresourceid OR empty if mob"
     // "hitposition": "vector3"
-    public void OnDamage(Godot.Collections.Dictionary<string, string> damageInfo)
+    // "hitbox": "int id"
+    public virtual void OnDamage(Godot.Collections.Dictionary<string, string> damageInfo)
     {
         var damage = 10f;
 
@@ -35,10 +39,15 @@ public interface IPawn
         if (damage > Health)
         {
             Health = 0;
-            // DIE IDIOT
+            OnDeath(damageInfo);
             return;
         }
 
         Health -= damage;
+    }
+
+    public virtual void OnDeath(Godot.Collections.Dictionary<string, string> damageInfo)
+    {
+
     }
 }

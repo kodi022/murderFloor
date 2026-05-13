@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://pqbd3i4lbv5o"]
 
-[ext_resource type="Script" uid="uid://rpfwvykhmjjm" path="res://scripts/pawn/mob/Mob.cs" id="1_ex06h"]
+[ext_resource type="Script" uid="uid://rpfwvykhmjjm" path="res://scripts/pawn/mob/LiveMob.cs" id="1_ex06h"]
 [ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://objects/player/KincheePlayer.blend" id="1_sup6k"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ex06h"]

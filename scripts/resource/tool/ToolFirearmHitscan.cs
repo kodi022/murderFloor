@@ -11,4 +11,16 @@ public partial class ToolFirearmHitscan : ToolFirearm
     public float MaxRange { get; private set; } = 80f;
     [Export]
     public Vector2 DegreeSpread { get; private set; } = new Vector2(3f, 3f);
+
+    public override void FirePrimary()
+    {
+
+
+
+
+
+
+
+
+    }
 }
