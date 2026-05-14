@@ -1,4 +1,3 @@
-using System.Runtime.Intrinsics;
 
 namespace MurderFloor;
 
@@ -9,9 +8,10 @@ public partial class LiveMob : Pawn
     public bool Active
     {
         get { return _active; }
-        set
+        private set
         {
             worldModels.Visible = value;
+            collisionShape3D.SetDeferred("disabled", !value);
             SetProcess(value);
             SetPhysicsProcess(value);
             _active = value;
@@ -19,6 +19,7 @@ public partial class LiveMob : Pawn
     }
 
     public int MobProcessOffset { get; set; } = 0;
+    public int MobPoolId { get; set; } = 0;
 
     private static readonly RandomNumberGenerator mobRng = new();
 
@@ -26,6 +27,8 @@ public partial class LiveMob : Pawn
     private Node3D worldModels;
     [Export]
     private NavigationAgent3D navigationAgent3D;
+    [Export]
+    private CollisionShape3D collisionShape3D;
 
     private bool _active;
     private Pawn targetPawn;
@@ -40,20 +43,41 @@ public partial class LiveMob : Pawn
         navigationAgent3D.WaypointReached += (a) => { lastCheckpointTime = Time.GetTicksMsec(); };
     }
 
-    public void ActivateAsType(Vector3 location, int mobResourceId)
+    public void OnSpawn(Vector3 location, int mobResourceId)
     {
+        MaxHealth = 100;
+        Health = MaxHealth;
+        GlobalPosition = location;
+        Active = true;
+    }
 
+    public override void OnDeath(Godot.Collections.Dictionary<string, string> damageInfo)
+    {
+        if (!Active) return;
+        Active = false;
+        Game.MobDeath(MobPoolId);
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        if (!Active) return;
         if (!IsMultiplayerAuthority()) return;
-
         if (NavigationServer3D.MapGetIterationId(navigationAgent3D.GetNavigationMap()) == 0) return;
 
         navigationAgent3D.TargetPosition = targetPawn?.GlobalPosition ?? GlobalPosition;
 
-        //if (navigationAgent3D.IsTargetReached()) return;
+        if (navigationAgent3D.DistanceToTarget() < 1)
+        {
+            var di = new Godot.Collections.Dictionary<string, string>()
+            {
+                {"attacker", 0.ToString()},
+                {"attackerName", "mobname"},
+                {"weapon", "claw"},
+                {"hitposition", Vector3.Zero.ToString()},
+                {"hitbox", "0"}
+            };
+            targetPawn.OnDamage(di);
+        }
 
         if (10000ul < Time.GetTicksMsec() - lastTargetUpdateTime)
         {
@@ -77,8 +101,6 @@ public partial class LiveMob : Pawn
         MoveAndSlide();
 
         // if target check update
-
-
     }
 
     private void Unstuck()
@@ -105,10 +127,12 @@ public partial class LiveMob : Pawn
 
         //navigationAgent3D.TargetPosition = new Vector3(mobRng.Randfn() * 10, mobRng.Randfn() * 10, mobRng.Randfn() * 10);
 
+
+        // smart weighting to have a higher overriding range for players who do more damage
         // if not team attack
 
         // else find teammate pawns
-        GD.Print(Player.AllPlayers.Count);
+
         var nearestDist = 999999f;
         Player nearestPlr = null;
         foreach (var plr in Player.AllPlayers)

@@ -24,10 +24,11 @@ properties/4/path = NodePath(".:Armor")
 properties/4/spawn = true
 properties/4/replication_mode = 2
 
-[node name="Mob" type="CharacterBody3D" unique_id=2115086269 node_paths=PackedStringArray("worldModels", "navigationAgent3D")]
+[node name="Mob" type="CharacterBody3D" unique_id=2115086269 node_paths=PackedStringArray("worldModels", "navigationAgent3D", "collisionShape3D")]
 script = ExtResource("1_ex06h")
 worldModels = NodePath("WorldModels")
 navigationAgent3D = NodePath("NavigationAgent3D")
+collisionShape3D = NodePath("CollisionShape3D")
 
 [node name="WorldModels" type="Node3D" parent="." unique_id=195520531]
 

@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://dxlfxyysllkol"]
+
+[ext_resource type="Script" uid="uid://w36qe0bufkw5" path="res://scripts/ui/HUDDebug.cs" id="1_c6yh3"]
+
+[node name="HudDebug" type="Control" unique_id=2053498864]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c6yh3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=215705134]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1466576658]
+layout_mode = 2
+text = "a"
+
+[node name="Label2" type="Label" parent="VBoxContainer" unique_id=794416098]
+layout_mode = 2
+text = "a"
+
+[node name="Label3" type="Label" parent="VBoxContainer" unique_id=118066950]
+layout_mode = 2
+text = "a"
+
+[node name="Label4" type="Label" parent="VBoxContainer" unique_id=1147054086]
+layout_mode = 2
+text = "a"
+
+[node name="Label5" type="Label" parent="VBoxContainer" unique_id=873143627]
+layout_mode = 2
+text = "a"
+
+[node name="Label6" type="Label" parent="VBoxContainer" unique_id=842447991]
+layout_mode = 2
+text = "a"
+
+[node name="Label7" type="Label" parent="VBoxContainer" unique_id=1059520595]
+layout_mode = 2
+text = "a"
+
+[node name="Label8" type="Label" parent="VBoxContainer" unique_id=320621208]
+layout_mode = 2
+text = "a"
+
+[node name="Label9" type="Label" parent="VBoxContainer" unique_id=1725205747]
+layout_mode = 2
+text = "a"

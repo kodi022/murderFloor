@@ -9,15 +9,18 @@ public partial class Pawn : CharacterBody3D
     [Export]
     public float Armor { get; set; }
 
-    // "attacker": "player id OR 0 if mob"
-    // "attackerName": "player name OR mob name"
-    // "weapon": "weaponresourceid OR empty if mob"
-    // "hitposition": "vector3"
-    // "hitbox": "int id"
+    /// <summary>
+    /// <para>"attacker": "player id OR 0 if mob"</para>
+    /// <para>"attackerName": "player name OR mob name"</para>
+    /// <para>"weapon": "weaponresourceid OR empty if mob"</para>
+    /// <para>"hitposition": "vector3"</para>
+    /// <para>"hitbox": "int id"</para>
+    /// </summary>
     public virtual void OnDamage(Godot.Collections.Dictionary<string, string> damageInfo)
     {
-        var damage = 10f;
+        var damage = 0.5f;
 
+        GD.Print(Name + " " + Health);
         // if (damageInfo["attacker"] == "0")
         // {
         // }
@@ -42,7 +45,6 @@ public partial class Pawn : CharacterBody3D
             OnDeath(damageInfo);
             return;
         }
-
         Health -= damage;
     }
 

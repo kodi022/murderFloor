@@ -31,6 +31,8 @@ public partial class Player : Pawn
     // view
     [Export]
     private Camera3D camera;
+    [Export]
+    private RayCast3D cameraRaycast;
 
     private BoneAttachment3D viewHandBone;
 
@@ -40,17 +42,17 @@ public partial class Player : Pawn
     private Skeleton3D viewSkeleton;
     private AnimationPlayer viewAnimationPlayer;
 
+    private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
     [Export(PropertyHint.Range, "1,500,0.01")]
     private float sensitivity = 50f;
-
-    private Vector3 lastVel;
-
     [Export]
     private float viewYaw = 0f;
     [Export]
     private float viewPitch = 0f;
 
-    private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
+    private Control debugUI;
+
+    private Vector3 lastVel;
 
     public override void _Ready()
     {
@@ -96,6 +98,7 @@ public partial class Player : Pawn
         Self = this;
         camera.Current = true;
         Input.UseAccumulatedInput = false;
+        cameraRaycast.AddException(this);
     }
 
     public override void _ExitTree()
@@ -118,6 +121,23 @@ public partial class Player : Pawn
             camera.Rotation = new Vector3(viewPitch, 0, 0);
             Rotation = new Vector3(0, viewYaw, 0);
         }
+
+        if (@event is InputEventKey eventKey)
+        {
+            if (eventKey.Keycode == Key.F1 && eventKey.Pressed)
+            {
+                if (debugUI is null)
+                {
+                    debugUI = (Control)GD.Load<PackedScene>("res://scenes/ui/HUDDebug.tscn").Instantiate();
+                    AddChild(debugUI);
+                }
+                else
+                {
+                    debugUI.Free();
+                    debugUI = null;
+                }
+            }
+        }
     }
 
     public override void _Process(double delta)
@@ -133,6 +153,25 @@ public partial class Player : Pawn
             if (mouseMode == Input.MouseModeEnum.Captured) mouseMode = Input.MouseModeEnum.Visible;
             else mouseMode = Input.MouseModeEnum.Captured;
         }
+
+        // camera.ProjectPosition aims at pixel, which isn't perfectly center
+        // var endPos = camera.ProjectPosition(Vector2.Zero, 100f);
+        // var endPos = camera.GlobalPosition - camera.GlobalTransform.Basis.Z * 100f;
+
+        //cameraRaycast.TargetPosition = Vector3.Backward * range;
+        if (cameraRaycast.GetCollider() is Pawn pawn)
+        {
+            var di = new Godot.Collections.Dictionary<string, string>()
+            {
+                {"attacker", GetMultiplayerAuthority().ToString()},
+                {"attackerName", NetworkManager.Current._players[GetMultiplayerAuthority()]["Name"]},
+                {"weapon", "mind"},
+                {"hitposition", cameraRaycast.GetCollisionPoint().ToString()},
+                {"hitbox", "0"}
+            };
+            pawn.OnDamage(di);
+        }
+
     }
 
     public override void _PhysicsProcess(double delta)
