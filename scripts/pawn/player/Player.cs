@@ -158,7 +158,6 @@ public partial class Player : Pawn
         // var endPos = camera.ProjectPosition(Vector2.Zero, 100f);
         // var endPos = camera.GlobalPosition - camera.GlobalTransform.Basis.Z * 100f;
 
-        //cameraRaycast.TargetPosition = Vector3.Backward * range;
         if (cameraRaycast.GetCollider() is Pawn pawn)
         {
             var di = new Godot.Collections.Dictionary<string, string>()

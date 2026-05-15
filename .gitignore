@@ -1,6 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-.blend1
-.blend2
-
+# Backup blender files
+*.blend1
+# C# Dev Kit cache
+*.lscache
