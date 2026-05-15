@@ -45,7 +45,10 @@ public partial class Pawn : CharacterBody3D
             OnDeath(damageInfo);
             return;
         }
+
         Health -= damage;
+        // gore
+        // sound
     }
 
     public virtual void OnDeath(Godot.Collections.Dictionary<string, string> damageInfo)

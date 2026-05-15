@@ -11,22 +11,16 @@ public partial class Player : Pawn
     public Vector3 ViewModelPositionBump { get; set; }
     public Vector3 ViewModelRotationBump { get; set; }
 
-    public List<Tool> PrimaryTools { get; private set; } = [];
-    public List<Tool> SecondaryTools { get; private set; } = [];
-    public List<Tool> GadgetTools { get; private set; } = [];
-
-    public Tool SelectedTool { get; private set; } = null;
-
     // world
     [Export]
     private Node3D worldModels;
 
     private BoneAttachment3D worldHandBone;
 
-    private Node3D worldBodyScene;
-    private Node3D worldTool;
-    private Skeleton3D worldSkeleton;
-    private AnimationPlayer worldAnimationPlayer;
+    private Node3D worldBody;
+    private Skeleton3D worldBodySkeleton;
+    private AnimationPlayer worldBodyAnimationPlayer;
+    private Node3D worldToolPosition;
 
     // view
     [Export]
@@ -37,10 +31,10 @@ public partial class Player : Pawn
     private BoneAttachment3D viewHandBone;
 
     private Node3D viewModels;
-    private Node3D viewBodyScene;
-    private Node3D viewTool;
-    private Skeleton3D viewSkeleton;
-    private AnimationPlayer viewAnimationPlayer;
+    private Node3D viewBody;
+    private Skeleton3D viewBodySkeleton;
+    private AnimationPlayer viewBodyAnimationPlayer;
+    private Node3D viewToolPosition;
 
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
     [Export(PropertyHint.Range, "1,500,0.01")]
@@ -56,38 +50,12 @@ public partial class Player : Pawn
 
     public override void _Ready()
     {
-        // worldBodyScene = (Node3D)worldModels.GetChild(0);
-        // worldTool = (Node3D)worldModels.GetChild(1);
-        // worldSkeleton = (Skeleton3D)worldBodyScene.GetChild(0).GetChild(0);
-        // worldAnimationPlayer = (AnimationPlayer)worldBodyScene.GetChild(1);
-
-        // worldHandBone = new BoneAttachment3D();
-        // worldSkeleton.AddChild(worldHandBone);
-        // worldHandBone.BoneName = "Hand.R";
+        BuildWorldNodes();
 
         if (!IsMultiplayerAuthority()) return;
 
         worldModels.Free();
-
-        var tool = ResourceManager.ToolRegistry.GetResourceReference("base:testassaultrifle");
-
-        viewModels = (Node3D)GD.Load<PackedScene>("res://scenes/PlayerViewmodel.tscn").Instantiate();
-        viewModels.Position = Vector3.Zero;
-        viewModels.Rotation = Vector3.Zero;
-        viewBodyScene = (Node3D)viewModels.GetChild(0);
-        viewTool = (Node3D)viewModels.GetChild(1);
-        viewSkeleton = (Skeleton3D)viewBodyScene.GetChild(0).GetChild(0);
-        camera.AddChild(viewModels);
-        //viewAnimationPlayer = (AnimationPlayer)viewBodyScene.GetChild(1);
-
-        viewHandBone = new BoneAttachment3D();
-        viewSkeleton.AddChild(viewHandBone);
-        viewHandBone.BoneName = "Hand.R";
-        viewTool.GetParent().RemoveChild(viewTool);
-        viewTool.Owner = null;
-        viewHandBone.AddChild(viewTool);
-        viewTool.Owner = viewHandBone;
-        viewTool.AddChild(tool.MeshScene.Instantiate());
+        BuildViewNodes();
     }
 
     public override void _EnterTree()
@@ -142,10 +110,13 @@ public partial class Player : Pawn
 
     public override void _Process(double delta)
     {
-        //animationPlayer.Play("idle");
+        if (!IsMultiplayerAuthority())
+        {
+            worldBodyAnimationPlayer.Play("pose_idle");
+            return;
+        }
 
-        if (!IsMultiplayerAuthority()) return;
-
+        viewBodyAnimationPlayer.Play("holdtype_pistol");
         Input.MouseMode = mouseMode;
 
         if (Input.IsActionJustPressed("exit"))
@@ -153,10 +124,6 @@ public partial class Player : Pawn
             if (mouseMode == Input.MouseModeEnum.Captured) mouseMode = Input.MouseModeEnum.Visible;
             else mouseMode = Input.MouseModeEnum.Captured;
         }
-
-        // camera.ProjectPosition aims at pixel, which isn't perfectly center
-        // var endPos = camera.ProjectPosition(Vector2.Zero, 100f);
-        // var endPos = camera.GlobalPosition - camera.GlobalTransform.Basis.Z * 100f;
 
         if (cameraRaycast.GetCollider() is Pawn pawn)
         {
@@ -170,7 +137,6 @@ public partial class Player : Pawn
             };
             pawn.OnDamage(di);
         }
-
     }
 
     public override void _PhysicsProcess(double delta)
@@ -193,5 +159,46 @@ public partial class Player : Pawn
         Velocity = lastVel;
         MoveAndSlide();
         lastVel = Velocity;
+    }
+
+    private void BuildWorldNodes()
+    {
+        worldBody = (Node3D)worldModels.GetChild(0);
+        worldBodySkeleton = (Skeleton3D)worldBody.GetChild(0).GetChild(0);
+        worldBodyAnimationPlayer = (AnimationPlayer)worldBody.GetChild(1);
+
+        worldHandBone = new BoneAttachment3D();
+        worldBodySkeleton.AddChild(worldHandBone);
+        worldHandBone.BoneName = "Hand.R";
+
+        worldToolPosition = (Node3D)worldModels.GetChild(1);
+        // reparent/reowner worldtool to handbone
+        worldToolPosition.GetParent().RemoveChild(worldToolPosition);
+        worldToolPosition.Owner = null;
+        worldHandBone.AddChild(worldToolPosition);
+        worldToolPosition.Owner = worldHandBone;
+    }
+
+    private void BuildViewNodes()
+    {
+        viewModels = (Node3D)GD.Load<PackedScene>("res://scenes/PlayerViewmodel.tscn").Instantiate();
+        viewModels.Position = Vector3.Zero;
+        viewModels.Rotation = Vector3.Zero;
+        viewBody = (Node3D)viewModels.GetChild(0);
+        viewBodySkeleton = (Skeleton3D)viewBody.GetChild(0).GetChild(0);
+        viewBodyAnimationPlayer = (AnimationPlayer)viewBody.GetChild(1);
+        camera.AddChild(viewModels);
+
+        viewToolPosition = (Node3D)viewModels.GetChild(1);
+        viewHandBone = new BoneAttachment3D();
+        viewBodySkeleton.AddChild(viewHandBone);
+        viewHandBone.BoneName = "Hand.R";
+        // reparent/reowner viewtool to handbone
+        viewToolPosition.GetParent().RemoveChild(viewToolPosition);
+        viewToolPosition.Owner = null;
+        viewHandBone.AddChild(viewToolPosition);
+        viewToolPosition.Owner = viewHandBone;
+
+        AttachWeaponToHand();
     }
 }

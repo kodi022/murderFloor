@@ -5,6 +5,7 @@
 [node name="PlayerViewmodel" type="Node3D" unique_id=356872480]
 
 [node name="KincheePlayer" parent="." unique_id=51662591 instance=ExtResource("1_kou45")]
-transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, -0.97917944, 0.18275881)
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0.050292015, -1.2218403, 0.10383394)
 
 [node name="Tool" type="Node3D" parent="." unique_id=206140853]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 0.06, 0.115, 0.03)

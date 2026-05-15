@@ -12,11 +12,17 @@ public partial class HUDDebug : Control
         }
     }
 
+    // 16 labels, 0 - 15
     public override void _Process(double delta)
     {
-        labels[0].Text = $"game state:{Game.GameState}";
-        labels[1].Text = $"game maxwave:{Game.MaxWave} wave:{Game.Wave}";
-        labels[2].Text = $"game mobwaveleft:{Game.WaveMobsLeft}";
-        labels[3].Text = $"game mobmax:{Game.MaxActiveMobs} mobactive:{Game.ActiveMobs}";
+        if (Game.Current is null)
+        {
+            labels[0].Text = $"game state:null";
+            return;
+        }
+        labels[0].Text = $"game state:{Game.Current.GameState}";
+        labels[1].Text = $"game maxwave:{Game.Current.MaxWave} wave:{Game.Current.Wave}";
+        labels[2].Text = $"game mobwaveleft:{Game.Current.WaveMobsLeft}";
+        labels[3].Text = $"game mobmax:{Game.Current.MaxActiveMobs} mobactive:{Game.Current.ActiveMobs}";
     }
 }

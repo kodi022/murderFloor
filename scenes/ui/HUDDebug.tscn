@@ -18,36 +18,45 @@ offset_bottom = 40.0
 
 [node name="Label" type="Label" parent="VBoxContainer" unique_id=1466576658]
 layout_mode = 2
-text = "a"
 
 [node name="Label2" type="Label" parent="VBoxContainer" unique_id=794416098]
 layout_mode = 2
-text = "a"
 
 [node name="Label3" type="Label" parent="VBoxContainer" unique_id=118066950]
 layout_mode = 2
-text = "a"
 
 [node name="Label4" type="Label" parent="VBoxContainer" unique_id=1147054086]
 layout_mode = 2
-text = "a"
 
 [node name="Label5" type="Label" parent="VBoxContainer" unique_id=873143627]
 layout_mode = 2
-text = "a"
 
 [node name="Label6" type="Label" parent="VBoxContainer" unique_id=842447991]
 layout_mode = 2
-text = "a"
 
 [node name="Label7" type="Label" parent="VBoxContainer" unique_id=1059520595]
 layout_mode = 2
-text = "a"
 
 [node name="Label8" type="Label" parent="VBoxContainer" unique_id=320621208]
 layout_mode = 2
-text = "a"
 
 [node name="Label9" type="Label" parent="VBoxContainer" unique_id=1725205747]
 layout_mode = 2
-text = "a"
+
+[node name="Label10" type="Label" parent="VBoxContainer" unique_id=1144988885]
+layout_mode = 2
+
+[node name="Label11" type="Label" parent="VBoxContainer" unique_id=1853574357]
+layout_mode = 2
+
+[node name="Label12" type="Label" parent="VBoxContainer" unique_id=1271060873]
+layout_mode = 2
+
+[node name="Label13" type="Label" parent="VBoxContainer" unique_id=909391331]
+layout_mode = 2
+
+[node name="Label14" type="Label" parent="VBoxContainer" unique_id=903100635]
+layout_mode = 2
+
+[node name="Label15" type="Label" parent="VBoxContainer" unique_id=2095322918]
+layout_mode = 2

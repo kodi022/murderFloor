@@ -49,7 +49,7 @@ debug_shape_thickness = 1
 
 [node name="WorldModels" type="Node3D" parent="." unique_id=1236057200]
 
-[node name="KincheePlayer" parent="WorldModels" unique_id=1986082162 instance=ExtResource("2_3li8b")]
+[node name="KincheePlayer" parent="WorldModels" unique_id=716426168 instance=ExtResource("2_3li8b")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="Tool" type="Node3D" parent="WorldModels" unique_id=1101096359]

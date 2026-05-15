@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ToolMelee" format=3 uid="uid://c0r6m8shnirhq"]
+
+[ext_resource type="Script" uid="uid://b6d5j21ujr1b7" path="res://scripts/resource/tool/ToolMelee.cs" id="1_3goh5"]
+
+[resource]
+script = ExtResource("1_3goh5")
+RPM = 60.0
+Damage = 15.0
+MaxRange = 0.8
+NameLocalizationKey = "#tool.melee.fists"
+ResourceId = "fists"
+metadata/_custom_type_script = "uid://b6d5j21ujr1b7"

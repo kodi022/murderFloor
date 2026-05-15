@@ -21,27 +21,27 @@ public partial class MainMenuOnline : Panel
 	{
 		joinButton.ButtonDown += () =>
 		{
-			HandleInfo();
+			ParseText();
 			var error = NetworkManager.Current.JoinServer();
 			if (error == Error.Ok)
 			{
-				GetTree().ChangeSceneToFile("res://scenes/Dev.tscn");
+				GetTree().ChangeSceneToFile("res://scenes/Lobby.tscn");
 			}
 		};
 
 		hostButton.ButtonDown += () =>
 		{
-			HandleInfo();
+			ParseText();
 			var error = NetworkManager.Current.CreateServer();
 			if (error == Error.Ok)
 			{
-				GetTree().ChangeSceneToFile("res://scenes/Dev.tscn");
+				GetTree().ChangeSceneToFile("res://scenes/Lobby.tscn");
 			}
 		};
 
 	}
 
-	private void HandleInfo()
+	private void ParseText()
 	{
 		static string PickText(LineEdit line)
 		{
