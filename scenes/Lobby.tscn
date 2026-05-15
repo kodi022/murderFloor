@@ -4,6 +4,11 @@
 
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1851156556]
+transform = Transform3D(0.73122287, -0.5771171, 0.36366072, -0.022016406, 0.51287365, 0.8581818, -0.6817833, -0.6355286, 0.36231884, 0, 14.932693, 0)
+light_color = Color(0.73422515, 0.31225622, 0.220022, 1)
+shadow_enabled = true
+
 [node name="CSGwall" type="CSGBox3D" parent="." unique_id=182979365]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.377422, 2.0265307, 0.11420059)
 calculate_tangents = false
@@ -85,7 +90,6 @@ material = ExtResource("1_6jt0u")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 size = Vector3(0.2, 0.2, 0.2)
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1851156556]
-transform = Transform3D(0.73122287, -0.5771171, 0.36366075, -0.022016406, 0.5128736, 0.8581818, -0.6817833, -0.6355285, 0.3623188, 0, 14.932693, 0)
-light_color = Color(0.73422515, 0.31225622, 0.220022, 1)
-shadow_enabled = true
+[node name="CSGlocker" type="CSGBox3D" parent="." unique_id=1938995103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2831903, 0.5550926, 3.3631272)
+size = Vector3(2, 0.1, 0.8)

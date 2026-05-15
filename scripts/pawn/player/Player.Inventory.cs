@@ -7,6 +7,7 @@ public partial class Player : Pawn
     public List<LiveTool> ToolsGadget { get; private set; } = [];
 
     public int SelectedToolIndex { get; private set; } = 0;
+    // reference from tool list
     public LiveTool SelectedTool = null;
 
     // camera.ProjectPosition aims at pixel, which probably isn't perfectly center
@@ -16,12 +17,10 @@ public partial class Player : Pawn
 
     public void SelectToolByIndex(int index)
     {
-        SelectedToolIndex = index;
-
         if (index < 0)
         {
-            SelectedToolIndex = 0;
             SelectedTool = ToolsPrimary[0];
+            SelectedToolIndex = 0;
             return;
         }
 
@@ -29,6 +28,7 @@ public partial class Player : Pawn
         if (index < count)
         {
             SelectedTool = ToolsPrimary[index];
+            SelectedToolIndex = index;
             return;
         }
 
@@ -36,18 +36,20 @@ public partial class Player : Pawn
         if (index < count)
         {
             SelectedTool = ToolsSecondary[index - ToolsPrimary.Count];
+            SelectedToolIndex = index;
             return;
         }
 
         count += ToolsGadget.Count;
         if (index >= count)
         {
-            SelectedToolIndex = 0;
             SelectedTool = ToolsPrimary[0];
+            SelectedToolIndex = 0;
             return;
         }
 
         SelectedTool = ToolsGadget[index - ToolsPrimary.Count - ToolsSecondary.Count];
+        SelectedToolIndex = index;
     }
 
     // useful for scrolling

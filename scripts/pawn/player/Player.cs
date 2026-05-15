@@ -44,6 +44,7 @@ public partial class Player : Pawn
     [Export]
     private float viewPitch = 0f;
 
+    private Control menuUI;
     private Control debugUI;
 
     private Vector3 lastVel;
@@ -121,8 +122,18 @@ public partial class Player : Pawn
 
         if (Input.IsActionJustPressed("exit"))
         {
-            if (mouseMode == Input.MouseModeEnum.Captured) mouseMode = Input.MouseModeEnum.Visible;
-            else mouseMode = Input.MouseModeEnum.Captured;
+            if (menuUI is null)
+            {
+                menuUI = (Control)GD.Load<PackedScene>("res://scenes/ui/Menu.tscn").Instantiate();
+                AddChild(menuUI);
+                mouseMode = Input.MouseModeEnum.Visible;
+            }
+            else
+            {
+                menuUI.Free();
+                menuUI = null;
+                mouseMode = Input.MouseModeEnum.Captured;
+            }
         }
 
         if (cameraRaycast.GetCollider() is Pawn pawn)

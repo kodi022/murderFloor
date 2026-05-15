@@ -55,7 +55,7 @@ public partial class LiveMob : Pawn
     {
         if (!Active) return;
         Active = false;
-        Game.MobDeath(MobPoolId);
+        Game.Current.MobDeath(MobPoolId);
     }
 
     public override void _PhysicsProcess(double delta)

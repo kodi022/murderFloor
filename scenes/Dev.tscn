@@ -14,10 +14,11 @@ agent_radius = 0.65
 
 [node name="Dev" type="Node3D" unique_id=2094419847]
 
-[node name="Node3D" type="Node3D" parent="." unique_id=189801316]
+[node name="Game" type="Node3D" parent="." unique_id=189801316]
 script = ExtResource("1_gmxd1")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Node3D" unique_id=1326466360]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1326466360]
+root_path = NodePath("../Game")
 replication_config = SubResource("SceneReplicationConfig_gmxd1")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=963113575]

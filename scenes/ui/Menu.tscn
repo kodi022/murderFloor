@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://e3qgdljh660l"]
+
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_l6ofy"]
+[ext_resource type="Script" uid="uid://cqxq6p3akyuf6" path="res://scripts/ui/Menu.cs" id="2_glqlr"]
+
+[node name="Menu" type="Control" unique_id=2136210018]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_l6ofy")
+script = ExtResource("2_glqlr")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=379787004]
+layout_mode = 0
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 200.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=449893363]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer" unique_id=1013957926]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="MenuButton" type="MenuButton" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=677162911]
+layout_mode = 2
+text = "milk john"
+
+[node name="MenuButton2" type="MenuButton" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=1806103716]
+layout_mode = 2
+text = "milk john"
+
+[node name="MenuButton3" type="MenuButton" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=1129613300]
+layout_mode = 2
+text = "milk john"
+
+[node name="MenuButton4" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=493422303]
+layout_mode = 2
+text = "go bye bye"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HBoxContainer" unique_id=2111215867]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Panel" type="Panel" parent="PanelContainer/HBoxContainer/VBoxContainer2" unique_id=1316045443]
+layout_mode = 2

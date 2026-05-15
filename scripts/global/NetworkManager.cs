@@ -188,7 +188,7 @@ public partial class NetworkManager : Node
             _playersLoaded += 1;
             if (_playersLoaded == _players.Count)
             {
-                Game.StartGame();
+                Game.Current.StartGame();
                 _playersLoaded = 0;
             }
         }
