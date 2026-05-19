@@ -3,8 +3,9 @@ namespace MurderFloor;
 
 public partial class LiveMob : Pawn
 {
-    //public Mob MobResource { get; set; }
+    public Mob MobResource { get; set; }
 
+    [Export]
     public bool Active
     {
         get { return _active; }
@@ -38,7 +39,6 @@ public partial class LiveMob : Pawn
     public override void _Ready()
     {
         Active = false;
-        ChangeNavigationTarget();
         navigationAgent3D.NavigationFinished += ChangeNavigationTarget;
         navigationAgent3D.WaypointReached += (a) => { lastCheckpointTime = Time.GetTicksMsec(); };
     }
@@ -49,6 +49,7 @@ public partial class LiveMob : Pawn
         Health = MaxHealth;
         GlobalPosition = location;
         Active = true;
+        ChangeNavigationTarget();
     }
 
     public override void OnDeath(Godot.Collections.Dictionary<string, string> damageInfo)
@@ -76,7 +77,7 @@ public partial class LiveMob : Pawn
                 {"hitposition", Vector3.Zero.ToString()},
                 {"hitbox", "0"}
             };
-            targetPawn.OnDamage(di);
+            targetPawn.Rpc("OnDamage", di);
         }
 
         if (10000ul < Time.GetTicksMsec() - lastTargetUpdateTime)

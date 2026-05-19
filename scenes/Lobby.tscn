@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bkl3ebr30q7u6"]
 
-[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug.tres" id="1_6jt0u"]
+[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="1_6jt0u"]
 
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 

@@ -39,15 +39,7 @@ public partial class ToolFirearm : Tool
         Melee
     }
 
-    public enum SlotEnum
-    {
-        Secondary,
-        Primary,
-        Special,
-        Melee
-    }
-
-    public SlotEnum GetSlot()
+    public override SlotEnum GetSlot()
     {
         if ((int)FirearmType <= (int)FirearmTypeEnum.Revolver)
         {

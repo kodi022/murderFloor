@@ -11,6 +11,10 @@ public partial class Player : Pawn
     public Vector3 ViewModelPositionBump { get; set; }
     public Vector3 ViewModelRotationBump { get; set; }
 
+    public Node3D ViewToolPosition;
+    [Export]
+    public Node ToolsNode;
+
     // world
     [Export]
     private Node3D worldModels;
@@ -34,7 +38,6 @@ public partial class Player : Pawn
     private Node3D viewBody;
     private Skeleton3D viewBodySkeleton;
     private AnimationPlayer viewBodyAnimationPlayer;
-    private Node3D viewToolPosition;
 
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
     [Export(PropertyHint.Range, "1,500,0.01")]
@@ -55,6 +58,8 @@ public partial class Player : Pawn
 
         if (!IsMultiplayerAuthority()) return;
 
+        //NetToolsPrimary = ["base:testassaultrifle"];
+        //NetToolsSecondary = ["base:testpistol"];
         worldModels.Free();
         BuildViewNodes();
     }
@@ -106,6 +111,11 @@ public partial class Player : Pawn
                     debugUI = null;
                 }
             }
+
+            if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
+            {
+                NetworkManager.Current.Rpc("LoadGame", "res://scenes/Dev.tscn");
+            }
         }
     }
 
@@ -135,6 +145,11 @@ public partial class Player : Pawn
                 mouseMode = Input.MouseModeEnum.Captured;
             }
         }
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!IsMultiplayerAuthority()) return;
 
         if (cameraRaycast.GetCollider() is Pawn pawn)
         {
@@ -146,13 +161,8 @@ public partial class Player : Pawn
                 {"hitposition", cameraRaycast.GetCollisionPoint().ToString()},
                 {"hitbox", "0"}
             };
-            pawn.OnDamage(di);
+            pawn.Rpc("OnDamage", di);
         }
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        if (!IsMultiplayerAuthority()) return;
 
         if (Input.IsActionJustPressed("jump"))
         {
@@ -200,16 +210,14 @@ public partial class Player : Pawn
         viewBodyAnimationPlayer = (AnimationPlayer)viewBody.GetChild(1);
         camera.AddChild(viewModels);
 
-        viewToolPosition = (Node3D)viewModels.GetChild(1);
+        ViewToolPosition = (Node3D)viewModels.GetChild(1);
         viewHandBone = new BoneAttachment3D();
         viewBodySkeleton.AddChild(viewHandBone);
         viewHandBone.BoneName = "Hand.R";
         // reparent/reowner viewtool to handbone
-        viewToolPosition.GetParent().RemoveChild(viewToolPosition);
-        viewToolPosition.Owner = null;
-        viewHandBone.AddChild(viewToolPosition);
-        viewToolPosition.Owner = viewHandBone;
-
-        AttachWeaponToHand();
+        ViewToolPosition.GetParent().RemoveChild(ViewToolPosition);
+        ViewToolPosition.Owner = null;
+        viewHandBone.AddChild(ViewToolPosition);
+        ViewToolPosition.Owner = viewHandBone;
     }
 }

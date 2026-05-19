@@ -16,9 +16,10 @@ public partial class Pawn : CharacterBody3D
     /// <para>"hitposition": "vector3"</para>
     /// <para>"hitbox": "int id"</para>
     /// </summary>
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public virtual void OnDamage(Godot.Collections.Dictionary<string, string> damageInfo)
     {
-        var damage = 0.5f;
+        var damage = 1f;
 
         GD.Print(Name + " " + Health);
         // if (damageInfo["attacker"] == "0")

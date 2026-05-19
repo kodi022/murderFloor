@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bke5c6mi4xgmf"]
 
 [ext_resource type="Script" uid="uid://bjiir7s2s2u21" path="res://scripts/ui/mainmenu/MainMenu.cs" id="1_yqorp"]
-[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug.tres" id="2_0ykhv"]
+[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="2_0ykhv"]
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="2_2wh52"]
 
 [node name="MainMenu" type="Node3D" unique_id=1762461589]

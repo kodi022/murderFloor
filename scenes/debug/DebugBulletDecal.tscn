@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cfvoucts7mdlr"]
+
+[ext_resource type="Material" uid="uid://btc7sdnkpm5cd" path="res://materials/debug/debug.tres" id="1_31dyo"]
+[ext_resource type="Script" uid="uid://ch85qmf668ndc" path="res://scripts/debug/DebugBulletDecal.cs" id="1_xdxqm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_cdv68"]
+material = ExtResource("1_31dyo")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="DebugBulletDecal" type="Node3D" unique_id=1910969006]
+script = ExtResource("1_xdxqm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=83033229]
+mesh = SubResource("BoxMesh_cdv68")

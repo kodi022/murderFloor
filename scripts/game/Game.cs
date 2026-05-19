@@ -49,6 +49,7 @@ public partial class Game : Node
             lMob.MaxHealth = 100;
             GetTree().Root.AddChild(mob);
             MobPool.Add((LiveMob)mob);
+            mob.SetMultiplayerAuthority(1);
         }
 
         NextWave();

@@ -13,7 +13,24 @@ public partial class Tool : MFResource
     [Export]
     public string HoldTypeAnimation { get; private set; } = "holdtype_pistol";
 
-    public virtual void FirePrimary() { }
-    public virtual void FireSecondary() { }
-    public virtual void FireReload() { }
+    public enum SlotEnum
+    {
+        Secondary,
+        Primary,
+        Special,
+        Melee
+    }
+
+    public struct FireInfo
+    {
+        public Player Player { get; set; }
+        public Vector3 StartPosition { get; set; }
+        public Vector3 CameraForward { get; set; }
+    }
+
+    public virtual void FirePrimary(FireInfo fi) { }
+    public virtual void FireSecondary(FireInfo fi) { }
+    public virtual void FireReload(FireInfo fi) { }
+
+    public virtual SlotEnum GetSlot() => SlotEnum.Special;
 }
