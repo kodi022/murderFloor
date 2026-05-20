@@ -10,6 +10,7 @@ public partial class Pawn : CharacterBody3D
     public float Armor { get; set; }
 
     /// <summary>
+    /// <para>"damage": "float"</para>
     /// <para>"attacker": "player id OR 0 if mob"</para>
     /// <para>"attackerName": "player name OR mob name"</para>
     /// <para>"weapon": "weaponresourceid OR empty if mob"</para>
@@ -19,9 +20,9 @@ public partial class Pawn : CharacterBody3D
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public virtual void OnDamage(Godot.Collections.Dictionary<string, string> damageInfo)
     {
-        var damage = 1f;
+        var damage = damageInfo["damage"].ToFloat();
 
-        GD.Print(Name + " " + Health);
+        GD.Print($"{Name} + {Health} (-{damage})");
         // if (damageInfo["attacker"] == "0")
         // {
         // }

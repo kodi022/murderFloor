@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_y34yl")
+DegreeSpread = Vector2(1, 1)
 RPM = 400.0
 MagSize = 12.0
 UseInGame = false

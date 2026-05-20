@@ -22,8 +22,8 @@ public partial class LiveTool : Node
 
     public override void _Ready()
     {
-        Player = Player.AllPlayers.First(p => p.GetMultiplayerAuthority() == PlayerId);
-        ToolResource = ResourceManager.ToolRegistry.GetResourceReference("base:testpistol");
+        Player = Player.FindPlayer(PlayerId);
+        ToolResource = ResourceManager.ToolRegistry.GetResourceReference(ToolId);
     }
 
     public async Task Equip()

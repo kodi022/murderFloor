@@ -5,7 +5,9 @@
 
 [resource]
 script = ExtResource("1_jtlsn")
-RPM = 800.0
+DegreeSpread = Vector2(2, 2)
+FirearmType = 5
+RPM = 20.0
 MagSize = 30.0
 UseInGame = false
 NameLocalizationKey = "#tool.assaultrifle.testassaultrifle"

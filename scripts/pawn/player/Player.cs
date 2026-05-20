@@ -52,14 +52,16 @@ public partial class Player : Pawn
 
     private Vector3 lastVel;
 
+    public static Player FindPlayer(int playerId) => AllPlayers.First(p => p.GetMultiplayerAuthority() == playerId);
+
     public override void _Ready()
     {
         BuildWorldNodes();
 
         if (!IsMultiplayerAuthority()) return;
 
-        //NetToolsPrimary = ["base:testassaultrifle"];
-        //NetToolsSecondary = ["base:testpistol"];
+        Rpc("AddTool", "base:testassaultrifle");
+        Rpc("AddTool", "base:testpistol");
         worldModels.Free();
         BuildViewNodes();
     }
@@ -127,8 +129,12 @@ public partial class Player : Pawn
             return;
         }
 
-        viewBodyAnimationPlayer.Play("holdtype_pistol");
         Input.MouseMode = mouseMode;
+
+        if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Tool.SlotEnum.Primary);
+        if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Tool.SlotEnum.Secondary);
+        if (Input.IsActionJustPressed("selectspecial")) SelectToolBySlot(Tool.SlotEnum.Special);
+        if (Input.IsActionJustPressed("selectmelee")) SelectToolBySlot(Tool.SlotEnum.Melee);
 
         if (Input.IsActionJustPressed("exit"))
         {
@@ -151,17 +157,31 @@ public partial class Player : Pawn
     {
         if (!IsMultiplayerAuthority()) return;
 
+        if (SelectedTool is not null)
+        {
+            viewBodyAnimationPlayer.Play(SelectedTool.ToolResource.HoldTypeAnimation);
+
+            if (Input.IsActionPressed("fire1"))
+            {
+                // camera.ProjectPosition aims at pixel, which probably isn't perfectly center
+                // var endPos = camera.ProjectPosition(Vector2.Zero, 100f);
+                // this uses camera rotation, perfectly center
+                // var endPos = camera.GlobalPosition - camera.GlobalTransform.Basis.Z;
+                SelectedTool.FirePrimary(camera.GlobalPosition, -camera.GlobalTransform.Basis.Z);
+            }
+        }
+
         if (cameraRaycast.GetCollider() is Pawn pawn)
         {
-            var di = new Godot.Collections.Dictionary<string, string>()
-            {
-                {"attacker", GetMultiplayerAuthority().ToString()},
-                {"attackerName", NetworkManager.Current._players[GetMultiplayerAuthority()]["Name"]},
-                {"weapon", "mind"},
-                {"hitposition", cameraRaycast.GetCollisionPoint().ToString()},
-                {"hitbox", "0"}
-            };
-            pawn.Rpc("OnDamage", di);
+            // var di = new Godot.Collections.Dictionary<string, string>()
+            // {
+            //     {"attacker", GetMultiplayerAuthority().ToString()},
+            //     {"attackerName", NetworkManager.Current._players[GetMultiplayerAuthority()]["Name"]},
+            //     {"weapon", "mind"},
+            //     {"hitposition", cameraRaycast.GetCollisionPoint().ToString()},
+            //     {"hitbox", "0"}
+            // };
+            // pawn.Rpc("OnDamage", di);
         }
 
         if (Input.IsActionJustPressed("jump"))

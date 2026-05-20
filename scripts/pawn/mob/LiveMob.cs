@@ -80,14 +80,17 @@ public partial class LiveMob : Pawn
             targetPawn.Rpc("OnDamage", di);
         }
 
-        if (10000ul < Time.GetTicksMsec() - lastTargetUpdateTime)
+        var ticksMs = Time.GetTicksMsec();
+        if (10000ul < ticksMs - lastTargetUpdateTime)
         {
+            lastTargetUpdateTime = ticksMs;
             ChangeNavigationTarget();
             return;
         }
 
-        if (20000ul < Time.GetTicksMsec() - lastCheckpointTime)
+        if (20000ul < ticksMs - lastCheckpointTime)
         {
+            lastCheckpointTime = ticksMs;
             Unstuck();
             return;
         }
@@ -107,7 +110,6 @@ public partial class LiveMob : Pawn
     private void Unstuck()
     {
         var map = navigationAgent3D.GetNavigationMap();
-        lastCheckpointTime = Time.GetTicksMsec();
         for (int i = 0; i < 1000; i++)
         {
             var grow = 1 + (i * 0.01f);
@@ -123,11 +125,9 @@ public partial class LiveMob : Pawn
 
     private void ChangeNavigationTarget()
     {
-        lastTargetUpdateTime = Time.GetTicksMsec();
         // weight on highest damage dealers?
 
         //navigationAgent3D.TargetPosition = new Vector3(mobRng.Randfn() * 10, mobRng.Randfn() * 10, mobRng.Randfn() * 10);
-
 
         // smart weighting to have a higher overriding range for players who do more damage
         // if not team attack

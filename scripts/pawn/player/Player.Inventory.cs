@@ -1,97 +1,140 @@
-using System.Threading.Tasks;
-
 namespace MurderFloor;
 
 public partial class Player : Pawn
 {
     public List<LiveTool> ToolsPrimary { get; private set; } = [];
     public List<LiveTool> ToolsSecondary { get; private set; } = [];
-    public List<LiveTool> ToolsGadget { get; private set; } = [];
+    public List<LiveTool> ToolsSpecial { get; private set; } = [];
     public List<LiveTool> ToolsMelee { get; private set; } = [];
 
+    public Tool.SlotEnum SelectedSlot { get; private set; } = Tool.SlotEnum.Primary;
     public int SelectedToolIndex { get; private set; } = 0;
     // reference from tool list
     public LiveTool SelectedTool = null;
 
     public bool SwappingWeapon { get; private set; }
 
-    // camera.ProjectPosition aims at pixel, which probably isn't perfectly center
-    // var endPos = camera.ProjectPosition(Vector2.Zero, 100f);
-    // this uses camera rotation, perfectly center
-    // var endPos = camera.GlobalPosition - camera.GlobalTransform.Basis.Z * 100f;
-
+    // this should only be called using Rpc
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void AddTool(string toolId)
     {
-        var tool = ResourceManager.ToolRegistry.GetResourceReference(toolId);
-        switch (tool.GetSlot())
-        {
-            case Tool.SlotEnum.Primary:
-                break;
-        }
-        // ! finish this later
+        var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/LiveTool.tscn").Instantiate();
+        liveTool.PlayerId = GetMultiplayerAuthority();
+        liveTool.ToolId = toolId;
+        ToolsNode.AddChild(liveTool);
+        var list = GetToolListFromTool(liveTool.ToolId);
+        list.Add(liveTool);
     }
 
-    public async void SelectToolByIndex(int index)
+    // this should only be called using Rpc
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void RemoveTool(string toolId)
     {
-        if (SwappingWeapon) return;
-
-        SwappingWeapon = true;
-        await SelectedTool?.Unequip();
-
-        async Task FinishSelection(int index)
+        foreach (var tool in ToolsNode.GetChildren())
         {
-            if (IsMultiplayerAuthority()) Rpc("SwitchToolRpc", index);
+            LiveTool liveTool = (LiveTool)tool;
+            if (liveTool.ToolId == toolId)
+            {
+                var list = GetToolListFromTool(liveTool.ToolId);
+                foreach (var item in list)
+                {
+                    if (item == tool)
+                    {
+                        list.Remove(item);
+                        break;
+                    }
+                }
+                tool.QueueFree();
+            }
+        }
+    }
+
+    // this should NOT be called using Rpc, will do so internally
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    public async void EquipTool(int slot, int index)
+    {
+        if (!IsMultiplayerAuthority())
+        {
+            SelectedSlot = (Tool.SlotEnum)slot;
             SelectedToolIndex = index;
-            await SelectedTool.Equip();
-            SwappingWeapon = false;
         }
 
-        if (index < 0)
-        {
-            SelectedTool = ToolsPrimary[0];
-            await FinishSelection(0);
-            return;
-        }
+        if (SwappingWeapon) return;
+        List<LiveTool> list = GetToolListFromSlot(SelectedSlot);
+        if (list.Count == 0) return;
+        if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex]) return;
 
-        var count = ToolsPrimary.Count;
-        if (index < count)
-        {
-            SelectedTool = ToolsPrimary[index];
-            await FinishSelection(index);
-            return;
-        }
+        Rpc("EquipTool", slot, index);
+        SwappingWeapon = true;
+        if (SelectedTool is not null) await SelectedTool.Unequip();
 
-        count += ToolsSecondary.Count;
-        if (index < count)
-        {
-            SelectedTool = ToolsSecondary[index - ToolsPrimary.Count];
-            await FinishSelection(index);
-            return;
-        }
+        SelectedTool = list[SelectedToolIndex];
 
-        count += ToolsGadget.Count;
-        if (index >= count)
-        {
-            SelectedTool = ToolsPrimary[0];
-            await FinishSelection(0);
-            return;
-        }
-
-        SelectedTool = ToolsGadget[index - ToolsPrimary.Count - ToolsSecondary.Count];
-        SelectedToolIndex = index;
-        await FinishSelection(index);
+        await SelectedTool.Equip();
+        SwappingWeapon = false;
     }
 
     // useful for scrolling
     public void SelectToolByDelta(int delta)
     {
-        SelectToolByIndex(SelectedToolIndex + delta);
+        if (SwappingWeapon) return;
+
+        if (SelectedToolIndex + delta < 0)
+        {
+            SelectedSlot = (Tool.SlotEnum)(((int)SelectedSlot + 4 - 1) % 4);
+            SelectedToolIndex = GetToolListFromSlot(SelectedSlot).Count - 1;
+        }
+
+        if (SelectedToolIndex + delta >= GetToolListFromSlot(SelectedSlot).Count)
+        {
+            SelectedSlot = (Tool.SlotEnum)(((int)SelectedSlot + 1) % 4);
+            SelectedToolIndex = 0;
+        }
+
+        EquipTool((int)SelectedSlot, SelectedToolIndex);
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    public void SwitchToolRpc(int index)
+    public void SelectToolBySlot(Tool.SlotEnum slot)
     {
-        SelectToolByIndex(index);
+        if (SwappingWeapon) return;
+
+        var list = GetToolListFromSlot(slot);
+        if (list.Count == 0) return;
+
+        if (slot == SelectedSlot)
+        {
+            SelectedToolIndex++;
+            if (SelectedToolIndex >= list.Count) SelectedToolIndex = 0;
+            EquipTool((int)SelectedSlot, SelectedToolIndex);
+            return;
+        }
+
+        SelectedSlot = slot;
+        SelectedToolIndex = 0;
+        EquipTool((int)SelectedSlot, SelectedToolIndex);
+    }
+
+    private List<LiveTool> GetToolListFromTool(string toolId)
+    {
+        return ResourceManager.ToolRegistry.GetResourceReference(toolId).GetSlot() switch
+        {
+            Tool.SlotEnum.Primary => ToolsPrimary,
+            Tool.SlotEnum.Secondary => ToolsSecondary,
+            Tool.SlotEnum.Special => ToolsSpecial,
+            Tool.SlotEnum.Melee => ToolsMelee,
+            _ => ToolsPrimary,
+        };
+    }
+
+    private List<LiveTool> GetToolListFromSlot(Tool.SlotEnum slot)
+    {
+        return slot switch
+        {
+            Tool.SlotEnum.Primary => ToolsPrimary,
+            Tool.SlotEnum.Secondary => ToolsSecondary,
+            Tool.SlotEnum.Special => ToolsSpecial,
+            Tool.SlotEnum.Melee => ToolsMelee,
+            _ => ToolsPrimary,
+        };
     }
 }
