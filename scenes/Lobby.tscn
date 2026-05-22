@@ -1,6 +1,22 @@
 [gd_scene format=3 uid="uid://bkl3ebr30q7u6"]
 
 [ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="1_6jt0u"]
+[ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_ras1x"]
+
+[sub_resource type="Environment" id="Environment_6jt0u"]
+background_mode = 1
+background_color = Color(0.5321619, 0.27852315, 0.32374072, 1)
+background_energy_multiplier = 0.5
+tonemap_mode = 2
+tonemap_white = 6.0
+ssao_enabled = true
+ssao_radius = 2.0
+ssao_intensity = 2.5
+fog_enabled = true
+fog_light_color = Color(0.4755057, 0.34755355, 0.39579752, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cdhm0"]
+size = Vector3(1.5195313, 2.2456055, 0.8495636)
 
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 
@@ -9,9 +25,11 @@ transform = Transform3D(0.73122287, -0.5771171, 0.36366072, -0.022016406, 0.5128
 light_color = Color(0.73422515, 0.31225622, 0.220022, 1)
 shadow_enabled = true
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2025338174]
+environment = SubResource("Environment_6jt0u")
+
 [node name="CSGwall" type="CSGBox3D" parent="." unique_id=182979365]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.377422, 2.0265307, 0.11420059)
-calculate_tangents = false
 use_collision = true
 size = Vector3(1, 3.4729004, 18.95581)
 
@@ -47,7 +65,6 @@ size = Vector3(1, 3.4729004, 18.95581)
 
 [node name="CSGbuilding" type="CSGBox3D" parent="." unique_id=1300285792]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.068, 3.2838447, 9.131216)
-calculate_tangents = false
 use_collision = true
 size = Vector3(11.129395, 6.4697266, 10.500549)
 
@@ -81,7 +98,6 @@ size = Vector3(5.293335, 6.179199, 5.895508)
 
 [node name="CSGground" type="CSGBox3D" parent="." unique_id=1763985082]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003, 0, -0.008)
-calculate_tangents = false
 use_collision = true
 size = Vector3(40, 1, 40)
 material = ExtResource("1_6jt0u")
@@ -91,5 +107,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 size = Vector3(0.2, 0.2, 0.2)
 
 [node name="CSGlocker" type="CSGBox3D" parent="." unique_id=1938995103]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2831903, 0.5550926, 3.3631272)
-size = Vector3(2, 0.1, 0.8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.025622, 0.66664046, 3.3631272)
+size = Vector3(1.4848633, 0.3230957, 0.8)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker" unique_id=194450191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.699, 0.918, 0)
+size = Vector3(0.084625244, 2.0430908, 0.79296875)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGlocker" unique_id=648506017]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.699, 0.918, 0)
+size = Vector3(0.084625244, 2.0430908, 0.79296875)
+
+[node name="Usable" type="Node3D" parent="CSGlocker" unique_id=1921814839]
+script = ExtResource("2_ras1x")
+metadata/_custom_type_script = "uid://bwlrm48k447kp"
+
+[node name="StaticBody3D" type="StaticBody3D" parent="CSGlocker/Usable" unique_id=691999887]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.80460316, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGlocker/Usable/StaticBody3D" unique_id=2045810351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
+shape = SubResource("BoxShape3D_cdhm0")

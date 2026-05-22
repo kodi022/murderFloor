@@ -9,4 +9,8 @@ public partial class ToolMelee : Tool
     public float Damage { get; private set; } = 20f;
     [Export]
     public float MaxRange { get; private set; } = 1f;
+
+    public virtual void FireMelee(FireInfo fi)
+    {
+    }
 }

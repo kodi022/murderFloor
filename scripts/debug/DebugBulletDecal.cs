@@ -10,7 +10,7 @@ public partial class DebugBulletDecal : Node3D
 
     public override void _Process(double delta)
     {
-        if (3000ul < Time.GetTicksMsec() - readyTime)
+        if (10000ul < Time.GetTicksMsec() - readyTime)
         {
             Free();
         }

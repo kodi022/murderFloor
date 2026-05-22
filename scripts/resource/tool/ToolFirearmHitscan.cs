@@ -9,88 +9,70 @@ public partial class ToolFirearmHitscan : ToolFirearm
     public Vector2 FalloffRanges { get; private set; } = new Vector2(40f, 50f);
     [Export]
     public float MaxRange { get; private set; } = 80f;
-    [Export]
-    public Vector2 DegreeSpread { get; private set; } = new Vector2(3f, 3f);
 
-    // ! set up
-    protected int CurrentMag = 0;
-
-    private ulong rpmAsMs = 0;
-    private ulong msSinceFire = 0;
-
-    public override void FirePrimary(FireInfo fi)
+    public override void FireBullet(FireInfo fi)
     {
-        if (rpmAsMs == 0) rpmAsMs = (ulong)(60f / RPM * 1000f);
+        fi.Player.CameraRotationKick += new Vector3(CameraRotationKick.X, 0, CameraRotationKick.Y);
+        fi.Player.ViewModelPositionKick += new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
+        fi.Player.ViewModelRotationKick += new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
+        fi.Player.ViewPitch += AimShift.X;
+        fi.Player.ViewYaw += AimShift.Y;
 
-        var ticksMs = Time.GetTicksMsec();
-        if (rpmAsMs < ticksMs - msSinceFire)
+        Rng.Randomize();
+        for (int i = 0; i < PelletCount; i++)
         {
-            msSinceFire = ticksMs;
-            FireBullet(fi);
-            return;
-        }
-    }
+            float yaw = Mathf.DegToRad(Rng.RandfRange(-fi.CurrentSpread.X, fi.CurrentSpread.X));
+            float pitch = Mathf.DegToRad(Rng.RandfRange(-fi.CurrentSpread.Y, fi.CurrentSpread.Y));
 
-    private void FireBullet(FireInfo fi)
-    {
-        var rng = new RandomNumberGenerator();
-        rng.Randomize();
-        float yaw = Mathf.DegToRad(rng.RandfRange(-DegreeSpread.X, DegreeSpread.X));
-        float pitch = Mathf.DegToRad(rng.RandfRange(-DegreeSpread.Y, DegreeSpread.Y));
+            // normalize then scale back down to make circular
+            Vector3 angle = new Vector3(Mathf.Abs(pitch), Mathf.Abs(yaw), 0).Normalized();
+            Vector3 dir = fi.ViewForward;
+            dir = dir.Rotated(fi.ViewTransform.Basis.Y.Normalized(), angle.Y * yaw);
+            dir = dir.Rotated(fi.ViewTransform.Basis.X.Normalized(), angle.X * pitch);
 
-        // normalize then scale back down to degrees to make circular
-        Vector3 angle = new Vector3(Mathf.Abs(pitch), Mathf.Abs(yaw), 0).Normalized();
-        Vector3 dir = fi.CameraForward;
-        dir = dir.Rotated(Vector3.Up, angle.Y * yaw);
-        Vector3 right = dir.Cross(Vector3.Up).Normalized();
-        dir = dir.Rotated(right, angle.X * pitch);
-
-        // raw degree math for debug
-        // Vector3 dir = fi.CameraForward;
-        // dir = dir.Rotated(Vector3.Up, yaw);
-        // Vector3 right = dir.Cross(Vector3.Up).Normalized();
-        // dir = dir.Rotated(right, pitch);
-
-        var space = fi.Player.GetWorld3D().DirectSpaceState;
-        var query = PhysicsRayQueryParameters3D.Create(fi.StartPosition, fi.StartPosition + dir * MaxRange);
-        var ray = space.IntersectRay(query);
-        if (ray.ContainsKey("collider"))
-        {
-            var debugDecal = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
-            debugDecal.Position = (Vector3)ray["position"];
-            fi.Player.GetTree().Root.AddChild(debugDecal);
-
-            var pos = (Vector3)ray["position"];
-            var distanceSqr = pos.DistanceSquaredTo(fi.StartPosition);
-            var nearSqr = FalloffRanges.X * FalloffRanges.X;
-            var farSqr = FalloffRanges.Y * FalloffRanges.Y;
-            var damage = Damages.X;
-            if (distanceSqr > nearSqr)
+            var space = fi.Player.GetWorld3D().DirectSpaceState;
+            var query = PhysicsRayQueryParameters3D.Create(fi.StartPosition, fi.StartPosition + dir * MaxRange);
+            var ray = space.IntersectRay(query);
+            if (ray.ContainsKey("collider"))
             {
-                if (distanceSqr > farSqr)
-                {
-                    damage = Damages.Y;
-                }
-                else
-                {
-                    var rangeFalloffNormalized = farSqr * (farSqr - distanceSqr);
-                    damage = Damages.Y + (Damages.X - Damages.Y) * rangeFalloffNormalized;
-                }
-            }
+                var debugDecal = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
+                debugDecal.Position = (Vector3)ray["position"];
+                fi.Player.GetTree().Root.AddChild(debugDecal);
 
-            var godotObject = (GodotObject)ray["collider"];
-            if (godotObject is Pawn pawn)
-            {
-                var di = new Godot.Collections.Dictionary<string, string>()
+                var pos = (Vector3)ray["position"];
+                var distanceSqr = pos.DistanceSquaredTo(fi.StartPosition);
+                var nearSqr = FalloffRanges.X * FalloffRanges.X;
+                var farSqr = FalloffRanges.Y * FalloffRanges.Y;
+                var damage = Damages.X;
+                if (distanceSqr > nearSqr)
                 {
-                    {"damage", damage.ToString()},
-                    {"attacker", fi.Player.GetMultiplayerAuthority().ToString()},
-                    {"attackerName", NetworkManager.Current._players[fi.Player.GetMultiplayerAuthority()]["Name"]},
-                    {"weapon", "mind"},
-                    {"hitposition", ((Vector3)ray["position"]).ToString()},
-                    {"hitbox", "0"}
-                };
-                pawn.Rpc("OnDamage", di);
+                    if (distanceSqr > farSqr)
+                    {
+                        damage = Damages.Y;
+                    }
+                    else
+                    {
+                        // ! needs tested
+                        var rangeFalloffNormalized = farSqr * (farSqr - distanceSqr);
+                        damage = Damages.Y + (Damages.X - Damages.Y) * rangeFalloffNormalized;
+                    }
+                }
+
+                var godotObject = (GodotObject)ray["collider"];
+                if (godotObject is Pawn pawn)
+                {
+                    // ! collect damages and send single Rpc, maybe comma separated values
+                    var di = new Godot.Collections.Dictionary<string, string>()
+                    {
+                        {"damage", damage.ToString("0.00")},
+                        {"attacker", fi.Player.GetMultiplayerAuthority().ToString()},
+                        {"attackerName", NetworkManager.Current._players[fi.Player.GetMultiplayerAuthority()]["Name"]},
+                        {"weapon", "mind"},
+                        {"hitposition", ((Vector3)ray["position"]).ToString()},
+                        {"hitbox", "0"}
+                    };
+                    pawn.Rpc("OnDamage", di);
+                }
             }
         }
     }

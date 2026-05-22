@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cs6apgj13gp1a" path="res://scripts/game/Game.cs" id="1_gmxd1"]
 [ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="1_l1fi7"]
+[ext_resource type="Script" uid="uid://bf7fcaaevianx" path="res://scripts/game/MobSpawnArea.cs" id="3_pbxrk"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gmxd1"]
 
@@ -128,3 +129,10 @@ size = Vector3(0.2, 0.2, 0.2)
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2068227031]
 transform = Transform3D(0.73122287, -0.5771171, 0.36366075, -0.022016406, 0.5128736, 0.8581818, -0.6817833, -0.6355285, 0.3623188, 0, 14.932693, 0)
 shadow_enabled = true
+
+[node name="MobSpawnArea" type="Node3D" parent="." unique_id=1559202734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0222917, 2.0199537, 0)
+script = ExtResource("3_pbxrk")
+NodePrimaryPoint = Vector3(5.94, 2.455, 1.14)
+NodeSecondaryPoint = Vector3(0.955, 0, 0)
+metadata/_custom_type_script = "uid://bf7fcaaevianx"

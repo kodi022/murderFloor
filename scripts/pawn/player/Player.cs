@@ -5,15 +5,22 @@ public partial class Player : Pawn
     public static Player Self { get; private set; }
     public static List<Player> AllPlayers { get; private set; } = [];
 
-    public Vector3 CameraPositionBump { get; set; }
-    public Vector3 CameraRotationBump { get; set; }
+    public Vector3 ViewPosition => viewAim.GlobalPosition;
+    public Transform3D ViewTransform => viewAim.GlobalTransform;
 
-    public Vector3 ViewModelPositionBump { get; set; }
-    public Vector3 ViewModelRotationBump { get; set; }
+    public Vector3 CameraRotationKick { get; set; }
+    public Vector3 ViewModelPositionKick { get; set; }
+    public Vector3 ViewModelRotationKick { get; set; }
 
-    public Node3D ViewToolPosition;
+    public Node3D ViewToolPosition; // tool models are attached to this
+
     [Export]
-    public Node ToolsNode;
+    public Node ToolsNode; // this is the synced node tool inventory
+
+    [Export]
+    public float ViewYaw { get; set; } = 0f;
+    [Export]
+    public float ViewPitch { get; set; } = 0f;
 
     // world
     [Export]
@@ -28,7 +35,9 @@ public partial class Player : Pawn
 
     // view
     [Export]
-    private Camera3D camera;
+    public Camera3D Camera { get; private set; }
+    [Export]
+    private Node3D viewAim; // real aim of view / weapons. camera is offset from this
     [Export]
     private RayCast3D cameraRaycast;
 
@@ -42,10 +51,6 @@ public partial class Player : Pawn
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
     [Export(PropertyHint.Range, "1,500,0.01")]
     private float sensitivity = 50f;
-    [Export]
-    private float viewYaw = 0f;
-    [Export]
-    private float viewPitch = 0f;
 
     private Control menuUI;
     private Control debugUI;
@@ -72,7 +77,7 @@ public partial class Player : Pawn
 
         if (!IsMultiplayerAuthority()) return;
         Self = this;
-        camera.Current = true;
+        Camera.Current = true;
         Input.UseAccumulatedInput = false;
         cameraRaycast.AddException(this);
     }
@@ -89,13 +94,10 @@ public partial class Player : Pawn
 
         if (@event is InputEventMouseMotion eventMouseMotion)
         {
-            viewPitch -= eventMouseMotion.ScreenRelative.Y * 0.0001f * sensitivity;
-            viewPitch = float.Clamp(viewPitch, -1.3f, 1.3f);
+            ViewPitch -= eventMouseMotion.ScreenRelative.Y * 0.0001f * sensitivity;
+            ViewPitch = float.Clamp(ViewPitch, -1.3f, 1.3f);
 
-            viewYaw -= eventMouseMotion.ScreenRelative.X * 0.0001f * sensitivity;
-
-            camera.Rotation = new Vector3(viewPitch, 0, 0);
-            Rotation = new Vector3(0, viewYaw, 0);
+            ViewYaw -= eventMouseMotion.ScreenRelative.X * 0.0001f * sensitivity;
         }
 
         if (@event is InputEventKey eventKey)
@@ -131,11 +133,6 @@ public partial class Player : Pawn
 
         Input.MouseMode = mouseMode;
 
-        if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Tool.SlotEnum.Primary);
-        if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Tool.SlotEnum.Secondary);
-        if (Input.IsActionJustPressed("selectspecial")) SelectToolBySlot(Tool.SlotEnum.Special);
-        if (Input.IsActionJustPressed("selectmelee")) SelectToolBySlot(Tool.SlotEnum.Melee);
-
         if (Input.IsActionJustPressed("exit"))
         {
             if (menuUI is null)
@@ -151,11 +148,45 @@ public partial class Player : Pawn
                 mouseMode = Input.MouseModeEnum.Captured;
             }
         }
+
+        var reduction = 1f - ((float)delta * 6);
+        CameraRotationKick *= reduction;
+        ViewModelPositionKick *= reduction;
+        ViewModelRotationKick *= reduction;
+
+        Camera.Rotation = CameraRotationKick;
+        viewModels.Position = ViewModelPositionKick;
+        viewModels.Rotation = ViewModelRotationKick;
+
+        viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
+        Rotation = new Vector3(0, ViewYaw, 0);
+
+        if (menuUI is not null) return;
+
+        if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Tool.SlotEnum.Primary);
+        if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Tool.SlotEnum.Secondary);
+        if (Input.IsActionJustPressed("selectspecial")) SelectToolBySlot(Tool.SlotEnum.Special);
+        if (Input.IsActionJustPressed("selectmelee")) SelectToolBySlot(Tool.SlotEnum.Melee);
+
+        if (cameraRaycast.GetCollider() is Node3D node)
+        {
+            if (node.GetParent() is Usable usable)
+            {
+                usable.UsableHit();
+
+                if (Input.IsActionJustPressed("interact"))
+                {
+                    usable.UsableInvoke();
+                }
+            }
+        }
     }
 
     public override void _PhysicsProcess(double delta)
     {
         if (!IsMultiplayerAuthority()) return;
+
+        if (menuUI is not null) return;
 
         if (SelectedTool is not null)
         {
@@ -163,27 +194,22 @@ public partial class Player : Pawn
 
             if (Input.IsActionPressed("fire1"))
             {
-                // camera.ProjectPosition aims at pixel, which probably isn't perfectly center
-                // var endPos = camera.ProjectPosition(Vector2.Zero, 100f);
-                // this uses camera rotation, perfectly center
-                // var endPos = camera.GlobalPosition - camera.GlobalTransform.Basis.Z;
-                SelectedTool.FirePrimary(camera.GlobalPosition, -camera.GlobalTransform.Basis.Z);
+                SelectedTool.FirePrimary();
             }
+
+            if (Input.IsActionJustReleased("fire1"))
+            {
+                SelectedTool.UnFirePrimary();
+            }
+
+            if (Input.IsActionPressed("reload"))
+            {
+                SelectedTool.FireReload();
+            }
+
         }
 
-        if (cameraRaycast.GetCollider() is Pawn pawn)
-        {
-            // var di = new Godot.Collections.Dictionary<string, string>()
-            // {
-            //     {"attacker", GetMultiplayerAuthority().ToString()},
-            //     {"attackerName", NetworkManager.Current._players[GetMultiplayerAuthority()]["Name"]},
-            //     {"weapon", "mind"},
-            //     {"hitposition", cameraRaycast.GetCollisionPoint().ToString()},
-            //     {"hitbox", "0"}
-            // };
-            // pawn.Rpc("OnDamage", di);
-        }
-
+        // ! block movement input if menu open
         if (Input.IsActionJustPressed("jump"))
         {
             lastVel.Y = 16f;
@@ -193,7 +219,7 @@ public partial class Player : Pawn
         var strafe = Input.GetAxis("left", "right");
         var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.80f;
         wishMove.Y = -0.8f;
-        wishMove = wishMove.Rotated(Vector3.Up, viewYaw + 1.570796326794896f);
+        wishMove = wishMove.Rotated(Vector3.Up, ViewYaw + 1.570796326794896f);
         lastVel *= new Vector3(0.80f, 0.95f, 0.80f);
         lastVel += wishMove;
 
@@ -228,7 +254,7 @@ public partial class Player : Pawn
         viewBody = (Node3D)viewModels.GetChild(0);
         viewBodySkeleton = (Skeleton3D)viewBody.GetChild(0).GetChild(0);
         viewBodyAnimationPlayer = (AnimationPlayer)viewBody.GetChild(1);
-        camera.AddChild(viewModels);
+        viewAim.AddChild(viewModels);
 
         ViewToolPosition = (Node3D)viewModels.GetChild(1);
         viewHandBone = new BoneAttachment3D();

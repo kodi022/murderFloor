@@ -5,11 +5,13 @@
 
 [resource]
 script = ExtResource("1_y34yl")
-DegreeSpread = Vector2(1, 1)
-RPM = 400.0
-MagSize = 12.0
-UseInGame = false
-NameLocalizationKey = "#tool.pistol.testpistol"
+EndlessReserve = true
+CameraRotationKick = Vector2(0.02, 0)
+ViewmodelPositionKick = Vector2(0, 0.075)
+AimShift = Vector2(0.001, 0)
+FireMode = 1
 MeshScene = ExtResource("1_y5xye")
 ResourceId = "testpistol"
+UseInGame = false
+NameLocalizationKey = "#tool.pistol.testpistol"
 metadata/_custom_type_script = "uid://dh0saosikvolb"

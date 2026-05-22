@@ -11,6 +11,11 @@ public partial class MFResource : Resource
     [Export]
     public string ResourceId { get; private set; } = "";
 
+    [Export]
+    public bool UseInGame { get; private set; } = true;
+    [Export]
+    public string NameLocalizationKey { get; private set; } = "#empty";
+
     public void BuildIds()
     {
         FullId = $"{PackageId}:{ResourceId}";

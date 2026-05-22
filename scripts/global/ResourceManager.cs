@@ -3,12 +3,16 @@ namespace MurderFloor;
 public static class ResourceManager
 {
 	public static ResourceRegistry<Tool> ToolRegistry { get; private set; } = new();
+	public static ResourceRegistry<Tool> AttachmentRegistry { get; private set; } = new();
+	public static ResourceRegistry<Tool> MobRegistry { get; private set; } = new();
 
 	public static void Ready()
 	{
 		ToolRegistry.RegisterFolder("res://resources/tool/");
+		// AttachmentRegistry.RegisterFolder("res://resources/attachment/");
+		// MobRegistry.RegisterFolder("res://resources/mob/");
 
-		string dirToMods = OS.GetUserDataDir();
+		// string dirToMods = OS.GetUserDataDir();
 	}
 
 	public class ResourceRegistry<T> where T : MFResource

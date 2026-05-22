@@ -121,6 +121,7 @@ public partial class NetworkManager : Node
         _players[id] = _playerInfo;
         var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
         player.Name = "plr_" + id.ToString();
+        ((Node3D)player).Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
     }
@@ -143,6 +144,7 @@ public partial class NetworkManager : Node
         _players[id] = _playerInfo;
         var player = GD.Load<PackedScene>("res://scenes/Player.tscn").Instantiate();
         player.Name = "plr_" + id.ToString();
+        ((Node3D)player).Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
     }

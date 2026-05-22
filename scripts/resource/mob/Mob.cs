@@ -4,10 +4,18 @@ namespace MurderFloor;
 public partial class Mob : MFResource
 {
     [Export]
-    public bool UseInGame { get; private set; } = true;
-    [Export]
-    public string NameLocalizationKey { get; private set; } = "#empty";
-
-    [Export]
     public PackedScene MeshScene { get; private set; }
+    [Export]
+    public float MaxHealth { get; private set; }
+    [Export]
+    public float Health { get; private set; }
+    [Export]
+    public float Armor { get; private set; }
+
+    [Export, ExportSubgroup("Enragement")]
+    public bool Enragement { get; private set; }
+    [Export]
+    public float EnragementDamageThreshold { get; private set; }
+    [Export]
+    public float EnragementLength { get; private set; }
 }

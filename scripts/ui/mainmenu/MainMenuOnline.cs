@@ -38,7 +38,6 @@ public partial class MainMenuOnline : Panel
 				GetTree().ChangeSceneToFile("res://scenes/Lobby.tscn");
 			}
 		};
-
 	}
 
 	private void ParseText()

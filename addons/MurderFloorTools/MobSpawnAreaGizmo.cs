@@ -1,0 +1,103 @@
+using Godot;
+using MurderFloor;
+using System;
+
+public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
+{
+    private const int primaryHandleId = 0;
+    private const int secondaryHandleId = 0;
+
+    public MobSpawnAreaGizmo()
+    {
+        CreateMaterial("NodePrimaryPointMaterial", new Color(1, 0, 0));
+        CreateMaterial("NodeSecondaryPointMaterial", new Color(0, 1, 0));
+        CreateHandleMaterial("HandlePrimaryPointMaterial");
+        CreateHandleMaterial("HandleSecondaryPointMaterial");
+        var handlePrimaryPointMaterial = GetMaterial("HandlePrimaryPointMaterial");
+        var handleSecondaryPointMaterial = GetMaterial("HandleSecondaryPointMaterial");
+        handlePrimaryPointMaterial.AlbedoColor = new Color(1, 0, 0);
+        handleSecondaryPointMaterial.AlbedoColor = new Color(0, 1, 0);
+    }
+
+    public MobSpawnAreaGizmo(EditorUndoRedoManager undoRedo)
+    {
+        CreateMaterial("NodePrimaryPointMaterial", new Color(1, 0, 0));
+        CreateMaterial("NodeSecondaryPointMaterial", new Color(0, 1, 0));
+        CreateHandleMaterial("HandlePrimaryPointMaterial");
+        CreateHandleMaterial("HandleSecondaryPointMaterial");
+        var handlePrimaryPointMaterial = GetMaterial("HandlePrimaryPointMaterial");
+        var handleSecondaryPointMaterial = GetMaterial("HandleSecondaryPointMaterial");
+        handlePrimaryPointMaterial.AlbedoColor = new Color(1, 0, 0);
+        handleSecondaryPointMaterial.AlbedoColor = new Color(0, 1, 0);
+    }
+
+    public override void _Redraw(EditorNode3DGizmo gizmo)
+    {
+        gizmo.Clear();
+        base._Redraw(gizmo);
+
+        var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
+        var lines = new[] { new Vector3(), mobSpawnArea.NodePrimaryPoint, new Vector3(), mobSpawnArea.NodeSecondaryPoint };
+        var handles = new[] { mobSpawnArea.NodePrimaryPoint, mobSpawnArea.NodeSecondaryPoint };
+        gizmo.AddLines(lines, GetMaterial("NodePrimaryPointMaterial", gizmo));
+        gizmo.AddHandles(handles, GetMaterial("HandlePrimaryPointMaterial", gizmo), [primaryHandleId, secondaryHandleId]);
+    }
+
+    public override string _GetHandleName(EditorNode3DGizmo gizmo, int handleId, bool secondary)
+    {
+        // vsc says "Unnecessary assignment of a value to 'mobSpawnArea'" its lying
+        var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
+        return handleId switch
+        {
+            0 => nameof(mobSpawnArea.NodePrimaryPoint),
+            1 => nameof(mobSpawnArea.NodeSecondaryPoint),
+            _ => "Unknown Handle",
+        };
+    }
+
+    public override Variant _GetHandleValue(EditorNode3DGizmo gizmo, int handleId, bool secondary)
+    {
+        var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
+        return handleId switch
+        {
+            0 => mobSpawnArea.NodePrimaryPoint,
+            1 => mobSpawnArea.NodeSecondaryPoint,
+            _ => Vector3.Zero,
+        };
+    }
+
+    public override void _SetHandle(EditorNode3DGizmo gizmo, int handleId, bool secondary, Camera3D camera, Vector2 screenPos)
+    {
+        var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
+        switch (handleId)
+        {
+            case 0:
+                var depth = GetZDepth(camera, mobSpawnArea.GlobalPosition + mobSpawnArea.NodePrimaryPoint);
+                mobSpawnArea.NodePrimaryPoint = camera.ProjectPosition(screenPos, depth);
+                break;
+            case 1:
+                var depth2 = GetZDepth(camera, mobSpawnArea.GlobalPosition + mobSpawnArea.NodeSecondaryPoint);
+                mobSpawnArea.NodeSecondaryPoint = camera.ProjectPosition(screenPos, depth2);
+                break;
+        }
+    }
+
+    public override string _GetGizmoName()
+    {
+        return nameof(MobSpawnAreaGizmo);
+    }
+
+    public override bool _HasGizmo(Node3D forNode3D)
+    {
+        return forNode3D is MobSpawnArea;
+    }
+
+    private static float GetZDepth(Camera3D camera, Vector3 position)
+    {
+        Vector3 cameraPosition = camera.GlobalPosition;
+        Vector3 cameraForward = -camera.GlobalTransform.Basis.Z;
+        Vector3 vectorToPosition = position - cameraPosition;
+        float zDepth = vectorToPosition.Dot(cameraForward);
+        return zDepth;
+    }
+}
