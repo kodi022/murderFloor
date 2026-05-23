@@ -56,6 +56,7 @@ public partial class ToolFirearm : Tool
     public Vector2 SpreadIncreasePerShot { get; private set; } = new Vector2(0.5f, 0.5f);
 
     // ! add movement spread penalty
+    // ! add screen shake
 
     [Export, ExportSubgroup("Kick")]
     public Vector2 CameraRotationKick { get; private set; } = new Vector2(0.02f, 0f);

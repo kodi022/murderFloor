@@ -4,15 +4,17 @@ namespace MurderFloor;
 public partial class Usable : Node3D
 {
     [Export]
-    public Control UiToOpen { get; private set; }
+    public string UseInfoText { get; private set; }
+    [Export]
+    public string UiSceneToOpen { get; private set; }
 
     public void UsableHit()
     {
-        GD.Print("hit me!!");
+        Player.Self.UseInfoText = UseInfoText;
     }
 
     public void UsableInvoke()
     {
-        GD.Print("invoke me!!");
+        Player.Self.OpenUI(UiSceneToOpen);
     }
 }

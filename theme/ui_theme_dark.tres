@@ -1,5 +1,13 @@
 [gd_resource type="Theme" format=3 uid="uid://da3qohe7cgkmn"]
 
+[ext_resource type="FontFile" uid="uid://d0k2lrfxrv5c2" path="res://fonts/Quantico-Regular.ttf" id="1_p3tpv"]
+
 [resource]
+default_font = ExtResource("1_p3tpv")
+default_font_size = 15
 HBoxContainer/constants/separation = 4
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
 VBoxContainer/constants/separation = 4

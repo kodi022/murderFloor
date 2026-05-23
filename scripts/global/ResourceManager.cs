@@ -72,5 +72,10 @@ public static class ResourceManager
 
 			return null;
 		}
+
+		public Dictionary<int, T> GetAllResource()
+		{
+			return registry;
+		}
 	}
 }

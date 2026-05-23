@@ -13,6 +13,8 @@ public partial class HUD : Control
     private Label playersLabel;
     [Export]
     private Panel healthBarPanel;
+    [Export]
+    private Label useInfoLabel;
 
     private int activeCrosshair = 0;
 
@@ -43,6 +45,7 @@ public partial class HUD : Control
 
         var move = Player.Self.MaxHealth - Player.Self.Health;
         healthBarPanel.SetPosition(new Vector2(-move * healthBarPanel.Size.X, 0));
+        useInfoLabel.Text = Player.Self.UseInfoText;
     }
 
     private void ProcessCrosshairs()

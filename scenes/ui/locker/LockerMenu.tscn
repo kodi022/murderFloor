@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://cdyb3alpyg6ee"]
+
+[ext_resource type="Script" uid="uid://bnjls7s41ytxt" path="res://scripts/ui/locker/LockerMenu.cs" id="1_1f3ys"]
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="2_lj7te"]
+
+[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("grid", "rect")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_lj7te")
+script = ExtResource("1_1f3ys")
+grid = NodePath("PanelContainer/MarginContainer/HBoxContainer/ScrollContainer/GridContainer")
+rect = NodePath("PanelContainer/MarginContainer/HBoxContainer/TextureRect")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1579098376]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=949399126]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer" unique_id=352052932]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=581436800]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="PanelContainer/MarginContainer/HBoxContainer/ScrollContainer" unique_id=1075273565]
+layout_mode = 2
+columns = 2
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=1475781477]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2

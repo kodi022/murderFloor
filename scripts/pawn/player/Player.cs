@@ -22,6 +22,8 @@ public partial class Player : Pawn
     [Export]
     public float ViewPitch { get; set; } = 0f;
 
+    public string UseInfoText { get; set; } = "";
+
     // world
     [Export]
     private Node3D worldModels;
@@ -52,7 +54,7 @@ public partial class Player : Pawn
     [Export(PropertyHint.Range, "1,500,0.01")]
     private float sensitivity = 50f;
 
-    private Control menuUI;
+    private Control openUI;
     private Control debugUI;
 
     private Vector3 lastVel;
@@ -135,17 +137,13 @@ public partial class Player : Pawn
 
         if (Input.IsActionJustPressed("exit"))
         {
-            if (menuUI is null)
+            if (openUI is null)
             {
-                menuUI = (Control)GD.Load<PackedScene>("res://scenes/ui/Menu.tscn").Instantiate();
-                AddChild(menuUI);
-                mouseMode = Input.MouseModeEnum.Visible;
+                OpenUI("res://scenes/ui/Menu.tscn");
             }
             else
             {
-                menuUI.Free();
-                menuUI = null;
-                mouseMode = Input.MouseModeEnum.Captured;
+                CloseUI();
             }
         }
 
@@ -161,7 +159,7 @@ public partial class Player : Pawn
         viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
         Rotation = new Vector3(0, ViewYaw, 0);
 
-        if (menuUI is not null) return;
+        if (openUI is not null) return;
 
         if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Tool.SlotEnum.Primary);
         if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Tool.SlotEnum.Secondary);
@@ -179,6 +177,14 @@ public partial class Player : Pawn
                     usable.UsableInvoke();
                 }
             }
+            else
+            {
+                UseInfoText = "";
+            }
+        }
+        else
+        {
+            UseInfoText = "";
         }
     }
 
@@ -186,7 +192,7 @@ public partial class Player : Pawn
     {
         if (!IsMultiplayerAuthority()) return;
 
-        if (menuUI is not null) return;
+        if (openUI is not null) return;
 
         if (SelectedTool is not null)
         {
@@ -226,6 +232,25 @@ public partial class Player : Pawn
         Velocity = lastVel;
         MoveAndSlide();
         lastVel = Velocity;
+    }
+
+    public void OpenUI(string uiScene)
+    {
+        if (openUI is not null) return;
+
+        var ui = (Control)GD.Load<PackedScene>(uiScene).Instantiate();
+        openUI = ui;
+        AddChild(ui);
+        mouseMode = Input.MouseModeEnum.Visible;
+    }
+
+    public void CloseUI()
+    {
+        if (openUI is null) return;
+
+        openUI.Free();
+        openUI = null;
+        mouseMode = Input.MouseModeEnum.Captured;
     }
 
     private void BuildWorldNodes()

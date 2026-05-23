@@ -21,4 +21,6 @@ public partial class MFResource : Resource
         FullId = $"{PackageId}:{ResourceId}";
         HashId = Global.StableHash(FullId);
     }
+
+    public virtual async Task<Texture> GenerateThumbnailTexture() => GD.Load<Texture2D>("res://images/missing.png");
 }

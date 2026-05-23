@@ -6,9 +6,6 @@
 [resource]
 script = ExtResource("1_y34yl")
 EndlessReserve = true
-CameraRotationKick = Vector2(0.02, 0)
-ViewmodelPositionKick = Vector2(0, 0.075)
-AimShift = Vector2(0.001, 0)
 FireMode = 1
 MeshScene = ExtResource("1_y5xye")
 ResourceId = "testpistol"

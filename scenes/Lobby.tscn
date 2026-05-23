@@ -120,6 +120,8 @@ size = Vector3(0.084625244, 2.0430908, 0.79296875)
 
 [node name="Usable" type="Node3D" parent="CSGlocker" unique_id=1921814839]
 script = ExtResource("2_ras1x")
+UseInfoText = "Open Locker"
+UiSceneToOpen = "res://scenes/ui/locker/LockerMenu.tscn"
 metadata/_custom_type_script = "uid://bwlrm48k447kp"
 
 [node name="StaticBody3D" type="StaticBody3D" parent="CSGlocker/Usable" unique_id=691999887]
