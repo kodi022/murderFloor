@@ -2,11 +2,20 @@ namespace MurderFloor;
 
 public partial class Game : Node
 {
-    public enum GameStateType
+    public enum GameDifficultyEnum
+    {
+        Easy = 1,
+        Medium = 2,
+        Challenging = 3,
+        Hard = 4,
+        Extreme = 5,
+        Ludicrous = 6,
+    }
+    public enum GameStateEnum
     {
         Stopped,
         Break,
-        Wave,
+        Round,
     }
 
     public static Game Current;
@@ -14,26 +23,59 @@ public partial class Game : Node
     public static List<LiveMob> MobPool { get; private set; } = [];
 
     [Export]
-    public GameStateType GameState { get; private set; } = GameStateType.Stopped;
+    public GameStateEnum GameState { get; private set; } = GameStateEnum.Stopped;
+    [Export]
+    public GameDifficultyEnum GameDifficulty { get; private set; } = GameDifficultyEnum.Easy;
+    [Export]
+    public ulong GameSeed { get; private set; } = (ulong)Random.Shared.NextInt64();
 
     [Export]
-    public int MaxWave { get; private set; } = 5;
+    public int MaxRound { get; private set; } = 5;
     [Export]
-    public int Wave { get; private set; } = 0;
+    public int Round { get; private set; } = 0;
     [Export]
     public int MaxActiveMobs { get; private set; } = 25;
     [Export]
-    public int WaveMobsLeft { get; private set; } = 0;
+    public int RoundMobsLeft { get; private set; } = 0;
     [Export]
     public int ActiveMobs { get; private set; } = 0;
 
-    public override void _Ready()
+    public List<MobSpawnArea> SpawnAreas { get; private set; } = [];
+
+    private ulong lastWaveTime = 0ul;
+    private RandomNumberGenerator rng = new();
+
+    public override void _EnterTree()
     {
         Current = this;
+        rng.Seed = GameSeed;
+
+        foreach (var child in GetChildren())
+        {
+            if (child is MobSpawnArea mob)
+            {
+                SpawnAreas.Add(mob);
+            }
+        }
+    }
+
+    public override void _Ready()
+    {
         NetworkManager.Current.RpcId(1, "PlayerLoaded");
     }
 
-    [Rpc(CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    public override void _Process(double delta)
+    {
+        if (GameState == GameStateEnum.Round)
+        {
+            if (20000ul < Time.GetTicksMsec() - lastWaveTime && ActiveMobs < MaxActiveMobs)
+            {
+                SpawnMobWave();
+            }
+        }
+    }
+
+    [Rpc(mode: MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     public void StartGame()
     {
         var mobScene = GD.Load<PackedScene>("res://scenes/Mob.tscn");
@@ -50,68 +92,84 @@ public partial class Game : Node
             mob.SetMultiplayerAuthority(1);
         }
 
-        NextWave();
+        MaxActiveMobs = 40 + ((int)GameDifficulty * 10);
+
+        NextRound();
     }
 
     public void MobDeath(int mobPoolId)
     {
         ActiveMobs--;
-        WaveMobsLeft--;
+        RoundMobsLeft--;
 
-        if (ActiveMobs < 10)
+        if (RoundMobsLeft <= 0)
         {
-            SpawnMobGroup();
-        }
-
-        if (WaveMobsLeft <= 0)
-        {
-            if (Wave == MaxWave)
+            if (Round == MaxRound)
             {
                 EndGame();
                 return;
             }
 
-            TimerToNextWave();
+            TimerToNextRound();
+            return;
+        }
+
+        if (ActiveMobs < 8)
+        {
+            SpawnMobWave();
         }
     }
 
-    public async void TimerToNextWave()
+    public async void TimerToNextRound()
     {
-        GameState = GameStateType.Break;
+        GameState = GameStateEnum.Break;
 
         await Task.Delay(5000);
 
-        NextWave();
+        NextRound();
     }
 
-    public void NextWave()
+    public void NextRound()
     {
-        GameState = GameStateType.Wave;
-        Wave++;
-        WaveMobsLeft = Wave * 10;
-        SpawnMobGroup();
+        GameState = GameStateEnum.Round;
+        Round++;
+        RoundMobsLeft = (int)(30f + Round * ((float)GameDifficulty + 1f * 0.33f));
+        SpawnMobWave();
     }
 
     public void EndGame()
     {
-        GameState = GameStateType.Stopped;
+        GameState = GameStateEnum.Stopped;
         foreach (var mob in MobPool)
         {
             mob?.Free();
         }
         MobPool.Clear();
-        Wave = 0;
-        WaveMobsLeft = 0;
+        Round = 0;
+        RoundMobsLeft = 0;
         ActiveMobs = 0;
     }
 
-    private void SpawnMobGroup()
+    private void SpawnMobWave()
     {
-        for (int i = 0; i < Math.Min(MaxActiveMobs - ActiveMobs, WaveMobsLeft - ActiveMobs); i++)
+        lastWaveTime = Time.GetTicksMsec();
+
+        var waveSize = 5 + (int)GameDifficulty * 2;
+        if (waveSize + ActiveMobs > MaxActiveMobs) waveSize = MaxActiveMobs - ActiveMobs;
+        if (waveSize + ActiveMobs > RoundMobsLeft) waveSize = RoundMobsLeft - ActiveMobs;
+
+        var spawned = 0;
+        var spawnAreaIndex = rng.RandiRange(0, SpawnAreas.Count);
+        var spawns = SpawnAreas[(int)spawnAreaIndex].GetSpawnVectorList(waveSize);
+
+        for (int i = 0; i < MobPool.Count; i++)
         {
             if (MobPool[i].Active) continue;
-            MobPool[i].OnSpawn(new Vector3(Random.Shared.NextSingle() * 5, 0, Random.Shared.NextSingle() * 5), 0);
+            if (spawned >= waveSize) return;
+
+            MobPool[i].OnSpawn(spawns[spawned], 0);
             ActiveMobs++;
+            spawned++;
         }
     }
 }

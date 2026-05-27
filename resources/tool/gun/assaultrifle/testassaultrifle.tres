@@ -7,6 +7,8 @@
 
 [resource]
 script = ExtResource("1_jtlsn")
+Damages = Vector2(30, 10)
+FalloffRanges = Vector2(20, 40)
 FirearmType = 5
 RPM = 700.0
 FireSound = ExtResource("1_67cxb")

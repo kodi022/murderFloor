@@ -35,9 +35,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             var ray = space.IntersectRay(query);
             if (ray.ContainsKey("collider"))
             {
-                var debugDecal = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
-                debugDecal.Position = (Vector3)ray["position"];
-                fi.Player.GetTree().Root.AddChild(debugDecal);
+                Global.DebugDot(fi.Player, (Vector3)ray["position"]);
 
                 var pos = (Vector3)ray["position"];
                 var distanceSqr = pos.DistanceSquaredTo(fi.StartPosition);
@@ -52,8 +50,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
                     }
                     else
                     {
-                        // ! needs tested
-                        var rangeFalloffNormalized = farSqr * (farSqr - distanceSqr);
+                        var rangeFalloffNormalized = 1 - ((nearSqr - distanceSqr) / (nearSqr - farSqr));
                         damage = Damages.Y + (Damages.X - Damages.Y) * rangeFalloffNormalized;
                     }
                 }

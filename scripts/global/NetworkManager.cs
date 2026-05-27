@@ -183,13 +183,14 @@ public partial class NetworkManager : Node
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void PlayerLoaded()
+    private async void PlayerLoaded()
     {
         if (Multiplayer.IsServer())
         {
             _playersLoaded += 1;
             if (_playersLoaded == _players.Count)
             {
+                await Task.Delay(2000);
                 Game.Current.Rpc("StartGame");
                 _playersLoaded = 0;
             }

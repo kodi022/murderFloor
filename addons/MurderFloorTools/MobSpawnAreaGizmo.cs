@@ -5,7 +5,7 @@ using System;
 public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
 {
     private const int primaryHandleId = 0;
-    private const int secondaryHandleId = 0;
+    private const int secondaryHandleId = 1;
 
     public MobSpawnAreaGizmo()
     {
@@ -37,7 +37,29 @@ public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
         base._Redraw(gizmo);
 
         var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
-        var lines = new[] { new Vector3(), mobSpawnArea.NodePrimaryPoint, new Vector3(), mobSpawnArea.NodeSecondaryPoint };
+        var a = mobSpawnArea.NodePrimaryPoint;
+        var b = mobSpawnArea.NodeSecondaryPoint;
+        var lines = new[] {
+            // vertical
+            new Vector3(a.X, a.Y, a.Z), new Vector3(a.X, b.Y, a.Z),
+            new Vector3(a.X, b.Y, b.Z), new Vector3(a.X, a.Y, b.Z),
+            new Vector3(b.X, a.Y, a.Z), new Vector3(b.X, b.Y, a.Z),
+            new Vector3(b.X, b.Y, b.Z), new Vector3(b.X, a.Y, b.Z),
+            // primary X horizontal
+            new Vector3(a.X, a.Y, a.Z), new Vector3(b.X, a.Y, a.Z),
+            new Vector3(a.X, a.Y, b.Z), new Vector3(b.X, a.Y, b.Z),
+            // primary Z horizontal
+            new Vector3(a.X, a.Y, a.Z), new Vector3(a.X, a.Y, b.Z),
+            new Vector3(b.X, a.Y, a.Z), new Vector3(b.X, a.Y, b.Z),
+            // secondary X horizontal
+            new Vector3(a.X, b.Y, a.Z), new Vector3(b.X, b.Y, a.Z),
+            new Vector3(a.X, b.Y, b.Z), new Vector3(b.X, b.Y, b.Z),
+            // secondary Z horizontal
+            new Vector3(a.X, b.Y, a.Z), new Vector3(a.X, b.Y, b.Z),
+            new Vector3(b.X, b.Y, a.Z), new Vector3(b.X, b.Y, b.Z),
+
+        };
+
         var handles = new[] { mobSpawnArea.NodePrimaryPoint, mobSpawnArea.NodeSecondaryPoint };
         gizmo.AddLines(lines, GetMaterial("NodePrimaryPointMaterial", gizmo));
         gizmo.AddHandles(handles, GetMaterial("HandlePrimaryPointMaterial", gizmo), [primaryHandleId, secondaryHandleId]);
@@ -73,11 +95,11 @@ public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
         {
             case 0:
                 var depth = GetZDepth(camera, mobSpawnArea.GlobalPosition + mobSpawnArea.NodePrimaryPoint);
-                mobSpawnArea.NodePrimaryPoint = camera.ProjectPosition(screenPos, depth);
+                mobSpawnArea.NodePrimaryPoint = camera.ProjectPosition(screenPos, depth) - mobSpawnArea.GlobalPosition;
                 break;
             case 1:
                 var depth2 = GetZDepth(camera, mobSpawnArea.GlobalPosition + mobSpawnArea.NodeSecondaryPoint);
-                mobSpawnArea.NodeSecondaryPoint = camera.ProjectPosition(screenPos, depth2);
+                mobSpawnArea.NodeSecondaryPoint = camera.ProjectPosition(screenPos, depth2) - mobSpawnArea.GlobalPosition;
                 break;
         }
     }
@@ -97,7 +119,7 @@ public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
         Vector3 cameraPosition = camera.GlobalPosition;
         Vector3 cameraForward = -camera.GlobalTransform.Basis.Z;
         Vector3 vectorToPosition = position - cameraPosition;
-        float zDepth = vectorToPosition.Dot(cameraForward);
+        float zDepth = vectorToPosition.Dot(cameraForward.Normalized());
         return zDepth;
     }
 }

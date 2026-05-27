@@ -71,6 +71,7 @@ public partial class LiveMob : Pawn
         {
             var di = new Godot.Collections.Dictionary<string, string>()
             {
+                {"damage", 0.ToString()},
                 {"attacker", 0.ToString()},
                 {"attackerName", "mobname"},
                 {"weapon", "claw"},
@@ -96,7 +97,7 @@ public partial class LiveMob : Pawn
         }
 
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
-        Vector3 newVelocity = GlobalPosition.DirectionTo(targetPos) * 3.5f;
+        Vector3 newVelocity = GlobalPosition.DirectionTo(targetPos) * 3.2f;
         Velocity = newVelocity + Vector3.Down;
 
         var lookingAtVel = newVelocity - new Vector3(0, newVelocity.Y, 0);

@@ -37,4 +37,12 @@ public static class Global
             return hash;
         }
     }
+
+    public static void DebugDot(Node anyNode, Vector3 position, ulong msToDelete = 10000ul)
+    {
+        var debugDot = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
+        debugDot.Position = position;
+        ((DebugBulletDecal)debugDot).MsToDelete = msToDelete;
+        anyNode.GetTree().Root.AddChild(debugDot);
+    }
 }

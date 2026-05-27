@@ -21,8 +21,8 @@ public partial class HUDDebug : Control
             return;
         }
         labels[0].Text = $"game state:{Game.Current.GameState}";
-        labels[1].Text = $"game maxwave:{Game.Current.MaxWave} wave:{Game.Current.Wave}";
-        labels[2].Text = $"game mobwaveleft:{Game.Current.WaveMobsLeft}";
+        labels[1].Text = $"game maxwave:{Game.Current.MaxRound} wave:{Game.Current.Round}";
+        labels[2].Text = $"game mobwaveleft:{Game.Current.RoundMobsLeft}";
         labels[3].Text = $"game mobmax:{Game.Current.MaxActiveMobs} mobactive:{Game.Current.ActiveMobs}";
     }
 }

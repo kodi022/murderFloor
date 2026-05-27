@@ -37,6 +37,30 @@ size = Vector2(2.002, 0.4)
 [node name="Game" type="Node3D" parent="." unique_id=189801316]
 script = ExtResource("1_waklt")
 
+[node name="MobSpawnArea2" type="Node3D" parent="Game" unique_id=1264621645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.236773, 0.23034573, 6.680537)
+script = ExtResource("3_phb26")
+NodePrimaryPoint = Vector3(2.101471, 1.3676295, 5.2900143)
+metadata/_custom_type_script = "uid://bf7fcaaevianx"
+
+[node name="MobSpawnArea" type="Node3D" parent="Game" unique_id=1559202734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.301493, 0.18710554, 13.780201)
+script = ExtResource("3_phb26")
+NodePrimaryPoint = Vector3(2.873705, 1.5538626, 5.6181164)
+metadata/_custom_type_script = "uid://bf7fcaaevianx"
+
+[node name="MobSpawnArea3" type="Node3D" parent="Game" unique_id=514913024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.283733, 0.18710554, -24.301636)
+script = ExtResource("3_phb26")
+NodePrimaryPoint = Vector3(6.6782684, 1.1926545, 3.3404312)
+metadata/_custom_type_script = "uid://bf7fcaaevianx"
+
+[node name="MobSpawnArea4" type="Node3D" parent="Game" unique_id=150784586]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4736733, 6.8953896, 15.792875)
+script = ExtResource("3_phb26")
+NodePrimaryPoint = Vector3(2.540331, 1.5913296, 3.3633633)
+metadata/_custom_type_script = "uid://bf7fcaaevianx"
+
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1326466360]
 root_path = NodePath("../Game")
 replication_config = SubResource("SceneReplicationConfig_gmxd1")
@@ -136,13 +160,6 @@ size = Vector3(0.2, 0.2, 0.2)
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2068227031]
 transform = Transform3D(0.73122287, -0.5771171, 0.36366075, -0.022016406, 0.5128736, 0.8581818, -0.6817833, -0.6355285, 0.3623188, 0, 14.932693, 0)
 shadow_enabled = true
-
-[node name="MobSpawnArea" type="Node3D" parent="." unique_id=1559202734]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0222917, 2.0199537, 0)
-script = ExtResource("3_phb26")
-NodePrimaryPoint = Vector3(5.94, 2.455, 1.14)
-NodeSecondaryPoint = Vector3(0.955, 0, 0)
-metadata/_custom_type_script = "uid://bf7fcaaevianx"
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=438801671]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0048720837, 4.8334923, -8.447116)
