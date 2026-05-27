@@ -16,7 +16,7 @@ public partial class Player : Pawn
 
     // this should only be called using Rpc
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void AddTool(string toolId)
+    public void ToolAdd(string toolId)
     {
         var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/LiveTool.tscn").Instantiate();
         liveTool.PlayerId = GetMultiplayerAuthority();
@@ -28,7 +28,7 @@ public partial class Player : Pawn
 
     // this should only be called using Rpc
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void RemoveTool(string toolId)
+    public void ToolRemove(string toolId)
     {
         foreach (var tool in ToolsNode.GetChildren())
         {
@@ -51,7 +51,7 @@ public partial class Player : Pawn
 
     // this should NOT be called using Rpc, will do so internally
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    public async void EquipTool(int slot, int index)
+    public async void ToolEquip(int slot, int index)
     {
         if (!IsMultiplayerAuthority())
         {
@@ -64,7 +64,7 @@ public partial class Player : Pawn
         if (list.Count == 0) return;
         if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex]) return;
 
-        Rpc("EquipTool", slot, index);
+        Rpc("ToolEquip", slot, index);
         SwappingWeapon = true;
         if (SelectedTool is not null) await SelectedTool.Unequip();
 
@@ -91,7 +91,7 @@ public partial class Player : Pawn
             SelectedToolIndex = 0;
         }
 
-        EquipTool((int)SelectedSlot, SelectedToolIndex);
+        ToolEquip((int)SelectedSlot, SelectedToolIndex);
     }
 
     public void SelectToolBySlot(Tool.SlotEnum slot)
@@ -105,13 +105,13 @@ public partial class Player : Pawn
         {
             SelectedToolIndex++;
             if (SelectedToolIndex >= list.Count) SelectedToolIndex = 0;
-            EquipTool((int)SelectedSlot, SelectedToolIndex);
+            ToolEquip((int)SelectedSlot, SelectedToolIndex);
             return;
         }
 
         SelectedSlot = slot;
         SelectedToolIndex = 0;
-        EquipTool((int)SelectedSlot, SelectedToolIndex);
+        ToolEquip((int)SelectedSlot, SelectedToolIndex);
     }
 
     private List<LiveTool> GetToolListFromTool(string toolId)

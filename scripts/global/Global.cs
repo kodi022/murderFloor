@@ -8,6 +8,9 @@ namespace MurderFloor;
 
 public static class Global
 {
+    public static readonly Texture2D MissingTexture = GD.Load<Texture2D>("res://images/missing.png");
+    public static readonly ImageTexture MissingTextureImage = ImageTexture.CreateFromImage(GD.Load<Texture2D>("res://images/missing.png").GetImage());
+
     public static int StableHash(string s)
     {
         if (string.IsNullOrEmpty(s))

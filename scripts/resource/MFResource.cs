@@ -22,5 +22,5 @@ public partial class MFResource : Resource
         HashId = Global.StableHash(FullId);
     }
 
-    public virtual async Task<Texture> GenerateThumbnailTexture() => GD.Load<Texture2D>("res://images/missing.png");
+    public virtual async Task<ImageTexture> GenerateThumbnailImage() => Global.MissingTextureImage;
 }

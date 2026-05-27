@@ -33,6 +33,13 @@ project/assembly_name="murder_floor"
 
 enabled=PackedStringArray("res://addons/MurderFloorTools/plugin.cfg")
 
+[file_customization]
+
+folder_colors={
+"res://scenes/": "blue",
+"res://scripts/": "red"
+}
+
 [input]
 
 forward={
@@ -130,6 +137,7 @@ pathfinding/max_threads=6
 
 common/physics_ticks_per_second=100
 common/max_physics_steps_per_frame=10
+common/physics_jitter_fix=0.0
 3d/physics_engine="Jolt Physics"
 3d/solver/solver_iterations=8
 common/physics_interpolation=true

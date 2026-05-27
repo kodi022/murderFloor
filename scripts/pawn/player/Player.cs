@@ -16,6 +16,8 @@ public partial class Player : Pawn
 
     [Export]
     public Node ToolsNode; // this is the synced node tool inventory
+    [Export]
+    public AudioStreamPlayer3D AudioStreamPlayer3D { get; private set; }
 
     [Export]
     public float ViewYaw { get; set; } = 0f;
@@ -64,11 +66,12 @@ public partial class Player : Pawn
     public override void _Ready()
     {
         BuildWorldNodes();
+        AudioStreamPlayer3D.Play();
 
         if (!IsMultiplayerAuthority()) return;
 
-        Rpc("AddTool", "base:testassaultrifle");
-        Rpc("AddTool", "base:testpistol");
+        Rpc("ToolAdd", "base:testassaultrifle");
+        Rpc("ToolAdd", "base:testpistol");
         worldModels.Free();
         BuildViewNodes();
     }
@@ -120,7 +123,7 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
             {
-                NetworkManager.Current.Rpc("LoadGame", "res://scenes/Dev.tscn");
+                NetworkManager.Current.Rpc("LoadGame", "res://scenes/mapdev/Dev.tscn");
             }
         }
     }

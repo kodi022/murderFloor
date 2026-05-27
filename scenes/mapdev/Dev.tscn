@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://d1oh4hfgqd4q7"]
 
-[ext_resource type="Script" uid="uid://cs6apgj13gp1a" path="res://scripts/game/Game.cs" id="1_gmxd1"]
-[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="1_l1fi7"]
-[ext_resource type="Script" uid="uid://bf7fcaaevianx" path="res://scripts/game/MobSpawnArea.cs" id="3_pbxrk"]
+[ext_resource type="Script" uid="uid://cs6apgj13gp1a" path="res://scripts/game/Game.cs" id="1_waklt"]
+[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="2_rfcy4"]
+[ext_resource type="Script" uid="uid://bf7fcaaevianx" path="res://scripts/game/MobSpawnArea.cs" id="3_phb26"]
+[ext_resource type="Texture2D" uid="uid://cj1cs8xm7liyg" path="res://images/debug/ruler2.png" id="4_qs4vn"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gmxd1"]
 
@@ -25,10 +26,16 @@ cell_size = 0.05
 agent_height = 1.8
 vertices_per_polygon = 8.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p8y1m"]
+albedo_texture = ExtResource("4_qs4vn")
+
+[sub_resource type="QuadMesh" id="QuadMesh_h3xxs"]
+size = Vector2(2.002, 0.4)
+
 [node name="Dev" type="Node3D" unique_id=2094419847]
 
 [node name="Game" type="Node3D" parent="." unique_id=189801316]
-script = ExtResource("1_gmxd1")
+script = ExtResource("1_waklt")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1326466360]
 root_path = NodePath("../Game")
@@ -120,7 +127,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003, -1.5, -0.008)
 calculate_tangents = false
 use_collision = true
 size = Vector3(50, 1, 50)
-material = ExtResource("1_l1fi7")
+material = ExtResource("2_rfcy4")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D/CSGground" unique_id=872103152]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
@@ -132,7 +139,35 @@ shadow_enabled = true
 
 [node name="MobSpawnArea" type="Node3D" parent="." unique_id=1559202734]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0222917, 2.0199537, 0)
-script = ExtResource("3_pbxrk")
+script = ExtResource("3_phb26")
 NodePrimaryPoint = Vector3(5.94, 2.455, 1.14)
 NodeSecondaryPoint = Vector3(0.955, 0, 0)
 metadata/_custom_type_script = "uid://bf7fcaaevianx"
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=438801671]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0048720837, 4.8334923, -8.447116)
+size = Vector3(1, 0.05, 0.01)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGBox3D" unique_id=992654574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.501, 0.22265625, 0)
+material_override = SubResource("StandardMaterial3D_p8y1m")
+mesh = SubResource("QuadMesh_h3xxs")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGBox3D/MeshInstance3D2" unique_id=1090875931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_p8y1m")
+mesh = SubResource("QuadMesh_h3xxs")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGBox3D/MeshInstance3D2/MeshInstance3D2" unique_id=1411285603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_p8y1m")
+mesh = SubResource("QuadMesh_h3xxs")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D" unique_id=1079920807]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.2, 0)
+size = Vector3(0.1, 0.45, 0.1)
+
+[node name="Label3D" type="Label3D" parent="." unique_id=1867935931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29708147, 5.4342713, -8.458137)
+pixel_size = 0.004
+text = "Put models here for scaling"

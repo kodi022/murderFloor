@@ -29,6 +29,8 @@ public partial class ToolFirearm : Tool
     public FirearmTypeEnum FirearmType { get; private set; }
     [Export]
     public float RPM { get; private set; } = 400f;
+    [Export]
+    public AudioStreamMP3 FireSound { get; private set; }
 
     [Export]
     public int PelletCount { get; private set; } = 1;
@@ -36,6 +38,8 @@ public partial class ToolFirearm : Tool
     public float HoldingSpeed { get; private set; } = 1f;
     [Export]
     public string ReloadAnimationName { get; private set; }
+    [Export]
+    public AudioStreamMP3 ReloadSound { get; private set; }
     [Export]
     public int ReloadDelayMs { get; private set; } = 800;
 

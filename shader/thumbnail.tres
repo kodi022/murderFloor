@@ -1,0 +1,33 @@
+[gd_resource type="VisualShader" format=3 uid="uid://cb4qkegs8o0yo"]
+
+[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_l1wi7"]
+
+[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_ijmre"]
+constant = Color(0, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_ck4on"]
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_q6j2f"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1), 2, Vector3(0.5, 0.5, 0.5)]
+op_type = 3
+
+[sub_resource type="VisualShaderNodeRemap" id="VisualShaderNodeRemap_jlmkx"]
+default_input_values = [1, 0.05, 2, 1.0, 3, 0.0, 4, 1.0]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_bth04"]
+input_name = "normal"
+
+[resource]
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorConstant_l1wi7")
+nodes/fragment/2/position = Vector2(-256, 539)
+nodes/fragment/3/node = SubResource("VisualShaderNodeColorConstant_ijmre")
+nodes/fragment/3/position = Vector2(-256, 439)
+nodes/fragment/4/node = SubResource("VisualShaderNodeVectorDecompose_ck4on")
+nodes/fragment/4/position = Vector2(-476, 179)
+nodes/fragment/5/node = SubResource("VisualShaderNodeMix_q6j2f")
+nodes/fragment/5/position = Vector2(24, 179)
+nodes/fragment/6/node = SubResource("VisualShaderNodeRemap_jlmkx")
+nodes/fragment/6/position = Vector2(-276, 179)
+nodes/fragment/7/node = SubResource("VisualShaderNodeInput_bth04")
+nodes/fragment/7/position = Vector2(-776, 219)
+nodes/fragment/connections = PackedInt32Array(2, 0, 5, 1, 3, 0, 5, 0, 6, 0, 5, 2, 5, 0, 0, 0, 7, 0, 4, 0, 4, 2, 6, 0, 5, 0, 0, 5)

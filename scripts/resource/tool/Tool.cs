@@ -27,29 +27,69 @@ public partial class Tool : MFResource
 
     public virtual SlotEnum GetSlot() => SlotEnum.Special;
 
-    public override async Task<Texture> GenerateThumbnailTexture()
+    public override async Task<ImageTexture> GenerateThumbnailImage()
     {
-        if (MeshScene is null) return GD.Load<Texture>("res://images/missing.png");
+        if (MeshScene is null) return Global.MissingTextureImage;
 
         var sceneViewport = new SubViewport
         {
-            Size = new Vector2I(128, 128),
+            Size = new Vector2I(128, 96),
             OwnWorld3D = true,
+            RenderTargetUpdateMode = SubViewport.UpdateMode.Once,
+            Msaa3D = Viewport.Msaa.Msaa8X,
         };
         ((SceneTree)Engine.GetMainLoop()).Root.AddChild(sceneViewport);
 
         var weaponScene = (Node3D)MeshScene.Instantiate();
-        var dirLight = new DirectionalLight3D();
         var camera = new Camera3D();
-        camera.SetOrthogonal(1f, 0.1f, 100f);
-        camera.LookAtFromPosition(new Vector3(0, 0, 5f), Vector3.Zero);
+        var bounds = GetBounds(weaponScene);
+        var modelCenter = (bounds.End + bounds.Position) / 2;
+        var modelWidth = bounds.End.Abs().X + bounds.Position.Abs().X;
+        weaponScene.Position = -modelCenter;
+        camera.SetOrthogonal(MathF.Max(modelWidth, 0.5f), 0.1f, 20f);
+        camera.LookAtFromPosition(new Vector3(0, 0, 3f), Vector3.Zero);
 
         sceneViewport.AddChild(weaponScene);
-        sceneViewport.AddChild(dirLight);
         sceneViewport.AddChild(camera);
+        ApplyThumbnailMaterialToParts(weaponScene);
         await sceneViewport.ToSignal(RenderingServer.Singleton, RenderingServerInstance.SignalName.FramePostDraw);
-        var texture = sceneViewport.GetTexture();
-        //sceneViewport.Free();
-        return texture;
+        var image = sceneViewport.GetViewport().GetTexture().GetImage();
+        sceneViewport.QueueFree();
+        return ImageTexture.CreateFromImage(image);
+    }
+
+    private static void ApplyThumbnailMaterialToParts(Node3D weaponScene)
+    {
+        foreach (var child in weaponScene.GetChildren())
+        {
+            if (child is MeshInstance3D mesh)
+            {
+                mesh.MaterialOverride = GD.Load<Material>("res://materials/thumbnail.tres");
+            }
+        }
+    }
+
+    private static Aabb GetBounds(Node3D node)
+    {
+        var bounds = new Aabb();
+        if (node.IsQueuedForDeletion()) return bounds;
+
+        if (node is VisualInstance3D inst)
+        {
+            bounds = inst.GetAabb();
+        }
+
+        foreach (var child in node.GetChildren())
+        {
+            if (child is not VisualInstance3D childInst) continue;
+            if (childInst.GetAabb() == default) continue;
+
+            var childBounds = childInst.GetAabb();
+            bounds = bounds.Merge(childBounds);
+        }
+
+        //bounds = node.Transform * bounds;
+
+        return bounds;
     }
 }

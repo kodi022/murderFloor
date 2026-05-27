@@ -1,10 +1,14 @@
 [gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://jy2aiqd7llx"]
 
+[ext_resource type="AudioStream" uid="uid://bahyivwmamwls" path="res://sounds/tool/gun/pistol-shot.mp3" id="1_u5xjw"]
 [ext_resource type="PackedScene" uid="uid://brnw0fhy3d2ty" path="res://objects/tool/gun/pistol/testpistol/testpistol.blend" id="1_y5xye"]
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_y34yl"]
+[ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/gunreload.mp3" id="3_fh6pa"]
 
 [resource]
 script = ExtResource("1_y34yl")
+FireSound = ExtResource("1_u5xjw")
+ReloadSound = ExtResource("3_fh6pa")
 EndlessReserve = true
 FireMode = 1
 MeshScene = ExtResource("1_y5xye")

@@ -37,8 +37,8 @@ public partial class NetworkManager : Node
     // entered in a UI scene.
     public Godot.Collections.Dictionary<string, string> _playerInfo = new()
     {
-        { "Name", "PlayerName" },
-        { "Coolness", "3" },
+        { "Name", "Survivor" },
+        { "Coolness", "1" },
     };
 
     public override void _EnterTree()

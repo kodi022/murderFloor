@@ -30,18 +30,26 @@ public partial class HUD : Control
         playersLabel.Text = players + "\n\n";
 
 
-        foreach (var tool in Player.Self.ToolsPrimary)
+        void ListWeapons(List<LiveTool> tools)
         {
-            playersLabel.Text += tool.ToolResource.NameLocalizationKey + ",";
+            foreach (var tool in tools)
+            {
+                if (tool == Player.Self.SelectedTool) playersLabel.Text += "-> ";
+                playersLabel.Text += tool.ToolResource.NameLocalizationKey + $" {tool.CurrentMag}" + "\n";
+            }
         }
-        playersLabel.Text = playersLabel.Text[..^1] + "\n";
-
-        foreach (var tool in Player.Self.ToolsSecondary)
+        void CropAndNewline()
         {
-            playersLabel.Text += tool.ToolResource.NameLocalizationKey + ",";
+            playersLabel.Text = playersLabel.Text[..^1] + "\n\n";
         }
-        playersLabel.Text = playersLabel.Text[..^1] + "\n";
 
+        ListWeapons(Player.Self.ToolsPrimary);
+        CropAndNewline();
+        ListWeapons(Player.Self.ToolsSecondary);
+        CropAndNewline();
+        ListWeapons(Player.Self.ToolsSpecial);
+        CropAndNewline();
+        ListWeapons(Player.Self.ToolsMelee);
 
         var move = Player.Self.MaxHealth - Player.Self.Health;
         healthBarPanel.SetPosition(new Vector2(-move * healthBarPanel.Size.X, 0));

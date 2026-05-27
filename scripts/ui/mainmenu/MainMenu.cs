@@ -44,8 +44,6 @@ public partial class MainMenu : Control
 		OpenUIName = "local";
 		cameraTargetTransform = cameraLocalPositionNode.Transform;
 		SwitchUI("res://scenes/ui/mainmenu/MainMenuLocal.tscn");
-
-		//GetTree().ChangeSceneToFile("res://scenes/Dev.tscn");
 	}
 
 	private void OnlineButton()
@@ -55,7 +53,6 @@ public partial class MainMenu : Control
 		OpenUIName = "online";
 		cameraTargetTransform = cameraOnlinePositionNode.Transform;
 		SwitchUI("res://scenes/ui/mainmenu/MainMenuOnline.tscn");
-		//Rpc("LoadGame", "res://scenes/Dev.tscn");
 	}
 
 	private void OptionsButton()

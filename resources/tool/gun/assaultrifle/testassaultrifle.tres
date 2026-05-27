@@ -1,12 +1,16 @@
 [gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://dsojdot1duxlo"]
 
 [ext_resource type="PackedScene" uid="uid://ikpllj7i4gtk" path="res://objects/tool/gun/assaultrifle/testassaultrifle/testassaultrifle.blend" id="1_8qbw4"]
+[ext_resource type="AudioStream" uid="uid://cj1rgtgsw1vnp" path="res://sounds/tool/gun/new-movie-1.mp3" id="1_67cxb"]
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_jtlsn"]
+[ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/gunreload.mp3" id="3_12rvs"]
 
 [resource]
 script = ExtResource("1_jtlsn")
 FirearmType = 5
 RPM = 700.0
+FireSound = ExtResource("1_67cxb")
+ReloadSound = ExtResource("3_12rvs")
 MagSize = 30
 InitialDegreeSpread = Vector2(0.6, 0.6)
 SpreadRecoveryRate = 2.75

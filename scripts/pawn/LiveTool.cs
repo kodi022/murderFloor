@@ -21,10 +21,10 @@ public partial class LiveTool : Node
 
     // toolfirearm
     public Vector2 CurrentSpread { get; private set; }
+    public int CurrentMag { get; private set; } = 0;
+    public bool Reloading { get; private set; } = false;
     private ulong rpmAsMs = 0;
     private ulong msSinceFire = 0;
-    private int currentMag = 0;
-    private bool reloading = false;
     private bool bolting = false;
     private bool shotSemi = false;
 
@@ -36,7 +36,7 @@ public partial class LiveTool : Node
         if (ToolResource is ToolFirearm firearm)
         {
             rpmAsMs = (ulong)(60f / firearm.RPM * 1000f);
-            currentMag = firearm.MagSize;
+            CurrentMag = firearm.MagSize;
             CurrentSpread = firearm.InitialDegreeSpread;
         }
     }
@@ -86,7 +86,7 @@ public partial class LiveTool : Node
 
         if (ToolResource is ToolFirearm firearm)
         {
-            if (reloading) return;
+            if (Reloading) return;
             if (bolting) return;
             if (firearm.FireMode == ToolFirearm.FireModeEnum.Semi && shotSemi) return;
             FirePrimaryFirearm(firearm, fi);
@@ -115,12 +115,20 @@ public partial class LiveTool : Node
     {
         if (!equipped) return;
 
+        var fi = new Tool.FireInfo()
+        {
+            Player = Player.Self,
+            CurrentSpread = CurrentSpread,
+            StartPosition = Player.Self.ViewPosition,
+            ViewTransform = Player.Self.ViewTransform
+        };
+
         if (ToolResource is ToolFirearm firearm)
         {
-            if (reloading) return;
+            if (Reloading) return;
             if (bolting) return;
-            if (currentMag >= firearm.MagSize) return;
-            ReloadFirearm(firearm);
+            if (CurrentMag >= firearm.MagSize) return;
+            ReloadFirearm(firearm, fi);
             return;
         }
     }
@@ -132,25 +140,29 @@ public partial class LiveTool : Node
         {
             msSinceFire = ticksMs;
             firearm.FireBullet(fi);
+
+            var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
+            poly.PlayStream(firearm.FireSound);
+
             shotSemi = true;
             CurrentSpread = (CurrentSpread + firearm.SpreadIncreasePerShot).Min(firearm.MaxDegreeSpread);
-            currentMag--;
+            CurrentMag--;
 
-            if (currentMag <= 0)
+            if (CurrentMag <= 0)
             {
-                ReloadFirearm(firearm);
+                ReloadFirearm(firearm, fi);
                 return;
             }
 
             if (firearm.FireMode == ToolFirearm.FireModeEnum.Manual)
             {
-                BoltFirearm(firearm);
+                BoltFirearm(firearm, fi);
                 return;
             }
         }
     }
 
-    private async void BoltFirearm(ToolFirearm firearm)
+    private async void BoltFirearm(ToolFirearm firearm, Tool.FireInfo fi)
     {
         if (bolting) return;
         bolting = true;
@@ -163,17 +175,20 @@ public partial class LiveTool : Node
         bolting = false;
     }
 
-    private async void ReloadFirearm(ToolFirearm firearm)
+    private async void ReloadFirearm(ToolFirearm firearm, Tool.FireInfo fi)
     {
-        if (reloading) return;
-        reloading = true;
+        if (Reloading) return;
+        Reloading = true;
         GD.Print("RELOAD");
+
+        var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
+        poly.PlayStream(firearm.ReloadSound);
 
         await Task.Delay(firearm.ReloadDelayMs);
         //await reloadanimation
 
         GD.Print("RELOAD-DONE");
-        currentMag = firearm.MagSize;
-        reloading = false;
+        CurrentMag = firearm.MagSize;
+        Reloading = false;
     }
 }

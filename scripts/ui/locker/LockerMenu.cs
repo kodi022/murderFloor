@@ -6,6 +6,10 @@ public partial class LockerMenu : Control
     private GridContainer grid;
     [Export]
     private TextureRect rect;
+    [Export]
+    private Button addToolButton;
+    [Export]
+    private Button removeToolButton;
 
     private bool previewSceneCreated = false;
     private Camera3D cam;
@@ -17,12 +21,27 @@ public partial class LockerMenu : Control
     public override void _Ready()
     {
         BuildList();
+        addToolButton.Pressed += ToolAddToInventory;
+        removeToolButton.Pressed += ToolRemoveFromInventory;
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        base._Input(@event);
+        if (@event is InputEventMouseMotion eventMouse)
+        {
+            if (weaponScene is null) return;
+            weaponScene.Rotate(Vector3.Up, eventMouse.ScreenRelative.X * 0.005f);
+            weaponScene.Rotate(Vector3.Right, eventMouse.ScreenRelative.Y * 0.005f);
+        }
     }
 
     private async void BuildList()
     {
         foreach (var tool in ResourceManager.ToolRegistry.GetAllResource())
         {
+            if (tool.Value.FullId == "base:fists") continue;
+
             var panelContainer = new PanelContainer();
             var button = new Button();
             var rect = new TextureRect();
@@ -36,9 +55,13 @@ public partial class LockerMenu : Control
             grid.AddChild(panelContainer);
             panelContainer.AddChild(rect);
             panelContainer.AddChild(button);
-            rect.Texture = (Texture2D)await tool.Value.GenerateThumbnailTexture();
+            rect.Texture = await tool.Value.GenerateThumbnailImage();
 
-            selectedTool ??= tool.Value;
+            if (selectedTool is null)
+            {
+                selectedTool = tool.Value;
+                SelectTool();
+            }
         }
     }
 
@@ -53,14 +76,15 @@ public partial class LockerMenu : Control
                 Size = new Vector2I((int)rect.Size.X, (int)rect.Size.Y),
                 RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
                 OwnWorld3D = true,
+                TransparentBg = true,
             };
             AddChild(sceneViewport);
 
             weaponScene = (Node3D)selectedTool.MeshScene.Instantiate();
             var dirLight = new DirectionalLight3D();
             var camera = new Camera3D();
-            camera.SetOrthogonal(1f, 0.1f, 100f);
-            camera.LookAtFromPosition(new Vector3(0, 0, 5f), Vector3.Zero);
+            camera.Fov = 20f;
+            camera.LookAtFromPosition(new Vector3(-0.2f, 0, 3f), new Vector3(-0.2f, 0, 0));
 
             sceneViewport.AddChild(weaponScene);
             sceneViewport.AddChild(dirLight);
@@ -74,5 +98,15 @@ public partial class LockerMenu : Control
             weaponScene = (Node3D)selectedTool.MeshScene.Instantiate();
             sceneViewport.AddChild(weaponScene);
         }
+    }
+
+    private void ToolAddToInventory()
+    {
+        Player.Self.Rpc("ToolAdd", selectedTool.FullId);
+    }
+
+    private void ToolRemoveFromInventory()
+    {
+        Player.Self.Rpc("ToolRemove", selectedTool.FullId);
     }
 }
