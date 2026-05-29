@@ -32,8 +32,9 @@ properties/5/path = NodePath(".:ViewPitch")
 properties/5/spawn = true
 properties/5/replication_mode = 2
 
-[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("ToolsNode", "AudioStreamPlayer3D", "worldModels", "Camera", "viewAim", "cameraRaycast")]
+[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("ToolsMultiplayerSpawner", "ToolsNode", "AudioStreamPlayer3D", "worldModels", "Camera", "viewAim", "cameraRaycast")]
 script = ExtResource("1_p0vlq")
+ToolsMultiplayerSpawner = NodePath("")
 ToolsNode = NodePath("Tools")
 AudioStreamPlayer3D = NodePath("ViewAim/AudioStreamPlayer3D")
 worldModels = NodePath("WorldModels")

@@ -17,20 +17,50 @@ public partial class Player : Pawn
 
     private bool toolsSynced = false;
 
-    // this should only be called using Rpc
+    /// <summary> this should only be called using Rpc </summary>
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false)]
+    public void RequestToolsSyncRpc()
+    {
+        Godot.Collections.Array<string> tools = [];
+        void AddTools(List<LiveTool> liveTools)
+        {
+            foreach (var tool in liveTools) tools.Add(tool.ToolFullId);
+        }
+        AddTools(ToolsPrimary);
+        AddTools(ToolsSecondary);
+        AddTools(ToolsSpecial);
+        AddTools(ToolsMelee);
+        RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", tools);
+    }
+
+    /// <summary> this should only be called using Rpc </summary>
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
+    public void ToolsSyncRpc(Godot.Collections.Array<string> tools)
+    {
+        foreach (var toolId in tools)
+        {
+            var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/LiveTool.tscn").Instantiate();
+            liveTool.SetMultiplayerAuthority(GetMultiplayerAuthority());
+            liveTool.PlayerId = GetMultiplayerAuthority();
+            liveTool.ToolFullId = toolId;
+            ToolsNode.AddChild(liveTool);
+            var list = GetToolListFromTool(liveTool.ToolFullId);
+            liveTool.Name = $"{toolId}" + list.Count(t => t.ToolFullId == toolId);
+            list.Add(liveTool);
+        }
+    }
+
+    /// <summary> this should only be called using Rpc </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void ToolAddRpc(string toolId)
     {
-        ToolAdd(toolId);
-    }
-
-    private void ToolAdd(string toolId)
-    {
         var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/LiveTool.tscn").Instantiate();
+        liveTool.SetMultiplayerAuthority(GetMultiplayerAuthority());
         liveTool.PlayerId = GetMultiplayerAuthority();
         liveTool.ToolFullId = toolId;
         ToolsNode.AddChild(liveTool);
         var list = GetToolListFromTool(liveTool.ToolFullId);
+        liveTool.Name = $"{toolId}" + list.Count(t => t.ToolFullId == toolId);
         list.Add(liveTool);
     }
 
@@ -59,28 +89,12 @@ public partial class Player : Pawn
         }
     }
 
-    /// <summary> this should only be called using Rpc </summary>
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    public void ToolsSyncRpc(Godot.Collections.Array<string> toolIds, int slot, int index)
-    {
-        if (toolsSynced) return;
-        toolsSynced = true;
-
-        GD.Print("ToolSyncRpc " + Name);
-
-        foreach (var toolId in toolIds)
-            ToolAdd(toolId);
-
-        SelectedSlot = (Tool.SlotEnum)slot;
-        SelectedToolIndex = index;
-        ToolEquip(slot, index);
-    }
-
     /// <summary> this should NOT be called using Rpc, will do so internally </summary>
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
     public async void ToolEquip(int slot, int index)
     {
         GD.Print("ToolEquip " + Name);
+
         if (!IsMultiplayerAuthority())
         {
             SelectedSlot = (Tool.SlotEnum)slot;
@@ -92,10 +106,10 @@ public partial class Player : Pawn
         if (list.Count == 0) return;
         if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex]) return;
 
-        Rpc("ToolEquip", slot, index);
+        if (IsMultiplayerAuthority()) Rpc("ToolEquip", slot, index);
+
         SwappingWeapon = true;
         if (SelectedTool is not null) await SelectedTool.Unequip();
-
         SelectedTool = list[SelectedToolIndex];
 
         await SelectedTool.Equip();

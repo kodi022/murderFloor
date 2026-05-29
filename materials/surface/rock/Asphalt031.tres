@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dfadt62bn8p62"]
+
+[ext_resource type="Texture2D" uid="uid://dj3bu6ibk7yko" path="res://images/surface/rock/Asphalt031_2K-JPG_Color.jpg" id="1_1fgw2"]
+[ext_resource type="Texture2D" uid="uid://cw1s65ts6klp3" path="res://images/surface/rock/Asphalt031_2K-JPG_AmbientOcclusion.jpg" id="2_gy8vd"]
+[ext_resource type="Texture2D" uid="uid://n2v5w8kmsmu8" path="res://images/surface/rock/Asphalt031_2K-JPG_NormalGL.jpg" id="3_3nsvb"]
+[ext_resource type="Texture2D" uid="uid://cxjo06kfwyvgg" path="res://images/surface/rock/Asphalt031_2K-JPG_Roughness.jpg" id="4_4inqg"]
+
+[resource]
+albedo_texture = ExtResource("1_1fgw2")
+roughness_texture = ExtResource("4_4inqg")
+normal_enabled = true
+normal_texture = ExtResource("3_3nsvb")
+ao_enabled = true
+ao_texture = ExtResource("2_gy8vd")

@@ -103,7 +103,7 @@ public partial class NetworkManager : Node
 
     // When the server decides to start the game from a UI scene,
     // do Rpc(Lobby.MethodName.LoadGame, filePath);
-    [Rpc(CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    [Rpc(CallLocal = true)]
     public void LoadGame(string gameScenePath)
     {
         GetTree().ChangeSceneToFile(gameScenePath);
@@ -124,6 +124,8 @@ public partial class NetworkManager : Node
         ((Node3D)player).Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
+        player.RpcId(id, "RequestToolsSyncRpc");
+        // ! WIP DOUBLE CALLS
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
@@ -175,21 +177,14 @@ public partial class NetworkManager : Node
         Rpc("LoadGame", "res://scenes/MainMenu.tscn");
     }
 
-    [Rpc(TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void SpawnPeersSelf(Godot.Collections.Dictionary<string, string> newPlayerInfo)
-    {
-        int newPlayerId = Multiplayer.GetRemoteSenderId();
-        _players[newPlayerId] = newPlayerInfo;
-    }
-
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
     private void SendInfoToPeer(Godot.Collections.Dictionary<string, string> newPlayerInfo)
     {
         int newPlayerId = Multiplayer.GetRemoteSenderId();
         _players[newPlayerId] = newPlayerInfo;
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     private async void PlayerLoaded()
     {
         if (Multiplayer.IsServer())

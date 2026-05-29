@@ -53,12 +53,13 @@ public partial class LiveTool : Node
 
     public async Task Equip()
     {
-        foreach (var child in Player.ViewToolPosition.GetChildren())
+        var posNode = IsMultiplayerAuthority() ? Player.ViewToolPosition : Player.WorldToolPosition;
+        foreach (var child in posNode.GetChildren())
         {
             child.Free();
         }
 
-        Player.ViewToolPosition.AddChild(ToolResource.MeshScene.Instantiate());
+        posNode.AddChild(ToolResource.MeshScene.Instantiate());
 
         // await equip animation
         await Task.Delay(200);

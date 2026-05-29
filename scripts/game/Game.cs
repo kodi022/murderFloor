@@ -79,7 +79,7 @@ public partial class Game : Node
         }
     }
 
-    [Rpc(mode: MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void StartGame()
     {
         foreach (var child in GetChildren())

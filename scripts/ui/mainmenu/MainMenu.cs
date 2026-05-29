@@ -29,6 +29,55 @@ public partial class MainMenu : Control
 		((Button)buttonsList.GetChild(1)).ButtonDown += OnlineButton;
 		((Button)buttonsList.GetChild(2)).ButtonDown += OptionsButton;
 		((Button)buttonsList.GetChild(3)).ButtonDown += ExitButton;
+
+		var args = OS.GetCmdlineArgs();
+		if (args.Contains("--delay"))
+		{
+			async void Delay()
+			{
+				await Task.Delay(500);
+				ProcessArgs();
+			}
+			Delay();
+		}
+		else ProcessArgs();
+
+		void ProcessArgs()
+		{
+			for (int i = 0; i < args.Length; i++)
+			{
+				switch (args[i].ToLowerInvariant())
+				{
+					case "--hostserver":
+						if (i + 1 < args.Length)
+						{
+							i++;
+							var name = args[i];
+							NetworkManager.Current._playerInfo["Name"] = name;
+							var error = NetworkManager.Current.CreateServer();
+							if (error == Error.Ok)
+							{
+								GetTree().ChangeSceneToFile("res://scenes/Lobby.tscn");
+							}
+							return;
+						}
+						break;
+					case "--joinserver":
+						if (i + 1 < args.Length)
+						{
+							i++;
+							var name = args[i];
+							NetworkManager.Current._playerInfo["Name"] = name;
+							var error = NetworkManager.Current.JoinServer();
+							if (error == Error.Ok)
+							{
+								GetTree().ChangeSceneToFile("res://scenes/Lobby.tscn");
+							}
+						}
+						break;
+				}
+			}
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

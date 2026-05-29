@@ -13,7 +13,8 @@ public partial class Player : Pawn
     public Vector3 ViewModelPositionKick { get; set; }
     public Vector3 ViewModelRotationKick { get; set; }
 
-    public Node3D ViewToolPosition; // tool models are attached to this
+    public Node3D WorldToolPosition { get; private set; }
+    public Node3D ViewToolPosition { get; private set; } // tool models are attached to this
 
     [Export]
     public Node ToolsNode; // this is the synced node tool inventory
@@ -36,7 +37,6 @@ public partial class Player : Pawn
     private Node3D worldBody;
     private Skeleton3D worldBodySkeleton;
     private AnimationPlayer worldBodyAnimationPlayer;
-    private Node3D worldToolPosition;
 
     // view
     [Export]
@@ -69,11 +69,14 @@ public partial class Player : Pawn
         AllPlayers.Add(this);
 
         if (!IsMultiplayerAuthority()) return;
+
         Self = this;
-        SelfId = GetMultiplayerAuthority();
-        Camera.Current = true;
         Input.UseAccumulatedInput = false;
-        cameraRaycast.AddException(this);
+    }
+
+    public override void _ExitTree()
+    {
+        AllPlayers.Remove(this);
     }
 
     public override void _Ready()
@@ -83,25 +86,20 @@ public partial class Player : Pawn
 
         if (!IsMultiplayerAuthority())
         {
-            var allTools = new Godot.Collections.Array<string>();
-            foreach (var tool in ToolsPrimary) allTools.Add(tool.ToolFullId);
-            foreach (var tool in ToolsSecondary) allTools.Add(tool.ToolFullId);
-            foreach (var tool in ToolsSpecial) allTools.Add(tool.ToolFullId);
-            foreach (var tool in ToolsMelee) allTools.Add(tool.ToolFullId);
-            RpcId(GetMultiplayerAuthority(), "ToolsSyncRpc", allTools, (int)SelectedSlot, SelectedToolIndex);
+            foreach (var child in GetChildren()) if (child is Control) child.Free();
+            cameraRaycast.Free();
+            Camera.Free();
             return;
         }
 
-        toolsSynced = true;
-        Rpc("ToolAddRpc", "base:testassaultrifle");
+        cameraRaycast.AddException(this);
+        SelfId = GetMultiplayerAuthority();
+        Camera.Current = true;
         Rpc("ToolAddRpc", "base:testpistol");
+        Rpc("ToolAddRpc", "base:testassaultrifle");
+        Rpc("ToolAddRpc", "base:testassaultrifle");
         worldModels.Free();
         BuildViewNodes();
-    }
-
-    public override void _ExitTree()
-    {
-        AllPlayers.Remove(this);
     }
 
     public override void _Input(InputEvent @event)
@@ -281,12 +279,12 @@ public partial class Player : Pawn
         worldBodySkeleton.AddChild(worldHandBone);
         worldHandBone.BoneName = "Hand.R";
 
-        worldToolPosition = (Node3D)worldModels.GetChild(1);
+        WorldToolPosition = (Node3D)worldModels.GetChild(1);
         // reparent/reowner worldtool to handbone
-        worldToolPosition.GetParent().RemoveChild(worldToolPosition);
-        worldToolPosition.Owner = null;
-        worldHandBone.AddChild(worldToolPosition);
-        worldToolPosition.Owner = worldHandBone;
+        WorldToolPosition.GetParent().RemoveChild(WorldToolPosition);
+        WorldToolPosition.Owner = null;
+        worldHandBone.AddChild(WorldToolPosition);
+        WorldToolPosition.Owner = worldHandBone;
     }
 
     private void BuildViewNodes()
