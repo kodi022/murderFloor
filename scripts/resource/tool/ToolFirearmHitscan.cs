@@ -68,7 +68,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
                         {"hitposition", ((Vector3)ray["position"]).ToString()},
                         {"hitbox", "0"}
                     };
-                    pawn.Rpc("OnDamage", di);
+                    pawn.Rpc("OnDamageRpc", di);
                 }
             }
         }

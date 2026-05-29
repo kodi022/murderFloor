@@ -5,7 +5,7 @@ public partial class LiveTool : Node
     [Export]
     public int PlayerId { get; set; }
     [Export]
-    public string ToolId { get; set; }
+    public string ToolFullId { get; set; }
 
     // reference to player
     public Player Player { get; private set; }
@@ -31,7 +31,7 @@ public partial class LiveTool : Node
     public override void _Ready()
     {
         Player = Player.FindPlayer(PlayerId);
-        ToolResource = ResourceManager.ToolRegistry.GetResourceReference(ToolId);
+        ToolResource = ResourceManager.ToolRegistry.GetResourceReference(ToolFullId);
 
         if (ToolResource is ToolFirearm firearm)
         {

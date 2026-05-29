@@ -3,6 +3,7 @@ namespace MurderFloor;
 public partial class Player : Pawn
 {
     public static Player Self { get; private set; }
+    public static long SelfId { get; private set; }
     public static List<Player> AllPlayers { get; private set; } = [];
 
     public Vector3 ViewPosition => viewAim.GlobalPosition;
@@ -63,28 +64,39 @@ public partial class Player : Pawn
 
     public static Player FindPlayer(int playerId) => AllPlayers.First(p => p.GetMultiplayerAuthority() == playerId);
 
-    public override void _Ready()
-    {
-        BuildWorldNodes();
-        AudioStreamPlayer3D.Play();
-
-        if (!IsMultiplayerAuthority()) return;
-
-        Rpc("ToolAdd", "base:testassaultrifle");
-        Rpc("ToolAdd", "base:testpistol");
-        worldModels.Free();
-        BuildViewNodes();
-    }
-
     public override void _EnterTree()
     {
         AllPlayers.Add(this);
 
         if (!IsMultiplayerAuthority()) return;
         Self = this;
+        SelfId = GetMultiplayerAuthority();
         Camera.Current = true;
         Input.UseAccumulatedInput = false;
         cameraRaycast.AddException(this);
+    }
+
+    public override void _Ready()
+    {
+        BuildWorldNodes();
+        AudioStreamPlayer3D.Play();
+
+        if (!IsMultiplayerAuthority())
+        {
+            var allTools = new Godot.Collections.Array<string>();
+            foreach (var tool in ToolsPrimary) allTools.Add(tool.ToolFullId);
+            foreach (var tool in ToolsSecondary) allTools.Add(tool.ToolFullId);
+            foreach (var tool in ToolsSpecial) allTools.Add(tool.ToolFullId);
+            foreach (var tool in ToolsMelee) allTools.Add(tool.ToolFullId);
+            RpcId(GetMultiplayerAuthority(), "ToolsSyncRpc", allTools, (int)SelectedSlot, SelectedToolIndex);
+            return;
+        }
+
+        toolsSynced = true;
+        Rpc("ToolAddRpc", "base:testassaultrifle");
+        Rpc("ToolAddRpc", "base:testpistol");
+        worldModels.Free();
+        BuildViewNodes();
     }
 
     public override void _ExitTree()
@@ -133,6 +145,9 @@ public partial class Player : Pawn
         if (!IsMultiplayerAuthority())
         {
             worldBodyAnimationPlayer.Play("pose_idle");
+
+            viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
+            Rotation = new Vector3(0, ViewYaw, 0);
             return;
         }
 
@@ -221,13 +236,13 @@ public partial class Player : Pawn
         // ! block movement input if menu open
         if (Input.IsActionJustPressed("jump"))
         {
-            lastVel.Y = 16f;
+            lastVel.Y = 11f;
         }
 
         var forward = Input.GetAxis("backward", "forward");
         var strafe = Input.GetAxis("left", "right");
         var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.80f;
-        wishMove.Y = -0.8f;
+        wishMove.Y = -0.4f;
         wishMove = wishMove.Rotated(Vector3.Up, ViewYaw + 1.570796326794896f);
         lastVel *= new Vector3(0.80f, 0.95f, 0.80f);
         lastVel += wishMove;

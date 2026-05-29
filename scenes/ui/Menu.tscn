@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_l6ofy"]
 [ext_resource type="Script" uid="uid://cqxq6p3akyuf6" path="res://scripts/ui/Menu.cs" id="2_glqlr"]
 
-[node name="Menu" type="Control" unique_id=2136210018]
+[node name="Menu" type="Control" unique_id=2136210018 node_paths=PackedStringArray("buttonExit", "buttonExitDesktop")]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -14,42 +14,52 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_l6ofy")
 script = ExtResource("2_glqlr")
+buttonExit = NodePath("PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/MenuButton4")
+buttonExitDesktop = NodePath("PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/MenuButton5")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=379787004]
 layout_mode = 0
-offset_left = -150.0
+offset_left = -162.0
 offset_top = -200.0
-offset_right = 150.0
+offset_right = 162.0
 offset_bottom = 200.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=449893363]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=474838775]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer" unique_id=1013957926]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer" unique_id=449893363]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=1013957926]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 alignment = 1
 
-[node name="MenuButton" type="MenuButton" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=677162911]
+[node name="MenuButton" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=278283061]
 layout_mode = 2
 text = "milk john"
 
-[node name="MenuButton2" type="MenuButton" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=1806103716]
+[node name="MenuButton2" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1854573423]
 layout_mode = 2
 text = "milk john"
 
-[node name="MenuButton3" type="MenuButton" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=1129613300]
+[node name="MenuButton3" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1091756129]
 layout_mode = 2
 text = "milk john"
 
-[node name="MenuButton4" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer" unique_id=493422303]
+[node name="MenuButton4" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=493422303]
 layout_mode = 2
-text = "go bye bye"
+text = "bye bye menu"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/HBoxContainer" unique_id=2111215867]
+[node name="MenuButton5" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=508422512]
+layout_mode = 2
+text = "bye bye desktop"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=2111215867]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="Panel" type="Panel" parent="PanelContainer/HBoxContainer/VBoxContainer2" unique_id=1316045443]
+[node name="Panel" type="Panel" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1316045443]
 layout_mode = 2

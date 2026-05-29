@@ -1,4 +1,3 @@
-
 namespace MurderFloor;
 
 public partial class LiveMob : Pawn
@@ -33,6 +32,7 @@ public partial class LiveMob : Pawn
 
     private bool _active;
     private Pawn targetPawn;
+    private int tick = 0;
     private ulong lastCheckpointTime;
     private ulong lastTargetUpdateTime;
 
@@ -59,11 +59,35 @@ public partial class LiveMob : Pawn
         Game.Current.MobDeath(MobPoolId);
     }
 
+    // 100 ticks per second
     public override void _PhysicsProcess(double delta)
     {
         if (!Active) return;
         if (!IsMultiplayerAuthority()) return;
-        if (NavigationServer3D.MapGetIterationId(navigationAgent3D.GetNavigationMap()) == 0) return;
+
+        tick++;
+        if ((tick + MobProcessOffset) % 20 == 0)
+        {
+            if (targetPawn is null || targetPawn.Health <= 0)
+            {
+                ChangeNavigationTarget();
+            }
+
+            var ticksMs = Time.GetTicksMsec();
+            if (10000ul < ticksMs - lastTargetUpdateTime)
+            {
+                lastTargetUpdateTime = ticksMs;
+                ChangeNavigationTarget();
+                return;
+            }
+
+            if (20000ul < ticksMs - lastCheckpointTime)
+            {
+                lastCheckpointTime = ticksMs;
+                Unstuck();
+                return;
+            }
+        }
 
         navigationAgent3D.TargetPosition = targetPawn?.GlobalPosition ?? GlobalPosition;
 
@@ -71,29 +95,14 @@ public partial class LiveMob : Pawn
         {
             var di = new Godot.Collections.Dictionary<string, string>()
             {
-                {"damage", 0.ToString()},
-                {"attacker", 0.ToString()},
+                {"damage", "0.1"},
+                {"attacker", "0"},
                 {"attackerName", "mobname"},
                 {"weapon", "claw"},
                 {"hitposition", Vector3.Zero.ToString()},
                 {"hitbox", "0"}
             };
-            targetPawn.Rpc("OnDamage", di);
-        }
-
-        var ticksMs = Time.GetTicksMsec();
-        if (10000ul < ticksMs - lastTargetUpdateTime)
-        {
-            lastTargetUpdateTime = ticksMs;
-            ChangeNavigationTarget();
-            return;
-        }
-
-        if (20000ul < ticksMs - lastCheckpointTime)
-        {
-            lastCheckpointTime = ticksMs;
-            Unstuck();
-            return;
+            targetPawn.Rpc("OnDamageRpc", di);
         }
 
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
@@ -101,7 +110,11 @@ public partial class LiveMob : Pawn
         Velocity = newVelocity + Vector3.Down;
 
         var lookingAtVel = newVelocity - new Vector3(0, newVelocity.Y, 0);
-        Transform = Transform.LookingAt(GlobalPosition - lookingAtVel);
+        var aim = GlobalPosition - lookingAtVel;
+        if (GlobalPosition - lookingAtVel != Vector3.Zero)
+        {
+            Transform = Transform.LookingAt(aim);
+        }
 
         MoveAndSlide();
 
@@ -122,6 +135,11 @@ public partial class LiveMob : Pawn
                 break;
             }
         }
+    }
+
+    private void ProcessLogic()
+    {
+
     }
 
     private void ChangeNavigationTarget()

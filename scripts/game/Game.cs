@@ -45,18 +45,22 @@ public partial class Game : Node
     private ulong lastWaveTime = 0ul;
     private RandomNumberGenerator rng = new();
 
+    // vsc says these should be uppercase
+    private int FuncMobRoundWaveSize => 5 + Round + (int)GameDifficulty * 2;
+
+    private int FuncMobMaxActive => 30 + (Round * 3) + ((int)GameDifficulty * 10);
+
+    private int FuncMobRoundAmount => (int)(30f + Round * ((float)GameDifficulty + 1f * 0.33f));
+
     public override void _EnterTree()
     {
         Current = this;
         rng.Seed = GameSeed;
+    }
 
-        foreach (var child in GetChildren())
-        {
-            if (child is MobSpawnArea mob)
-            {
-                SpawnAreas.Add(mob);
-            }
-        }
+    public override void _ExitTree()
+    {
+        foreach (var mob in MobPool) mob.QueueFree();
     }
 
     public override void _Ready()
@@ -78,21 +82,26 @@ public partial class Game : Node
     [Rpc(mode: MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     public void StartGame()
     {
+        foreach (var child in GetChildren())
+        {
+            if (child is MobSpawnArea mob)
+            {
+                SpawnAreas.Add(mob);
+            }
+        }
+
         var mobScene = GD.Load<PackedScene>("res://scenes/Mob.tscn");
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 200; i++)
         {
             var mob = mobScene.Instantiate();
             mob.Name = "mob_" + i;
             LiveMob lMob = (LiveMob)mob;
             lMob.MobPoolId = i;
-            lMob.Health = 100;
-            lMob.MaxHealth = 100;
+            lMob.MobProcessOffset = MobPool.Count % 20;
             GetTree().Root.AddChild(mob);
             MobPool.Add((LiveMob)mob);
             mob.SetMultiplayerAuthority(1);
         }
-
-        MaxActiveMobs = 40 + ((int)GameDifficulty * 10);
 
         NextRound();
     }
@@ -133,7 +142,8 @@ public partial class Game : Node
     {
         GameState = GameStateEnum.Round;
         Round++;
-        RoundMobsLeft = (int)(30f + Round * ((float)GameDifficulty + 1f * 0.33f));
+        MaxActiveMobs = FuncMobMaxActive;
+        RoundMobsLeft = FuncMobRoundAmount;
         SpawnMobWave();
     }
 
@@ -154,13 +164,13 @@ public partial class Game : Node
     {
         lastWaveTime = Time.GetTicksMsec();
 
-        var waveSize = 5 + (int)GameDifficulty * 2;
+        var waveSize = FuncMobRoundWaveSize;
         if (waveSize + ActiveMobs > MaxActiveMobs) waveSize = MaxActiveMobs - ActiveMobs;
         if (waveSize + ActiveMobs > RoundMobsLeft) waveSize = RoundMobsLeft - ActiveMobs;
 
         var spawned = 0;
-        var spawnAreaIndex = rng.RandiRange(0, SpawnAreas.Count);
-        var spawns = SpawnAreas[(int)spawnAreaIndex].GetSpawnVectorList(waveSize);
+        var spawnAreaIndex = rng.RandiRange(0, SpawnAreas.Count - 1);
+        var spawns = SpawnAreas[spawnAreaIndex].GetSpawnVectorList(waveSize);
 
         for (int i = 0; i < MobPool.Count; i++)
         {

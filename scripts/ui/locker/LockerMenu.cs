@@ -102,11 +102,11 @@ public partial class LockerMenu : Control
 
     private void ToolAddToInventory()
     {
-        Player.Self.Rpc("ToolAdd", selectedTool.FullId);
+        Player.Self.Rpc("ToolAddRpc", selectedTool.FullId);
     }
 
     private void ToolRemoveFromInventory()
     {
-        Player.Self.Rpc("ToolRemove", selectedTool.FullId);
+        Player.Self.Rpc("ToolRemoveRpc", selectedTool.FullId);
     }
 }

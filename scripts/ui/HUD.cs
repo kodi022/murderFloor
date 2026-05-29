@@ -25,17 +25,25 @@ public partial class HUD : Control
         string players = "";
         foreach (var player in NetworkManager.Current._players)
         {
-            players += $"{player.Key} {player.Value["Name"]}\n";
+            if (player.Key == Player.Self.GetMultiplayerAuthority()) continue;
+
+            players += $"{player.Key}-{player.Value["Name"]}";
+            var p = Player.AllPlayers.First(p => p.GetMultiplayerAuthority() == player.Key);
+            if (p is not null && p.SelectedTool is not null)
+            {
+                players += $" t{p.ToolsPrimary.Count + p.ToolsSecondary.Count + p.ToolsSpecial.Count + p.ToolsMelee.Count}";
+                players += $" ({p.SelectedTool.ToolResource.ResourceId} {p.SelectedTool.CurrentMag})";
+            }
+            players += "\n";
         }
         playersLabel.Text = players + "\n\n";
-
 
         void ListWeapons(List<LiveTool> tools)
         {
             foreach (var tool in tools)
             {
                 if (tool == Player.Self.SelectedTool) playersLabel.Text += "-> ";
-                playersLabel.Text += tool.ToolResource.NameLocalizationKey + $" {tool.CurrentMag}" + "\n";
+                playersLabel.Text += tool.ToolResource.ResourceId + $" {tool.CurrentMag}" + "\n";
             }
         }
         void CropAndNewline()
@@ -51,8 +59,8 @@ public partial class HUD : Control
         CropAndNewline();
         ListWeapons(Player.Self.ToolsMelee);
 
-        var move = Player.Self.MaxHealth - Player.Self.Health;
-        healthBarPanel.SetPosition(new Vector2(-move * healthBarPanel.Size.X, 0));
+        var move = Player.Self.Health / Player.Self.MaxHealth;
+        healthBarPanel.SetPosition(new Vector2((healthBarPanel.Size.X * move) - healthBarPanel.Size.X, 0));
         useInfoLabel.Text = Player.Self.UseInfoText;
     }
 

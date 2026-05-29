@@ -1,3 +1,5 @@
+#if TOOLS
+
 using Godot;
 using MurderFloor;
 using System;
@@ -123,3 +125,4 @@ public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
         return zDepth;
     }
 }
+#endif

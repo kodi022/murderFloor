@@ -131,6 +131,13 @@ public partial class NetworkManager : Node
     private void OnPeerDisconnected(long id)
     {
         GD.Print("OnPeerDisconnected " + id);
+        foreach (var p in Player.AllPlayers)
+        {
+            if (p.GetMultiplayerAuthority() == (int)id)
+            {
+                p.QueueFree();
+            }
+        }
         _players.Remove(id);
     }
 
