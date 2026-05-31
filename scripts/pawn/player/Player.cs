@@ -231,7 +231,6 @@ public partial class Player : Pawn
 
         }
 
-        // ! block movement input if menu open
         if (Input.IsActionJustPressed("jump"))
         {
             lastVel.Y = 11f;

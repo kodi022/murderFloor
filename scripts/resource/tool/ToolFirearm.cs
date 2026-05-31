@@ -36,12 +36,17 @@ public partial class ToolFirearm : Tool
     public int PelletCount { get; private set; } = 1;
     [Export]
     public float HoldingSpeed { get; private set; } = 1f;
+
+    [Export, ExportSubgroup("Reload")]
+    public int ReloadDelayMs { get; private set; } = 800;
     [Export]
     public string ReloadAnimationName { get; private set; }
     [Export]
     public AudioStreamMP3 ReloadSound { get; private set; }
     [Export]
-    public int ReloadDelayMs { get; private set; } = 800;
+    public bool PartialReload { get; private set; } // ! implement later
+    [Export, ExportSubgroup("Reload/PartialReload")]
+    public Godot.Collections.Dictionary<int, string> PartialReloadAnimationNames { get; private set; }
 
     [Export, ExportSubgroup("Ammo")]
     public int MagSize { get; private set; } = 8;

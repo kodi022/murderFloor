@@ -13,6 +13,7 @@ FirearmType = 5
 RPM = 700.0
 FireSound = ExtResource("1_67cxb")
 ReloadSound = ExtResource("3_12rvs")
+PartialReloadAnimationNames = Dictionary[int, String]({})
 MagSize = 30
 InitialDegreeSpread = Vector2(0.6, 0.6)
 SpreadRecoveryRate = 2.75

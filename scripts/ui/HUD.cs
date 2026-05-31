@@ -43,7 +43,7 @@ public partial class HUD : Control
             foreach (var tool in tools)
             {
                 if (tool == Player.Self.SelectedTool) playersLabel.Text += "-> ";
-                playersLabel.Text += tool.ToolResource.ResourceId + $" {tool.CurrentMag}" + "\n";
+                playersLabel.Text += tool.ToolResource.ResourceId + $" {tool.CurrentMag} / {tool.CurrentReserve}" + "\n";
             }
         }
         void CropAndNewline()

@@ -21,8 +21,8 @@ public partial class ToolFirearmHitscan : ToolFirearm
         Rng.Randomize();
         for (int i = 0; i < PelletCount; i++)
         {
-            float yaw = Mathf.DegToRad(Rng.RandfRange(-fi.CurrentSpread.X, fi.CurrentSpread.X));
-            float pitch = Mathf.DegToRad(Rng.RandfRange(-fi.CurrentSpread.Y, fi.CurrentSpread.Y));
+            float yaw = Mathf.DegToRad(Rng.RandfRange(-fi.LiveTool.CurrentSpread.X, fi.LiveTool.CurrentSpread.X));
+            float pitch = Mathf.DegToRad(Rng.RandfRange(-fi.LiveTool.CurrentSpread.Y, fi.LiveTool.CurrentSpread.Y));
 
             // normalize then scale back down to make circular
             Vector3 angle = new Vector3(Mathf.Abs(pitch), Mathf.Abs(yaw), 0).Normalized();
