@@ -1,3 +1,4 @@
 https://ambientcg.com
 https://fonts.google.com/specimen/Quantico
 https://fonts.google.com/specimen/IBM+Plex+Sans
+https://github.com/L0UARN/godot-outlines/tree/main

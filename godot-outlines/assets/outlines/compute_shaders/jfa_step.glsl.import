@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://d4ih1nsxstak4"
+path="res://.godot/imported/jfa_step.glsl-559b60e620317d9e66bc5dfa68adf883.res"
+
+[deps]
+
+source_file="res://godot-outlines/assets/outlines/compute_shaders/jfa_step.glsl"
+dest_files=["res://.godot/imported/jfa_step.glsl-559b60e620317d9e66bc5dfa68adf883.res"]
+
+[params]
+

@@ -3,5 +3,5 @@
 [ext_resource type="Shader" uid="uid://cb4qkegs8o0yo" path="res://shader/thumbnail.tres" id="1_smq6e"]
 
 [resource]
-render_priority = 0
+render_priority = 1
 shader = ExtResource("1_smq6e")

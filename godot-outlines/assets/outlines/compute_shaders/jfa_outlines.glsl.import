@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://pl81umxwado6"
+path="res://.godot/imported/jfa_outlines.glsl-27c1ef18651f1182f0057dce61428fa7.res"
+
+[deps]
+
+source_file="res://godot-outlines/assets/outlines/compute_shaders/jfa_outlines.glsl"
+dest_files=["res://.godot/imported/jfa_outlines.glsl-27c1ef18651f1182f0057dce61428fa7.res"]
+
+[params]
+

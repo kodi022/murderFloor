@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://b636pvqhsox21"
+path="res://.godot/imported/box_blur.glsl-930c98904d27dfac4f87cb22faf78cc6.res"
+
+[deps]
+
+source_file="res://godot-outlines/assets/outlines/compute_shaders/box_blur.glsl"
+dest_files=["res://.godot/imported/box_blur.glsl-930c98904d27dfac4f87cb22faf78cc6.res"]
+
+[params]
+

@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dludom0xvi6fg"]
+
+[ext_resource type="Shader" uid="uid://rmfnqx8vfq1l" path="res://godot-outlines/assets/outlines/outlineable/outlineable.gdshader" id="1_lk518"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_lk518")
+shader_parameter/outlines_color = Color(1, 1, 1, 1)

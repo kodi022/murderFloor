@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cem2fmrjgja5b"
+path="res://.godot/imported/copy.glsl-b423c902ea147376599708e799097d4f.res"
+
+[deps]
+
+source_file="res://godot-outlines/assets/outlines/compute_shaders/copy.glsl"
+dest_files=["res://.godot/imported/copy.glsl-b423c902ea147376599708e799097d4f.res"]
+
+[params]
+
