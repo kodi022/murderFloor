@@ -2,6 +2,16 @@ namespace MurderFloor;
 
 public partial class Pawn : CharacterBody3D
 {
+    [Signal]
+    public delegate void PlayerOnDamageEventHandler(float damage, Vector3 hitPosition);
+    [Signal]
+    public delegate void PlayerOnDeathEventHandler();
+
+    [Signal]
+    public delegate void MobOnDamageEventHandler(float damage, Vector3 hitPosition);
+    [Signal]
+    public delegate void MobOnDeathEventHandler();
+
     [Export]
     public float MaxHealth { get; set; } = 100;
     [Export]
@@ -19,10 +29,9 @@ public partial class Pawn : CharacterBody3D
     /// <para>"hitbox": "int id"</para>
     /// </summary>
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    public virtual void OnDamageRpc(Godot.Collections.Dictionary<string, string> damageInfo)
+    public virtual void OnDamageRpc(Godot.Collections.Dictionary<string, Variant> damageInfo)
     {
-        GD.Print($"OnDamageRpc {Name} ({Health})");
-        var damage = damageInfo["damage"].ToFloat();
+        var damage = damageInfo["damage"].AsSingle();
 
         if (Armor > 0)
         {
@@ -46,11 +55,24 @@ public partial class Pawn : CharacterBody3D
         }
 
         Health -= damage;
+
         // gore
         // sound
+
+        // signals
+        bool attackerIsSelf = damageInfo["attacker"].AsInt64() == Player.Self.GetMultiplayerAuthority();
+        if (attackerIsSelf && this is LiveMob)
+        {
+            EmitSignal(SignalName.MobOnDamage, damage, damageInfo["hitposition"].AsVector3());
+        }
+
+        if (Player.Self == this)
+        {
+            EmitSignal(SignalName.PlayerOnDamage, damage, damageInfo["hitposition"].AsVector3());
+        }
     }
 
-    public virtual void OnDeath(Godot.Collections.Dictionary<string, string> damageInfo)
+    public virtual void OnDeath(Godot.Collections.Dictionary<string, Variant> damageInfo)
     {
 
     }

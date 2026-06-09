@@ -52,7 +52,7 @@ public partial class LiveMob : Pawn
         ChangeNavigationTarget();
     }
 
-    public override void OnDeath(Godot.Collections.Dictionary<string, string> damageInfo)
+    public override void OnDeath(Godot.Collections.Dictionary<string, Variant> damageInfo)
     {
         if (!Active) return;
         Active = false;

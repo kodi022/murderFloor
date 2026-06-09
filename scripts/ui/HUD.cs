@@ -18,6 +18,11 @@ public partial class HUD : Control
 
     private int activeCrosshair = 0;
 
+    public override void _Ready()
+    {
+        Player.Self.PlayerOnDamage += (a, b) => { GD.Print("wow " + a); };
+    }
+
     public override void _Process(double delta)
     {
         ProcessCrosshairs();

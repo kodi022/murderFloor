@@ -38,9 +38,9 @@ public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
         gizmo.Clear();
         base._Redraw(gizmo);
 
-        var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
-        var a = mobSpawnArea.NodePrimaryPoint;
-        var b = mobSpawnArea.NodeSecondaryPoint;
+        var spawnArea = (MobSpawnArea)gizmo.GetNode3D();
+        var a = spawnArea.NodePrimaryPoint;
+        var b = spawnArea.NodeSecondaryPoint;
         var lines = new[] {
             // vertical
             new Vector3(a.X, a.Y, a.Z), new Vector3(a.X, b.Y, a.Z),
@@ -62,7 +62,7 @@ public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
 
         };
 
-        var handles = new[] { mobSpawnArea.NodePrimaryPoint, mobSpawnArea.NodeSecondaryPoint };
+        var handles = new[] { spawnArea.NodePrimaryPoint, spawnArea.NodeSecondaryPoint };
         gizmo.AddLines(lines, GetMaterial("NodePrimaryPointMaterial", gizmo));
         gizmo.AddHandles(handles, GetMaterial("HandlePrimaryPointMaterial", gizmo), [primaryHandleId, secondaryHandleId]);
     }
@@ -70,22 +70,22 @@ public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
     public override string _GetHandleName(EditorNode3DGizmo gizmo, int handleId, bool secondary)
     {
         // vsc says "Unnecessary assignment of a value to 'mobSpawnArea'" its lying
-        var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
+        var spawnArea = (MobSpawnArea)gizmo.GetNode3D();
         return handleId switch
         {
-            0 => nameof(mobSpawnArea.NodePrimaryPoint),
-            1 => nameof(mobSpawnArea.NodeSecondaryPoint),
+            0 => nameof(spawnArea.NodePrimaryPoint),
+            1 => nameof(spawnArea.NodeSecondaryPoint),
             _ => "Unknown Handle",
         };
     }
 
     public override Variant _GetHandleValue(EditorNode3DGizmo gizmo, int handleId, bool secondary)
     {
-        var mobSpawnArea = (MobSpawnArea)gizmo.GetNode3D();
+        var spawnArea = (MobSpawnArea)gizmo.GetNode3D();
         return handleId switch
         {
-            0 => mobSpawnArea.NodePrimaryPoint,
-            1 => mobSpawnArea.NodeSecondaryPoint,
+            0 => spawnArea.NodePrimaryPoint,
+            1 => spawnArea.NodeSecondaryPoint,
             _ => Vector3.Zero,
         };
     }

@@ -19,8 +19,12 @@ public partial class Game : Node
     }
 
     public static Game Current;
-
     public static List<LiveMob> MobPool { get; private set; } = [];
+
+    [Signal]
+    public delegate void GameNextRoundEventHandler(int round);
+    [Signal]
+    public delegate void GameStartEventHandler();
 
     [Export]
     public GameStateEnum GameState { get; private set; } = GameStateEnum.Stopped;
@@ -40,7 +44,7 @@ public partial class Game : Node
     [Export]
     public int ActiveMobs { get; private set; } = 0;
 
-    public List<MobSpawnArea> SpawnAreas { get; private set; } = [];
+    private List<MobSpawnArea> spawnAreas = [];
 
     private ulong lastWaveTime = 0ul;
     private RandomNumberGenerator rng = new();
@@ -86,7 +90,7 @@ public partial class Game : Node
         {
             if (child is MobSpawnArea mob)
             {
-                SpawnAreas.Add(mob);
+                spawnAreas.Add(mob);
             }
         }
 
@@ -102,6 +106,7 @@ public partial class Game : Node
             MobPool.Add((LiveMob)mob);
             mob.SetMultiplayerAuthority(1);
         }
+        EmitSignal(SignalName.GameStart);
 
         NextRound();
     }
@@ -144,6 +149,7 @@ public partial class Game : Node
         Round++;
         MaxActiveMobs = FuncMobMaxActive;
         RoundMobsLeft = FuncMobRoundAmount;
+        EmitSignal(SignalName.GameNextRound, Round);
         SpawnMobWave();
     }
 
@@ -169,8 +175,8 @@ public partial class Game : Node
         if (waveSize + ActiveMobs > RoundMobsLeft) waveSize = RoundMobsLeft - ActiveMobs;
 
         var spawned = 0;
-        var spawnAreaIndex = rng.RandiRange(0, SpawnAreas.Count - 1);
-        var spawns = SpawnAreas[spawnAreaIndex].GetSpawnVectorList(waveSize);
+        var spawnAreaIndex = rng.RandiRange(0, spawnAreas.Count - 1);
+        var spawns = spawnAreas[spawnAreaIndex].GetSpawnVectorList(waveSize);
 
         for (int i = 0; i < MobPool.Count; i++)
         {

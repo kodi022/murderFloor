@@ -8,11 +8,12 @@ public partial class MurderFloorTools : EditorPlugin
 	public override void _EnterTree()
 	{
 		// Initialization of the plugin goes here.
-		var script = GD.Load<CSharpScript>("res://scripts/game/MobSpawnArea.cs");
 		var texture = GD.Load<Texture2D>("res://images/missing.png");
-		AddCustomType("MobSpawnArea", "Node3D", script, texture);
 
-		mobSpawnAreaGizmo = (MobSpawnAreaGizmo)GD.Load<CSharpScript>("res://addons/MurderFloorTools/MobSpawnAreaGizmo.cs").New();
+		var mobSpawnAreaScript = GD.Load<CSharpScript>("res://scripts/game/mob/MobSpawnArea.cs");
+		AddCustomType("MobSpawnArea", "Node3D", mobSpawnAreaScript, texture);
+
+		mobSpawnAreaGizmo = (MobSpawnAreaGizmo)(GodotObject)GD.Load<CSharpScript>("res://addons/MurderFloorTools/MobSpawnAreaGizmo.cs").New();
 		AddNode3DGizmoPlugin(mobSpawnAreaGizmo);
 	}
 
