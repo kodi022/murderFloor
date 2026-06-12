@@ -1,17 +1,21 @@
 [gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://dsojdot1duxlo"]
 
 [ext_resource type="PackedScene" uid="uid://ikpllj7i4gtk" path="res://objects/tool/gun/assaultrifle/testassaultrifle/testassaultrifle.blend" id="1_8qbw4"]
-[ext_resource type="AudioStream" uid="uid://cj1rgtgsw1vnp" path="res://sounds/tool/gun/new-movie-1.mp3" id="1_67cxb"]
+[ext_resource type="AudioStream" uid="uid://cmx4yh72ledmf" path="res://sounds/tool/gun/dryfire/freesound_community-gun-dry-firing-9-96427.mp3" id="1_12rvs"]
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_jtlsn"]
-[ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/gunreload.mp3" id="3_12rvs"]
+[ext_resource type="AudioStream" uid="uid://b07pstsuwjx6s" path="res://sounds/tool/gun/fire/freesound_community-single-gunshot-54-40780.mp3" id="2_bo1an"]
+[ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/reload/gunreload.mp3" id="3_12rvs"]
 
 [resource]
 script = ExtResource("1_jtlsn")
 Damages = Vector2(30, 10)
 FalloffRanges = Vector2(20, 40)
+MaxRange = 140.0
 FirearmType = 5
 RPM = 700.0
-FireSound = ExtResource("1_67cxb")
+FireSound = ExtResource("2_bo1an")
+DryFireSound = ExtResource("1_12rvs")
+ReloadDelayMs = 1500
 ReloadSound = ExtResource("3_12rvs")
 PartialReloadAnimationNames = Dictionary[int, String]({})
 MagSize = 30
@@ -21,9 +25,8 @@ SpreadIncreasePerShot = Vector2(0.45, 0.45)
 CameraRotationKick = Vector2(-0.02, 0)
 ViewmodelPositionKick = Vector2(0, 0.04)
 ViewmodelRotationKick = Vector2(0.015, 0)
-AimShift = Vector2(0.006, 0)
 MeshScene = ExtResource("1_8qbw4")
 ResourceId = "testassaultrifle"
 UseInGame = false
-NameLocalizationKey = "#tool.assaultrifle.testassaultrifle"
+NameLocalizationGroup = "tool"
 metadata/_custom_type_script = "uid://dh0saosikvolb"

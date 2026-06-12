@@ -1,6 +1,5 @@
 namespace MurderFloor;
 
-[GlobalClass]
 public partial class MFResource : Resource
 {
     public int HashId { get; private set; } = 0;
@@ -14,7 +13,9 @@ public partial class MFResource : Resource
     [Export]
     public bool UseInGame { get; private set; } = true;
     [Export]
-    public string NameLocalizationKey { get; private set; } = "#empty";
+    public string NameLocalizationGroup { get; private set; } = "";
+
+    public string NameLocalizationKey => $"{NameLocalizationGroup}.{FullId}";
 
     public void BuildIds()
     {

@@ -3,14 +3,14 @@ namespace MurderFloor;
 public partial class Pawn : CharacterBody3D
 {
     [Signal]
-    public delegate void PlayerOnDamageEventHandler(float damage, Vector3 hitPosition);
+    public delegate void PlayerOnDamageEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
     [Signal]
-    public delegate void PlayerOnDeathEventHandler();
+    public delegate void PlayerOnDeathEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
 
     [Signal]
-    public delegate void MobOnDamageEventHandler(float damage, Vector3 hitPosition);
+    public delegate void MobOnDamageEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
     [Signal]
-    public delegate void MobOnDeathEventHandler();
+    public delegate void MobOnDeathEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
 
     [Export]
     public float MaxHealth { get; set; } = 100;
@@ -63,12 +63,12 @@ public partial class Pawn : CharacterBody3D
         bool attackerIsSelf = damageInfo["attacker"].AsInt64() == Player.Self.GetMultiplayerAuthority();
         if (attackerIsSelf && this is LiveMob)
         {
-            EmitSignal(SignalName.MobOnDamage, damage, damageInfo["hitposition"].AsVector3());
+            EmitSignal(SignalName.MobOnDamage, damageInfo);
         }
 
         if (Player.Self == this)
         {
-            EmitSignal(SignalName.PlayerOnDamage, damage, damageInfo["hitposition"].AsVector3());
+            EmitSignal(SignalName.PlayerOnDamage, damageInfo);
         }
     }
 

@@ -31,6 +31,8 @@ public partial class ToolFirearm : Tool
     public float RPM { get; private set; } = 400f;
     [Export]
     public AudioStreamMP3 FireSound { get; private set; }
+    [Export]
+    public AudioStreamMP3 DryFireSound { get; private set; }
 
     [Export]
     public int PelletCount { get; private set; } = 1;
@@ -64,8 +66,9 @@ public partial class ToolFirearm : Tool
     [Export]
     public Vector2 SpreadIncreasePerShot { get; private set; } = new Vector2(0.5f, 0.5f);
 
-    // ! add movement spread penalty
-    // ! add screen shake
+    // ! add movement min spread penalty
+    // ! add movement spread recovery penalty
+    // remember to base on speed, so slow walk has less penalty
 
     [Export, ExportSubgroup("Kick")]
     public Vector2 CameraRotationKick { get; private set; } = new Vector2(0.02f, 0f);
@@ -74,9 +77,11 @@ public partial class ToolFirearm : Tool
     [Export]
     public Vector2 ViewmodelRotationKick { get; private set; } = new Vector2(0.05f, 0f);
     [Export]
-    public Vector2 AimShift { get; private set; } = new Vector2(0.001f, 0f);
+    public Vector2 AimShiftRangeVertical { get; private set; } = new Vector2(0.001f, 0.0015f);
     [Export]
-    public float ScreenShakeAmount { get; private set; } = 0.1f;
+    public Vector2 AimShiftRangeHorizontal { get; private set; } = new Vector2(-0.0003f, 0.0003f);
+    [Export]
+    public float ScreenShakeAmount { get; private set; } = 0.05f;
 
     [Export, ExportSubgroup("FireMode")]
     public FireModeEnum FireMode { get; private set; }

@@ -22,7 +22,11 @@ public partial class Game : Node
     public static List<LiveMob> MobPool { get; private set; } = [];
 
     [Signal]
-    public delegate void GameNextRoundEventHandler(int round);
+    public delegate void GameRoundStartEventHandler(int round);
+    [Signal]
+    public delegate void GameRoundEndEventHandler(int round);
+    [Signal]
+    public delegate void GameWinEventHandler();
     [Signal]
     public delegate void GameStartEventHandler();
 
@@ -44,8 +48,12 @@ public partial class Game : Node
     [Export]
     public int ActiveMobs { get; private set; } = 0;
 
-    private List<MobSpawnArea> spawnAreas = [];
+    [Export]
+    public int TimeMsBetweenRounds { get; private set; } = 20000;
 
+    public ulong LastRoundEndTime { get; private set; } = 0ul;
+
+    private List<MobSpawnArea> spawnAreas = [];
     private ulong lastWaveTime = 0ul;
     private RandomNumberGenerator rng = new();
 
@@ -137,19 +145,20 @@ public partial class Game : Node
     public async void TimerToNextRound()
     {
         GameState = GameStateEnum.Break;
-
-        await Task.Delay(5000);
+        EmitSignal(SignalName.GameRoundEnd, Round);
+        LastRoundEndTime = Time.GetTicksMsec();
+        await Task.Delay(TimeMsBetweenRounds);
 
         NextRound();
     }
 
     public void NextRound()
     {
-        GameState = GameStateEnum.Round;
         Round++;
+        GameState = GameStateEnum.Round;
         MaxActiveMobs = FuncMobMaxActive;
         RoundMobsLeft = FuncMobRoundAmount;
-        EmitSignal(SignalName.GameNextRound, Round);
+        EmitSignal(SignalName.GameRoundStart, Round);
         SpawnMobWave();
     }
 

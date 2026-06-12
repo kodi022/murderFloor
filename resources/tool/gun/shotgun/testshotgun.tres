@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://k5r3xsvljsvq"]
+
+[ext_resource type="AudioStream" uid="uid://covia2704nuhb" path="res://sounds/tool/gun/dryfire/freesound_community-gun-dry-firing-7-39792.mp3" id="1_opiy3"]
+[ext_resource type="AudioStream" uid="uid://dddksf8y5b3q2" path="res://sounds/tool/gun/fire/freesound_community-shotgun-firing-3-14483.mp3" id="2_7mp16"]
+[ext_resource type="PackedScene" uid="uid://cp25wji3sat7e" path="res://objects/tool/gun/shotgun/model37/model37.blend" id="2_ttrhh"]
+[ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/reload/gunreload.mp3" id="3_djgqg"]
+[ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="4_rxxii"]
+
+[resource]
+script = ExtResource("4_rxxii")
+Damages = Vector2(12, 6)
+FalloffRanges = Vector2(6, 20)
+MaxRange = 100.0
+FirearmType = 6
+FireSound = ExtResource("2_7mp16")
+DryFireSound = ExtResource("1_opiy3")
+PelletCount = 12
+ReloadDelayMs = 1500
+ReloadSound = ExtResource("3_djgqg")
+PartialReloadAnimationNames = Dictionary[int, String]({})
+MagSize = 6
+MagsReserve = 10
+InitialDegreeSpread = Vector2(5, 5)
+MaxDegreeSpread = Vector2(8, 8)
+SpreadRecoveryRate = 3.0
+SpreadIncreasePerShot = Vector2(2, 2)
+CameraRotationKick = Vector2(0.1, 0)
+ViewmodelPositionKick = Vector2(0, 0.15)
+ViewmodelRotationKick = Vector2(0.03, 0)
+AimShiftRangeVertical = Vector2(0.01, 0.011)
+AimShiftRangeHorizontal = Vector2(-0.008, 0.008)
+ScreenShakeAmount = 0.1
+FireMode = 2
+ManualFireDelayMs = 500
+MeshScene = ExtResource("2_ttrhh")
+ResourceId = "testshotgun"
+UseInGame = false
+NameLocalizationGroup = "tool"
+metadata/_custom_type_script = "uid://dh0saosikvolb"

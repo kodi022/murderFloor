@@ -31,7 +31,6 @@ environment = SubResource("Environment_6jt0u")
 [node name="PostProcessing" type="CanvasLayer" parent="." unique_id=1554231790]
 layer = -1
 follow_viewport_enabled = true
-follow_viewport_scale = 1.365
 
 [node name="CSGwall" type="CSGBox3D" parent="." unique_id=182979365]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.377422, 2.0265307, 0.11420059)

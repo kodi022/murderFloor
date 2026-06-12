@@ -106,19 +106,25 @@ public partial class LiveMob : Pawn
         }
 
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
-        Vector3 newVelocity = GlobalPosition.DirectionTo(targetPos) * 3.2f;
+        Vector3 newVelocity = GlobalPosition.DirectionTo(targetPos) * 3.4f;
         Velocity = newVelocity + Vector3.Down;
 
         var lookingAtVel = newVelocity - new Vector3(0, newVelocity.Y, 0);
         var aim = GlobalPosition - lookingAtVel;
-        if (GlobalPosition - lookingAtVel != Vector3.Zero)
+        if (GlobalPosition - lookingAtVel != Vector3.Zero) Transform = Transform.LookingAt(aim);
+        else Transform = Transform.LookingAt(targetPawn.GlobalPosition);
+
+        var distSqrToTarget = GlobalPosition.DistanceSquaredTo(targetPawn.GlobalPosition);
+
+        if (distSqrToTarget < 2f /* // ! attackdist */)
         {
-            Transform = Transform.LookingAt(aim);
+            // attack
         }
 
-        MoveAndSlide();
-
-        // if target check update
+        if (distSqrToTarget > 1f)
+        {
+            MoveAndSlide();
+        }
     }
 
     private void Unstuck()

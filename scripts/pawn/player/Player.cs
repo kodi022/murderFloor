@@ -9,6 +9,7 @@ public partial class Player : Pawn
     public Vector3 ViewPosition => viewAim.GlobalPosition;
     public Transform3D ViewTransform => viewAim.GlobalTransform;
 
+    public float CameraShakeScale { get; set; }
     public Vector3 CameraRotationKick { get; set; }
     public Vector3 ViewModelPositionKick { get; set; }
     public Vector3 ViewModelRotationKick { get; set; }
@@ -96,7 +97,8 @@ public partial class Player : Pawn
         SelfId = GetMultiplayerAuthority();
         Camera.Current = true;
         Rpc("ToolAddRpc", "base:testpistol");
-        Rpc("ToolAddRpc", "base:testassaultrifle");
+        Rpc("ToolAddRpc", "base:testgodpistol");
+        Rpc("ToolAddRpc", "base:testshotgun");
         Rpc("ToolAddRpc", "base:testassaultrifle");
         worldModels.Free();
         BuildViewNodes();
@@ -163,17 +165,22 @@ public partial class Player : Pawn
             }
         }
 
+        Rotation = new Vector3(0, ViewYaw, 0);
+        viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
+
         var reduction = 1f - ((float)delta * 6);
         CameraRotationKick *= reduction;
         ViewModelPositionKick *= reduction;
         ViewModelRotationKick *= reduction;
 
+        var shakeReduction = 1f - ((float)delta * 16);
+        CameraShakeScale *= shakeReduction;
+
         Camera.Rotation = CameraRotationKick;
         viewModels.Position = ViewModelPositionKick;
         viewModels.Rotation = ViewModelRotationKick;
-
-        viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
-        Rotation = new Vector3(0, ViewYaw, 0);
+        if (CameraShakeScale > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * CameraShakeScale;
+        else Camera.Position = Vector3.Zero;
 
         if (openUI is not null) return;
 
@@ -238,7 +245,7 @@ public partial class Player : Pawn
 
         var forward = Input.GetAxis("backward", "forward");
         var strafe = Input.GetAxis("left", "right");
-        var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.80f;
+        var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.90f;
         wishMove.Y = -0.4f;
         wishMove = wishMove.Rotated(Vector3.Up, ViewYaw + 1.570796326794896f);
         lastVel *= new Vector3(0.80f, 0.95f, 0.80f);

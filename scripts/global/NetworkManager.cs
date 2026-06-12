@@ -125,7 +125,6 @@ public partial class NetworkManager : Node
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
         player.RpcId(id, "RequestToolsSyncRpc");
-        // ! WIP DOUBLE CALLS
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 

@@ -20,7 +20,8 @@ border_color = Color(0, 0, 0, 1)
 bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jlufg"]
-bg_color = Color(1, 1, 1, 0)
+bg_color = Color(0.6, 0.6, 0.6, 0)
+draw_center = false
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -30,7 +31,9 @@ corner_radius_top_left = 1000
 corner_radius_top_right = 1000
 corner_radius_bottom_right = 1000
 corner_radius_bottom_left = 1000
-corner_detail = 20
+corner_detail = 16
+anti_aliasing = false
+anti_aliasing_size = 0.01
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ed8p"]
 bg_color = Color(1, 1, 1, 0.5882353)
@@ -57,7 +60,7 @@ corner_radius_top_right = 1
 corner_radius_bottom_right = 1
 corner_radius_bottom_left = 1
 
-[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("EmptyCrosshair", "GunCrosshair", "ShotgunCrosshair", "playersLabel", "healthBarPanel", "useInfoLabel")]
+[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "EmptyCrosshair", "GunCrosshair", "ShotgunCrosshair", "playersLabel", "healthBarPanel", "useInfoLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,6 +69,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_atyv1")
 script = ExtResource("1_kw0id")
+roundStartPanel = NodePath("Center-Top/RoundStartPanel")
+roundTimerPanel = NodePath("Center-Top/RoundTimerPanel")
 EmptyCrosshair = NodePath("Center/EmptyCrosshair")
 GunCrosshair = NodePath("Center/GunCrosshair")
 ShotgunCrosshair = NodePath("Center/ShotgunCrosshair")
@@ -216,3 +221,63 @@ offset_top = 28.0
 offset_right = 128.0
 offset_bottom = 52.0
 horizontal_alignment = 1
+
+[node name="Center-Top" type="Control" parent="." unique_id=1078783854]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+
+[node name="RoundStartPanel" type="Panel" parent="Center-Top" unique_id=172656521]
+visible = false
+layout_mode = 0
+offset_left = -60.0
+offset_top = 120.0
+offset_right = 60.0
+offset_bottom = 180.0
+
+[node name="Label" type="Label" parent="Center-Top/RoundStartPanel" unique_id=1511418055]
+layout_mode = 0
+offset_top = -2.0
+offset_right = 120.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 0.38162273, 0.38162273, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "ROUND"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="Center-Top/RoundStartPanel" unique_id=1546969457]
+layout_mode = 0
+offset_top = 19.0
+offset_right = 120.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0)
+theme_override_constants/line_spacing = 0
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "1"
+horizontal_alignment = 1
+
+[node name="RoundTimerPanel" type="Panel" parent="Center-Top" unique_id=1019698623]
+visible = false
+layout_mode = 0
+offset_left = -60.0
+offset_top = 130.0
+offset_right = 60.0
+offset_bottom = 170.0
+
+[node name="Label" type="Label" parent="Center-Top/RoundTimerPanel" unique_id=639969445]
+layout_mode = 0
+offset_top = -3.0
+offset_right = 120.0
+offset_bottom = 44.0
+theme_override_constants/line_spacing = 0
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1

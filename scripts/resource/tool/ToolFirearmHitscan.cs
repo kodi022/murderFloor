@@ -12,13 +12,15 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
     public override void FireBullet(FireInfo fi)
     {
+        Rng.Randomize();
+
         fi.Player.CameraRotationKick += new Vector3(CameraRotationKick.X, 0, CameraRotationKick.Y);
         fi.Player.ViewModelPositionKick += new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
         fi.Player.ViewModelRotationKick += new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
-        fi.Player.ViewPitch += AimShift.X;
-        fi.Player.ViewYaw += AimShift.Y;
+        fi.Player.ViewPitch += Rng.RandfRange(AimShiftRangeVertical.X, AimShiftRangeVertical.Y);
+        fi.Player.ViewYaw += Rng.RandfRange(AimShiftRangeHorizontal.X, AimShiftRangeHorizontal.Y);
+        fi.Player.CameraShakeScale = ScreenShakeAmount;
 
-        Rng.Randomize();
         for (int i = 0; i < PelletCount; i++)
         {
             float yaw = Mathf.DegToRad(Rng.RandfRange(-fi.LiveTool.CurrentSpread.X, fi.LiveTool.CurrentSpread.X));

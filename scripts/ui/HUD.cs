@@ -3,6 +3,11 @@ namespace MurderFloor;
 public partial class HUD : Control
 {
     [Export]
+    private Panel roundStartPanel;
+    [Export]
+    private Panel roundTimerPanel;
+
+    [Export]
     private Panel EmptyCrosshair;
     [Export]
     private Panel GunCrosshair;
@@ -18,14 +23,29 @@ public partial class HUD : Control
 
     private int activeCrosshair = 0;
 
+    private int healthBarFunctionCount = 0;
+    private Vector2 lastHealthBarPos = Vector2.Zero;
+    private bool hookedGameEvents = false;
+
     public override void _Ready()
     {
-        Player.Self.PlayerOnDamage += (a, b) => { GD.Print("wow " + a); };
+        roundStartPanel.Visible = false;
+        roundTimerPanel.Visible = false;
+        Player.Self.PlayerOnDamage += UpdateHealth;
     }
 
     public override void _Process(double delta)
     {
+        if (!hookedGameEvents && Game.Current is not null)
+        {
+            Game.Current.GameRoundStart += AnimateNewRound;
+            Game.Current.GameRoundEnd += AnimateRoundTimer;
+            hookedGameEvents = true;
+        }
+
         ProcessCrosshairs();
+
+        useInfoLabel.Text = Player.Self.UseInfoText;
 
         string players = "";
         foreach (var player in NetworkManager.Current._players)
@@ -63,10 +83,6 @@ public partial class HUD : Control
         ListWeapons(Player.Self.ToolsSpecial);
         CropAndNewline();
         ListWeapons(Player.Self.ToolsMelee);
-
-        var move = Player.Self.Health / Player.Self.MaxHealth;
-        healthBarPanel.SetPosition(new Vector2((healthBarPanel.Size.X * move) - healthBarPanel.Size.X, 0));
-        useInfoLabel.Text = Player.Self.UseInfoText;
     }
 
     private void ProcessCrosshairs()
@@ -115,9 +131,68 @@ public partial class HUD : Control
 
     private void ChangeCrosshair(int select)
     {
+        if (activeCrosshair == select) return;
+
         activeCrosshair = select;
         EmptyCrosshair.Visible = select == 0;
         GunCrosshair.Visible = select == 1;
         ShotgunCrosshair.Visible = select == 2;
+    }
+
+    private async void UpdateHealth(Godot.Collections.Dictionary<string, Variant> damageInfo)
+    {
+        healthBarFunctionCount++;
+        var move = Player.Self.Health / Player.Self.MaxHealth;
+        var newHealthBarPos = new Vector2((healthBarPanel.Size.X * move) - healthBarPanel.Size.X, 0);
+
+        var deltas = 0d;
+        // smooth over 250 ms
+        while (deltas < 0.25d)
+        {
+            var delta = GetProcessDeltaTime();
+            await Task.Delay((int)(delta * 1000d));
+
+            deltas += delta;
+            var currentHealthBarPos = lastHealthBarPos.Lerp(newHealthBarPos, (float)deltas * 4f);
+            if (healthBarFunctionCount > 1)
+            {
+                lastHealthBarPos = currentHealthBarPos;
+                healthBarFunctionCount--;
+                return;
+            }
+
+            healthBarPanel.SetPosition(currentHealthBarPos);
+        }
+
+        healthBarFunctionCount--;
+        lastHealthBarPos = newHealthBarPos;
+    }
+
+    private async void AnimateRoundTimer(int round)
+    {
+        var numberLabel = (Label)roundTimerPanel.GetChild(0);
+
+        roundTimerPanel.Visible = true;
+
+        var time = Game.Current.TimeMsBetweenRounds / 1000;
+        while (time > 0)
+        {
+            numberLabel.Text = $"{time}";
+            time--;
+            await Task.Delay(1000);
+        }
+
+        roundTimerPanel.Visible = false;
+    }
+
+    private async void AnimateNewRound(int round)
+    {
+        roundTimerPanel.Visible = false;
+        var numberLabel = (Label)roundStartPanel.GetChild(1);
+        numberLabel.Text = $"{round}";
+        roundStartPanel.Visible = true;
+
+        await Task.Delay(6000);
+        roundStartPanel.Visible = false;
     }
 }

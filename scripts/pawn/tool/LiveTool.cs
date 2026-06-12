@@ -28,6 +28,7 @@ public partial class LiveTool : Node
     private ulong msSinceFire = 0;
     private bool bolting = false;
     private bool shotSemi = false;
+    private bool shotBolt = false;
 
     public override void _Ready()
     {
@@ -133,7 +134,7 @@ public partial class LiveTool : Node
                 return;
             }
 
-            if (shotSemi && firearm.FireMode == ToolFirearm.FireModeEnum.Manual)
+            if (shotBolt && firearm.FireMode == ToolFirearm.FireModeEnum.Manual)
             {
                 BoltFirearm(firearm, fi);
                 return;
@@ -146,6 +147,7 @@ public partial class LiveTool : Node
             poly.PlayStream(firearm.FireSound);
 
             shotSemi = true;
+            shotBolt = true;
             CurrentSpread = (CurrentSpread + firearm.SpreadIncreasePerShot).Min(firearm.MaxDegreeSpread);
             CurrentMag--;
         }
@@ -160,14 +162,16 @@ public partial class LiveTool : Node
         GD.Print("BOLT");
 
         //var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
-        //poly.PlayStream(firearm.ReloadSound);
+        //poly.PlayStream(firearm.Bolt);
 
-        fi.Player.ViewModelRotationKick += new Vector3(1, 0, 0);
+        fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
         await Task.Delay(firearm.ManualFireDelayMs);
         //await boltanimation
+        fi.Player.ViewModelPositionKick += new Vector3(0, 0, -0.1f);
 
         GD.Print("BOLT-DONE");
         bolting = false;
+        shotBolt = false;
     }
 
     private async void ReloadFirearm(ToolFirearm firearm, Tool.FireInfo fi)
@@ -178,14 +182,22 @@ public partial class LiveTool : Node
         if (CurrentReserve <= 0) return;
         Reloading = true;
 
-        fi.Player.ViewModelRotationKick += new Vector3(-1, 0.5f, 0);
+        fi.Player.ViewModelRotationKick += new Vector3(-1f, 0.5f, 0);
         var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
         poly.PlayStream(firearm.ReloadSound);
 
         await Task.Delay(firearm.ReloadDelayMs);
 
-        fi.Player.ViewModelRotationKick += new Vector3(0.5f, 0, 0);
+        fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
+        fi.Player.ViewModelRotationKick += new Vector3(0.2f, 0, 0);
         //await reloadanimation
+
+        if (firearm.EndlessReserve)
+        {
+            CurrentMag = firearm.MagSize;
+            Reloading = false;
+            return;
+        }
 
         var diff = firearm.MagSize - CurrentMag;
         if (diff >= CurrentReserve)
@@ -200,6 +212,7 @@ public partial class LiveTool : Node
         }
 
         Reloading = false;
+        shotBolt = false;
     }
 
     private Tool.FireInfo CreateFireInfo()
