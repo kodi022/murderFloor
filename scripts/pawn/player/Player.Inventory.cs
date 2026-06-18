@@ -10,6 +10,8 @@ public partial class Player : Pawn
     public Tool.SlotEnum SelectedSlot { get; private set; } = Tool.SlotEnum.Primary;
     public int SelectedToolIndex { get; private set; } = 0;
 
+    public int ToolCount => ToolsPrimary.Count + ToolsSecondary.Count + ToolsSpecial.Count + ToolsMelee.Count;
+
     // reference from tool list
     public LiveTool SelectedTool = null;
 
@@ -30,7 +32,17 @@ public partial class Player : Pawn
         AddTools(ToolsSecondary);
         AddTools(ToolsSpecial);
         AddTools(ToolsMelee);
-        RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", tools);
+
+        var senderId = Multiplayer.GetRemoteSenderId();
+        foreach (var player in AllPlayers)
+        {
+            if (player.GetMultiplayerAuthority() == senderId)
+            {
+                RpcId(senderId, "ToolsSyncRpc", tools);
+                //GD.Print()
+                return;
+            }
+        }
     }
 
     /// <summary> this should only be called using Rpc </summary>
@@ -44,6 +56,7 @@ public partial class Player : Pawn
             liveTool.PlayerId = GetMultiplayerAuthority();
             liveTool.ToolFullId = toolId;
             ToolsNode.AddChild(liveTool);
+            liveTool.Owner = ToolsNode;
             var list = GetToolListFromTool(liveTool.ToolFullId);
             liveTool.Name = $"{toolId}" + list.Count(t => t.ToolFullId == toolId);
             list.Add(liveTool);
@@ -59,6 +72,7 @@ public partial class Player : Pawn
         liveTool.PlayerId = GetMultiplayerAuthority();
         liveTool.ToolFullId = toolId;
         ToolsNode.AddChild(liveTool);
+        liveTool.Owner = ToolsNode;
         var list = GetToolListFromTool(liveTool.ToolFullId);
         liveTool.Name = $"{toolId}" + list.Count(t => t.ToolFullId == toolId);
         list.Add(liveTool);

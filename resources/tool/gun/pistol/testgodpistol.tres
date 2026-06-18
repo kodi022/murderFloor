@@ -9,7 +9,7 @@
 [resource]
 script = ExtResource("4_vj0ub")
 Damages = Vector2(500, 100)
-FalloffRanges = Vector2(25, 80)
+FalloffRanges = Vector2(25, 100)
 MaxRange = 200.0
 RPM = 600.0
 FireSound = ExtResource("1_n8d0k")
@@ -22,13 +22,13 @@ MagSize = 12
 EndlessReserve = true
 InitialDegreeSpread = Vector2(0.2, 0.2)
 MaxDegreeSpread = Vector2(5, 5)
-SpreadRecoveryRate = 4.0
-SpreadIncreasePerShot = Vector2(1.5, 1.5)
+SpreadRecoveryRate = 7.0
+SpreadIncreasePerShot = Vector2(2, 2)
 CameraRotationKick = Vector2(0.06, 0)
 ViewmodelPositionKick = Vector2(0, 0.12)
 ViewmodelRotationKick = Vector2(0.1, 0)
-AimShiftRangeVertical = Vector2(0.005, 0.007)
-AimShiftRangeHorizontal = Vector2(-0.004, 0.004)
+AimShiftRangeVertical = Vector2(0.006, 0.008)
+AimShiftRangeHorizontal = Vector2(-0.008, 0.008)
 FireMode = 1
 MeshScene = ExtResource("2_6432m")
 ResourceId = "testgodpistol"

@@ -6,6 +6,8 @@ public partial class Tool : MFResource
     [Export]
     public PackedScene MeshScene { get; private set; }
     [Export]
+    public float MeshSceneImportYaw { get; private set; }
+    [Export]
     public string HoldTypeAnimation { get; private set; } = "holdtype_pistol";
 
     public enum SlotEnum
@@ -46,6 +48,7 @@ public partial class Tool : MFResource
         var modelCenter = (bounds.End + bounds.Position) / 2;
         var modelWidth = bounds.End.Abs().X + bounds.Position.Abs().X;
         weaponScene.Position = -modelCenter;
+        weaponScene.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
         camera.SetOrthogonal(MathF.Max(modelWidth, 0.5f), 0.1f, 20f);
         camera.LookAtFromPosition(new Vector3(0, 0, 3f), Vector3.Zero);
 

@@ -106,6 +106,7 @@ public partial class NetworkManager : Node
     [Rpc(CallLocal = true)]
     public void LoadGame(string gameScenePath)
     {
+        _playersLoaded = 0;
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 
@@ -124,7 +125,8 @@ public partial class NetworkManager : Node
         ((Node3D)player).Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
-        player.RpcId(id, "RequestToolsSyncRpc");
+
+        if (((Player)player).ToolCount == 0) player.RpcId(id, "RequestToolsSyncRpc");
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
@@ -192,7 +194,7 @@ public partial class NetworkManager : Node
             if (_playersLoaded == _players.Count)
             {
                 await Task.Delay(2000);
-                Game.Current.Rpc("StartGame");
+                Game.Current?.Rpc("StartGame");
                 _playersLoaded = 0;
             }
         }

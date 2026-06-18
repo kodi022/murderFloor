@@ -81,10 +81,11 @@ public partial class LockerMenu : Control
             AddChild(sceneViewport);
 
             weaponScene = (Node3D)selectedTool.MeshScene.Instantiate();
+            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             var dirLight = new DirectionalLight3D();
             var camera = new Camera3D();
-            camera.Fov = 20f;
-            camera.LookAtFromPosition(new Vector3(-0.2f, 0, 3f), new Vector3(-0.2f, 0, 0));
+            camera.Fov = 25f;
+            camera.LookAtFromPosition(new Vector3(-0.2f, 0, 2.6f), new Vector3(-0.2f, 0, 0));
 
             sceneViewport.AddChild(weaponScene);
             sceneViewport.AddChild(dirLight);
@@ -96,6 +97,7 @@ public partial class LockerMenu : Control
             weaponScene?.Free();
             weaponScene = null;
             weaponScene = (Node3D)selectedTool.MeshScene.Instantiate();
+            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             sceneViewport.AddChild(weaponScene);
         }
     }

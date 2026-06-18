@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://ikpllj7i4gtk"
-path="res://.godot/imported/testassaultrifle.blend-3458b2fc03cbebe131fc68f78e50da9e.scn"
+path="res://.godot/imported/testassaultrifle.blend-8949ed1069e8549603c1388d6677c72e.scn"
 
 [deps]
 
-source_file="res://objects/tool/gun/assaultrifle/testassaultrifle/testassaultrifle.blend"
-dest_files=["res://.godot/imported/testassaultrifle.blend-3458b2fc03cbebe131fc68f78e50da9e.scn"]
+source_file="res://objects/tool/gun/rifle/testassaultrifle/testassaultrifle.blend"
+dest_files=["res://.godot/imported/testassaultrifle.blend-8949ed1069e8549603c1388d6677c72e.scn"]
 
 [params]
 

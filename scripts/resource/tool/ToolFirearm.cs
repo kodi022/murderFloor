@@ -81,7 +81,7 @@ public partial class ToolFirearm : Tool
     [Export]
     public Vector2 AimShiftRangeHorizontal { get; private set; } = new Vector2(-0.0003f, 0.0003f);
     [Export]
-    public float ScreenShakeAmount { get; private set; } = 0.05f;
+    public float ScreenShakeAmount { get; private set; } = 0.02f;
 
     [Export, ExportSubgroup("FireMode")]
     public FireModeEnum FireMode { get; private set; }
@@ -89,6 +89,8 @@ public partial class ToolFirearm : Tool
     public string ManualFireAnimationName { get; private set; }
     [Export]
     public int ManualFireDelayMs { get; private set; } = 400;
+    [Export]
+    public AudioStreamMP3 ManualFireSound { get; private set; }
 
     protected RandomNumberGenerator Rng { get; private set; } = new();
 

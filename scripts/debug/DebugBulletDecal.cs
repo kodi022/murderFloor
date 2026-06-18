@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class DebugBulletDecal : Node3D
+public partial class DebugBulletDecal : MeshInstance3D
 {
     public ulong MsToDelete { get; set; } = 5000ul;
 

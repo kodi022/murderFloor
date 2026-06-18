@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://nbh27dtdq18n"
-path="res://.godot/imported/KincheePlayer.blend-1e47cd1859f7538ae811a8d5de84ff2b.scn"
+uid="uid://cijlsm4d36o3f"
+path="res://.godot/imported/shotgun1.blend-3475d0cb8fb69a48c2370d38bb8d530b.scn"
 
 [deps]
 
-source_file="res://objects/player/KincheePlayer.blend"
-dest_files=["res://.godot/imported/KincheePlayer.blend-1e47cd1859f7538ae811a8d5de84ff2b.scn"]
+source_file="res://objects/tool/gun/shotgun/shotgun1/shotgun1.blend"
+dest_files=["res://.godot/imported/shotgun1.blend-3475d0cb8fb69a48c2370d38bb8d530b.scn"]
 
 [params]
 
@@ -17,7 +17,7 @@ nodes/root_type=""
 nodes/root_name=""
 nodes/root_script=null
 nodes/apply_root_scale=true
-nodes/root_scale=0.162
+nodes/root_scale=0.17
 nodes/import_as_skeleton_bones=false
 nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true

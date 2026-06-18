@@ -62,6 +62,7 @@ public partial class Player : Pawn
     private Control debugUI;
 
     private Vector3 lastVel;
+    private Vector2 mouseDelta;
 
     public static Player FindPlayer(int playerId) => AllPlayers.First(p => p.GetMultiplayerAuthority() == playerId);
 
@@ -111,10 +112,8 @@ public partial class Player : Pawn
 
         if (@event is InputEventMouseMotion eventMouseMotion)
         {
-            ViewPitch -= eventMouseMotion.ScreenRelative.Y * 0.0001f * sensitivity;
-            ViewPitch = float.Clamp(ViewPitch, -1.3f, 1.3f);
-
-            ViewYaw -= eventMouseMotion.ScreenRelative.X * 0.0001f * sensitivity;
+            var mouse = eventMouseMotion.ScreenRelative * 0.0001f * sensitivity;
+            mouseDelta += mouse;
         }
 
         if (@event is InputEventKey eventKey)
@@ -164,6 +163,12 @@ public partial class Player : Pawn
                 CloseUI();
             }
         }
+
+        ViewPitch -= mouseDelta.Y;
+        ViewPitch = float.Clamp(ViewPitch, -1.3f, 1.3f);
+        ViewYaw -= mouseDelta.X;
+        ViewModelPositionKick -= new Vector3(mouseDelta.X, -mouseDelta.Y, 0) * 0.05f;
+        mouseDelta = Vector2.Zero;
 
         Rotation = new Vector3(0, ViewYaw, 0);
         viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
@@ -221,21 +226,17 @@ public partial class Player : Pawn
         {
             viewBodyAnimationPlayer.Play(SelectedTool.ToolResource.HoldTypeAnimation);
 
-            if (Input.IsActionPressed("fire1"))
-            {
-                SelectedTool.FirePrimary();
-            }
+            if (Input.IsActionPressed("fire1")) SelectedTool.PrimaryInputState = 1;
+            else if (Input.IsActionJustReleased("fire1")) SelectedTool.PrimaryInputState = 2;
+            else SelectedTool.PrimaryInputState = 0;
 
-            if (Input.IsActionJustReleased("fire1"))
-            {
-                SelectedTool.UnFirePrimary();
-            }
+            if (Input.IsActionPressed("fire2")) SelectedTool.SecondaryInputState = 1;
+            else if (Input.IsActionJustReleased("fire2")) SelectedTool.SecondaryInputState = 2;
+            else SelectedTool.SecondaryInputState = 0;
 
-            if (Input.IsActionPressed("reload"))
-            {
-                SelectedTool.FireReload();
-            }
-
+            if (Input.IsActionPressed("reload")) SelectedTool.ReloadInputState = 1;
+            else if (Input.IsActionJustReleased("reload")) SelectedTool.ReloadInputState = 2;
+            else SelectedTool.ReloadInputState = 0;
         }
 
         if (Input.IsActionJustPressed("jump"))

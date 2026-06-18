@@ -38,11 +38,22 @@ public static class Global
         }
     }
 
-    public static void DebugDot(Node anyNode, Vector3 position, ulong msToDelete = 10000ul)
+    public static void DebugDot(Node anyNode, Vector3 position, float scale = 1f, Color? color = null, ulong msToDelete = 10000ul)
     {
         var debugDot = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
         debugDot.Position = position;
-        ((DebugBulletDecal)debugDot).MsToDelete = msToDelete;
+        debugDot.Scale = Vector3.One * scale;
+
+        var debugBulletDecal = (DebugBulletDecal)debugDot;
+        debugBulletDecal.MsToDelete = msToDelete;
+
+        if (color is not null && debugBulletDecal.GetActiveMaterial(0) is StandardMaterial3D shared)
+        {
+            var inst = (StandardMaterial3D)shared.Duplicate(true);
+            inst.AlbedoColor = (Color)color;
+            debugBulletDecal.MaterialOverride = inst;
+        }
+
         anyNode.GetTree().Root.AddChild(debugDot);
     }
 }

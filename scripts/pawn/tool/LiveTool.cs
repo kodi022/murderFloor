@@ -4,13 +4,20 @@ public partial class LiveTool : Node
 {
     [Export]
     public int PlayerId { get; set; }
-    [Export]
-    public string ToolFullId { get; set; }
-
     // reference to player
     public Player Player { get; private set; }
+
+    [Export]
+    public string ToolFullId { get; set; }
     // reference to tool
     public Tool ToolResource { get; private set; }
+
+    [Export]
+    public int PrimaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
+    [Export]
+    public int SecondaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
+    [Export]
+    public int ReloadInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
 
     // public Godot.Collections.Dictionary<string, string> AttachmentConfig { get; set; }
     // public Godot.Collections.Dictionary<string, string> ModifierConfig { get; set; }
@@ -21,7 +28,10 @@ public partial class LiveTool : Node
 
     // toolfirearm
     public Vector2 CurrentSpread { get; private set; }
+
+    [Export]
     public int CurrentMag { get; private set; } = 0;
+
     public int CurrentReserve { get; private set; } = 0;
     public bool Reloading { get; private set; } = false;
     private ulong rpmAsMs = 0;
@@ -29,6 +39,13 @@ public partial class LiveTool : Node
     private bool bolting = false;
     private bool shotSemi = false;
     private bool shotBolt = false;
+
+    private Node3D meshScene;
+    private Node3D muzzleNode;
+    private Node3D sightNode;
+    private Node3D barrelNode;
+    private Node3D addon1Node;
+    private Node3D addon2Node;
 
     public override void _Ready()
     {
@@ -51,6 +68,21 @@ public partial class LiveTool : Node
         if (ToolResource is ToolFirearm firearm)
         {
             CurrentSpread = (CurrentSpread - (Vector2.One * firearm.SpreadRecoveryRate * (float)delta)).Max(firearm.InitialDegreeSpread);
+
+            if (PrimaryInputState == 1)
+            {
+                FirePrimary();
+            }
+
+            if (PrimaryInputState == 2)
+            {
+                UnFirePrimary();
+            }
+
+            if (ReloadInputState == 1)
+            {
+                FireReload();
+            }
         }
     }
 
@@ -62,7 +94,21 @@ public partial class LiveTool : Node
             child.Free();
         }
 
-        posNode.AddChild(ToolResource.MeshScene.Instantiate());
+        meshScene = (Node3D)ToolResource.MeshScene.Instantiate();
+
+        posNode.AddChild(meshScene);
+        meshScene.RotationDegrees = new Vector3(0, ToolResource.MeshSceneImportYaw, 0);
+
+
+        muzzleNode = (Node3D)meshScene.FindChildren("Muzzle").FirstOrDefault(new Node3D());
+        if (ToolResource is ToolFirearm && !muzzleNode.IsInsideTree())
+            GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Muzzle\"");
+
+        sightNode = (Node3D)meshScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+        if (ToolResource is ToolFirearm && !sightNode.IsInsideTree())
+            GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Sight\"");
+
+        // find other attachments
 
         // await equip animation
         await Task.Delay(200);
@@ -73,6 +119,8 @@ public partial class LiveTool : Node
     {
         // await unequip animation
         await Task.Delay(200);
+
+        meshScene = null;
         equipped = false;
     }
 
@@ -144,7 +192,9 @@ public partial class LiveTool : Node
             firearm.FireBullet(fi);
 
             var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
-            poly.PlayStream(firearm.FireSound);
+            poly.PlayStream(firearm.FireSound, bus: "Effects");
+
+            // muzzle effect
 
             shotSemi = true;
             shotBolt = true;
@@ -159,17 +209,15 @@ public partial class LiveTool : Node
         if (Reloading) return;
         if (CurrentMag <= 0) return;
         bolting = true;
-        GD.Print("BOLT");
 
-        //var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
-        //poly.PlayStream(firearm.Bolt);
+        var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
+        poly.PlayStream(firearm.ManualFireSound, bus: "Effects");
 
         fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
         await Task.Delay(firearm.ManualFireDelayMs);
         //await boltanimation
         fi.Player.ViewModelPositionKick += new Vector3(0, 0, -0.1f);
 
-        GD.Print("BOLT-DONE");
         bolting = false;
         shotBolt = false;
     }
@@ -184,7 +232,7 @@ public partial class LiveTool : Node
 
         fi.Player.ViewModelRotationKick += new Vector3(-1f, 0.5f, 0);
         var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
-        poly.PlayStream(firearm.ReloadSound);
+        poly.PlayStream(firearm.ReloadSound, bus: "Effects");
 
         await Task.Delay(firearm.ReloadDelayMs);
 

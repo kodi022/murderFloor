@@ -53,16 +53,18 @@ public partial class Game : Node
 
     public ulong LastRoundEndTime { get; private set; } = 0ul;
 
-    private List<MobSpawnArea> spawnAreas = [];
-    private ulong lastWaveTime = 0ul;
-    private RandomNumberGenerator rng = new();
-
     // vsc says these should be uppercase
     private int FuncMobRoundWaveSize => 5 + Round + (int)GameDifficulty * 2;
 
     private int FuncMobMaxActive => 30 + (Round * 3) + ((int)GameDifficulty * 10);
+    //private int FuncMobMaxActive => 1;
 
     private int FuncMobRoundAmount => (int)(30f + Round * ((float)GameDifficulty + 1f * 0.33f));
+
+    private List<MobSpawnArea> spawnAreas = [];
+    private int lastSpawnAreaIndex = -1;
+    private ulong lastWaveTime = 0ul;
+    private RandomNumberGenerator rng = new();
 
     public override void _EnterTree()
     {
@@ -121,6 +123,8 @@ public partial class Game : Node
 
     public void MobDeath(int mobPoolId)
     {
+        if (!MobPool[mobPoolId].Active) return;
+
         ActiveMobs--;
         RoundMobsLeft--;
 
@@ -183,10 +187,15 @@ public partial class Game : Node
         if (waveSize + ActiveMobs > MaxActiveMobs) waveSize = MaxActiveMobs - ActiveMobs;
         if (waveSize + ActiveMobs > RoundMobsLeft) waveSize = RoundMobsLeft - ActiveMobs;
 
-        var spawned = 0;
         var spawnAreaIndex = rng.RandiRange(0, spawnAreas.Count - 1);
-        var spawns = spawnAreas[spawnAreaIndex].GetSpawnVectorList(waveSize);
 
+        if (spawnAreaIndex == lastSpawnAreaIndex)
+            spawnAreaIndex = rng.RandiRange(0, spawnAreas.Count - 1);
+
+        lastSpawnAreaIndex = spawnAreaIndex;
+
+        var spawned = 0;
+        var spawns = spawnAreas[spawnAreaIndex].GetSpawnVectorList(waveSize);
         for (int i = 0; i < MobPool.Count; i++)
         {
             if (MobPool[i].Active) continue;

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://dsojdot1duxlo"]
 
-[ext_resource type="PackedScene" uid="uid://ikpllj7i4gtk" path="res://objects/tool/gun/assaultrifle/testassaultrifle/testassaultrifle.blend" id="1_8qbw4"]
+[ext_resource type="PackedScene" uid="uid://ikpllj7i4gtk" path="res://objects/tool/gun/rifle/testassaultrifle/testassaultrifle.blend" id="1_8qbw4"]
 [ext_resource type="AudioStream" uid="uid://cmx4yh72ledmf" path="res://sounds/tool/gun/dryfire/freesound_community-gun-dry-firing-9-96427.mp3" id="1_12rvs"]
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_jtlsn"]
 [ext_resource type="AudioStream" uid="uid://b07pstsuwjx6s" path="res://sounds/tool/gun/fire/freesound_community-single-gunshot-54-40780.mp3" id="2_bo1an"]
