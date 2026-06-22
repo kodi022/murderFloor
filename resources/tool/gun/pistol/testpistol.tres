@@ -2,9 +2,10 @@
 
 [ext_resource type="AudioStream" uid="uid://cmx4yh72ledmf" path="res://sounds/tool/gun/dryfire/freesound_community-gun-dry-firing-9-96427.mp3" id="1_fh6pa"]
 [ext_resource type="AudioStream" uid="uid://bahyivwmamwls" path="res://sounds/tool/gun/fire/pistol-shot.mp3" id="1_u5xjw"]
-[ext_resource type="PackedScene" uid="uid://brnw0fhy3d2ty" path="res://objects/tool/gun/pistol/testpistol/testpistol.blend" id="1_y5xye"]
+[ext_resource type="PackedScene" uid="uid://brnw0fhy3d2ty" path="res://scenes/tool/gun/pistol/testpistol/testpistol.blend" id="1_y5xye"]
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_y34yl"]
 [ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/reload/gunreload.mp3" id="3_fh6pa"]
+[ext_resource type="PackedScene" uid="uid://i4kx8rtqydyq" path="res://scenes/tool/gun/pistol/testpistol/testpistolviewmodel.tscn" id="4_80xxm"]
 
 [resource]
 script = ExtResource("1_y34yl")
@@ -17,6 +18,7 @@ EndlessReserve = true
 AimShiftRangeHorizontal = Vector2(-0.001, 0.001)
 FireMode = 1
 MeshScene = ExtResource("1_y5xye")
+MeshSceneViewmodel = ExtResource("4_80xxm")
 ResourceId = "testpistol"
 UseInGame = false
 NameLocalizationGroup = "tool"

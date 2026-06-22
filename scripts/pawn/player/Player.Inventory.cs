@@ -51,7 +51,7 @@ public partial class Player : Pawn
     {
         foreach (var toolId in tools)
         {
-            var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/LiveTool.tscn").Instantiate();
+            var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate();
             liveTool.SetMultiplayerAuthority(GetMultiplayerAuthority());
             liveTool.PlayerId = GetMultiplayerAuthority();
             liveTool.ToolFullId = toolId;
@@ -67,7 +67,7 @@ public partial class Player : Pawn
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void ToolAddRpc(string toolId)
     {
-        var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/LiveTool.tscn").Instantiate();
+        var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate();
         liveTool.SetMultiplayerAuthority(GetMultiplayerAuthority());
         liveTool.PlayerId = GetMultiplayerAuthority();
         liveTool.ToolFullId = toolId;

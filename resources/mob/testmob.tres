@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Mob" format=3 uid="uid://dlds883wdaib"]
 
-[ext_resource type="PackedScene" uid="uid://pqbd3i4lbv5o" path="res://scenes/Mob.tscn" id="1_7n26w"]
+[ext_resource type="PackedScene" uid="uid://pqbd3i4lbv5o" path="res://scenes/pawn/mob/LiveMob.tscn" id="1_7n26w"]
 [ext_resource type="Script" uid="uid://c4nkwdo5lew66" path="res://scripts/resource/mob/Mob.cs" id="1_woa5v"]
 
 [resource]

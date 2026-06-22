@@ -136,6 +136,7 @@ interact={
 3d_physics/layer_1="World"
 3d_physics/layer_2="Character"
 3d_physics/layer_3="Hitbox"
+3d_physics/layer_4="Effects"
 
 [navigation]
 

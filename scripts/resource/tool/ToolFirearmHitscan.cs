@@ -26,8 +26,10 @@ public partial class ToolFirearmHitscan : ToolFirearm
         fi.Player.CameraRotationKick += new Vector3(CameraRotationKick.X, 0, CameraRotationKick.Y);
         fi.Player.ViewModelPositionKick += new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
         fi.Player.ViewModelRotationKick += new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
-        fi.Player.ViewPitch += Rng.RandfRange(AimShiftRangeVertical.X, AimShiftRangeVertical.Y);
-        fi.Player.ViewYaw += Rng.RandfRange(AimShiftRangeHorizontal.X, AimShiftRangeHorizontal.Y);
+        fi.Player.ViewAngle += new Vector2(
+            Rng.RandfRange(AimShiftRangeHorizontal.X, AimShiftRangeHorizontal.Y),
+            Rng.RandfRange(AimShiftRangeVertical.X, AimShiftRangeVertical.Y)
+        );
         fi.Player.CameraShakeScale = ScreenShakeAmount;
 
         for (int i = 0; i < PelletCount; i++)

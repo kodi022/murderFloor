@@ -8,6 +8,8 @@ public partial class Tool : MFResource
     [Export]
     public float MeshSceneImportYaw { get; private set; }
     [Export]
+    public PackedScene MeshSceneViewmodel { get; private set; }
+    [Export]
     public string HoldTypeAnimation { get; private set; } = "holdtype_pistol";
 
     public enum SlotEnum

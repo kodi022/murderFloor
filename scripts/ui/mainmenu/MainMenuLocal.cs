@@ -13,7 +13,7 @@ public partial class MainMenuLocal : Panel
             NetworkManager.Current.ServerIP = default;
             NetworkManager.Current.Port = default;
             NetworkManager.Current.CreateServer(true);
-            NetworkManager.Current.LoadGame("res://scenes/Lobby.tscn");
+            NetworkManager.Current.LoadGame("res://scenes/map/Lobby.tscn");
         };
     }
 }

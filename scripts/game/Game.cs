@@ -104,7 +104,7 @@ public partial class Game : Node
             }
         }
 
-        var mobScene = GD.Load<PackedScene>("res://scenes/Mob.tscn");
+        var mobScene = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
         for (int i = 0; i < 200; i++)
         {
             var mob = mobScene.Instantiate();

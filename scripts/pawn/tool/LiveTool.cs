@@ -19,10 +19,10 @@ public partial class LiveTool : Node
     [Export]
     public int ReloadInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
 
+    public AnimationPlayer AnimationPlayer { get; private set; }
+
     // public Godot.Collections.Dictionary<string, string> AttachmentConfig { get; set; }
     // public Godot.Collections.Dictionary<string, string> ModifierConfig { get; set; }
-
-    private MeshInstance3D meshInstance3D;
 
     private bool equipped = false;
 
@@ -40,7 +40,7 @@ public partial class LiveTool : Node
     private bool shotSemi = false;
     private bool shotBolt = false;
 
-    private Node3D meshScene;
+    private Node3D modelScene;
     private Node3D muzzleNode;
     private Node3D sightNode;
     private Node3D barrelNode;
@@ -65,10 +65,11 @@ public partial class LiveTool : Node
     {
         if (!equipped) return;
 
+        AnimationPlayer?.Play(ToolResource.HoldTypeAnimation);
+
         if (ToolResource is ToolFirearm firearm)
         {
             CurrentSpread = (CurrentSpread - (Vector2.One * firearm.SpreadRecoveryRate * (float)delta)).Max(firearm.InitialDegreeSpread);
-
             if (PrimaryInputState == 1)
             {
                 FirePrimary();
@@ -88,27 +89,34 @@ public partial class LiveTool : Node
 
     public async Task Equip()
     {
-        var posNode = IsMultiplayerAuthority() ? Player.ViewToolPosition : Player.WorldToolPosition;
+        var posNode = IsMultiplayerAuthority() ? Player.ViewAimViewmodel : Player.WorldToolPosition;
         foreach (var child in posNode.GetChildren())
         {
             child.Free();
         }
 
-        meshScene = (Node3D)ToolResource.MeshScene.Instantiate();
+        if (IsMultiplayerAuthority())
+        {
+            modelScene = (Node3D)ToolResource.MeshSceneViewmodel.Instantiate();
+            posNode.AddChild(modelScene);
+            AnimationPlayer = (AnimationPlayer)modelScene.GetChild(0).GetChild(1);
+        }
+        else
+        {
+            modelScene = (Node3D)ToolResource.MeshScene.Instantiate();
+            posNode.AddChild(modelScene);
+            modelScene.RotationDegrees = new Vector3(0, ToolResource.MeshSceneImportYaw, 0);
+        }
 
-        posNode.AddChild(meshScene);
-        meshScene.RotationDegrees = new Vector3(0, ToolResource.MeshSceneImportYaw, 0);
-
-
-        muzzleNode = (Node3D)meshScene.FindChildren("Muzzle").FirstOrDefault(new Node3D());
+        muzzleNode = (Node3D)modelScene.FindChildren("Muzzle").FirstOrDefault(new Node3D());
         if (ToolResource is ToolFirearm && !muzzleNode.IsInsideTree())
             GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Muzzle\"");
 
-        sightNode = (Node3D)meshScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+        sightNode = (Node3D)modelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
         if (ToolResource is ToolFirearm && !sightNode.IsInsideTree())
             GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Sight\"");
 
-        // find other attachments
+        // ! find other attachments
 
         // await equip animation
         await Task.Delay(200);
@@ -120,7 +128,7 @@ public partial class LiveTool : Node
         // await unequip animation
         await Task.Delay(200);
 
-        meshScene = null;
+        modelScene = null;
         equipped = false;
     }
 
@@ -173,21 +181,21 @@ public partial class LiveTool : Node
         if (bolting) return;
         if (Reloading) return;
 
+        if (CurrentMag <= 0)
+        {
+            ReloadFirearm(firearm, fi);
+            return;
+        }
+
+        if (shotBolt && firearm.FireMode == ToolFirearm.FireModeEnum.Manual)
+        {
+            if (!shotSemi) BoltFirearm(firearm, fi);
+            return;
+        }
+
         var ticksMs = Time.GetTicksMsec();
         if (rpmAsMs < ticksMs - msSinceFire)
         {
-            if (CurrentMag <= 0)
-            {
-                ReloadFirearm(firearm, fi);
-                return;
-            }
-
-            if (shotBolt && firearm.FireMode == ToolFirearm.FireModeEnum.Manual)
-            {
-                BoltFirearm(firearm, fi);
-                return;
-            }
-
             msSinceFire = ticksMs;
             firearm.FireBullet(fi);
 

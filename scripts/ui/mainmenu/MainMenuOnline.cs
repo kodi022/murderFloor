@@ -25,7 +25,7 @@ public partial class MainMenuOnline : Panel
 			var error = NetworkManager.Current.JoinServer();
 			if (error == Error.Ok)
 			{
-				GetTree().ChangeSceneToFile("res://scenes/Lobby.tscn");
+				GetTree().ChangeSceneToFile("res://scenes/map/Lobby.tscn");
 			}
 		};
 
@@ -35,7 +35,7 @@ public partial class MainMenuOnline : Panel
 			var error = NetworkManager.Current.CreateServer();
 			if (error == Error.Ok)
 			{
-				GetTree().ChangeSceneToFile("res://scenes/Lobby.tscn");
+				GetTree().ChangeSceneToFile("res://scenes/map/Lobby.tscn");
 			}
 		};
 	}

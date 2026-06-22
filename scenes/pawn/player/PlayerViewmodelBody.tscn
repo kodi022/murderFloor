@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b85on0trpihqi"]
+
+[ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://scenes/pawn/player/KincheePlayer.blend" id="1_0bd40"]
+
+[node name="KincheePlayer" unique_id=51662591 instance=ExtResource("1_0bd40")]
+
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(426325297) index="0" unique_id=1743285217]
+bones/0/scale = Vector3(0.1, 0.1, 0.1)
+bones/6/position = Vector3(0, 2.94, 0)
+bones/6/scale = Vector3(10, 10, 10)
+bones/12/scale = Vector3(1, 1, 1)
+bones/27/position = Vector3(0, 2.94, 0)
+bones/27/scale = Vector3(10, 10, 10)
+
+[node name="Retop" parent="Armature/Skeleton3D" index="0" unique_id=1865806719]
+cast_shadow = 0

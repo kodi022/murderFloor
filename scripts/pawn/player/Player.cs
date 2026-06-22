@@ -13,9 +13,9 @@ public partial class Player : Pawn
     public Vector3 CameraRotationKick { get; set; }
     public Vector3 ViewModelPositionKick { get; set; }
     public Vector3 ViewModelRotationKick { get; set; }
+    private Vector3 viewModelAimSway;
 
     public Node3D WorldToolPosition { get; private set; }
-    public Node3D ViewToolPosition { get; private set; } // tool models are attached to this
 
     [Export]
     public Node ToolsNode; // this is the synced node tool inventory
@@ -23,9 +23,8 @@ public partial class Player : Pawn
     public AudioStreamPlayer3D AudioStreamPlayer3D { get; private set; }
 
     [Export]
-    public float ViewYaw { get; set; } = 0f;
-    [Export]
-    public float ViewPitch { get; set; } = 0f;
+    public Vector2 ViewAngle { get; set; } = Vector2.Zero;
+    private Vector2 lastViewAngle = Vector2.Zero;
 
     public string UseInfoText { get; set; } = "";
 
@@ -41,7 +40,9 @@ public partial class Player : Pawn
 
     // view
     [Export]
-    public Camera3D Camera { get; private set; }
+    public Node3D ViewAimViewmodel { get; private set; } // ViewModel attachment point
+    [Export]
+    public Camera3D Camera { get; private set; } // offsets from viewAim
     [Export]
     private Node3D viewAim; // real aim of view / weapons. camera is offset from this
     [Export]
@@ -49,10 +50,8 @@ public partial class Player : Pawn
 
     private BoneAttachment3D viewHandBone;
 
-    private Node3D viewModels;
     private Node3D viewBody;
     private Skeleton3D viewBodySkeleton;
-    private AnimationPlayer viewBodyAnimationPlayer;
 
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
     [Export(PropertyHint.Range, "1,500,0.01")]
@@ -102,7 +101,6 @@ public partial class Player : Pawn
         Rpc("ToolAddRpc", "base:testshotgun");
         Rpc("ToolAddRpc", "base:testassaultrifle");
         worldModels.Free();
-        BuildViewNodes();
     }
 
     public override void _Input(InputEvent @event)
@@ -134,7 +132,7 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
             {
-                NetworkManager.Current.Rpc("LoadGame", "res://scenes/mapdev/Dev.tscn");
+                NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/dev/Dev.tscn");
             }
         }
     }
@@ -145,8 +143,8 @@ public partial class Player : Pawn
         {
             worldBodyAnimationPlayer.Play("pose_idle");
 
-            viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
-            Rotation = new Vector3(0, ViewYaw, 0);
+            viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
+            Rotation = new Vector3(0, ViewAngle.X, 0);
             return;
         }
 
@@ -164,26 +162,29 @@ public partial class Player : Pawn
             }
         }
 
-        ViewPitch -= mouseDelta.Y;
-        ViewPitch = float.Clamp(ViewPitch, -1.3f, 1.3f);
-        ViewYaw -= mouseDelta.X;
-        ViewModelPositionKick -= new Vector3(mouseDelta.X, -mouseDelta.Y, 0) * 0.05f;
+        // X = horizontal, Y = vertical
+        ViewAngle = new Vector2(ViewAngle.X - mouseDelta.X, float.Clamp(ViewAngle.Y - mouseDelta.Y, -1.4f, 1.4f));
         mouseDelta = Vector2.Zero;
 
-        Rotation = new Vector3(0, ViewYaw, 0);
-        viewAim.Rotation = new Vector3(ViewPitch, 0, 0);
+        Rotation = new Vector3(0, ViewAngle.X, 0);
+        viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
         var reduction = 1f - ((float)delta * 6);
         CameraRotationKick *= reduction;
         ViewModelPositionKick *= reduction;
         ViewModelRotationKick *= reduction;
 
+        viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
+        viewModelAimSway *= reduction;
+        viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.06f);
+        lastViewAngle = ViewAngle;
+
         var shakeReduction = 1f - ((float)delta * 16);
         CameraShakeScale *= shakeReduction;
 
         Camera.Rotation = CameraRotationKick;
-        viewModels.Position = ViewModelPositionKick;
-        viewModels.Rotation = ViewModelRotationKick;
+        ViewAimViewmodel.Position = ViewModelPositionKick + viewModelAimSway;
+        ViewAimViewmodel.Rotation = ViewModelRotationKick;
         if (CameraShakeScale > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * CameraShakeScale;
         else Camera.Position = Vector3.Zero;
 
@@ -224,8 +225,6 @@ public partial class Player : Pawn
 
         if (SelectedTool is not null)
         {
-            viewBodyAnimationPlayer.Play(SelectedTool.ToolResource.HoldTypeAnimation);
-
             if (Input.IsActionPressed("fire1")) SelectedTool.PrimaryInputState = 1;
             else if (Input.IsActionJustReleased("fire1")) SelectedTool.PrimaryInputState = 2;
             else SelectedTool.PrimaryInputState = 0;
@@ -248,7 +247,7 @@ public partial class Player : Pawn
         var strafe = Input.GetAxis("left", "right");
         var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.90f;
         wishMove.Y = -0.4f;
-        wishMove = wishMove.Rotated(Vector3.Up, ViewYaw + 1.570796326794896f);
+        wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X + 1.570796326794896f);
         lastVel *= new Vector3(0.80f, 0.95f, 0.80f);
         lastVel += wishMove;
 
@@ -292,26 +291,5 @@ public partial class Player : Pawn
         WorldToolPosition.Owner = null;
         worldHandBone.AddChild(WorldToolPosition);
         WorldToolPosition.Owner = worldHandBone;
-    }
-
-    private void BuildViewNodes()
-    {
-        viewModels = (Node3D)GD.Load<PackedScene>("res://scenes/PlayerViewmodel.tscn").Instantiate();
-        viewModels.Position = Vector3.Zero;
-        viewModels.Rotation = Vector3.Zero;
-        viewBody = (Node3D)viewModels.GetChild(0);
-        viewBodySkeleton = (Skeleton3D)viewBody.GetChild(0).GetChild(0);
-        viewBodyAnimationPlayer = (AnimationPlayer)viewBody.GetChild(1);
-        viewAim.AddChild(viewModels);
-
-        ViewToolPosition = (Node3D)viewModels.GetChild(1);
-        viewHandBone = new BoneAttachment3D();
-        viewBodySkeleton.AddChild(viewHandBone);
-        viewHandBone.BoneName = "Hand.R";
-        // reparent/reowner viewtool to handbone
-        ViewToolPosition.GetParent().RemoveChild(ViewToolPosition);
-        ViewToolPosition.Owner = null;
-        viewHandBone.AddChild(ViewToolPosition);
-        ViewToolPosition.Owner = viewHandBone;
     }
 }
