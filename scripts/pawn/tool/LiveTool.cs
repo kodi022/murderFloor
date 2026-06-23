@@ -222,9 +222,11 @@ public partial class LiveTool : Node
         poly.PlayStream(firearm.ManualFireSound, bus: "Effects");
 
         fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
-        await Task.Delay(firearm.ManualFireDelayMs);
+        await Task.Delay(firearm.ManualFireDelayMs - 200);
         //await boltanimation
         fi.Player.ViewModelPositionKick += new Vector3(0, 0, -0.1f);
+
+        await Task.Delay(200);
 
         bolting = false;
         shotBolt = false;

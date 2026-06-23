@@ -30,6 +30,8 @@ public partial class LiveMob : Pawn
     private NavigationAgent3D navigationAgent3D;
     [Export]
     private CollisionShape3D collisionShape3D;
+    [Export]
+    private AnimationPlayer animationPlayer;
 
     private bool _active;
     private Pawn targetPawn;
@@ -84,6 +86,9 @@ public partial class LiveMob : Pawn
         }
 
         var distToTarget = targetPawn?.Position.DistanceTo(Position) ?? 0f;
+
+        animationPlayer.Play("walk");
+        //animationPlayer.animation
 
         // attack, allow movement
         if (distToTarget < MobResource.AttackRange && MobResource.AttackRateMs < ticksMs - lastAttackTime)

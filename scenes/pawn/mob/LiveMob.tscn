@@ -75,7 +75,15 @@ properties/5/path = NodePath(".:Active")
 properties/5/spawn = true
 properties/5/replication_mode = 1
 
-[node name="Mob" type="CharacterBody3D" unique_id=2115086269 node_paths=PackedStringArray("worldModels", "navigationAgent3D", "collisionShape3D")]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hhn42"]
+animation = &"new_animation"
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_jrfuh"]
+graph_offset = Vector2(-1049, 57)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_hhn42")
+nodes/Animation/position = Vector2(-150, 197)
+
+[node name="Mob" type="CharacterBody3D" unique_id=2115086269 node_paths=PackedStringArray("worldModels", "navigationAgent3D", "collisionShape3D", "animationPlayer")]
 collision_layer = 2
 collision_mask = 3
 input_ray_pickable = false
@@ -85,6 +93,7 @@ script = ExtResource("1_ex06h")
 worldModels = NodePath("WorldModels")
 navigationAgent3D = NodePath("NavigationAgent3D")
 collisionShape3D = NodePath("CollisionShape3D")
+animationPlayer = NodePath("WorldModels/KincheePlayer/AnimationPlayer")
 
 [node name="WorldModels" type="Node3D" parent="." unique_id=195520531]
 
@@ -92,7 +101,7 @@ collisionShape3D = NodePath("CollisionShape3D")
 
 [node name="UpperLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=783349946]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.0001158127, 0.19481526, -0.98084, -0.018246416, -0.980677, -0.19478077, -0.9998305, 0.01787431, 0.0036681904, 0.09763097, 0.8747359, -0.030339018)
+transform = Transform3D(-0.0001158127, 0.19481525, -0.98084, -0.018246394, -0.980677, -0.19478078, -0.9998305, 0.017874287, 0.0036681904, 0.09763097, 0.8747359, -0.030339018)
 bone_name = "UpperLeg.L"
 bone_idx = 1
 use_external_skeleton = true
@@ -128,7 +137,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=890211340]
 physics_interpolation_mode = 0
-transform = Transform3D(0.004016035, 0.101869114, -0.9947898, -0.0074698944, -0.99476695, -0.10189695, -0.99996096, 0.007840275, -0.003234121, 0.16651657, 0.5279739, -0.02401876)
+transform = Transform3D(0.0040160352, 0.1018691, -0.9947898, -0.007469872, -0.99476695, -0.101896964, -0.99996096, 0.0078402525, -0.0032341192, 0.16651657, 0.5279739, -0.024018768)
 bone_name = "LowerLeg.L"
 bone_idx = 2
 use_external_skeleton = true
@@ -218,7 +227,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Clavicle_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=1751432209]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.2638975, 0.9640956, -0.029628769, -0.9645367, -0.26393437, 0.0027308073, -0.0051872903, 0.029298691, 0.99955726, -3.9079847e-14, 1.4898528, -0.036280114)
+transform = Transform3D(-0.26389787, 0.96409553, -0.029628769, -0.96453667, -0.26393473, 0.002730812, -0.005187295, 0.02929869, 0.99955726, -3.9079847e-14, 1.4898528, -0.036280114)
 bone_name = "Clavicle.L"
 bone_idx = 6
 use_external_skeleton = true
@@ -236,7 +245,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Clavicle_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=1931364052]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.2638975, -0.9640956, 0.029628769, 0.9645367, -0.26393437, 0.0027308073, 0.0051872903, 0.029298691, 0.99955726, -3.9079847e-14, 1.4898528, -0.036280114)
+transform = Transform3D(-0.26389787, -0.96409553, 0.029628769, 0.96453667, -0.26393473, 0.002730812, 0.005187295, 0.02929869, 0.99955726, -3.9079847e-14, 1.4898528, -0.036280114)
 bone_name = "Clavicle.R"
 bone_idx = 27
 use_external_skeleton = true
@@ -254,7 +263,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="UpperArm_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=167078909]
 physics_interpolation_mode = 0
-transform = Transform3D(0.034562673, -0.24508324, -0.96888584, -0.91180724, -0.40463743, 0.06982802, -0.40916118, 0.88102365, -0.23745395, 0.1960752, 1.4361746, -0.030321421)
+transform = Transform3D(-0.27701813, 0.957523, -0.080066554, -0.9607925, -0.27501303, 0.03529151, 0.011773091, 0.08670373, 0.99616444, 0.1960752, 1.4361745, -0.030321421)
 bone_name = "UpperArm.L"
 bone_idx = 7
 use_external_skeleton = true
@@ -272,7 +281,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="UpperArm_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=1593488526]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.001992656, 0.001390079, 0.99999696, 0.841903, -0.5396233, 0.0024278103, 0.5396251, 0.8419053, -9.5052645e-05, -0.1960752, 1.4361746, -0.030321421)
+transform = Transform3D(-0.27701813, -0.957523, 0.080066554, 0.9607925, -0.27501303, 0.03529151, -0.011773091, 0.08670373, 0.99616444, -0.1960752, 1.4361745, -0.030321421)
 bone_name = "UpperArm.R"
 bone_idx = 28
 use_external_skeleton = true
@@ -290,7 +299,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerArm_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=1028364045]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.5065275, -0.6461906, -0.5708482, -0.7316012, -0.028250976, 0.68114716, -0.4562779, 0.762653, -0.45844382, 0.1357935, 1.3366483, 0.18637882)
+transform = Transform3D(-0.025706595, 0.96441233, -0.26315022, -0.9993714, -0.018366115, 0.030317143, 0.024405178, 0.26376414, 0.9642782, 0.4315915, 1.3685312, -0.008995406)
 bone_name = "LowerArm.L"
 bone_idx = 8
 use_external_skeleton = true
@@ -308,7 +317,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerArm_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=968075199]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.025185134, 0.36631668, 0.9301493, 0.95549417, 0.2823955, -0.08534316, -0.2939326, 0.88660294, -0.35712567, -0.19573328, 1.3034468, 0.17675711)
+transform = Transform3D(-0.025706595, -0.96441233, 0.26315022, 0.9993714, -0.018366115, 0.030317143, -0.024405178, 0.26376414, 0.9642782, -0.4315915, 1.3685312, -0.008995406)
 bone_name = "LowerArm.R"
 bone_idx = 29
 use_external_skeleton = true
@@ -326,7 +335,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Hand_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=1437227629]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.7884865, -0.611969, -0.06150633, -0.039771795, -0.049061283, 0.99800336, -0.61376476, 0.7893585, 0.01434508, -0.025857985, 1.329581, 0.3771645)
+transform = Transform3D(-0.0102435835, 0.9757549, -0.21862605, -0.99973166, -0.0054525323, 0.022506615, 0.020768873, 0.21879794, 0.97554886, 0.6728495, 1.3639367, 0.056988)
 bone_name = "Hand.L"
 bone_idx = 9
 use_external_skeleton = true
@@ -344,7 +353,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Hand_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=473325551]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.01646538, 8.645654e-05, 0.99986434, 0.99932766, 0.03275966, 0.016453765, -0.032753795, 0.99946314, -0.00062584877, -0.10409527, 1.3740909, 0.39855027)
+transform = Transform3D(-0.0102435835, -0.9757549, 0.21862605, 0.99973166, -0.0054525323, 0.022506615, -0.020768873, 0.21879794, 0.97554886, -0.6728495, 1.3639367, 0.056988)
 bone_name = "Hand.R"
 bone_idx = 30
 use_external_skeleton = true
@@ -362,7 +371,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayer" unique_id=1259674566]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.008109733, 0.19872183, -0.98002243, -0.8681034, -0.48783317, -0.091735706, -0.49631578, 0.85001403, 0.17646667, 0.2091712, 0.11144501, -0.020735877)
+transform = Transform3D(-0.008109748, 0.19872183, -0.98002243, -0.8681034, -0.48783317, -0.09173573, -0.4963158, 0.85001403, 0.17646667, 0.2091712, 0.11144501, -0.020735893)
 bone_name = "Foot.L"
 bone_idx = 3
 use_external_skeleton = true
@@ -449,3 +458,7 @@ replication_config = SubResource("SceneReplicationConfig_drloa")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1638384440]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1108003207]
+tree_root = SubResource("AnimationNodeBlendTree_jrfuh")
+anim_player = NodePath("WorldModels/KincheePlayer/AnimationPlayer")
