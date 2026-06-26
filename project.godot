@@ -137,6 +137,8 @@ interact={
 3d_physics/layer_2="Character"
 3d_physics/layer_3="Hitbox"
 3d_physics/layer_4="Effects"
+3d_physics/layer_5="Usable"
+3d_physics/layer_6="Loot"
 
 [navigation]
 

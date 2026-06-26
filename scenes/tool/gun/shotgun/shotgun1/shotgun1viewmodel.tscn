@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dfqa5rwx5hcm"]
+
+[ext_resource type="PackedScene" uid="uid://b85on0trpihqi" path="res://scenes/pawn/player/PlayerViewmodelBody.tscn" id="1_wfxkk"]
+[ext_resource type="PackedScene" uid="uid://cijlsm4d36o3f" path="res://scenes/tool/gun/shotgun/shotgun1/shotgun1.blend" id="2_fxy1t"]
+
+[node name="viewmodel" type="Node3D" unique_id=356872480]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.053858504, 0.03254509, 0)
+
+[node name="KincheePlayer" parent="." unique_id=51662591 instance=ExtResource("1_wfxkk")]
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0.050292015, -1.2218403, 0.10383394)
+
+[node name="shotgun1" parent="." unique_id=758601777 instance=ExtResource("2_fxy1t")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.16314107, -0.15018292, -0.1584279)

@@ -99,6 +99,7 @@ public partial class Player : Pawn
         Rpc("ToolAddRpc", "base:testpistol");
         Rpc("ToolAddRpc", "base:testgodpistol");
         Rpc("ToolAddRpc", "base:testshotgun");
+        Rpc("ToolAddRpc", "base:shotgun1");
         Rpc("ToolAddRpc", "base:testassaultrifle");
         worldModels.Free();
     }
@@ -133,6 +134,27 @@ public partial class Player : Pawn
             if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
             {
                 NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/dev/Dev.tscn");
+            }
+
+            if (eventKey.Keycode == Key.F3 && eventKey.Pressed)
+            {
+                var tierCount = new Dictionary<Loot.LootTierEnum, int>();
+                var wearCount = new Dictionary<Loot.LootWearEnum, int>();
+                var lootCount = 1_000_000;
+                var level = 100;
+                for (int i = 0; i < lootCount; i++)
+                {
+                    var e = new Loot.LootRarityInfo(Random.Shared.Next(), level, Game.GameDifficultyEnum.Easy);
+                    if (!tierCount.TryAdd(e.LootTier, 1))
+                        tierCount[e.LootTier] += 1;
+
+                    if (!wearCount.TryAdd(e.LootWear, 1))
+                        wearCount[e.LootWear] += 1;
+                }
+
+                GD.Print($"-- Generated {lootCount} loot at level {level}");
+                GD.Print(string.Join(", ", tierCount.OrderByDescending(a => (int)a.Key)));
+                GD.Print(string.Join(", ", wearCount.OrderBy(a => (int)a.Key)));
             }
         }
     }

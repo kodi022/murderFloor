@@ -101,7 +101,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2687378, 6.019211, 2.302247
 size = Vector3(5.293335, 6.179199, 5.895508)
 
 [node name="CSGground" type="CSGBox3D" parent="." unique_id=1763985082]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003, 0, -0.008)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00010766694, -0.043527126, -0.01894389)
 use_collision = true
 size = Vector3(40, 1, 40)
 material = ExtResource("1_6jt0u")
@@ -130,6 +130,8 @@ metadata/_custom_type_script = "uid://bwlrm48k447kp"
 
 [node name="StaticBody3D" type="StaticBody3D" parent="CSGlocker/Usable" unique_id=691999887]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.80460316, 0)
+collision_layer = 17
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CSGlocker/Usable/StaticBody3D" unique_id=2045810351]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)

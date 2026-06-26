@@ -57,6 +57,7 @@ physics_interpolation_mode = 2
 
 [node name="RayCast3D" type="RayCast3D" parent="ViewAim" unique_id=282874267]
 target_position = Vector3(0, 0, -2)
+collision_mask = 48
 hit_back_faces = false
 debug_shape_custom_color = Color(0.6878973, 0.35584116, 0.7271094, 1)
 debug_shape_thickness = 1

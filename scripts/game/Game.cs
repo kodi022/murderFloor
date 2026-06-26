@@ -5,8 +5,8 @@ public partial class Game : Node
     public enum GameDifficultyEnum
     {
         Easy = 1,
-        Medium = 2,
-        Challenging = 3,
+        Medium = 3,
+        Challenging = 3, // ! find different name?
         Hard = 4,
         Extreme = 5,
         Ludicrous = 6,
@@ -64,17 +64,23 @@ public partial class Game : Node
     private List<MobSpawnArea> spawnAreas = [];
     private int lastSpawnAreaIndex = -1;
     private ulong lastWaveTime = 0ul;
-    private RandomNumberGenerator rng = new();
+    private RandomNumberGenerator rngSpawning = new();
+    private RandomNumberGenerator rngLoot = new();
+
+    private Node mobPoolNode;
+    private Node lootNode;
 
     public override void _EnterTree()
     {
         Current = this;
-        rng.Seed = GameSeed;
+        rngSpawning.Seed = GameSeed;
+        rngLoot.Seed = GameSeed;
     }
 
     public override void _ExitTree()
     {
-        foreach (var mob in MobPool) mob.QueueFree();
+        mobPoolNode.Free();
+        lootNode.Free();
     }
 
     public override void _Ready()
@@ -104,6 +110,12 @@ public partial class Game : Node
             }
         }
 
+        var root = GetTree().Root;
+        mobPoolNode = new Node() { Name = "MobPool" };
+        root.AddChild(mobPoolNode);
+        lootNode = new Node() { Name = "Loot" };
+        root.AddChild(lootNode);
+
         var mobScene = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
         for (int i = 0; i < 200; i++)
         {
@@ -112,7 +124,7 @@ public partial class Game : Node
             LiveMob lMob = (LiveMob)mob;
             lMob.MobPoolId = i;
             lMob.MobProcessOffset = MobPool.Count % 20;
-            GetTree().Root.AddChild(mob);
+            mobPoolNode.AddChild(mob);
             MobPool.Add((LiveMob)mob);
             mob.SetMultiplayerAuthority(1);
         }
@@ -127,6 +139,7 @@ public partial class Game : Node
 
         ActiveMobs--;
         RoundMobsLeft--;
+        ProcessLoot(MobPool[mobPoolId].GlobalPosition);
 
         if (RoundMobsLeft <= 0)
         {
@@ -143,6 +156,19 @@ public partial class Game : Node
         if (ActiveMobs < 8)
         {
             SpawnMobWave();
+        }
+    }
+
+    private void ProcessLoot(Vector3 mobPosition)
+    {
+        if (rngLoot.Randf() > 0.8f)
+        {
+            var newLoot = (Node3D)GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate();
+            lootNode.AddChild(newLoot);
+            newLoot.GlobalPosition = mobPosition + Vector3.Up;
+            ((RigidBody3D)newLoot.GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
+            ((Sprite3D)newLoot.GetChild(0).GetChild(0)).Modulate = new Color(0, 1, 0, 0.33f);
+            ((Sprite3D)newLoot.GetChild(0).GetChild(1)).Modulate = new Color(0, 1, 0, 0.33f);
         }
     }
 
@@ -187,10 +213,10 @@ public partial class Game : Node
         if (waveSize + ActiveMobs > MaxActiveMobs) waveSize = MaxActiveMobs - ActiveMobs;
         if (waveSize + ActiveMobs > RoundMobsLeft) waveSize = RoundMobsLeft - ActiveMobs;
 
-        var spawnAreaIndex = rng.RandiRange(0, spawnAreas.Count - 1);
+        var spawnAreaIndex = rngSpawning.RandiRange(0, spawnAreas.Count - 1);
 
         if (spawnAreaIndex == lastSpawnAreaIndex)
-            spawnAreaIndex = rng.RandiRange(0, spawnAreas.Count - 1);
+            spawnAreaIndex = rngSpawning.RandiRange(0, spawnAreas.Count - 1);
 
         lastSpawnAreaIndex = spawnAreaIndex;
 
