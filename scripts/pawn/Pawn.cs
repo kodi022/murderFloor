@@ -60,7 +60,7 @@ public partial class Pawn : CharacterBody3D
         // sound
 
         // signals
-        bool attackerIsSelf = damageInfo["attacker"].AsInt64() == Player.Self.GetMultiplayerAuthority();
+        bool attackerIsSelf = damageInfo["attacker"].AsInt64() == Player.Self.Id;
         if (attackerIsSelf && this is LiveMob)
         {
             EmitSignal(SignalName.MobOnDamage, damageInfo);

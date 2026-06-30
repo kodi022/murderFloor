@@ -18,9 +18,13 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath(".:ReloadInputState")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+properties/5/path = NodePath(".:CurrentMag")
+properties/5/spawn = true
+properties/5/replication_mode = 2
 
 [node name="LiveTool" type="Node" unique_id=324797226]
 script = ExtResource("1_02gh8")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=759596517]
 replication_config = SubResource("SceneReplicationConfig_olptk")
+public_visibility = false

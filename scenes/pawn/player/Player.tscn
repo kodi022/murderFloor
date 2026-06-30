@@ -4,6 +4,66 @@
 [ext_resource type="PackedScene" uid="uid://cclji8rued6d6" path="res://scenes/ui/HUD.tscn" id="2_lba76"]
 [ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://scenes/pawn/player/KincheePlayer.blend" id="3_eoey4"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hhn42"]
+animation = &"walk"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_yqc8m"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:Clavicle.L", "Armature/Skeleton3D:Clavicle.R", "Armature/Skeleton3D:Hand.L", "Armature/Skeleton3D:Hand.R", "Armature/Skeleton3D:LowerArm.L", "Armature/Skeleton3D:LowerArm.R", "Armature/Skeleton3D:UpperArm.L", "Armature/Skeleton3D:UpperArm.R", "Armature/Skeleton3D:UpperSpine"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yqc8m"]
+animation = &"holdtype_pistol"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7vb1q"]
+animation = &"holdtype_rifle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5y8vi"]
+xfade_time = 0.2
+advance_mode = 2
+advance_expression = "hold == \"holdtype_pistol\""
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_un715"]
+xfade_time = 0.2
+advance_mode = 2
+advance_expression = "hold == \"holdtype_rifle\""
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_v0dpb"]
+states/End/position = Vector2(1003, 1)
+states/Start/position = Vector2(353, 1)
+states/holdtype_pistol/node = SubResource("AnimationNodeAnimation_yqc8m")
+states/holdtype_pistol/position = Vector2(567, 1)
+states/holdtype_rifle/node = SubResource("AnimationNodeAnimation_7vb1q")
+states/holdtype_rifle/position = Vector2(567, 55)
+transitions = ["holdtype_pistol", "End", SubResource("AnimationNodeStateMachineTransition_5y8vi"), "holdtype_rifle", "End", SubResource("AnimationNodeStateMachineTransition_un715")]
+graph_offset = Vector2(-542, -250)
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_hhn42"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:Foot.L", "Armature/Skeleton3D:Hip", "Armature/Skeleton3D:LowerLeg.L", "Armature/Skeleton3D:UpperLeg.L", "Armature/Skeleton3D:UpperSpine"]
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_g7wop"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:Clavicle.L", "Armature/Skeleton3D:Clavicle.R", "Armature/Skeleton3D:Hand.L", "Armature/Skeleton3D:Hand.R", "Armature/Skeleton3D:LowerArm.L", "Armature/Skeleton3D:LowerArm.R", "Armature/Skeleton3D:UpperArm.L", "Armature/Skeleton3D:UpperArm.R", "Armature/Skeleton3D:UpperSpine"]
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_hhn42"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_yqc8m"]
+graph_offset = Vector2(-1436.2017, -100.77823)
+nodes/output/position = Vector2(340, 80)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_hhn42")
+nodes/Animation/position = Vector2(-900, 80)
+nodes/add_walk/node = SubResource("AnimationNodeAdd2_hhn42")
+nodes/add_walk/position = Vector2(-720, 240)
+nodes/timescale_walk/node = SubResource("AnimationNodeTimeScale_hhn42")
+nodes/timescale_walk/position = Vector2(-580, 80)
+nodes/oneshot_melee/node = SubResource("AnimationNodeOneShot_g7wop")
+nodes/oneshot_melee/position = Vector2(140, 80)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_yqc8m")
+nodes/Blend2/position = Vector2(-260, 140)
+nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_v0dpb")
+nodes/StateMachine/position = Vector2(-560, 300)
+node_connections = [&"output", 0, &"oneshot_melee", &"timescale_walk", 0, &"Animation", &"oneshot_melee", 0, &"Blend2", &"Blend2", 0, &"timescale_walk", &"Blend2", 1, &"StateMachine"]
+
 [sub_resource type="AudioStreamPolyphonic" id="AudioStreamPolyphonic_3li8b"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5q5h1"]
@@ -23,20 +83,21 @@ properties/2/replication_mode = 2
 properties/3/path = NodePath(".:Armor")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath(".:ViewYaw")
+properties/4/path = NodePath(".:ViewAngle")
 properties/4/spawn = true
 properties/4/replication_mode = 2
-properties/5/path = NodePath(".:ViewPitch")
+properties/5/path = NodePath(".:BodyVelocity")
 properties/5/spawn = true
-properties/5/replication_mode = 2
+properties/5/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("ToolsNode", "AudioStreamPlayer3D", "worldModels", "ViewAimViewmodel", "Camera", "viewAim", "cameraRaycast")]
+[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("ToolsNode", "AudioStreamPlayer3D", "worldModels", "worldAnimationTree", "ViewAimViewmodel", "Camera", "viewAim", "cameraRaycast")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_klv6p")
 ToolsNode = NodePath("Tools")
 AudioStreamPlayer3D = NodePath("AudioStreamPlayer3D")
 worldModels = NodePath("WorldModels")
+worldAnimationTree = NodePath("WorldModels/KincheePlayer/AnimationTree")
 ViewAimViewmodel = NodePath("ViewAim/ViewModel")
 Camera = NodePath("ViewAim/Camera3D")
 viewAim = NodePath("ViewAim")
@@ -48,7 +109,7 @@ sensitivity = 25.0
 [node name="Hud" parent="." unique_id=392130317 instance=ExtResource("2_lba76")]
 
 [node name="ViewAim" type="Node3D" parent="." unique_id=993364331]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6229631, 0)
 
 [node name="Camera3D" type="Camera3D" parent="ViewAim" unique_id=1562406550]
 physics_interpolation_mode = 2
@@ -66,6 +127,17 @@ debug_shape_thickness = 1
 
 [node name="KincheePlayer" parent="WorldModels" unique_id=716426168 instance=ExtResource("3_eoey4")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="AnimationTree" type="AnimationTree" parent="WorldModels/KincheePlayer" unique_id=1673642048]
+tree_root = SubResource("AnimationNodeBlendTree_yqc8m")
+advance_expression_base_node = NodePath("../../..")
+anim_player = NodePath("../AnimationPlayer")
+parameters/add_walk/add_amount = 0.0
+parameters/timescale_walk/scale = 1.0
+parameters/oneshot_melee/active = false
+parameters/oneshot_melee/internal_active = false
+parameters/oneshot_melee/request = 0
+parameters/Blend2/blend_amount = 1.0
 
 [node name="Tool" type="Node3D" parent="WorldModels" unique_id=1101096359]
 

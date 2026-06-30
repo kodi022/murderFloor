@@ -75,6 +75,7 @@ text = "Exit
 "
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=2079605383]
+physics_interpolation_mode = 2
 transform = Transform3D(0.9099613, 0.043347247, 0.4124215, 0, 0.9945219, -0.104528464, -0.41469324, 0.09511685, 0.9049764, 0.5841905, 0.48084188, 1.4111874)
 fov = 30.0
 

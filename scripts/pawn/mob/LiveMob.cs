@@ -31,7 +31,7 @@ public partial class LiveMob : Pawn
     [Export]
     private CollisionShape3D collisionShape3D;
     [Export]
-    private AnimationPlayer animationPlayer;
+    private AnimationTree animationTree;
 
     private bool _active;
     private Pawn targetPawn;
@@ -87,13 +87,15 @@ public partial class LiveMob : Pawn
 
         var distToTarget = targetPawn?.Position.DistanceTo(Position) ?? 0f;
 
-        animationPlayer.Play("walk");
-        //animationPlayer.animation
+        animationTree.Set("parameters/timescale_walk/scale", 1.5f);
 
         // attack, allow movement
         if (distToTarget < MobResource.AttackRange && MobResource.AttackRateMs < ticksMs - lastAttackTime)
         {
             lastAttackTime = ticksMs;
+
+            animationTree.Set("parameters/oneshot_melee/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
+
             var di = new Godot.Collections.Dictionary<string, string>()
             {
                 {"damage", "5"},

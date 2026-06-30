@@ -21,7 +21,7 @@ public partial class HUD : Control
     [Export]
     private Label useInfoLabel;
 
-    private int activeCrosshair = 0;
+    private int activeCrosshair = -1;
 
     private int healthBarFunctionCount = 0;
     private Vector2 lastHealthBarPos = Vector2.Zero;
@@ -48,12 +48,13 @@ public partial class HUD : Control
         useInfoLabel.Text = Player.Self.UseInfoText;
 
         string players = "";
+        players += $"-> {Player.Self.Id}-{NetworkManager.Current._playerInfo["Name"]}\n";
         foreach (var player in NetworkManager.Current._players)
         {
-            if (player.Key == Player.Self.GetMultiplayerAuthority()) continue;
+            if (player.Key == Player.Self.Id) continue;
 
             players += $"{player.Key}-{player.Value["Name"]}";
-            var p = Player.AllPlayers.First(p => p.GetMultiplayerAuthority() == player.Key);
+            var p = Player.AllPlayers.First(p => p.Id == player.Key);
             if (p is not null && p.SelectedTool is not null)
             {
                 players += $" t{p.ToolsPrimary.Count + p.ToolsSecondary.Count + p.ToolsSpecial.Count + p.ToolsMelee.Count}";
@@ -61,7 +62,7 @@ public partial class HUD : Control
             }
             players += "\n";
         }
-        playersLabel.Text = players + "\n\n";
+        playersLabel.Text = players + "\n\n\n";
 
         void ListWeapons(List<LiveTool> tools)
         {

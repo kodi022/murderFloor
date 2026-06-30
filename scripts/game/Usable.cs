@@ -10,7 +10,7 @@ public partial class Usable : Node3D
 
     public void UsableHit()
     {
-        Player.Self.UseInfoText = UseInfoText;
+
     }
 
     public void UsableInvoke()

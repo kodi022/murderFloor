@@ -126,7 +126,7 @@ public partial class NetworkManager : Node
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
 
-        if (((Player)player).ToolCount == 0) player.RpcId(id, "RequestToolsSyncRpc");
+        //Player.Self.Rpc("ToolsResetRpc", Player.Self.GetAllTools());
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
@@ -136,7 +136,7 @@ public partial class NetworkManager : Node
         GD.Print("OnPeerDisconnected " + id);
         foreach (var p in Player.AllPlayers)
         {
-            if (p.GetMultiplayerAuthority() == (int)id)
+            if (p.Id == id)
             {
                 p.QueueFree();
             }
@@ -198,5 +198,11 @@ public partial class NetworkManager : Node
                 _playersLoaded = 0;
             }
         }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    private void ClientPlayerReady()
+    {
+        Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", Player.Self.GetAllTools());
     }
 }

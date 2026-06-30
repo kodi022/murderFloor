@@ -2,9 +2,10 @@ namespace MurderFloor;
 
 public partial class Player : Pawn
 {
-    public static Player Self { get; private set; }
-    public static long SelfId { get; private set; }
     public static List<Player> AllPlayers { get; private set; } = [];
+    public static Player Self { get; private set; }
+
+    public int Id { get; private set; }
 
     public Vector3 ViewPosition => viewAim.GlobalPosition;
     public Transform3D ViewTransform => viewAim.GlobalTransform;
@@ -23,22 +24,23 @@ public partial class Player : Pawn
     public AudioStreamPlayer3D AudioStreamPlayer3D { get; private set; }
 
     [Export]
+    public Vector3 BodyVelocity { get; set; } = Vector3.Zero;
+
+    [Export]
     public Vector2 ViewAngle { get; set; } = Vector2.Zero;
     private Vector2 lastViewAngle = Vector2.Zero;
 
     public string UseInfoText { get; set; } = "";
 
-    // world
+    // * world
     [Export]
     private Node3D worldModels;
-
+    [Export]
+    private AnimationTree worldAnimationTree;
     private BoneAttachment3D worldHandBone;
-
     private Node3D worldBody;
-    private Skeleton3D worldBodySkeleton;
-    private AnimationPlayer worldBodyAnimationPlayer;
 
-    // view
+    // * view
     [Export]
     public Node3D ViewAimViewmodel { get; private set; } // ViewModel attachment point
     [Export]
@@ -53,6 +55,7 @@ public partial class Player : Pawn
     private Node3D viewBody;
     private Skeleton3D viewBodySkeleton;
 
+    // * other
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
     [Export(PropertyHint.Range, "1,500,0.01")]
     private float sensitivity = 50f;
@@ -63,7 +66,9 @@ public partial class Player : Pawn
     private Vector3 lastVel;
     private Vector2 mouseDelta;
 
-    public static Player FindPlayer(int playerId) => AllPlayers.First(p => p.GetMultiplayerAuthority() == playerId);
+    public string Hold = "";
+
+    public static Player FindPlayer(int playerId) => AllPlayers.First(p => p.Id == playerId);
 
     public override void _EnterTree()
     {
@@ -84,17 +89,21 @@ public partial class Player : Pawn
     {
         BuildWorldNodes();
         AudioStreamPlayer3D.Play();
+        Id = GetMultiplayerAuthority();
 
         if (!IsMultiplayerAuthority())
         {
             foreach (var child in GetChildren()) if (child is Control) child.Free();
             cameraRaycast.Free();
             Camera.Free();
+
+            //Player.Self.RpcId(peerId, "ToolsResyncRpc", Player.Self.GetAllTools());
+            NetworkManager.Current.RpcId(Id, "ClientPlayerReady");
+
             return;
         }
 
         cameraRaycast.AddException(this);
-        SelfId = GetMultiplayerAuthority();
         Camera.Current = true;
         Rpc("ToolAddRpc", "base:testpistol");
         Rpc("ToolAddRpc", "base:testgodpistol");
@@ -161,10 +170,20 @@ public partial class Player : Pawn
 
     public override void _Process(double delta)
     {
+        var reduction = 1f - ((float)delta * 6);
+        CameraRotationKick *= reduction;
+        ViewModelPositionKick *= reduction;
+        ViewModelRotationKick *= reduction;
+
+        var shakeReduction = 1f - ((float)delta * 16);
+        CameraShakeScale *= shakeReduction;
+
         if (!IsMultiplayerAuthority())
         {
-            worldBodyAnimationPlayer.Play("pose_idle");
-
+            var vel = BodyVelocity.Length() * 0.4f;
+            worldAnimationTree.Set("parameters/timescale_walk/scale", vel < 0.1f ? 0f : vel);
+            Hold = SelectedTool?.ToolResource.HoldTypeAnimation ?? "";
+            //worldAnimationTree.Set("parameters/StateMachine/conditions/holdtype", SelectedTool?.ToolResource.HoldTypeAnimation ?? "");
             viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
             Rotation = new Vector3(0, ViewAngle.X, 0);
             return;
@@ -191,18 +210,10 @@ public partial class Player : Pawn
         Rotation = new Vector3(0, ViewAngle.X, 0);
         viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
-        var reduction = 1f - ((float)delta * 6);
-        CameraRotationKick *= reduction;
-        ViewModelPositionKick *= reduction;
-        ViewModelRotationKick *= reduction;
-
         viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
         viewModelAimSway *= reduction;
         viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.06f);
         lastViewAngle = ViewAngle;
-
-        var shakeReduction = 1f - ((float)delta * 16);
-        CameraShakeScale *= shakeReduction;
 
         Camera.Rotation = CameraRotationKick;
         ViewAimViewmodel.Position = ViewModelPositionKick + viewModelAimSway;
@@ -222,6 +233,7 @@ public partial class Player : Pawn
             if (node.GetParent() is Usable usable)
             {
                 usable.UsableHit();
+                UseInfoText = usable.UseInfoText;
 
                 if (Input.IsActionJustPressed("interact"))
                 {
@@ -274,6 +286,7 @@ public partial class Player : Pawn
         lastVel += wishMove;
 
         Velocity = lastVel;
+        BodyVelocity = Velocity;
         MoveAndSlide();
         lastVel = Velocity;
     }
@@ -300,11 +313,10 @@ public partial class Player : Pawn
     private void BuildWorldNodes()
     {
         worldBody = (Node3D)worldModels.GetChild(0);
-        worldBodySkeleton = (Skeleton3D)worldBody.GetChild(0).GetChild(0);
-        worldBodyAnimationPlayer = (AnimationPlayer)worldBody.GetChild(1);
+        var skeleton = (Skeleton3D)worldBody.GetChild(0).GetChild(0);
 
         worldHandBone = new BoneAttachment3D();
-        worldBodySkeleton.AddChild(worldHandBone);
+        skeleton.AddChild(worldHandBone);
         worldHandBone.BoneName = "Hand.R";
 
         WorldToolPosition = (Node3D)worldModels.GetChild(1);

@@ -92,8 +92,8 @@ public partial class ToolFirearmHitscan : ToolFirearm
                     var di = new Godot.Collections.Dictionary<string, string>()
                     {
                         {"damage", damage.ToString("0.00")},
-                        {"attacker", fi.Player.GetMultiplayerAuthority().ToString()},
-                        {"attackerName", NetworkManager.Current._players[fi.Player.GetMultiplayerAuthority()]["Name"]},
+                        {"attacker", fi.Player.Id.ToString()},
+                        {"attackerName", NetworkManager.Current._players[fi.Player.Id]["Name"]},
                         {"weapon", "mind"},
                         {"hitposition", ((Vector3)ray["position"]).ToString()},
                         {"hitbox", "0"}
