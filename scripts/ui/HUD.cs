@@ -140,7 +140,7 @@ public partial class HUD : Control
         ShotgunCrosshair.Visible = select == 2;
     }
 
-    private async void UpdateHealth(Godot.Collections.Dictionary<string, Variant> damageInfo)
+    private async void UpdateHealth(DamageInfo damageInfo)
     {
         healthBarFunctionCount++;
         var move = Player.Self.Health / Player.Self.MaxHealth;

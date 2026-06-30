@@ -48,7 +48,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             var ray = space.IntersectRay(query);
             if (ray.ContainsKey("collider"))
             {
-                Global.DebugDot(fi.Player, (Vector3)ray["position"], color: new Color(0, 0, 0));
+                Debug.DebugDot(fi.Player, (Vector3)ray["position"], color: new Color(0, 0, 0));
 
                 Pawn pawn = null;
                 var currentNode = (Node)(GodotObject)ray["collider"];
@@ -87,15 +87,15 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
                     var hitObjName = ((Node)(GodotObject)ray["collider"]).GetParent().Name.ToString();
                     damage *= GetHitDamageMultiplier(hitObjName);
-                    GD.Print(damage);
+
                     // ! collect damages and send single Rpc, maybe comma separated values
-                    var di = new Godot.Collections.Dictionary<string, string>()
+                    var di = new DamageInfo()
                     {
-                        {"damage", damage.ToString("0.00")},
-                        {"attacker", fi.Player.Id.ToString()},
+                        {"damage", damage},
+                        {"attacker", fi.Player.Id},
                         {"attackerName", NetworkManager.Current._players[fi.Player.Id]["Name"]},
                         {"weapon", "mind"},
-                        {"hitposition", ((Vector3)ray["position"]).ToString()},
+                        {"hitposition", (Vector3)ray["position"]},
                         {"hitbox", "0"}
                     };
                     pawn.Rpc("OnDamageRpc", di);

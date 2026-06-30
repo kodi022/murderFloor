@@ -4,6 +4,14 @@ global using System.Collections.Generic;
 global using System.Linq;
 global using System.Threading.Tasks;
 
+/// "damage": float</para>
+/// "attacker": "player id OR 0 if mob"</para>
+/// "attackerName": "player name OR mob name"</para>
+/// "weapon": "weaponresourceid OR empty if mob"</para>
+/// "hitposition": vector3</para>
+/// "hitbox": id</para>
+global using DamageInfo = Godot.Collections.Dictionary<string, Godot.Variant>;
+
 namespace MurderFloor;
 
 public static class Global
@@ -27,6 +35,22 @@ public static class Global
         }
     }
 
+    public static int StableHash(float x, float y, float z)
+    {
+        unchecked
+        {
+            float hash = x * 13466917;
+            hash = hash * 2119412839 + y;
+            hash = hash * 135040691 + z;
+            return (int)hash;
+        }
+    }
+
+    public static int StableHash(Vector3 vec)
+    {
+        return StableHash(vec.X, vec.Y, vec.Z);
+    }
+
     public static int StableHash(int x, int y, int z)
     {
         unchecked
@@ -36,24 +60,5 @@ public static class Global
             hash = hash * 135040691 + z;
             return hash;
         }
-    }
-
-    public static void DebugDot(Node anyNode, Vector3 position, float scale = 1f, Color? color = null, ulong msToDelete = 10000ul)
-    {
-        var debugDot = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
-        debugDot.Position = position;
-        debugDot.Scale = Vector3.One * scale;
-
-        var debugBulletDecal = (DebugBulletDecal)debugDot;
-        debugBulletDecal.MsToDelete = msToDelete;
-
-        if (color is not null && debugBulletDecal.GetActiveMaterial(0) is StandardMaterial3D shared)
-        {
-            var inst = (StandardMaterial3D)shared.Duplicate(true);
-            inst.AlbedoColor = (Color)color;
-            debugBulletDecal.MaterialOverride = inst;
-        }
-
-        anyNode.GetTree().Root.AddChild(debugDot);
     }
 }

@@ -48,7 +48,6 @@ filters = ["Armature/Skeleton3D:Clavicle.L", "Armature/Skeleton3D:Clavicle.R", "
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_hhn42"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_yqc8m"]
-graph_offset = Vector2(-1436.2017, -100.77823)
 nodes/output/position = Vector2(340, 80)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_hhn42")
 nodes/Animation/position = Vector2(-900, 80)

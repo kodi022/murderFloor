@@ -2,7 +2,7 @@ namespace MurderFloor;
 
 public partial class LiveMob : Pawn
 {
-    public const float MinimumDistanceToTarget = 0.8f;
+    public const float MinimumDistanceToTarget = 1.2f;
 
     public Mob MobResource { get; set; }
 
@@ -45,26 +45,29 @@ public partial class LiveMob : Pawn
 
     public override void _Ready()
     {
-        MobResource = ResourceManager.MobRegistry.GetAllResource().First().Value;
         Active = false;
         navigationAgent3D.NavigationFinished += OnNavigationFinished;
         navigationAgent3D.WaypointReached += (a) => { lastWaypointTime = Time.GetTicksMsec(); };
         navigationAgent3D.LinkReached += OnLinkReached;
     }
 
-    public void OnSpawn(Vector3 location, int mobResourceId)
+    public void OnSpawn(Vector3 location, string mobFullId)
     {
-        MaxHealth = 100;
+        MobResource = ResourceManager.MobRegistry.GetResourceReference(mobFullId);
+        MaxHealth = MobResource.MaxHealth;
         Health = MaxHealth;
+        Armor = MobResource.Armor;
         GlobalPosition = location;
         Active = true;
         ChangeNavigationTarget();
     }
 
-    public override void OnDeath(Godot.Collections.Dictionary<string, Variant> damageInfo)
+    public override void OnDeath(DamageInfo damageInfo)
     {
-        Game.Current.MobDeath(MobPoolId);
+        if (!Active) return;
+
         Active = false;
+        Game.Current.MobDeath(damageInfo, MobPoolId);
     }
 
     // 100 ticks per second
@@ -87,8 +90,6 @@ public partial class LiveMob : Pawn
 
         var distToTarget = targetPawn?.Position.DistanceTo(Position) ?? 0f;
 
-        animationTree.Set("parameters/timescale_walk/scale", 1.5f);
-
         // attack, allow movement
         if (distToTarget < MobResource.AttackRange && MobResource.AttackRateMs < ticksMs - lastAttackTime)
         {
@@ -96,13 +97,13 @@ public partial class LiveMob : Pawn
 
             animationTree.Set("parameters/oneshot_melee/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
 
-            var di = new Godot.Collections.Dictionary<string, string>()
+            var di = new DamageInfo()
             {
-                {"damage", "5"},
+                {"damage", 5},
                 {"attacker", "0"},
                 {"attackerName", "mobname"},
                 {"weapon", "claw"},
-                {"hitposition", Vector3.Zero.ToString()},
+                {"hitposition", Vector3.Zero},
                 {"hitbox", "0"}
             };
             targetPawn.Rpc("OnDamageRpc", di);
@@ -124,6 +125,11 @@ public partial class LiveMob : Pawn
             if (distToTarget > MinimumDistanceToTarget)
             {
                 MoveAndSlide();
+                animationTree.Set("parameters/timescale_walk/scale", MobResource.MovementSpeedScale * 2f);
+            }
+            else
+            {
+                animationTree.Set("parameters/timescale_walk/scale", 0f);
             }
         }
     }
@@ -135,7 +141,7 @@ public partial class LiveMob : Pawn
             ChangeNavigationTarget();
         }
 
-        if (10000ul < ticksMs - lastTargetUpdateTime)
+        if (1000ul < ticksMs - lastTargetUpdateTime)
         {
             lastTargetUpdateTime = ticksMs;
             ChangeNavigationTarget();
@@ -158,8 +164,11 @@ public partial class LiveMob : Pawn
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
 
         var velocityTarget = new Vector3(targetPos.X, targetPos.Y, targetPos.Z);
-        Vector3 newVelocity = GlobalPosition.DirectionTo(velocityTarget) * 3.4f; // ! speed
-        Velocity = newVelocity + Vector3.Down * 0.5f;
+        Vector3 newVelocity = GlobalPosition.DirectionTo(velocityTarget) * MobResource.MovementSpeedScale * 3f;
+        if (newVelocity.Y > 0.05f)
+            Velocity = newVelocity + Vector3.Down * 0.2f;
+        else
+            Velocity = newVelocity + Vector3.Down * 1f;
         return newVelocity;
     }
 
@@ -211,13 +220,13 @@ public partial class LiveMob : Pawn
 
             int pointDotSize = 6, handleDotSize = 4;
             Color pointColor = new Color(1, 1, 0), handleColor = new Color(0, 1, 0);
-            Global.DebugDot(this, entryPos, pointDotSize, pointColor);
-            Global.DebugDot(this, entryPos + entryOut, handleDotSize, handleColor);
-            Global.DebugDot(this, jumpApexPos + centerIn, handleDotSize, handleColor);
-            Global.DebugDot(this, jumpApexPos, pointDotSize, pointColor);
-            Global.DebugDot(this, jumpApexPos + centerOut, handleDotSize, handleColor);
-            Global.DebugDot(this, exitPos + exitIn, handleDotSize, handleColor);
-            Global.DebugDot(this, exitPos, pointDotSize, pointColor);
+            Debug.DebugDot(this, entryPos, pointDotSize, pointColor);
+            Debug.DebugDot(this, entryPos + entryOut, handleDotSize, handleColor);
+            Debug.DebugDot(this, jumpApexPos + centerIn, handleDotSize, handleColor);
+            Debug.DebugDot(this, jumpApexPos, pointDotSize, pointColor);
+            Debug.DebugDot(this, jumpApexPos + centerOut, handleDotSize, handleColor);
+            Debug.DebugDot(this, exitPos + exitIn, handleDotSize, handleColor);
+            Debug.DebugDot(this, exitPos, pointDotSize, pointColor);
         }
 
         // drop
@@ -231,7 +240,7 @@ public partial class LiveMob : Pawn
 
             for (int i = 0; i < 10; i++)
             {
-                Global.DebugDot(this, verticalActionMovementCurve.Samplef(i / 10f), 1000);
+                Debug.DebugDot(this, verticalActionMovementCurve.Samplef(i / 10f), 1000);
             }
         }
     }

@@ -3,14 +3,14 @@ namespace MurderFloor;
 public partial class Pawn : CharacterBody3D
 {
     [Signal]
-    public delegate void PlayerOnDamageEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
+    public delegate void PlayerOnDamageEventHandler(DamageInfo damageInfo);
     [Signal]
-    public delegate void PlayerOnDeathEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
+    public delegate void PlayerOnDeathEventHandler(DamageInfo damageInfo);
 
     [Signal]
-    public delegate void MobOnDamageEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
+    public delegate void MobOnDamageEventHandler(DamageInfo damageInfo);
     [Signal]
-    public delegate void MobOnDeathEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfo);
+    public delegate void MobOnDeathEventHandler(DamageInfo damageInfo);
 
     [Export]
     public float MaxHealth { get; set; } = 100;
@@ -29,7 +29,7 @@ public partial class Pawn : CharacterBody3D
     /// <para>"hitbox": "int id"</para>
     /// </summary>
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    public virtual void OnDamageRpc(Godot.Collections.Dictionary<string, Variant> damageInfo)
+    public virtual void OnDamageRpc(DamageInfo damageInfo)
     {
         var damage = damageInfo["damage"].AsSingle();
 
@@ -72,7 +72,7 @@ public partial class Pawn : CharacterBody3D
         }
     }
 
-    public virtual void OnDeath(Godot.Collections.Dictionary<string, Variant> damageInfo)
+    public virtual void OnDeath(DamageInfo damageInfo)
     {
 
     }

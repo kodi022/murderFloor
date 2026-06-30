@@ -4,12 +4,12 @@ public partial class Game : Node
 {
     public enum GameDifficultyEnum
     {
-        Easy = 1,
-        Medium = 3,
-        Challenging = 3, // ! find different name?
-        Hard = 4,
-        Extreme = 5,
-        Ludicrous = 6,
+        Easy = 0,
+        Medium = 1,
+        Challenging = 2, // ! find different name?
+        Hard = 3,
+        Extreme = 4,
+        Ludicrous = 5,
     }
     public enum GameStateEnum
     {
@@ -133,13 +133,11 @@ public partial class Game : Node
         NextRound();
     }
 
-    public void MobDeath(int mobPoolId)
+    public void MobDeath(DamageInfo damageInfo, int mobPoolId)
     {
-        if (!MobPool[mobPoolId].Active) return;
-
         ActiveMobs--;
         RoundMobsLeft--;
-        ProcessLoot(MobPool[mobPoolId].GlobalPosition);
+        ProcessLoot(damageInfo, mobPoolId);
 
         if (RoundMobsLeft <= 0)
         {
@@ -159,16 +157,20 @@ public partial class Game : Node
         }
     }
 
-    private void ProcessLoot(Vector3 mobPosition)
+    private void ProcessLoot(DamageInfo damageInfo, int mobPoolId)
     {
+        // ! dont drop loot until end of round or end of game?
         if (rngLoot.Randf() > 0.8f)
         {
             var newLoot = (Node3D)GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate();
+            // ! level = map difficulty * difficulty + challenge or something
+            var loot = new Loot.LootRarityInfo(rngLoot.Randi(), 100, GameDifficultyEnum.Ludicrous);
+            GD.Print($"{loot.LootTier} ({(int)loot.LootTier}),  {loot.LootWear} ({(int)loot.LootWear})");
             lootNode.AddChild(newLoot);
-            newLoot.GlobalPosition = mobPosition + Vector3.Up;
+            newLoot.GlobalPosition = (Vector3)damageInfo["hitposition"];
             ((RigidBody3D)newLoot.GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
-            ((Sprite3D)newLoot.GetChild(0).GetChild(0)).Modulate = new Color(0, 1, 0, 0.33f);
-            ((Sprite3D)newLoot.GetChild(0).GetChild(1)).Modulate = new Color(0, 1, 0, 0.33f);
+            ((Sprite3D)newLoot.GetChild(0).GetChild(0)).Modulate = Loot.LootTierInfos[loot.LootTier].Color;
+            ((Sprite3D)newLoot.GetChild(0).GetChild(1)).Modulate = Loot.LootTierInfos[loot.LootTier].Color;
         }
     }
 
@@ -227,7 +229,7 @@ public partial class Game : Node
             if (MobPool[i].Active) continue;
             if (spawned >= waveSize) return;
 
-            MobPool[i].OnSpawn(spawns[spawned], 0);
+            MobPool[i].OnSpawn(spawns[spawned], "base:testmob");
             ActiveMobs++;
             spawned++;
         }

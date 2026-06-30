@@ -10,9 +10,10 @@
 [resource]
 script = ExtResource("1_mub5q")
 Damages = Vector2(25, 5)
-FalloffRanges = Vector2(10, 40)
-MaxRange = 75.0
+FalloffRanges = Vector2(8, 20)
+MaxRange = 70.0
 FirearmType = 6
+RPM = 300.0
 FireSound = ExtResource("2_nh8lw")
 DryFireSound = ExtResource("1_oh20k")
 PelletCount = 16
@@ -21,10 +22,10 @@ ReloadSound = ExtResource("3_g1vac")
 PartialReloadAnimationNames = null
 MagSize = 10
 MagsReserve = 5
-InitialDegreeSpread = Vector2(6, 6)
-MaxDegreeSpread = Vector2(10, 10)
-SpreadRecoveryRate = 4.0
-SpreadIncreasePerShot = Vector2(3, 3)
+InitialDegreeSpread = Vector2(8, 8)
+MaxDegreeSpread = Vector2(14, 14)
+SpreadRecoveryRate = 4.5
+SpreadIncreasePerShot = Vector2(3.3, 3.3)
 CameraRotationKick = Vector2(0.12, 0)
 ViewmodelPositionKick = Vector2(0, 0.15)
 AimShiftRangeVertical = Vector2(0.012, 0.014)

@@ -147,23 +147,7 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F3 && eventKey.Pressed)
             {
-                var tierCount = new Dictionary<Loot.LootTierEnum, int>();
-                var wearCount = new Dictionary<Loot.LootWearEnum, int>();
-                var lootCount = 1_000_000;
-                var level = 100;
-                for (int i = 0; i < lootCount; i++)
-                {
-                    var e = new Loot.LootRarityInfo(Random.Shared.Next(), level, Game.GameDifficultyEnum.Easy);
-                    if (!tierCount.TryAdd(e.LootTier, 1))
-                        tierCount[e.LootTier] += 1;
-
-                    if (!wearCount.TryAdd(e.LootWear, 1))
-                        wearCount[e.LootWear] += 1;
-                }
-
-                GD.Print($"-- Generated {lootCount} loot at level {level}");
-                GD.Print(string.Join(", ", tierCount.OrderByDescending(a => (int)a.Key)));
-                GD.Print(string.Join(", ", wearCount.OrderBy(a => (int)a.Key)));
+                Debug.DebugGenerateLoot();
             }
         }
     }
@@ -279,7 +263,7 @@ public partial class Player : Pawn
 
         var forward = Input.GetAxis("backward", "forward");
         var strafe = Input.GetAxis("left", "right");
-        var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.90f;
+        var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.7f;
         wishMove.Y = -0.4f;
         wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X + 1.570796326794896f);
         lastVel *= new Vector3(0.80f, 0.95f, 0.80f);

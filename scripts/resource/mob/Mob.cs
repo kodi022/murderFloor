@@ -6,11 +6,12 @@ public partial class Mob : MFResource
     [Export]
     public PackedScene MeshScene { get; private set; }
     [Export]
-    public float MaxHealth { get; private set; }
-    [Export]
-    public float Health { get; private set; }
+    public float MaxHealth { get; private set; } = 100f;
     [Export]
     public float Armor { get; private set; }
+
+    [Export, ExportSubgroup("Movement")]
+    public float MovementSpeedScale { get; private set; } = 1f;
 
     [Export, ExportSubgroup("Attacking")]
     public ulong AttackRateMs { get; private set; } = 1000ul;

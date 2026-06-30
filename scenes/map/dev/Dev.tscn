@@ -13,6 +13,33 @@
 size = Vector3(5.8447266, 3.0932617, 7.0915527)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gmxd1"]
+properties/0/path = NodePath(".:GameState")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:GameDifficulty")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:GameSeed")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:Round")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:MaxActiveMobs")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:RoundMobsLeft")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath(".:ActiveMobs")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath(".:TimeMsBetweenRounds")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+properties/8/path = NodePath(".:MaxRound")
+properties/8/spawn = true
+properties/8/replication_mode = 1
 
 [sub_resource type="Environment" id="Environment_gmxd1"]
 background_mode = 1
@@ -56,13 +83,13 @@ size = Vector2(2.002, 0.4)
 script = ExtResource("1_waklt")
 
 [node name="MobSpawnArea" type="Node3D" parent="Game" unique_id=712887205]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.301493, 0.18710554, 13.780201)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.301493, 0.18710554, 13.990852)
 script = ExtResource("3_phb26")
 NodeSecondaryPoint = Vector3(2.5223885, 0.39044154, 5.495655)
 metadata/_custom_type_script = "uid://bf7fcaaevianx"
 
 [node name="MobSpawnArea2" type="Node3D" parent="Game" unique_id=1434781887]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.236773, 0.23034573, 6.680537)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.504475, 0.23034573, -0.22284365)
 script = ExtResource("3_phb26")
 NodeSecondaryPoint = Vector3(2.0582619, 0.9881017, 6.246808)
 metadata/_custom_type_script = "uid://bf7fcaaevianx"

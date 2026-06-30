@@ -3,6 +3,10 @@
 [ext_resource type="Texture2D" uid="uid://c5vrf3mkuela6" path="res://images/loot/LootSpriteBottom.png" id="1_38nlf"]
 [ext_resource type="Texture2D" uid="uid://nght41wcvqfn" path="res://images/loot/LootSpriteSide.png" id="1_v8ds3"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_38nlf"]
+friction = 0.5
+bounce = 0.4
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_38nlf"]
 size = Vector3(0.2, 0.2, 0.2)
 
@@ -10,7 +14,8 @@ size = Vector3(0.2, 0.2, 0.2)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1392696244]
 collision_layer = 32
-lock_rotation = true
+mass = 4.0
+physics_material_override = SubResource("PhysicsMaterial_38nlf")
 
 [node name="Sprite3D" type="Sprite3D" parent="RigidBody3D" unique_id=1205720480]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)

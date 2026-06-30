@@ -10,8 +10,8 @@
 
 [resource]
 script = ExtResource("4_rxxii")
-Damages = Vector2(12, 6)
-FalloffRanges = Vector2(6, 20)
+Damages = Vector2(25, 8)
+FalloffRanges = Vector2(10, 40)
 MaxRange = 100.0
 FirearmType = 6
 RPM = 150.0
@@ -23,9 +23,9 @@ ReloadSound = ExtResource("3_djgqg")
 PartialReloadAnimationNames = Dictionary[int, String]({})
 MagSize = 6
 MagsReserve = 10
-InitialDegreeSpread = Vector2(5, 5)
+InitialDegreeSpread = Vector2(4, 4)
 MaxDegreeSpread = Vector2(8, 8)
-SpreadRecoveryRate = 3.0
+SpreadRecoveryRate = 3.5
 SpreadIncreasePerShot = Vector2(2, 2)
 CameraRotationKick = Vector2(0.1, 0)
 ViewmodelPositionKick = Vector2(0, 0.15)
