@@ -39,6 +39,7 @@ public partial class LiveMob : Pawn
     private ulong lastWaypointTime;
     private ulong lastTargetUpdateTime;
     private ulong lastAttackTime;
+
     private bool verticalAction;
     private ulong verticalActionStartTime;
     private Curve3D verticalActionMovementCurve;

@@ -4,6 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://cclji8rued6d6" path="res://scenes/ui/HUD.tscn" id="2_lba76"]
 [ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://scenes/pawn/player/KincheePlayer.blend" id="3_eoey4"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v0dpb"]
+animation = &"holdtype_idle"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hhn42"]
 animation = &"walk"
 
@@ -11,57 +14,83 @@ animation = &"walk"
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Clavicle.L", "Armature/Skeleton3D:Clavicle.R", "Armature/Skeleton3D:Hand.L", "Armature/Skeleton3D:Hand.R", "Armature/Skeleton3D:LowerArm.L", "Armature/Skeleton3D:LowerArm.R", "Armature/Skeleton3D:UpperArm.L", "Armature/Skeleton3D:UpperArm.R", "Armature/Skeleton3D:UpperSpine"]
 
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_h5sn3"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_un715"]
+animation = &"holdtype_idle"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yqc8m"]
 animation = &"holdtype_pistol"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7vb1q"]
 animation = &"holdtype_rifle"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5y8vi"]
-xfade_time = 0.2
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5y8vi"]
+animation = &"holdtype_shotgun"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yqc8m"]
+xfade_time = 0.25
 advance_mode = 2
-advance_expression = "hold == \"holdtype_pistol\""
+advance_condition = &"holdtype_pistol"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7vb1q"]
+xfade_time = 0.25
+advance_mode = 2
+advance_condition = &"holdtype_rifle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5y8vi"]
+xfade_time = 0.25
+advance_mode = 2
+advance_condition = &"holdtype_shotgun"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_un715"]
-xfade_time = 0.2
+xfade_time = 0.25
 advance_mode = 2
-advance_expression = "hold == \"holdtype_rifle\""
+advance_condition = &"holdtype == idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v0dpb"]
+xfade_time = 0.25
+advance_mode = 2
+advance_condition = &"holdtype == idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_h5sn3"]
+xfade_time = 0.25
+advance_mode = 2
+advance_condition = &"holdtype == idle"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_v0dpb"]
+allow_transition_to_self = true
 states/End/position = Vector2(1003, 1)
-states/Start/position = Vector2(353, 1)
+states/Start/position = Vector2(139, 1)
+states/holdtype_idle/node = SubResource("AnimationNodeAnimation_un715")
+states/holdtype_idle/position = Vector2(515, -28)
 states/holdtype_pistol/node = SubResource("AnimationNodeAnimation_yqc8m")
-states/holdtype_pistol/position = Vector2(567, 1)
+states/holdtype_pistol/position = Vector2(321, -211)
 states/holdtype_rifle/node = SubResource("AnimationNodeAnimation_7vb1q")
-states/holdtype_rifle/position = Vector2(567, 55)
-transitions = ["holdtype_pistol", "End", SubResource("AnimationNodeStateMachineTransition_5y8vi"), "holdtype_rifle", "End", SubResource("AnimationNodeStateMachineTransition_un715")]
-graph_offset = Vector2(-542, -250)
-
-[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_hhn42"]
-filter_enabled = true
-filters = ["Armature/Skeleton3D:Foot.L", "Armature/Skeleton3D:Hip", "Armature/Skeleton3D:LowerLeg.L", "Armature/Skeleton3D:UpperLeg.L", "Armature/Skeleton3D:UpperSpine"]
-
-[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_g7wop"]
-filter_enabled = true
-filters = ["Armature/Skeleton3D:Clavicle.L", "Armature/Skeleton3D:Clavicle.R", "Armature/Skeleton3D:Hand.L", "Armature/Skeleton3D:Hand.R", "Armature/Skeleton3D:LowerArm.L", "Armature/Skeleton3D:LowerArm.R", "Armature/Skeleton3D:UpperArm.L", "Armature/Skeleton3D:UpperArm.R", "Armature/Skeleton3D:UpperSpine"]
+states/holdtype_rifle/position = Vector2(515, -211)
+states/holdtype_shotgun/node = SubResource("AnimationNodeAnimation_5y8vi")
+states/holdtype_shotgun/position = Vector2(715, -211)
+transitions = ["holdtype_idle", "holdtype_pistol", SubResource("AnimationNodeStateMachineTransition_yqc8m"), "holdtype_idle", "holdtype_rifle", SubResource("AnimationNodeStateMachineTransition_7vb1q"), "holdtype_idle", "holdtype_shotgun", SubResource("AnimationNodeStateMachineTransition_5y8vi"), "holdtype_rifle", "holdtype_idle", SubResource("AnimationNodeStateMachineTransition_un715"), "holdtype_shotgun", "holdtype_idle", SubResource("AnimationNodeStateMachineTransition_v0dpb"), "holdtype_pistol", "holdtype_idle", SubResource("AnimationNodeStateMachineTransition_h5sn3")]
+graph_offset = Vector2(-706.9726, -359.37524)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_hhn42"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_yqc8m"]
+graph_offset = Vector2(-1600.2892, -49.644653)
 nodes/output/position = Vector2(340, 80)
+nodes/moving/node = SubResource("AnimationNodeBlend2_h5sn3")
+nodes/moving/position = Vector2(-440, 60)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_hhn42")
-nodes/Animation/position = Vector2(-900, 80)
-nodes/add_walk/node = SubResource("AnimationNodeAdd2_hhn42")
-nodes/add_walk/position = Vector2(-720, 240)
+nodes/Animation/position = Vector2(-820, 60)
 nodes/timescale_walk/node = SubResource("AnimationNodeTimeScale_hhn42")
-nodes/timescale_walk/position = Vector2(-580, 80)
-nodes/oneshot_melee/node = SubResource("AnimationNodeOneShot_g7wop")
-nodes/oneshot_melee/position = Vector2(140, 80)
+nodes/timescale_walk/position = Vector2(-640, 60)
+nodes/statemachine_holdtype/node = SubResource("AnimationNodeStateMachine_v0dpb")
+nodes/statemachine_holdtype/position = Vector2(-80, 280)
 nodes/Blend2/node = SubResource("AnimationNodeBlend2_yqc8m")
-nodes/Blend2/position = Vector2(-260, 140)
-nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_v0dpb")
-nodes/StateMachine/position = Vector2(-560, 300)
-node_connections = [&"output", 0, &"oneshot_melee", &"timescale_walk", 0, &"Animation", &"oneshot_melee", 0, &"Blend2", &"Blend2", 0, &"timescale_walk", &"Blend2", 1, &"StateMachine"]
+nodes/Blend2/position = Vector2(180, 80)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_v0dpb")
+"nodes/Animation 2/position" = Vector2(-640, 240)
+node_connections = [&"output", 0, &"Blend2", &"moving", 0, &"Animation 2", &"moving", 1, &"timescale_walk", &"timescale_walk", 0, &"Animation", &"Blend2", 0, &"moving", &"Blend2", 1, &"statemachine_holdtype"]
 
 [sub_resource type="AudioStreamPolyphonic" id="AudioStreamPolyphonic_3li8b"]
 
@@ -85,9 +114,9 @@ properties/3/replication_mode = 2
 properties/4/path = NodePath(".:ViewAngle")
 properties/4/spawn = true
 properties/4/replication_mode = 2
-properties/5/path = NodePath(".:BodyVelocity")
+properties/5/path = NodePath(".:NetworkedVelocity")
 properties/5/spawn = true
-properties/5/replication_mode = 1
+properties/5/replication_mode = 2
 
 [node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("ToolsNode", "AudioStreamPlayer3D", "worldModels", "worldAnimationTree", "ViewAimViewmodel", "Camera", "viewAim", "cameraRaycast")]
 collision_layer = 2
@@ -112,6 +141,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6229631, 0)
 
 [node name="Camera3D" type="Camera3D" parent="ViewAim" unique_id=1562406550]
 physics_interpolation_mode = 2
+fov = 90.0
 
 [node name="ViewModel" type="Node3D" parent="ViewAim" unique_id=268001501]
 
@@ -131,11 +161,12 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0
 tree_root = SubResource("AnimationNodeBlendTree_yqc8m")
 advance_expression_base_node = NodePath("../../..")
 anim_player = NodePath("../AnimationPlayer")
-parameters/add_walk/add_amount = 0.0
+parameters/moving/blend_amount = 0.0
 parameters/timescale_walk/scale = 1.0
-parameters/oneshot_melee/active = false
-parameters/oneshot_melee/internal_active = false
-parameters/oneshot_melee/request = 0
+"parameters/statemachine_holdtype/conditions/holdtype == idle" = false
+parameters/statemachine_holdtype/conditions/holdtype_pistol = false
+parameters/statemachine_holdtype/conditions/holdtype_rifle = false
+parameters/statemachine_holdtype/conditions/holdtype_shotgun = false
 parameters/Blend2/blend_amount = 1.0
 
 [node name="Tool" type="Node3D" parent="WorldModels" unique_id=1101096359]

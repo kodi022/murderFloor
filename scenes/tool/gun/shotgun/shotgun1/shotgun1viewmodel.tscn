@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b85on0trpihqi" path="res://scenes/pawn/player/PlayerViewmodelBody.tscn" id="1_wfxkk"]
 [ext_resource type="PackedScene" uid="uid://cijlsm4d36o3f" path="res://scenes/tool/gun/shotgun/shotgun1/shotgun1.blend" id="2_fxy1t"]
 
-[node name="viewmodel" type="Node3D" unique_id=356872480]
+[node name="shotgun1viewmodel" type="Node3D" unique_id=356872480]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.053858504, 0.03254509, 0)
 
 [node name="KincheePlayer" parent="." unique_id=51662591 instance=ExtResource("1_wfxkk")]

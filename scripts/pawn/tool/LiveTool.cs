@@ -28,6 +28,8 @@ public partial class LiveTool : Node
 
     // toolfirearm
     public Vector2 CurrentSpread { get; private set; }
+    public Vector2 MinSpread { get; private set; }
+    public Vector2 MaxSpread { get; private set; }
 
     [Export]
     public int CurrentMag { get; private set; } = 0;
@@ -40,7 +42,15 @@ public partial class LiveTool : Node
     private bool shotSemi = false;
     private bool shotBolt = false;
 
+    public bool Aiming { get; private set; } = false;
+
+    private Vector3 targetStartAimingPosition;
+    private Vector3 targetEndAimingPosition;
+    private float currentAimingPositionLerp;
+
     private Node3D modelScene;
+    private Vector3 modelSceneStartPosition;
+    private Node3D modelSceneGun;
     private Node3D muzzleNode;
     private Node3D sightNode;
     private Node3D barrelNode;
@@ -67,18 +77,31 @@ public partial class LiveTool : Node
 
         AnimationPlayer?.Play(ToolResource.HoldTypeAnimation);
 
+        if (currentAimingPositionLerp < 0.32f)
+        {
+            currentAimingPositionLerp += (float)delta;
+            currentAimingPositionLerp = Mathf.Min(0.32f, currentAimingPositionLerp);
+            modelScene.Position = targetStartAimingPosition.Lerp(targetEndAimingPosition, currentAimingPositionLerp * 3.125f);
+        }
+
         if (ToolResource is ToolFirearm firearm)
         {
-            CurrentSpread = (CurrentSpread - (Vector2.One * firearm.SpreadRecoveryRate * (float)delta)).Max(firearm.InitialDegreeSpread);
-            if (PrimaryInputState == 1)
-            {
-                FirePrimary();
-            }
+            var plrVel = Player.Velocity.LengthSquared();
+            var movementPenalty = plrVel > 2f ? firearm.InitialDegreeSpread * 0.1f : Vector2.Zero;
+            movementPenalty += plrVel > 10f ? firearm.InitialDegreeSpread * 0.3f : Vector2.Zero;
 
-            if (PrimaryInputState == 2)
-            {
-                UnFirePrimary();
-            }
+            var aimBuff = Aiming ? 0.75f : 1f;
+
+            MinSpread = firearm.InitialDegreeSpread * aimBuff + movementPenalty;
+            MaxSpread = firearm.MaxDegreeSpread + movementPenalty;
+
+            var recoveryRate = Vector2.One * firearm.SpreadRecoveryRate * (float)delta;
+            CurrentSpread = (CurrentSpread - recoveryRate).Max(MinSpread);
+            if (PrimaryInputState == 1) FirePrimary();
+            if (PrimaryInputState == 2) UnFirePrimary();
+
+            if (SecondaryInputState == 1) FireSecondary();
+            if (SecondaryInputState == 2) UnFireSecondary();
 
             if (ReloadInputState == 1)
             {
@@ -98,8 +121,10 @@ public partial class LiveTool : Node
         if (IsMultiplayerAuthority())
         {
             modelScene = (Node3D)ToolResource.MeshSceneViewmodel.Instantiate();
+            modelSceneGun = modelScene.GetChild<Node3D>(1);
             posNode.AddChild(modelScene);
             AnimationPlayer = (AnimationPlayer)modelScene.GetChild(0).GetChild(1);
+            AnimationPlayer.Play(ToolResource.HoldTypeAnimation);
         }
         else
         {
@@ -107,6 +132,7 @@ public partial class LiveTool : Node
             posNode.AddChild(modelScene);
             modelScene.RotationDegrees = new Vector3(0, ToolResource.MeshSceneImportYaw, 0);
         }
+        modelSceneStartPosition = modelScene.Position;
 
         muzzleNode = (Node3D)modelScene.FindChildren("Muzzle").FirstOrDefault(new Node3D());
         if (ToolResource is ToolFirearm && !muzzleNode.IsInsideTree())
@@ -148,7 +174,6 @@ public partial class LiveTool : Node
 
         if (ToolResource is ToolMelee melee)
         {
-
             melee.FireMelee(CreateFireInfo());
             return;
         }
@@ -163,6 +188,33 @@ public partial class LiveTool : Node
     {
         if (!equipped) return;
 
+        if (IsMultiplayerAuthority())
+        {
+            if (!Aiming)
+            {
+                Aiming = true;
+                var rotatedSight = sightNode.Position.Rotated(Vector3.Up, -modelSceneGun.Rotation.Y);
+                var x = modelSceneGun.Position.X + rotatedSight.X;
+                var y = modelSceneGun.Position.Y + rotatedSight.Y;
+                targetStartAimingPosition = modelSceneStartPosition;
+                targetEndAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
+                currentAimingPositionLerp = 0f;
+            }
+        }
+        else
+        {
+
+        }
+    }
+
+    public void UnFireSecondary()
+    {
+        if (!equipped) return;
+
+        Aiming = false;
+        targetStartAimingPosition = modelScene.Position;
+        targetEndAimingPosition = modelSceneStartPosition;
+        currentAimingPositionLerp = 0f;
     }
 
     public void FireReload()
@@ -206,7 +258,7 @@ public partial class LiveTool : Node
 
             shotSemi = true;
             shotBolt = true;
-            CurrentSpread = (CurrentSpread + firearm.SpreadIncreasePerShot).Min(firearm.MaxDegreeSpread);
+            CurrentSpread = (CurrentSpread + firearm.SpreadIncreasePerShot).Min(MaxSpread);
             CurrentMag--;
         }
     }
@@ -279,7 +331,7 @@ public partial class LiveTool : Node
         {
             Player = Player,
             LiveTool = this,
-            StartPosition = Player.ViewPosition,
+            StartPosition = Player.ViewGlobalPosition,
             ViewTransform = Player.ViewTransform
         };
     }

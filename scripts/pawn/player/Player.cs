@@ -7,7 +7,8 @@ public partial class Player : Pawn
 
     public int Id { get; private set; }
 
-    public Vector3 ViewPosition => viewAim.GlobalPosition;
+    public Vector3 ViewPosition => viewAim.Position;
+    public Vector3 ViewGlobalPosition => viewAim.GlobalPosition;
     public Transform3D ViewTransform => viewAim.GlobalTransform;
 
     public float CameraShakeScale { get; set; }
@@ -24,13 +25,10 @@ public partial class Player : Pawn
     public AudioStreamPlayer3D AudioStreamPlayer3D { get; private set; }
 
     [Export]
-    public Vector3 BodyVelocity { get; set; } = Vector3.Zero;
-
-    [Export]
     public Vector2 ViewAngle { get; set; } = Vector2.Zero;
     private Vector2 lastViewAngle = Vector2.Zero;
 
-    public string UseInfoText { get; set; } = "";
+    public string UseInfoText { get; private set; } = "";
 
     // * world
     [Export]
@@ -63,7 +61,6 @@ public partial class Player : Pawn
     private Control openUI;
     private Control debugUI;
 
-    private Vector3 lastVel;
     private Vector2 mouseDelta;
 
     public string Hold = "";
@@ -164,12 +161,23 @@ public partial class Player : Pawn
 
         if (!IsMultiplayerAuthority())
         {
-            var vel = BodyVelocity.Length() * 0.4f;
-            worldAnimationTree.Set("parameters/timescale_walk/scale", vel < 0.1f ? 0f : vel);
-            Hold = SelectedTool?.ToolResource.HoldTypeAnimation ?? "";
-            //worldAnimationTree.Set("parameters/StateMachine/conditions/holdtype", SelectedTool?.ToolResource.HoldTypeAnimation ?? "");
             viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
             Rotation = new Vector3(0, ViewAngle.X, 0);
+
+            var vel = NetworkedVelocity.Length() * 0.4f;
+            if (vel < 0.1f)
+            {
+                worldAnimationTree.Set("parameters/moving/scale", 0f);
+                worldAnimationTree.Set("parameters/timescale_walk/scale", 0f);
+            }
+            else
+            {
+                worldAnimationTree.Set("parameters/moving/scale", 1f);
+                worldAnimationTree.Set("parameters/timescale_walk/scale", vel);
+            }
+            Hold = SelectedTool?.ToolResource.HoldTypeAnimation ?? "";
+
+            var holdtype = SelectedTool?.ToolResource.HoldTypeAnimation ?? "holdtype_idle";
             return;
         }
 
@@ -256,23 +264,7 @@ public partial class Player : Pawn
             else SelectedTool.ReloadInputState = 0;
         }
 
-        if (Input.IsActionJustPressed("jump"))
-        {
-            lastVel.Y = 11f;
-        }
-
-        var forward = Input.GetAxis("backward", "forward");
-        var strafe = Input.GetAxis("left", "right");
-        var wishMove = new Vector3(forward, 0f, strafe).Normalized() * 0.7f;
-        wishMove.Y = -0.4f;
-        wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X + 1.570796326794896f);
-        lastVel *= new Vector3(0.80f, 0.95f, 0.80f);
-        lastVel += wishMove;
-
-        Velocity = lastVel;
-        BodyVelocity = Velocity;
-        MoveAndSlide();
-        lastVel = Velocity;
+        PhysicsProcessMovement();
     }
 
     public void OpenUI(string uiScene)
