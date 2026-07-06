@@ -160,17 +160,17 @@ public partial class Game : Node
     private void ProcessLoot(DamageInfo damageInfo, int mobPoolId)
     {
         // ! dont drop loot until end of round or end of game?
-        if (rngLoot.Randf() > 0.8f)
+        if (rngLoot.Randf() > 0.9f)
         {
-            var newLoot = (Node3D)GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate();
             // ! level = map difficulty * difficulty + challenge or something
-            var loot = new Loot.LootRarityInfo(rngLoot.Randi(), 100, GameDifficultyEnum.Ludicrous);
-            GD.Print($"{loot.LootTier} ({(int)loot.LootTier}),  {loot.LootWear} ({(int)loot.LootWear})");
-            lootNode.AddChild(newLoot);
-            newLoot.GlobalPosition = (Vector3)damageInfo["hitposition"];
-            ((RigidBody3D)newLoot.GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
-            ((Sprite3D)newLoot.GetChild(0).GetChild(0)).Modulate = Loot.LootTierInfos[loot.LootTier].Color;
-            ((Sprite3D)newLoot.GetChild(0).GetChild(1)).Modulate = Loot.LootTierInfos[loot.LootTier].Color;
+            var state = new Loot.LootStateInfo(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Easy, "", "", 0);
+            var lootNode3d = state.MakeLootNode();
+            lootNode.AddChild(lootNode3d);
+            lootNode3d.GlobalPosition = (Vector3)damageInfo["hitposition"];
+            ((RigidBody3D)lootNode3d.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
+
+            var loot = new Loot.LootRarityInfo(state);
+            GD.Print($"{loot.Tier} ({(int)loot.Tier}),  {loot.Wear} ({(int)loot.Wear})");
         }
     }
 

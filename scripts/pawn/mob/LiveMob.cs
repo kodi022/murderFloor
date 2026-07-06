@@ -221,13 +221,13 @@ public partial class LiveMob : Pawn
 
             int pointDotSize = 6, handleDotSize = 4;
             Color pointColor = new Color(1, 1, 0), handleColor = new Color(0, 1, 0);
-            Debug.DebugDot(this, entryPos, pointDotSize, pointColor);
-            Debug.DebugDot(this, entryPos + entryOut, handleDotSize, handleColor);
-            Debug.DebugDot(this, jumpApexPos + centerIn, handleDotSize, handleColor);
-            Debug.DebugDot(this, jumpApexPos, pointDotSize, pointColor);
-            Debug.DebugDot(this, jumpApexPos + centerOut, handleDotSize, handleColor);
-            Debug.DebugDot(this, exitPos + exitIn, handleDotSize, handleColor);
-            Debug.DebugDot(this, exitPos, pointDotSize, pointColor);
+            Debug.DebugDot(entryPos, pointDotSize, pointColor);
+            Debug.DebugDot(entryPos + entryOut, handleDotSize, handleColor);
+            Debug.DebugDot(jumpApexPos + centerIn, handleDotSize, handleColor);
+            Debug.DebugDot(jumpApexPos, pointDotSize, pointColor);
+            Debug.DebugDot(jumpApexPos + centerOut, handleDotSize, handleColor);
+            Debug.DebugDot(exitPos + exitIn, handleDotSize, handleColor);
+            Debug.DebugDot(exitPos, pointDotSize, pointColor);
         }
 
         // drop
@@ -241,7 +241,7 @@ public partial class LiveMob : Pawn
 
             for (int i = 0; i < 10; i++)
             {
-                Debug.DebugDot(this, verticalActionMovementCurve.Samplef(i / 10f), 1000);
+                Debug.DebugDot(verticalActionMovementCurve.Samplef(i / 10f), 1000);
             }
         }
     }

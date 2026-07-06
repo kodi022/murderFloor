@@ -48,7 +48,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             var ray = space.IntersectRay(query);
             if (ray.ContainsKey("collider"))
             {
-                Debug.DebugDot(fi.Player, (Vector3)ray["position"], color: new Color(0, 0, 0));
+                Debug.DebugDot((Vector3)ray["position"], color: new Color(0, 0, 0));
 
                 Pawn pawn = null;
                 var currentNode = (Node)(GodotObject)ray["collider"];

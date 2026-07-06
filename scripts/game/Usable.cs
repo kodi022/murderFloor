@@ -1,12 +1,13 @@
 namespace MurderFloor;
 
-[GlobalClass]
 public partial class Usable : Node3D
 {
     [Export]
     public string UseInfoText { get; private set; }
     [Export]
     public string UiSceneToOpen { get; private set; }
+
+    public Action UseAction { get; set; }
 
     public void UsableHit()
     {
@@ -15,6 +16,12 @@ public partial class Usable : Node3D
 
     public void UsableInvoke()
     {
-        Player.Self.OpenUI(UiSceneToOpen);
+        if (!string.IsNullOrEmpty(UiSceneToOpen))
+        {
+            Player.Self.OpenUI(UiSceneToOpen);
+            return;
+        }
+
+        UseAction?.Invoke();
     }
 }

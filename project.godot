@@ -137,6 +137,10 @@ walk={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://translations/en.en.translation")
+
 [layer_names]
 
 3d_physics/layer_1="World"

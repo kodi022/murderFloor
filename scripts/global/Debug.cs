@@ -4,23 +4,24 @@ public static class Debug
 {
     public static async void DebugGenerateLoot()
     {
-        var allLootTier = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.LootTierEnum, int>>();
-        var allLootWear = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.LootWearEnum, int>>();
+        var allLootTier = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.TierEnum, int>>();
+        var allLootWear = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.WearEnum, int>>();
         var lootCount = 500_000;
         var level = 80;
 
         void GenerateLoot(Game.GameDifficultyEnum difficulty)
         {
-            var tierCount = new Dictionary<Loot.LootTierEnum, int>();
-            var wearCount = new Dictionary<Loot.LootWearEnum, int>();
+            var tierCount = new Dictionary<Loot.TierEnum, int>();
+            var wearCount = new Dictionary<Loot.WearEnum, int>();
             for (int i = 0; i < lootCount; i++)
             {
-                var e = new Loot.LootRarityInfo((ulong)Random.Shared.NextInt64(), level, difficulty);
-                if (!tierCount.TryAdd(e.LootTier, 1))
-                    tierCount[e.LootTier] += 1;
+                var state = new Loot.LootStateInfo((ulong)Random.Shared.NextInt64(), level, difficulty, "", "", 0);
+                var e = new Loot.LootRarityInfo(state);
+                if (!tierCount.TryAdd(e.Tier, 1))
+                    tierCount[e.Tier] += 1;
 
-                if (!wearCount.TryAdd(e.LootWear, 1))
-                    wearCount[e.LootWear] += 1;
+                if (!wearCount.TryAdd(e.Wear, 1))
+                    wearCount[e.Wear] += 1;
             }
 
             allLootTier.Add(difficulty, tierCount);
@@ -34,7 +35,7 @@ public static class Debug
         var e = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Extreme); });
         var f = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Ludicrous); });
         Task.WaitAll(a, b, c, d, e, f);
-        await Task.Delay(20);
+        await Task.Delay(20); // necessary or above line isnt guaranteed
 
         List<string> diffStrings = [];
         diffStrings.Add($"CountPerDifficulty:{lootCount}  Level:{level}  CSKnife:0.25");
@@ -96,7 +97,7 @@ public static class Debug
         GD.Print('╚' + "".PadRight(longest, '═') + '╝');
     }
 
-    public static void DebugDot(Node anyNode, Vector3 position, float scale = 1f, Color? color = null, ulong msToDelete = 10000ul)
+    public static void DebugDot(Node3D parentNode, Vector3 position, float scale = 1f, Color? color = null, ulong msToDelete = 10000ul)
     {
         var debugDot = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
         debugDot.Position = position;
@@ -112,9 +113,11 @@ public static class Debug
             debugBulletDecal.MaterialOverride = inst;
         }
 
-        anyNode.GetTree().Root.AddChild(debugDot);
+        parentNode.AddChild(debugDot);
     }
 
-
-
+    public static void DebugDot(Vector3 position, float scale = 1f, Color? color = null, ulong msToDelete = 10000ul)
+    {
+        DebugDot((Node3D)((SceneTree)Engine.GetMainLoop()).CurrentScene, position, scale, color, msToDelete);
+    }
 }

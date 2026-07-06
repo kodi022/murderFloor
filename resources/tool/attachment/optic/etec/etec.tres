@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Attachment" format=3 uid="uid://d4cruwaoa7i05"]
+
+[ext_resource type="PackedScene" uid="uid://3f3btq20l0k4" path="res://scenes/tool/attachment/optic/etec/etec.blend" id="1_joe86"]
+[ext_resource type="Script" uid="uid://bo8dgn78441mc" path="res://scripts/resource/attachment/Attachment.cs" id="1_mxsou"]
+
+[resource]
+script = ExtResource("1_mxsou")
+MeshSceneImportYaw = -90.0
+MeshScene = ExtResource("1_joe86")
+ResourceId = "etec"
+NameLocalizationGroup = "attachment"
+metadata/_custom_type_script = "uid://bo8dgn78441mc"

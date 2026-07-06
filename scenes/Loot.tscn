@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://cp40bylty5ywc"]
 
 [ext_resource type="Texture2D" uid="uid://c5vrf3mkuela6" path="res://images/loot/LootSpriteBottom.png" id="1_38nlf"]
+[ext_resource type="Script" uid="uid://cd64kihgf73nx" path="res://scripts/pawn/tool/LiveLoot.cs" id="1_sbwe0"]
 [ext_resource type="Texture2D" uid="uid://nght41wcvqfn" path="res://images/loot/LootSpriteSide.png" id="1_v8ds3"]
+[ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_kxss7"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_38nlf"]
 friction = 0.5
@@ -11,13 +13,19 @@ bounce = 0.4
 size = Vector3(0.2, 0.2, 0.2)
 
 [node name="Loot" type="Node3D" unique_id=1658198493]
+script = ExtResource("1_sbwe0")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1392696244]
+[node name="Usable" type="Node3D" parent="." unique_id=1907106779]
+script = ExtResource("2_kxss7")
+UseInfoText = "Pick Up"
+metadata/_custom_type_script = "uid://bwlrm48k447kp"
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Usable" unique_id=1392696244]
 collision_layer = 32
 mass = 4.0
 physics_material_override = SubResource("PhysicsMaterial_38nlf")
 
-[node name="Sprite3D" type="Sprite3D" parent="RigidBody3D" unique_id=1205720480]
+[node name="Sprite3D" type="Sprite3D" parent="Usable/RigidBody3D" unique_id=1205720480]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
 pixel_size = 0.0025
 axis = 1
@@ -25,7 +33,7 @@ billboard = 2
 double_sided = false
 texture = ExtResource("1_38nlf")
 
-[node name="Sprite3D2" type="Sprite3D" parent="RigidBody3D" unique_id=943511637]
+[node name="Sprite3D2" type="Sprite3D" parent="Usable/RigidBody3D" unique_id=943511637]
 offset = Vector2(0, 1024)
 pixel_size = 0.002
 billboard = 2
@@ -34,5 +42,5 @@ texture = ExtResource("1_v8ds3")
 region_enabled = true
 region_rect = Rect2(0, -1536, 512, 2048)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=2062265670]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Usable/RigidBody3D" unique_id=2062265670]
 shape = SubResource("BoxShape3D_38nlf")

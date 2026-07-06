@@ -52,10 +52,11 @@ public partial class LiveTool : Node
     private Vector3 modelSceneStartPosition;
     private Node3D modelSceneGun;
     private Node3D muzzleNode;
-    private Node3D sightNode;
-    private Node3D barrelNode;
-    private Node3D addon1Node;
-    private Node3D addon2Node;
+    private Vector3 sightPosition;
+    private Node3D sightAttachmentNode;
+    // private Node3D barrelNode;
+    // private Node3D addon1Node;
+    // private Node3D addon2Node;
 
     public override void _Ready()
     {
@@ -138,9 +139,26 @@ public partial class LiveTool : Node
         if (ToolResource is ToolFirearm && !muzzleNode.IsInsideTree())
             GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Muzzle\"");
 
-        sightNode = (Node3D)modelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+        var sightNode = (Node3D)modelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
         if (ToolResource is ToolFirearm && !sightNode.IsInsideTree())
             GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Sight\"");
+
+        sightPosition = sightNode.Position.Rotated(Vector3.Up, -modelSceneGun.Rotation.Y);
+
+        sightAttachmentNode = (Node3D)modelScene.FindChildren("SightAttachment").FirstOrDefault(new Node3D());
+        if (ToolResource is ToolFirearm && !sightAttachmentNode.IsInsideTree())
+            GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"SightAttachment\"");
+
+        if (sightAttachmentNode.IsInsideTree())
+        {
+            var etec = ResourceManager.AttachmentRegistry.GetResourceReference("base:etec");
+            var etecModelScene = (Node3D)etec.MeshScene.Instantiate();
+            sightAttachmentNode.AddChild(etecModelScene);
+            etecModelScene.RotationDegrees = new Vector3(0, etec.MeshSceneImportYaw, 0);
+            var attachSightNode = (Node3D)etecModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+            sightPosition = sightAttachmentNode.Position.Rotated(Vector3.Up, -modelSceneGun.Rotation.Y);
+            sightPosition += attachSightNode.Position.Rotated(Vector3.Up, -etecModelScene.Rotation.Y);
+        }
 
         // ! find other attachments
 
@@ -188,14 +206,14 @@ public partial class LiveTool : Node
     {
         if (!equipped) return;
 
+        // could make Viewing instead of Authority, allowing spetating
         if (IsMultiplayerAuthority())
         {
             if (!Aiming)
             {
                 Aiming = true;
-                var rotatedSight = sightNode.Position.Rotated(Vector3.Up, -modelSceneGun.Rotation.Y);
-                var x = modelSceneGun.Position.X + rotatedSight.X;
-                var y = modelSceneGun.Position.Y + rotatedSight.Y;
+                var x = modelSceneGun.Position.X + sightPosition.X;
+                var y = modelSceneGun.Position.Y + sightPosition.Y;
                 targetStartAimingPosition = modelSceneStartPosition;
                 targetEndAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
                 currentAimingPositionLerp = 0f;
