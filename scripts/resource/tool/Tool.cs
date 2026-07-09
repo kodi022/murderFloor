@@ -4,10 +4,6 @@ namespace MurderFloor;
 public partial class Tool : MFResource
 {
     [Export]
-    public PackedScene MeshScene { get; private set; }
-    [Export]
-    public float MeshSceneImportYaw { get; private set; }
-    [Export]
     public PackedScene MeshSceneViewmodel { get; private set; }
     [Export]
     public string HoldTypeAnimation { get; private set; } = "holdtype_pistol";
@@ -44,7 +40,7 @@ public partial class Tool : MFResource
         };
         ((SceneTree)Engine.GetMainLoop()).Root.AddChild(sceneViewport);
 
-        var weaponScene = (Node3D)MeshScene.Instantiate();
+        var weaponScene = MeshScene.Instantiate<Node3D>();
         var camera = new Camera3D();
         var bounds = GetBounds(weaponScene);
         var modelCenter = (bounds.End + bounds.Position) / 2;

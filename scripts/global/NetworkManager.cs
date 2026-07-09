@@ -120,9 +120,9 @@ public partial class NetworkManager : Node
 
         RpcId(id, "SendInfoToPeer", _playerInfo);
         _players[id] = _playerInfo;
-        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate();
+        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
         player.Name = "plr_" + id.ToString();
-        ((Node3D)player).Position = new Vector3(0, 0.3f, 0);
+        player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
 
@@ -152,9 +152,9 @@ public partial class NetworkManager : Node
 
         int id = Multiplayer.GetUniqueId();
         _players[id] = _playerInfo;
-        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate();
+        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
         player.Name = "plr_" + id.ToString();
-        ((Node3D)player).Position = new Vector3(0, 0.3f, 0);
+        player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
     }

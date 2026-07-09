@@ -44,8 +44,7 @@ public partial class LiveTool : Node
 
     public bool Aiming { get; private set; } = false;
 
-    private Vector3 targetStartAimingPosition;
-    private Vector3 targetEndAimingPosition;
+    private Vector3 modelSceneAimingPosition;
     private float currentAimingPositionLerp;
 
     private Node3D modelScene;
@@ -78,12 +77,9 @@ public partial class LiveTool : Node
 
         AnimationPlayer?.Play(ToolResource.HoldTypeAnimation);
 
-        if (currentAimingPositionLerp < 0.32f)
-        {
-            currentAimingPositionLerp += (float)delta;
-            currentAimingPositionLerp = Mathf.Min(0.32f, currentAimingPositionLerp);
-            modelScene.Position = targetStartAimingPosition.Lerp(targetEndAimingPosition, currentAimingPositionLerp * 3.125f);
-        }
+        currentAimingPositionLerp += Aiming ? (float)delta * 4f : -(float)delta * 4f;
+        currentAimingPositionLerp = Mathf.Clamp(currentAimingPositionLerp, 0f, 1f);
+        modelScene.Position = modelSceneStartPosition.Lerp(modelSceneAimingPosition, currentAimingPositionLerp);
 
         if (ToolResource is ToolFirearm firearm)
         {
@@ -121,7 +117,7 @@ public partial class LiveTool : Node
 
         if (IsMultiplayerAuthority())
         {
-            modelScene = (Node3D)ToolResource.MeshSceneViewmodel.Instantiate();
+            modelScene = ToolResource.MeshSceneViewmodel.Instantiate<Node3D>();
             modelSceneGun = modelScene.GetChild<Node3D>(1);
             posNode.AddChild(modelScene);
             AnimationPlayer = (AnimationPlayer)modelScene.GetChild(0).GetChild(1);
@@ -129,7 +125,7 @@ public partial class LiveTool : Node
         }
         else
         {
-            modelScene = (Node3D)ToolResource.MeshScene.Instantiate();
+            modelScene = ToolResource.MeshScene.Instantiate<Node3D>();
             posNode.AddChild(modelScene);
             modelScene.RotationDegrees = new Vector3(0, ToolResource.MeshSceneImportYaw, 0);
         }
@@ -152,7 +148,7 @@ public partial class LiveTool : Node
         if (sightAttachmentNode.IsInsideTree())
         {
             var etec = ResourceManager.AttachmentRegistry.GetResourceReference("base:etec");
-            var etecModelScene = (Node3D)etec.MeshScene.Instantiate();
+            var etecModelScene = etec.MeshScene.Instantiate<Node3D>();
             sightAttachmentNode.AddChild(etecModelScene);
             etecModelScene.RotationDegrees = new Vector3(0, etec.MeshSceneImportYaw, 0);
             var attachSightNode = (Node3D)etecModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
@@ -214,9 +210,7 @@ public partial class LiveTool : Node
                 Aiming = true;
                 var x = modelSceneGun.Position.X + sightPosition.X;
                 var y = modelSceneGun.Position.Y + sightPosition.Y;
-                targetStartAimingPosition = modelSceneStartPosition;
-                targetEndAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
-                currentAimingPositionLerp = 0f;
+                modelSceneAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
             }
         }
         else
@@ -230,9 +224,6 @@ public partial class LiveTool : Node
         if (!equipped) return;
 
         Aiming = false;
-        targetStartAimingPosition = modelScene.Position;
-        targetEndAimingPosition = modelSceneStartPosition;
-        currentAimingPositionLerp = 0f;
     }
 
     public void FireReload()

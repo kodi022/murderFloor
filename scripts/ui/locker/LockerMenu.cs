@@ -80,7 +80,7 @@ public partial class LockerMenu : Control
             };
             AddChild(sceneViewport);
 
-            weaponScene = (Node3D)selectedTool.MeshScene.Instantiate();
+            weaponScene = selectedTool.MeshScene.Instantiate<Node3D>();
             weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             var dirLight = new DirectionalLight3D();
             var camera = new Camera3D();
@@ -96,7 +96,7 @@ public partial class LockerMenu : Control
         {
             weaponScene?.Free();
             weaponScene = null;
-            weaponScene = (Node3D)selectedTool.MeshScene.Instantiate();
+            weaponScene = selectedTool.MeshScene.Instantiate<Node3D>();
             weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             sceneViewport.AddChild(weaponScene);
         }

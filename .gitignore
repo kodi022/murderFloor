@@ -3,5 +3,6 @@
 /android/
 # Backup blender files
 *.blend1
+*.blend2
 # C# Dev Kit cache
 *.lscache

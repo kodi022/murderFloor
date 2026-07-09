@@ -127,7 +127,7 @@ public partial class MainMenu : Control
 	{
 		OpenUI?.Free();
 		OpenUI = null;
-		OpenUI = GD.Load<PackedScene>(path).Instantiate();
+		OpenUI = GD.Load<PackedScene>(path).Instantiate<Control>();
 		GetParent().AddChild(OpenUI);
 	}
 }

@@ -119,13 +119,12 @@ public partial class Game : Node
         var mobScene = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
         for (int i = 0; i < 200; i++)
         {
-            var mob = mobScene.Instantiate();
+            var mob = mobScene.Instantiate<LiveMob>();
             mob.Name = "mob_" + i;
-            LiveMob lMob = (LiveMob)mob;
-            lMob.MobPoolId = i;
-            lMob.MobProcessOffset = MobPool.Count % 20;
+            mob.MobPoolId = i;
+            mob.MobProcessOffset = MobPool.Count % 20;
             mobPoolNode.AddChild(mob);
-            MobPool.Add((LiveMob)mob);
+            MobPool.Add(mob);
             mob.SetMultiplayerAuthority(1);
         }
         EmitSignal(SignalName.GameStart);
@@ -163,8 +162,8 @@ public partial class Game : Node
         if (rngLoot.Randf() > 0.9f)
         {
             // ! level = map difficulty * difficulty + challenge or something
-            var state = new Loot.LootStateInfo(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Easy, "", "", 0);
-            var lootNode3d = state.MakeLootNode();
+            var state = new Loot.LootStateInfo(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Easy, 0, false, false, 0);
+            var lootNode3d = Loot.LootStateInfo.MakeLootNode(state);
             lootNode.AddChild(lootNode3d);
             lootNode3d.GlobalPosition = (Vector3)damageInfo["hitposition"];
             ((RigidBody3D)lootNode3d.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));

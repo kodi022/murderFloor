@@ -96,7 +96,8 @@ public partial class ToolFirearmHitscan : ToolFirearm
                         {"attackerName", NetworkManager.Current._players[fi.Player.Id]["Name"]},
                         {"weapon", "mind"},
                         {"hitposition", (Vector3)ray["position"]},
-                        {"hitbox", "0"}
+                        {"hitbox", hitObjName},
+                        {"hitdirection", (pos - fi.StartPosition).Normalized()}
                     };
                     pawn.Rpc("OnDamageRpc", di);
                 }

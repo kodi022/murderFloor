@@ -4,8 +4,6 @@ namespace MurderFloor;
 public partial class Mob : MFResource
 {
     [Export]
-    public PackedScene MeshScene { get; private set; }
-    [Export]
     public float MaxHealth { get; private set; } = 100f;
     [Export]
     public float Armor { get; private set; }

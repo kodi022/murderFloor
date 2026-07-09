@@ -127,7 +127,7 @@ public partial class Player : Pawn
             {
                 if (debugUI is null)
                 {
-                    debugUI = (Control)GD.Load<PackedScene>("res://scenes/ui/HUDDebug.tscn").Instantiate();
+                    debugUI = GD.Load<PackedScene>("res://scenes/ui/HUDDebug.tscn").Instantiate<Control>();
                     AddChild(debugUI);
                 }
                 else
@@ -271,7 +271,7 @@ public partial class Player : Pawn
     {
         if (openUI is not null) return;
 
-        var ui = (Control)GD.Load<PackedScene>(uiScene).Instantiate();
+        var ui = GD.Load<PackedScene>(uiScene).Instantiate<Control>();
         openUI = ui;
         AddChild(ui);
         mouseMode = Input.MouseModeEnum.Visible;

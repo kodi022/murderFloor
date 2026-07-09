@@ -5,15 +5,19 @@
 
 [sub_resource type="Environment" id="Environment_6jt0u"]
 background_mode = 1
-background_color = Color(0.5321619, 0.27852315, 0.32374072, 1)
-background_energy_multiplier = 0.5
+background_color = Color(0.59229803, 0.70424664, 0.77621365, 1)
 tonemap_mode = 2
 tonemap_white = 6.0
 ssao_enabled = true
 ssao_radius = 2.0
 ssao_intensity = 2.5
+sdfgi_enabled = true
+sdfgi_cascades = 3
+sdfgi_min_cell_size = 0.1953125
 fog_enabled = true
-fog_light_color = Color(0.4755057, 0.34755355, 0.39579752, 1)
+fog_light_color = Color(0.6907189, 0.83994883, 1, 1)
+fog_density = 0.005
+volumetric_fog_albedo = Color(0.3290106, 0.6143604, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cdhm0"]
 size = Vector3(1.5195313, 2.2456055, 0.8495636)

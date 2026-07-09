@@ -10,7 +10,7 @@ friction = 0.5
 bounce = 0.4
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_38nlf"]
-size = Vector3(0.2, 0.2, 0.2)
+size = Vector3(0.5, 0.06, 0.5)
 
 [node name="Loot" type="Node3D" unique_id=1658198493]
 script = ExtResource("1_sbwe0")

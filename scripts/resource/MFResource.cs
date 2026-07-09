@@ -11,7 +11,14 @@ public partial class MFResource : Resource
     public string ResourceId { get; private set; } = "";
 
     [Export]
+    public PackedScene MeshScene { get; private set; }
+    [Export]
+    public float MeshSceneImportYaw { get; private set; }
+
+    [Export]
     public bool UseInGame { get; private set; } = true;
+    [Export]
+    public bool IsLoot { get; private set; } = false;
     [Export]
     public string NameLocalizationGroup { get; private set; } = "";
 

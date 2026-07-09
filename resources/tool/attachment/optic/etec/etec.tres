@@ -5,8 +5,9 @@
 
 [resource]
 script = ExtResource("1_mxsou")
-MeshSceneImportYaw = -90.0
-MeshScene = ExtResource("1_joe86")
 ResourceId = "etec"
+MeshScene = ExtResource("1_joe86")
+MeshSceneImportYaw = 90.0
+IsLoot = true
 NameLocalizationGroup = "attachment"
 metadata/_custom_type_script = "uid://bo8dgn78441mc"

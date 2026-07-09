@@ -15,7 +15,7 @@ public static class Debug
             var wearCount = new Dictionary<Loot.WearEnum, int>();
             for (int i = 0; i < lootCount; i++)
             {
-                var state = new Loot.LootStateInfo((ulong)Random.Shared.NextInt64(), level, difficulty, "", "", 0);
+                var state = new Loot.LootStateInfo((ulong)Random.Shared.NextInt64(), level, difficulty, 0, false, false, 0);
                 var e = new Loot.LootRarityInfo(state);
                 if (!tierCount.TryAdd(e.Tier, 1))
                     tierCount[e.Tier] += 1;
@@ -99,7 +99,7 @@ public static class Debug
 
     public static void DebugDot(Node3D parentNode, Vector3 position, float scale = 1f, Color? color = null, ulong msToDelete = 10000ul)
     {
-        var debugDot = (Node3D)GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate();
+        var debugDot = GD.Load<PackedScene>("res://scenes/debug/DebugBulletDecal.tscn").Instantiate<Node3D>();
         debugDot.Position = position;
         debugDot.Scale = Vector3.One * scale;
 

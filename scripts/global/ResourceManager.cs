@@ -5,7 +5,8 @@ public static class ResourceManager
 	public static ResourceRegistry<Tool> ToolRegistry { get; private set; } = new();
 	public static ResourceRegistry<Attachment> AttachmentRegistry { get; private set; } = new();
 	public static ResourceRegistry<Mob> MobRegistry { get; private set; } = new();
-	// get loot resource
+
+	public static List<MFResource> LootRegistry { get; private set; } = new();
 
 	public static void Ready()
 	{
@@ -45,6 +46,8 @@ public static class ResourceManager
 
 						resource.BuildIds();
 						folderRegisters.Add(resource.HashId, resource);
+
+						if (resource.UseInGame && resource.IsLoot) LootRegistry.Add(resource);
 					}
 				}
 			}

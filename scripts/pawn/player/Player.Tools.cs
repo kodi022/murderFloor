@@ -27,7 +27,7 @@ public partial class Player : Pawn
     // should always be called through an Rpc
     public void ToolAdd(string toolId)
     {
-        var liveTool = (LiveTool)GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate();
+        var liveTool = GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate<LiveTool>();
         liveTool.SetMultiplayerAuthority(Id);
         liveTool.PlayerId = Id;
         liveTool.ToolFullId = toolId;

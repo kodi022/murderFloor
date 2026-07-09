@@ -1,7 +1,7 @@
 namespace MurderFloor;
 
 [GlobalClass]
-public partial class Attachment : Loot
+public partial class Attachment : MFResource
 {
     public enum AttachmentTypeEnum
     {
@@ -13,6 +13,4 @@ public partial class Attachment : Loot
 
     [Export]
     public AttachmentTypeEnum AttachmentType { get; private set; }
-    [Export]
-    public float MeshSceneImportYaw { get; private set; }
 }

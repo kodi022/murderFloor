@@ -68,6 +68,26 @@ public partial class LiveMob : Pawn
         if (!Active) return;
 
         Active = false;
+        var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
+        var liveSk = worldModels.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
+        var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
+        var copyCount = Math.Min(liveSk.GetBoneCount(), ragSk.GetBoneCount());
+        ragdoll.Transform = Transform;
+        for (int i = 0; i < copyCount; i++)
+        {
+            var pos = liveSk.GetBonePosePosition(i) * 6.12728f;
+            var rot = liveSk.GetBonePoseRotation(i);
+            ragSk.SetBonePosePosition(i, pos);
+            ragSk.SetBonePoseRotation(i, rot);
+        }
+
+        var hitCollider = damageInfo["hitbox"].AsString();
+        if (hitCollider == "Head") hitCollider = "Neck";
+        if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
+        if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
+        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo["hitdirection"].AsVector3(), 20f);
+
+        Game.Current.AddChild(ragdoll);
         Game.Current.MobDeath(damageInfo, MobPoolId);
     }
 
@@ -105,7 +125,8 @@ public partial class LiveMob : Pawn
                 {"attackerName", "mobname"},
                 {"weapon", "claw"},
                 {"hitposition", Vector3.Zero},
-                {"hitbox", "0"}
+                {"hitbox", "UpperSpine"},
+                {"hitdirection", (Position - targetPawn.Position).Normalized()}
             };
             targetPawn.Rpc("OnDamageRpc", di);
         }
@@ -163,6 +184,9 @@ public partial class LiveMob : Pawn
         if (navigationAgent3D.TargetPosition == GlobalPosition) return Vector3.Zero;
 
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
+
+        var dist = targetPos.DistanceTo(targetPawn.Position);
+        targetPos += new Vector3(mobRng.Randf() - 0.5f, -0.1f, mobRng.Randf() - 0.5f) * dist * 0.04f;
 
         var velocityTarget = new Vector3(targetPos.X, targetPos.Y, targetPos.Z);
         Vector3 newVelocity = GlobalPosition.DirectionTo(velocityTarget) * MobResource.MovementSpeedScale * 3f;

@@ -9,7 +9,8 @@ global using System.Threading.Tasks;
 /// "attackerName": "player name OR mob name"</para>
 /// "weapon": "weaponresourceid OR empty if mob"</para>
 /// "hitposition": vector3</para>
-/// "hitbox": id</para>
+/// "hitbox": name</para>
+/// "hitdirection": vector3</para>
 global using DamageInfo = Godot.Collections.Dictionary<string, Godot.Variant>;
 
 namespace MurderFloor;
