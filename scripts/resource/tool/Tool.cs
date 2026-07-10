@@ -27,16 +27,21 @@ public partial class Tool : MFResource
 
     public virtual SlotEnum GetSlot() => SlotEnum.Special;
 
-    public override async Task<ImageTexture> GenerateThumbnailImage()
+    public override async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY)
     {
         if (MeshScene is null) return Global.MissingTextureImage;
 
+        string GetDictKey(int resX, int resY) { return $"{HashId}-{resX}-{resY}"; }
+        if (generatedThumbnails.TryGetValue(GetDictKey(resX, resY), out ImageTexture val))
+            return val;
+
         var sceneViewport = new SubViewport
         {
-            Size = new Vector2I(128, 96),
+            Size = new Vector2I(resX, resY),
             OwnWorld3D = true,
             RenderTargetUpdateMode = SubViewport.UpdateMode.Once,
             Msaa3D = Viewport.Msaa.Msaa8X,
+            TransparentBg = true,
         };
         ((SceneTree)Engine.GetMainLoop()).Root.AddChild(sceneViewport);
 
@@ -62,7 +67,10 @@ public partial class Tool : MFResource
         await sceneViewport.ToSignal(RenderingServer.Singleton, RenderingServerInstance.SignalName.FramePostDraw);
         var image = sceneViewport.GetViewport().GetTexture().GetImage();
         sceneViewport.QueueFree();
-        return ImageTexture.CreateFromImage(image);
+
+        var imgTex = ImageTexture.CreateFromImage(image);
+        generatedThumbnails.Add(GetDictKey(resX, resY), imgTex);
+        return imgTex;
     }
 
     private static void ApplyThumbnailMaterialToParts(Node3D weaponScene)

@@ -143,6 +143,8 @@ locale/translations=PackedStringArray("res://translations/en.en.translation")
 
 [layer_names]
 
+3d_render/layer_1="World"
+3d_render/layer_2="Viewmodel"
 3d_physics/layer_1="World"
 3d_physics/layer_2="Character"
 3d_physics/layer_3="Hitbox"

@@ -15,22 +15,29 @@ public partial class HUD : Control
     private Panel ShotgunCrosshair;
 
     [Export]
-    private Label playersLabel;
-    [Export]
     private Panel healthBarPanel;
     [Export]
     private Label useInfoLabel;
+    [Export]
+    private VBoxContainer weaponsContainer;
 
-    private int activeCrosshair = -1;
 
     private int healthBarFunctionCount = 0;
     private Vector2 lastHealthBarPos = Vector2.Zero;
     private bool hookedGameEvents = false;
 
+    private LiveTool selectedTool;
+
+    private int activeCrosshairIndex = -1;
+    private Panel activeCrosshair;
+
     public override void _Ready()
     {
         roundStartPanel.Visible = false;
         roundTimerPanel.Visible = false;
+        EmptyCrosshair.Visible = false;
+        GunCrosshair.Visible = false;
+        ShotgunCrosshair.Visible = false;
         Player.Self.PlayerOnDamage += UpdateHealth;
     }
 
@@ -47,49 +54,58 @@ public partial class HUD : Control
 
         useInfoLabel.Text = Player.Self.UseInfoText;
 
-        string players = "";
-        players += $"-> {Player.Self.Id}-{NetworkManager.Current._playerInfo["Name"]}\n";
-        foreach (var player in NetworkManager.Current._players)
-        {
-            if (player.Key == Player.Self.Id) continue;
+        // string players = "";
+        // players += $"-> {Player.Self.Id}-{NetworkManager.Current._playerInfo["Name"]}\n";
+        // foreach (var player in NetworkManager.Current._players)
+        // {
+        //     if (player.Key == Player.Self.Id) continue;
 
-            players += $"{player.Key}-{player.Value["Name"]}";
-            var p = Player.AllPlayers.First(p => p.Id == player.Key);
-            if (p is not null && p.SelectedTool is not null)
-            {
-                players += $" t{p.ToolsPrimary.Count + p.ToolsSecondary.Count + p.ToolsSpecial.Count + p.ToolsMelee.Count}";
-                players += $" ({p.SelectedTool.ToolResource.ResourceId} {p.SelectedTool.CurrentMag})";
-            }
-            players += "\n";
+        //     players += $"{player.Key}-{player.Value["Name"]}";
+        //     var p = Player.AllPlayers.First(p => p.Id == player.Key);
+        //     if (p is not null && p.SelectedTool is not null)
+        //     {
+        //         players += $" t{p.ToolsPrimary.Count + p.ToolsSecondary.Count + p.ToolsSpecial.Count + p.ToolsMelee.Count}";
+        //         players += $" ({p.SelectedTool.ToolResource.ResourceId} {p.SelectedTool.CurrentMag})";
+        //     }
+        //     players += "\n";
+        // }
+        // playersLabel.Text = players + "\n\n\n";
+
+        if (selectedTool != Player.Self.SelectedTool)
+        {
+            selectedTool = Player.Self.SelectedTool;
+            foreach (var child in weaponsContainer.GetChildren()) child.QueueFree();
+            GenerateToolLists();
         }
-        playersLabel.Text = players + "\n\n\n";
+    }
 
-        void ListWeapons(List<LiveTool> tools)
+    private async void GenerateToolLists()
+    {
+        async Task ListWeapons(List<LiveTool> tools)
         {
+            var container = new HBoxContainer();
+            container.AddThemeConstantOverride("separation", 0);
+            weaponsContainer.AddChild(container);
+
             foreach (var tool in tools)
             {
-                if (tool == Player.Self.SelectedTool) playersLabel.Text += "-> ";
-                playersLabel.Text += tool.ToolResource.ResourceId + $" {tool.CurrentMag} / {tool.CurrentReserve}" + "\n";
+                var rect = new TextureRect();
+                rect.Texture = await tool.ToolResource.GenerateThumbnailImage(96, 96);
+                rect.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
+                container.AddChild(rect);
             }
         }
-        void CropAndNewline()
-        {
-            playersLabel.Text = playersLabel.Text[..^1] + "\n\n";
-        }
 
-        ListWeapons(Player.Self.ToolsPrimary);
-        CropAndNewline();
-        ListWeapons(Player.Self.ToolsSecondary);
-        CropAndNewline();
-        ListWeapons(Player.Self.ToolsSpecial);
-        CropAndNewline();
-        ListWeapons(Player.Self.ToolsMelee);
+        await ListWeapons(Player.Self.ToolsPrimary);
+        await ListWeapons(Player.Self.ToolsSecondary);
+        await ListWeapons(Player.Self.ToolsSpecial);
+        await ListWeapons(Player.Self.ToolsMelee);
     }
 
     private void ProcessCrosshairs()
     {
         var selectedTool = Player.Self.SelectedTool;
-        if (selectedTool is null || selectedTool.ToolResource is ToolMelee melee)
+        if (selectedTool is null || selectedTool.ToolResource is ToolMelee)
         {
             ChangeCrosshair(0);
             return;
@@ -110,34 +126,52 @@ public partial class HUD : Control
             var screenCenter = DisplayServer.WindowGetSize() / 2;
             var fovRad = Mathf.DegToRad(Player.Self.Camera.Fov);
             var focal = screenCenter.Y / Mathf.Tan(fovRad * 0.5f);
-            var projected = new Vector2(
-                screenCenter.X + dir.X * focal / -dir.Z,
-                screenCenter.Y - dir.Y * focal / -dir.Z
+            var projected = new Vector2I(
+                (int)(screenCenter.X + dir.X * focal / -dir.Z),
+                (int)(screenCenter.Y - dir.Y * focal / -dir.Z)
             );
 
-            if (firearm.FirearmType == ToolFirearm.FirearmTypeEnum.Shotgun)
-            {
-                ChangeCrosshair(2);
-                ShotgunCrosshair.Position = -(screenCenter - projected);
-                ShotgunCrosshair.Size = (screenCenter - projected) * 2;
-            }
+            if (selectedTool.Aiming)
+                activeCrosshair.Modulate = new Color(1, 1, 1, OptionsManager.CurrentOptions.AimCrosshairOpacity);
             else
+                activeCrosshair.Modulate = new Color(1, 1, 1);
+
+            if (OptionsManager.CurrentOptions.ScalingCrosshair)
             {
-                ChangeCrosshair(1);
-                GunCrosshair.Position = -(screenCenter - projected);
-                GunCrosshair.Size = (screenCenter - projected) * 2;
+                activeCrosshair.Position = -(screenCenter - projected);
+                activeCrosshair.Size = (screenCenter - projected) * 2;
             }
+
+            if (firearm.FirearmType == ToolFirearm.FirearmTypeEnum.Shotgun)
+                ChangeCrosshair(2);
+            else
+                ChangeCrosshair(1);
         }
     }
 
     private void ChangeCrosshair(int select)
     {
-        if (activeCrosshair == select) return;
+        if (activeCrosshairIndex == select) return;
 
-        activeCrosshair = select;
-        EmptyCrosshair.Visible = select == 0;
-        GunCrosshair.Visible = select == 1;
-        ShotgunCrosshair.Visible = select == 2;
+        var lastCrosshair = activeCrosshairIndex switch
+        {
+            0 => EmptyCrosshair,
+            1 => GunCrosshair,
+            2 => ShotgunCrosshair,
+            _ => EmptyCrosshair,
+        };
+        lastCrosshair.Visible = false;
+        lastCrosshair.Modulate = new Color(1, 1, 1);
+
+        activeCrosshairIndex = select;
+        activeCrosshair = activeCrosshairIndex switch
+        {
+            0 => EmptyCrosshair,
+            1 => GunCrosshair,
+            2 => ShotgunCrosshair,
+            _ => EmptyCrosshair,
+        };
+        activeCrosshair.Visible = true;
     }
 
     private async void UpdateHealth(DamageInfo damageInfo)

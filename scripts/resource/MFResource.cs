@@ -2,6 +2,8 @@ namespace MurderFloor;
 
 public partial class MFResource : Resource
 {
+    private protected static Dictionary<string, ImageTexture> generatedThumbnails = [];
+
     public int HashId { get; private set; } = 0;
     public string FullId { get; private set; } = "";
 
@@ -30,5 +32,5 @@ public partial class MFResource : Resource
         HashId = Global.StableHash(FullId);
     }
 
-    public virtual async Task<ImageTexture> GenerateThumbnailImage() => Global.MissingTextureImage;
+    public virtual async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY) => Global.MissingTextureImage;
 }

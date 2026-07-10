@@ -202,9 +202,18 @@ public partial class Player : Pawn
         Rotation = new Vector3(0, ViewAngle.X, 0);
         viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
-        viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
-        viewModelAimSway *= reduction;
-        viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.06f);
+        if (SelectedTool?.Aiming ?? false)
+        {
+            viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.01f;
+            viewModelAimSway *= reduction;
+            viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.015f);
+        }
+        else
+        {
+            viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
+            viewModelAimSway *= reduction;
+            viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.06f);
+        }
         lastViewAngle = ViewAngle;
 
         Camera.Rotation = CameraRotationKick;

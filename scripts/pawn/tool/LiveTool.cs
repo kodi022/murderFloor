@@ -119,6 +119,7 @@ public partial class LiveTool : Node
         {
             modelScene = ToolResource.MeshSceneViewmodel.Instantiate<Node3D>();
             modelSceneGun = modelScene.GetChild<Node3D>(1);
+
             posNode.AddChild(modelScene);
             AnimationPlayer = (AnimationPlayer)modelScene.GetChild(0).GetChild(1);
             AnimationPlayer.Play(ToolResource.HoldTypeAnimation);

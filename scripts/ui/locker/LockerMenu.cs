@@ -55,7 +55,7 @@ public partial class LockerMenu : Control
             grid.AddChild(panelContainer);
             panelContainer.AddChild(rect);
             panelContainer.AddChild(button);
-            rect.Texture = await tool.Value.GenerateThumbnailImage();
+            rect.Texture = await tool.Value.GenerateThumbnailImage(128, 96);
 
             if (selectedTool is null)
             {
