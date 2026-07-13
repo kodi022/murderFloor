@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_l6ofy"]
 [ext_resource type="Script" uid="uid://cqxq6p3akyuf6" path="res://scripts/ui/Menu.cs" id="2_glqlr"]
 
-[node name="Menu" type="Control" unique_id=2136210018 node_paths=PackedStringArray("buttonExit", "buttonExitDesktop")]
+[node name="Menu" type="Control" unique_id=2136210018 node_paths=PackedStringArray("buttonOption", "buttonExit", "buttonExitDesktop")]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -14,6 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_l6ofy")
 script = ExtResource("2_glqlr")
+buttonOption = NodePath("PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/MenuButton3")
 buttonExit = NodePath("PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/MenuButton4")
 buttonExitDesktop = NodePath("PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/MenuButton5")
 
@@ -45,7 +46,7 @@ text = "milk john"
 
 [node name="MenuButton3" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1091756129]
 layout_mode = 2
-text = "milk john"
+text = "Option"
 
 [node name="MenuButton4" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" unique_id=493422303]
 layout_mode = 2
