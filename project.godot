@@ -13,7 +13,6 @@ config_version=5
 config/name="murder_floor"
 run/main_scene="uid://bke5c6mi4xgmf"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="mods"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -139,7 +138,7 @@ walk={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/en.en.translation")
+locale/translations=PackedStringArray("res://translations/en_loot.en.translation", "res://translations/en_ui.en.translation")
 
 [layer_names]
 

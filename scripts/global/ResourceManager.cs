@@ -8,6 +8,8 @@ public static class ResourceManager
 
 	public static List<MFResource> LootRegistry { get; private set; } = new();
 
+	public static string ModsPath { get; private set; } = "user://mods";
+
 	public static void Ready()
 	{
 		ToolRegistry.RegisterFolder("res://resources/tool/");

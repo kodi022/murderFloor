@@ -2,15 +2,51 @@ namespace MurderFloor;
 
 public static class OptionsManager
 {
+    public static string OptionsPath { get; private set; } = "user://options.json";
     public static Options CurrentOptions { get; private set; } = new Options();
 
-    public struct Options
+    public static void Save(Options options)
+    {
+        var json = System.Text.Json.JsonSerializer.Serialize(options);
+        using var file = FileAccess.Open(OptionsPath, FileAccess.ModeFlags.Write);
+        file.StoreString(json);
+    }
+
+    public static Options Load()
+    {
+        using var file = FileAccess.Open(OptionsPath, FileAccess.ModeFlags.Read);
+        if (file is null) return new Options();
+        var options = System.Text.Json.JsonSerializer.Deserialize<Options>(file.GetAsText());
+        return options;
+    }
+
+    // not all are manually applied to somewhere
+    public static void Apply(Options options)
+    {
+        CurrentOptions = options;
+
+        // ! needs called from something
+
+        // FramerateCap
+        // Vsync
+        // SDFGI
+        // AntiAliasing
+    }
+
+    public class Options
     {
         // Control
-        [OptionFloat("Control", 0.01f, 10f, 0.001f)]
+        [OptionFloat("Control", 0.01f, 4f, 0.001f)]
         public float Sensitivity { get; set; } = 1f;
         [OptionBool("Control")]
         public bool SensitivityFieldOfViewScaling { get; set; } = true;
+
+        [OptionFloat("Display", 24f, 300f, 1f)]
+        public float FramerateLimit { get; set; } = DisplayServer.ScreenGetRefreshRate();
+        [OptionBool("Display")]
+        public bool VSync { get; set; } = true;
+        // [OptionFloat("Display", 24f, 300f, 1f)]
+        // public Vector2I Resolution { get; set; } = 144f;
 
         [OptionFloat("Graphics", 60f, 100f, 1f)]
         public float FieldOfView { get; set; } = 90;
@@ -20,8 +56,6 @@ public static class OptionsManager
         public string SDFGI { get; set; } = "Medium";
         [OptionString("Graphics", ["MSAA8x", "MSAA4x", "SMAA", "FXAA", "Off"])]
         public string AntiAliasing { get; set; } = "FXAA";
-        // [OptionFloat("Graphics", 24f, 300f, 1f)]
-        // public float FramerateCap { get; set; } = 144f;
 
         [OptionFloat("Gameplay", 0f, 1f, 0.05f)]
         public float CrosshairOpacity { get; set; } = 1f;

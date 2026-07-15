@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_hhpix"]
 [ext_resource type="Script" uid="uid://bl1icv6kxj1dh" path="res://scripts/ui/options/OptionsMenu.cs" id="1_r67bl"]
 
-[node name="OptionsMenu" type="Control" unique_id=1770553190 node_paths=PackedStringArray("Tabs", "OptionList", "ReturnButton", "DiscardReturnButton")]
+[node name="OptionsMenu" type="Control" unique_id=1770553190 node_paths=PackedStringArray("Tabs", "OptionList", "ReturnButton", "DiscardReturnButton", "DefaultsButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,11 +13,13 @@ grow_vertical = 2
 theme = ExtResource("1_hhpix")
 script = ExtResource("1_r67bl")
 Tabs = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer")
-OptionList = NodePath("PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer")
+OptionList = NodePath("PanelContainer/MarginContainer/VBoxContainer2/ScrollContainer/VBoxContainer")
 ReturnButton = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button")
 DiscardReturnButton = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button2")
+DefaultsButton = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button3")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1809216936]
+custom_minimum_size = Vector2(800, 400)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,15 +35,28 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=143168329]
 layout_mode = 2
-size_flags_vertical = 2
+size_flags_vertical = 0
 
 [node name="Button" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1174658929]
 layout_mode = 2
-text = "Save and Return"
+text = "Save"
 
 [node name="Button2" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1483923876]
 layout_mode = 2
-text = "Discard and Return"
+text = "Discard"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=1544707166]
+[node name="Button3" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1083658141]
 layout_mode = 2
+text = "Set Defaults"
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=245359243]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=24670792]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer2/ScrollContainer" unique_id=1544707166]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
