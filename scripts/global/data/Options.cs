@@ -67,21 +67,24 @@ public static class OptionsManager
 
             viewport.UseTaa = options.TAA;
 
-            // var sdfgiEnabled = options.SDFGI != "Off";
-            // foreach (Node child in tree.Root.GetChildren())
-            // {
-            //     if (child is WorldEnvironment worldEnvironment && worldEnvironment.Environment != null)
-            //     {
-            //         worldEnvironment.Environment.SdfgiEnabled = sdfgiEnabled;
-            //         switch (options.SDFGI)
-            //         {
-            //             case "Ultra":
+            // ! not working
+            var sdfgiEnabled = options.SDFGI != "Off";
+            foreach (Node child in tree.Root.GetChildren())
+            {
+                if (child is WorldEnvironment worldEnvironment && worldEnvironment.Environment != null)
+                {
+                    worldEnvironment.Environment.SdfgiEnabled = sdfgiEnabled;
+                    switch (options.SDFGI)
+                    {
+                        case "Ultra":
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
 
-            //                 break;
-            //         }
-            //     }
-            // }
-
+            // ! pretty sure this isn't working
             viewport.AnisotropicFilteringLevel = options.AntisotropicFiltering switch
             {
                 "16x" => Viewport.AnisotropicFiltering.Anisotropy16X,
@@ -99,7 +102,7 @@ public static class OptionsManager
                     framerateDisplay = null;
                 }
                 framerateDisplay = GD.Load<PackedScene>("res://scenes/ui/FramerateDisplay.tscn").Instantiate<Control>();
-                tree.Root.AddChild(framerateDisplay);
+                tree.Root.CallDeferred("add_child", framerateDisplay);
             }
             else
             {
@@ -117,14 +120,16 @@ public static class OptionsManager
         [OptionBool("Control", "")]
         public bool SensitivityFieldOfViewScaling { get; set; } = true;
 
+        [OptionString("Display", ["Windowed", "Maximized", "Fullscreen", "Exclusive Fullscreen"], "")]
+        public string WindowMode { get; set; } = "Windowed";
+        // [OptionFloat("Display", 24f, 300f, 1f)]
+        // public Vector2I Resolution { get; set; } = 144f;
         [OptionBool("Display", "")]
         public bool UseFramerateLimit { get; set; } = false;
         [OptionFloat("Display", 24f, 300f, 1f, "")]
         public float FramerateLimit { get; set; } = DisplayServer.ScreenGetRefreshRate();
         [OptionBool("Display", "")]
         public bool VSync { get; set; } = true;
-        // [OptionFloat("Display", 24f, 300f, 1f)]
-        // public Vector2I Resolution { get; set; } = 144f;
 
         [OptionFloat("Graphics", 60f, 100f, 1f, "")]
         public float FieldOfView { get; set; } = 90;
@@ -136,9 +141,9 @@ public static class OptionsManager
         public float ScalingRenderScale { get; set; } = 100f;
         [OptionFloat("Graphics", 0f, 2f, 0.1f, "Used only with FSR.")]
         public float ScalingSharpness { get; set; } = 1.8f;
-        [OptionString("Graphics", ["MSAA8x", "MSAA4x", "MSAA2x", "SMAA", "FXAA", "Off"], "MSAA can be resource intensive. Not Recommended with FSR2.2 enabled.")]
+        [OptionString("Graphics", ["MSAA8x", "MSAA4x", "MSAA2x", "SMAA", "FXAA", "Off"], "Not Recommended with FSR2.2 enabled. MSAA can be resource intensive.")]
         public string AntiAliasing { get; set; } = "FXAA";
-        [OptionBool("Graphics", "Disabled when FSR2.2 is enabled.")]
+        [OptionBool("Graphics", "Ignored when FSR2.2 is enabled.")]
         public bool TAA { get; set; } = false;
         [OptionString("Graphics", ["Ultra", "High", "Medium", "Low", "Off"], "")]
         public string SDFGI { get; set; } = "Medium";

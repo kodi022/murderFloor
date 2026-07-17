@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://1nuxsnywgq4i"]
 
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_ekuey"]
+[ext_resource type="PackedScene" uid="uid://jo0hje264twh" path="res://scenes/ui/options/OptionsMenu.tscn" id="2_icbt4"]
 
 [node name="MainMenuOptions" type="Control" unique_id=645713087]
 layout_mode = 3
@@ -10,17 +11,7 @@ anchor_bottom = 0.5
 grow_vertical = 2
 theme = ExtResource("1_ekuey")
 
-[node name="Panel" type="Panel" parent="." unique_id=1376491844]
-layout_mode = 0
-offset_left = 240.0
-offset_top = -200.0
-offset_right = 600.0
-offset_bottom = 200.0
-
-[node name="Label" type="Label" parent="Panel" unique_id=56767015]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 9.0
-offset_right = 106.0
-offset_bottom = 32.0
-text = "Options"
+[node name="OptionsMenu" parent="." unique_id=1770553190 instance=ExtResource("2_icbt4")]
+layout_mode = 1
+offset_left = 640.0
+offset_right = 640.0

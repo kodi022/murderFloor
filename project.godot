@@ -26,7 +26,10 @@ NetworkManager="*uid://cs5qysldxqm75"
 
 [display]
 
-window/stretch/aspect="expand"
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_height"
 
 [dotnet]
 
@@ -42,6 +45,10 @@ folder_colors={
 "res://scenes/": "blue",
 "res://scripts/": "red"
 }
+
+[gui]
+
+theme/default_font_antialiasing=2
 
 [input]
 
@@ -170,4 +177,4 @@ common/physics_interpolation=true
 
 rendering_device/vsync/swapchain_image_count=2
 rendering_device/driver.windows="d3d12"
-global_illumination/sdfgi/probe_ray_count=2
+environment/subsurface_scattering/subsurface_scattering_quality=0

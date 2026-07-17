@@ -85,20 +85,18 @@ public partial class Player : Pawn
         BuildWorldNodes();
         AudioStreamPlayer3D.Play();
 
-        var opt = OptionsManager.Load();
-        OptionsManager.Apply(opt);
-
         if (!IsMultiplayerAuthority())
         {
             foreach (var child in GetChildren()) if (child is Control) child.Free();
             cameraRaycast.Free();
             Camera.Free();
-
-            //Player.Self.RpcId(peerId, "ToolsResyncRpc", Player.Self.GetAllTools());
             NetworkManager.Current.RpcId(Id, "ClientPlayerReady");
-
             return;
         }
+
+        OptionsMenu.ShowReturnButton = true;
+        var opt = OptionsManager.Load();
+        OptionsManager.Apply(opt);
 
         cameraRaycast.AddException(this);
         Camera.Current = true;

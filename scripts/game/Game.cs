@@ -162,7 +162,7 @@ public partial class Game : Node
         if (rngLoot.Randf() > 0.9f)
         {
             // ! level = map difficulty * difficulty + challenge or something
-            var state = new Loot.LootStateInfo(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Easy, 0, false, false, 0);
+            var state = new Loot.LootStateInfo(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Hard, 0, false, false, 0.5f);
             var lootNode3d = Loot.LootStateInfo.MakeLootNode(state);
             lootNode.AddChild(lootNode3d);
             lootNode3d.GlobalPosition = (Vector3)damageInfo["hitposition"];

@@ -130,7 +130,6 @@ ViewAimViewmodel = NodePath("ViewAim/ViewModel")
 Camera = NodePath("ViewAim/Camera3D")
 viewAim = NodePath("ViewAim")
 cameraRaycast = NodePath("ViewAim/RayCast3D")
-sensitivity = 25.0
 
 [node name="Tools" type="Node" parent="." unique_id=764631333]
 

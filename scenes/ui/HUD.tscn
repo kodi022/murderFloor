@@ -26,6 +26,7 @@ corner_radius_top_right = 500
 corner_radius_bottom_right = 500
 corner_radius_bottom_left = 500
 corner_detail = 6
+anti_aliasing = false
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_atyv1"]
 
@@ -36,6 +37,7 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 corner_detail = 3
+anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rnyu1"]
 bg_color = Color(1, 1, 1, 0.5882353)
@@ -43,6 +45,7 @@ corner_radius_top_left = 1
 corner_radius_top_right = 1
 corner_radius_bottom_right = 1
 corner_radius_bottom_left = 1
+anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ll6g"]
 bg_color = Color(0, 0, 0, 1)
@@ -62,10 +65,8 @@ bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
 
 [node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "EmptyCrosshair", "GunCrosshair", "ShotgunCrosshair", "healthBarPanel", "useInfoLabel", "weaponsContainer")]
 layout_mode = 3
-anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_atyv1")
 script = ExtResource("1_kw0id")

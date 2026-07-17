@@ -4,6 +4,8 @@ namespace MurderFloor;
 
 public partial class OptionsMenu : Control
 {
+    public static bool ShowReturnButton { get; set; } = false;
+
     [Export]
     public HBoxContainer Tabs { get; private set; }
     [Export]
@@ -25,7 +27,11 @@ public partial class OptionsMenu : Control
     {
         currentOptions = OptionsManager.Load();
 
-        ReturnButton.Pressed += QueueFree;
+        if (!ShowReturnButton)
+            ReturnButton.Free();
+        else
+            ReturnButton.Pressed += QueueFree;
+
         ApplyButton.Pressed += () =>
         {
             OptionsManager.Save(currentOptions);
@@ -164,13 +170,13 @@ public partial class OptionsMenu : Control
             {
                 var hbox2 = new HBoxContainer();
                 marginvbox.AddChild(hbox2);
-                hbox2.AddThemeConstantOverride("margin_top", 0);
-                hbox2.AddThemeConstantOverride("margin_bottom", 0);
+                hbox2.AddThemeConstantOverride("margin_top", -4);
+                hbox2.AddThemeConstantOverride("margin_bottom", -4);
 
                 var tipLabel = new Label() { Text = att.Tip };
-                tipLabel.AddThemeConstantOverride("margin_top", 0);
-                tipLabel.AddThemeConstantOverride("margin_bottom", 0);
-                tipLabel.AddThemeFontSizeOverride("font_size", 10);
+                tipLabel.AddThemeConstantOverride("margin_top", -4);
+                tipLabel.AddThemeConstantOverride("margin_bottom", -4);
+                tipLabel.AddThemeFontSizeOverride("font_size", 12);
                 hbox2.AddChild(tipLabel);
             }
 

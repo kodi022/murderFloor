@@ -8,7 +8,8 @@ public partial class LiveLoot : Node3D
     {
         GetChild<Usable>(0).UseAction = () =>
         {
-            // ! add to inventory
+            SaveManager.CurrentSave.Loot.Add(Loot.LootStateInfo.Serialize(StateInfo));
+            GD.Print(Loot.LootStateInfo.Serialize(StateInfo));
             Free();
         };
     }

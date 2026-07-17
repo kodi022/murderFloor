@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class HUD : Control
+public partial class HUD : ScreenScaleLimiter
 {
     [Export]
     private Panel roundStartPanel;
@@ -20,7 +20,6 @@ public partial class HUD : Control
     private Label useInfoLabel;
     [Export]
     private VBoxContainer weaponsContainer;
-
 
     private int healthBarFunctionCount = 0;
     private Vector2 lastHealthBarPos = Vector2.Zero;
@@ -43,6 +42,8 @@ public partial class HUD : Control
 
     public override void _Process(double delta)
     {
+        base._Process(delta);
+
         if (!hookedGameEvents && Game.Current is not null)
         {
             Game.Current.GameRoundStart += AnimateNewRound;
@@ -113,34 +114,43 @@ public partial class HUD : Control
 
         if (selectedTool.ToolResource is ToolFirearm firearm)
         {
-            float yaw = Mathf.DegToRad(selectedTool.CurrentSpread.X);
-            float pitch = Mathf.DegToRad(selectedTool.CurrentSpread.Y);
+            if (OptionsManager.CurrentOptions.ScalingCrosshair)
+            {
+                float yaw = Mathf.DegToRad(selectedTool.CurrentSpread.X);
+                float pitch = Mathf.DegToRad(selectedTool.CurrentSpread.Y);
 
-            // this does not need normalized to a circle, its just for crosshair movement
-            Vector3 dir = Vector3.Forward.Rotated(Vector3.Up, Mathf.Abs(yaw));
-            dir = dir.Rotated(Vector3.Right, Mathf.Abs(pitch));
+                // this does not need normalized to a circle, its just for crosshair movement
+                Vector3 dir = Vector3.Forward.Rotated(Vector3.Up, Mathf.Abs(yaw));
+                dir = dir.Rotated(Vector3.Right, Mathf.Abs(pitch));
 
-            // do a Camera.UnprojectPosition manually with localized values
-            // this is because Camera has interpolation or something
-            // which creates incorrect values
-            var screenCenter = DisplayServer.WindowGetSize() / 2;
-            var fovRad = Mathf.DegToRad(Player.Self.Camera.Fov);
-            var focal = screenCenter.Y / Mathf.Tan(fovRad * 0.5f);
-            var projected = new Vector2I(
-                (int)(screenCenter.X + dir.X * focal / -dir.Z),
-                (int)(screenCenter.Y - dir.Y * focal / -dir.Z)
-            );
+                // do a Camera.UnprojectPosition manually with localized values
+                // this is because Camera has interpolation or something
+                // which creates incorrect values
+                var viewportSize = GetViewportRect().Size;
+                var scale = 1080f / viewportSize.Y;
+                var screenCenter = new Vector2I(
+                    (int)(viewportSize.X / 2f),
+                    (int)(viewportSize.Y / 2f)
+                );
+                var fovRad = Mathf.DegToRad(Player.Self.Camera.Fov) * scale;
+                var focal = screenCenter.Y / Mathf.Tan(fovRad * 0.5f);
+                var projected = new Vector2I(
+                    (int)(screenCenter.X + dir.X * focal / -dir.Z),
+                    (int)(screenCenter.Y - dir.Y * focal / -dir.Z)
+                );
+
+                activeCrosshair.Position = -(screenCenter - projected);
+                activeCrosshair.Size = (screenCenter - projected) * 2;
+            }
+            else
+            {
+                // ! set default size here
+            }
 
             if (selectedTool.Aiming)
                 activeCrosshair.Modulate = new Color(1, 1, 1, OptionsManager.CurrentOptions.AimCrosshairOpacity);
             else
                 activeCrosshair.Modulate = new Color(1, 1, 1, OptionsManager.CurrentOptions.CrosshairOpacity);
-
-            if (OptionsManager.CurrentOptions.ScalingCrosshair)
-            {
-                activeCrosshair.Position = -(screenCenter - projected);
-                activeCrosshair.Size = (screenCenter - projected) * 2;
-            }
 
             if (firearm.FirearmType == ToolFirearm.FirearmTypeEnum.Shotgun)
                 ChangeCrosshair(2);

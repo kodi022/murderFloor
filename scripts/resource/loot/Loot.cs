@@ -6,15 +6,14 @@ public static class Loot
     public struct LootStateInfo
     {
         public ulong Seed { get; private set; }
-        public int LootHashId { get; private set; } // necessary to save now for when new loot is added
+        public int LootHashId { get; private set; } // necessary to save, if new loot is added, rng changes
         public int Level { get; private set; }
         public Game.GameDifficultyEnum Difficulty { get; private set; }
-        public int MapHashId { get; private set; } // ! change type when implemented
-        public bool Challenge1 { get; private set; } // ! change name when implemented
-        public bool Challenge2 { get; private set; } // ! change name when implemented
-        public double Overscaling { get; private set; }
+        public int MapHashId { get; private set; }
+        public int ChallengeScaling { get; private set; }
+        public float OverScaling { get; private set; }
 
-        public LootStateInfo(ulong seed, int level, Game.GameDifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, double overscaling)
+        public LootStateInfo(ulong seed, int level, Game.GameDifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, float overscaling)
         {
             Seed = seed;
             var lootCount = ResourceManager.LootRegistry.Count;
@@ -25,15 +24,15 @@ public static class Loot
             Level = level;
             Difficulty = difficulty;
             MapHashId = mapHashId;
-            Challenge1 = challenge1;
-            Challenge2 = challenge2;
-            Overscaling = overscaling;
+            ChallengeScaling = (challenge1 ? 1 : 0) + (challenge2 ? 2 : 0);
+            OverScaling = overscaling;
         }
 
         public static Node3D MakeLootNode(LootStateInfo self)
         {
-            var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<Node3D>();
+            var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<LiveLoot>();
             newLoot.Position = Vector3.Up * 0.1f;
+            newLoot.StateInfo = self;
             var importYaw = 0f;
             var rigidBody = newLoot.FindChildren("RigidBody3D").First();
             var loot = ResourceManager.LootRegistry.FirstOrDefault(l => l.HashId == self.LootHashId, null);
@@ -55,9 +54,9 @@ public static class Loot
             str += self.Level + ',';
             str += (int)self.Difficulty + ',';
             str += self.MapHashId + ',';
-            str += self.Challenge1 ? 1 : 0 + ',';
-            str += self.Challenge2 ? 1 : 0 + ',';
-            str += self.Overscaling;
+            str += self.ChallengeScaling + ',';
+            str += self.OverScaling.ToString("#.#");
+            GD.Print(str);
             return str;
         }
 
@@ -71,9 +70,8 @@ public static class Loot
                 Level = strs[2].ToInt(),
                 Difficulty = (Game.GameDifficultyEnum)strs[3].ToInt(),
                 MapHashId = strs[4].ToInt(),
-                Challenge1 = strs[5] == "1",
-                Challenge2 = strs[6] == "1",
-                Overscaling = Convert.ToDouble(strs[7])
+                ChallengeScaling = strs[5].ToInt(),
+                OverScaling = strs[6].ToFloat()
             };
         }
     }
@@ -84,7 +82,7 @@ public static class Loot
         public int Level { get; private set; } = 0;
         public TierEnum Tier { get; private set; }
         public WearEnum Wear { get; private set; }
-        public double Superscale { get; private set; }
+        public double SuperScale { get; private set; }
 
         // loot drop algorithm must depend on difficulty settings and player level
         // no high level loot on low difficulty
@@ -105,8 +103,9 @@ public static class Loot
             };
             var wearLevelOffset = ((int)lootStateInfo.Difficulty - 3) * 1.5f;
 
-            Superscale = lootStateInfo.Overscaling * 0.1f;
-            // ! map and mapchallenge affect Superscale
+            SuperScale = lootStateInfo.ChallengeScaling * 0.5f;
+            SuperScale += lootStateInfo.OverScaling;
+            // ! map affect Superscale
 
             var rng = new RandomNumberGenerator { Seed = Seed };
             GenerateTier(rng, tierOffset);

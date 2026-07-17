@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class MainMenu : Control
+public partial class MainMenu : ScreenScaleLimiter
 {
 	[Export]
 	private Camera3D camera;
@@ -24,6 +24,11 @@ public partial class MainMenu : Control
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		OptionsMenu.ShowReturnButton = false;
+		var opt = OptionsManager.Load();
+		OptionsManager.Apply(opt);
+		camera.Fov = 50;
+
 		cameraTargetTransform = cameraMenuPositionNode.Transform;
 		((Button)buttonsList.GetChild(0)).ButtonDown += LocalButton;
 		((Button)buttonsList.GetChild(1)).ButtonDown += OnlineButton;
@@ -83,6 +88,7 @@ public partial class MainMenu : Control
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		base._Process(delta);
 		camera.Transform = camera.Transform.InterpolateWith(cameraTargetTransform, (float)delta * 2f);
 	}
 
@@ -128,6 +134,6 @@ public partial class MainMenu : Control
 		OpenUI?.Free();
 		OpenUI = null;
 		OpenUI = GD.Load<PackedScene>(path).Instantiate<Control>();
-		GetParent().AddChild(OpenUI);
+		AddChild(OpenUI);
 	}
 }
