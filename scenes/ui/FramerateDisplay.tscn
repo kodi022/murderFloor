@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://c31pptc2kgstt"]
+
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_55nwy"]
+[ext_resource type="Script" uid="uid://ktfo2vohtw60" path="res://scripts/ui/FramerateDisplay.cs" id="2_0ih5s"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_55nwy"]
+
+[node name="FramerateDisplay" type="Control" unique_id=1889858249 node_paths=PackedStringArray("label")]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+theme = ExtResource("1_55nwy")
+script = ExtResource("2_0ih5s")
+label = NodePath("Label")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=2131127342]
+layout_mode = 0
+offset_left = -33.0
+offset_top = 10.0
+offset_right = -9.0
+offset_bottom = 34.0
+bbcode_enabled = true
+text = "[img]res://images/ui/icon-monitor.png[/img]"
+scroll_active = false
+horizontal_alignment = 2
+
+[node name="Label" type="Label" parent="." unique_id=1673206656]
+layout_mode = 0
+offset_left = -128.0
+offset_top = 10.0
+offset_right = -33.0
+offset_bottom = 34.0
+text = "144"
+label_settings = SubResource("LabelSettings_55nwy")
+horizontal_alignment = 2
+vertical_alignment = 1
+paragraph_separator = "/n"

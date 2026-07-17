@@ -170,3 +170,4 @@ common/physics_interpolation=true
 
 rendering_device/vsync/swapchain_image_count=2
 rendering_device/driver.windows="d3d12"
+global_illumination/sdfgi/probe_ray_count=2

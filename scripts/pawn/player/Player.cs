@@ -55,13 +55,10 @@ public partial class Player : Pawn
 
     // * other
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
-    [Export(PropertyHint.Range, "1,500,0.01")]
-    private float sensitivity = 50f;
+    private Vector2 mouseDelta;
 
     private Control openUI;
     private Control debugUI;
-
-    private Vector2 mouseDelta;
 
     public string Hold = "";
 
@@ -84,9 +81,12 @@ public partial class Player : Pawn
 
     public override void _Ready()
     {
+        Id = GetMultiplayerAuthority();
         BuildWorldNodes();
         AudioStreamPlayer3D.Play();
-        Id = GetMultiplayerAuthority();
+
+        var opt = OptionsManager.Load();
+        OptionsManager.Apply(opt);
 
         if (!IsMultiplayerAuthority())
         {
@@ -117,7 +117,7 @@ public partial class Player : Pawn
 
         if (@event is InputEventMouseMotion eventMouseMotion)
         {
-            var mouse = eventMouseMotion.ScreenRelative * 0.0001f * sensitivity;
+            var mouse = eventMouseMotion.ScreenRelative * 0.002f * OptionsManager.CurrentOptions.Sensitivity;
             mouseDelta += mouse;
         }
 
@@ -221,6 +221,9 @@ public partial class Player : Pawn
         ViewAimViewmodel.Rotation = ViewModelRotationKick;
         if (CameraShakeScale > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * CameraShakeScale;
         else Camera.Position = Vector3.Zero;
+
+        Camera.Fov = OptionsManager.CurrentOptions.FieldOfView;
+        ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.ViewmodelFieldOfViewScale);
 
         if (openUI is not null) return;
 

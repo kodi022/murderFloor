@@ -134,7 +134,7 @@ public partial class HUD : Control
             if (selectedTool.Aiming)
                 activeCrosshair.Modulate = new Color(1, 1, 1, OptionsManager.CurrentOptions.AimCrosshairOpacity);
             else
-                activeCrosshair.Modulate = new Color(1, 1, 1);
+                activeCrosshair.Modulate = new Color(1, 1, 1, OptionsManager.CurrentOptions.CrosshairOpacity);
 
             if (OptionsManager.CurrentOptions.ScalingCrosshair)
             {

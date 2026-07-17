@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_hhpix"]
 [ext_resource type="Script" uid="uid://bl1icv6kxj1dh" path="res://scripts/ui/options/OptionsMenu.cs" id="1_r67bl"]
 
-[node name="OptionsMenu" type="Control" unique_id=1770553190 node_paths=PackedStringArray("Tabs", "OptionList", "ReturnButton", "DiscardReturnButton", "DefaultsButton")]
+[node name="OptionsMenu" type="Control" unique_id=1770553190 node_paths=PackedStringArray("Tabs", "OptionList", "ReturnButton", "ApplyButton", "DefaultsButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,7 +15,7 @@ script = ExtResource("1_r67bl")
 Tabs = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer")
 OptionList = NodePath("PanelContainer/MarginContainer/VBoxContainer2/ScrollContainer/VBoxContainer")
 ReturnButton = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button")
-DiscardReturnButton = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button2")
+ApplyButton = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button2")
 DefaultsButton = NodePath("PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button3")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1809216936]
@@ -39,11 +39,11 @@ size_flags_vertical = 0
 
 [node name="Button" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1174658929]
 layout_mode = 2
-text = "Save"
+text = "Return"
 
 [node name="Button2" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1483923876]
 layout_mode = 2
-text = "Discard"
+text = "Apply"
 
 [node name="Button3" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1083658141]
 layout_mode = 2

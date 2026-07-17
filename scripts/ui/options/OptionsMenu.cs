@@ -11,7 +11,7 @@ public partial class OptionsMenu : Control
     [Export]
     public Button ReturnButton { get; private set; }
     [Export]
-    public Button DiscardReturnButton { get; private set; }
+    public Button ApplyButton { get; private set; }
     [Export]
     public Button DefaultsButton { get; private set; }
 
@@ -25,15 +25,17 @@ public partial class OptionsMenu : Control
     {
         currentOptions = OptionsManager.Load();
 
-        ReturnButton.Pressed += () =>
+        ReturnButton.Pressed += QueueFree;
+        ApplyButton.Pressed += () =>
         {
             OptionsManager.Save(currentOptions);
-            QueueFree();
+            OptionsManager.Apply(currentOptions);
         };
-        DiscardReturnButton.Pressed += QueueFree;
         DefaultsButton.Pressed += () =>
         {
             currentOptions = new OptionsManager.Options();
+            OptionsManager.Save(currentOptions);
+            OptionsManager.Apply(currentOptions);
             selectedTab = "";
             BuildList(categories.First());
         };
@@ -72,24 +74,23 @@ public partial class OptionsMenu : Control
         var optionType = typeof(OptionsManager.Options);
         foreach (var prop in optionType.GetProperties())
         {
-            var type = typeof(OptionsManager.OptionAttribute);
-            if (prop.GetCustomAttribute(type) is OptionsManager.OptionAttribute att)
-            {
-                if (att.Category != selectedTab) continue;
-            }
+            var att = prop.GetCustomAttribute<OptionsManager.OptionAttribute>();
+            if (att.Category != selectedTab) continue;
 
             var entry = new PanelContainer() { Size = new Vector2(0, 100) };
             var margin = new MarginContainer();
             entry.AddChild(margin);
+            var marginvbox = new VBoxContainer();
+            margin.AddChild(marginvbox);
             var hbox = new HBoxContainer();
-            margin.AddChild(hbox);
+            marginvbox.AddChild(hbox);
             var label = new Label();
             hbox.AddChild(label);
 
             var spacer2 = new Control() { SizeFlagsHorizontal = SizeFlags.ExpandFill };
             hbox.AddChild(spacer2);
 
-            type = typeof(OptionsManager.OptionFloatAttribute);
+            var type = typeof(OptionsManager.OptionFloatAttribute);
             if (prop.GetCustomAttribute(type) is OptionsManager.OptionFloatAttribute floatAtt)
             {
                 label.Text = prop.Name;
@@ -157,6 +158,20 @@ public partial class OptionsMenu : Control
 
                 checkbox.ButtonPressed = (bool)prop.GetValue(currentOptions);
                 checkbox.Toggled += (pressed) => { prop.SetValue(currentOptions, pressed); };
+            }
+
+            if (!string.IsNullOrEmpty(att.Tip))
+            {
+                var hbox2 = new HBoxContainer();
+                marginvbox.AddChild(hbox2);
+                hbox2.AddThemeConstantOverride("margin_top", 0);
+                hbox2.AddThemeConstantOverride("margin_bottom", 0);
+
+                var tipLabel = new Label() { Text = att.Tip };
+                tipLabel.AddThemeConstantOverride("margin_top", 0);
+                tipLabel.AddThemeConstantOverride("margin_bottom", 0);
+                tipLabel.AddThemeFontSizeOverride("font_size", 10);
+                hbox2.AddChild(tipLabel);
             }
 
             OptionList.AddChild(entry);
