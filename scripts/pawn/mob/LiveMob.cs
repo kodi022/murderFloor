@@ -68,6 +68,7 @@ public partial class LiveMob : Pawn
         if (!Active) return;
 
         Active = false;
+
         var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
         var liveSk = worldModels.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
         var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
@@ -75,12 +76,11 @@ public partial class LiveMob : Pawn
         ragdoll.Transform = Transform;
         for (int i = 0; i < copyCount; i++)
         {
-            var pos = liveSk.GetBonePosePosition(i) * 6.12728f;
+            var pos = liveSk.GetBonePosePosition(i) * 6.12728f; // due to import scaling
             var rot = liveSk.GetBonePoseRotation(i);
             ragSk.SetBonePosePosition(i, pos);
             ragSk.SetBonePoseRotation(i, rot);
         }
-
         var hitCollider = damageInfo["hitbox"].AsString();
         if (hitCollider == "Head") hitCollider = "Neck";
         if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";

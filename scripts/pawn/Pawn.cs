@@ -3,6 +3,8 @@ namespace MurderFloor;
 public partial class Pawn : CharacterBody3D
 {
     [Signal]
+    public delegate void PlayerOnHealEventHandler(float amount);
+    [Signal]
     public delegate void PlayerOnDamageEventHandler(DamageInfo damageInfo);
     [Signal]
     public delegate void PlayerOnDeathEventHandler(DamageInfo damageInfo);
@@ -57,9 +59,8 @@ public partial class Pawn : CharacterBody3D
         Health -= damage;
 
         // gore
-        // sound
+        // sounds
 
-        // signals
         bool attackerIsSelf = damageInfo["attacker"].AsInt64() == Player.Self.Id;
         if (attackerIsSelf && this is LiveMob)
         {
@@ -70,6 +71,11 @@ public partial class Pawn : CharacterBody3D
         {
             EmitSignal(SignalName.PlayerOnDamage, damageInfo);
         }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public virtual void OnHealRpc(DamageInfo damageInfo)
+    {
     }
 
     public virtual void OnDeath(DamageInfo damageInfo)

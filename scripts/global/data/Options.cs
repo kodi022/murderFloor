@@ -22,7 +22,7 @@ public static class OptionsManager
         return options;
     }
 
-    // not all are manually applied to somewhere
+    // some are applied elsewhere
     public static void Apply(Options options)
     {
         CurrentOptions = new Options(options);

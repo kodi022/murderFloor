@@ -85,14 +85,14 @@ offset_bottom = 148.0
 text = "Exit
 "
 
-[node name="Panel2" type="Panel" parent="." unique_id=1106262579]
+[node name="ViewBlockRight" type="Panel" parent="." unique_id=1106262579]
 layout_mode = 0
 offset_left = 1920.0
 offset_right = 26920.0
 offset_bottom = 1080.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_j2pa4")
 
-[node name="Panel" type="Panel" parent="." unique_id=2038695590]
+[node name="ViewBlockLeft" type="Panel" parent="." unique_id=2038695590]
 layout_mode = 0
 offset_left = -25000.0
 offset_bottom = 1080.0

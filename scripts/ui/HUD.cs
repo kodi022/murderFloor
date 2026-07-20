@@ -38,6 +38,7 @@ public partial class HUD : ScreenScaleLimiter
         GunCrosshair.Visible = false;
         ShotgunCrosshair.Visible = false;
         Player.Self.PlayerOnDamage += UpdateHealth;
+        Player.Self.PlayerOnHeal += HealAndUpdateHealth;
     }
 
     public override void _Process(double delta)
@@ -182,6 +183,13 @@ public partial class HUD : ScreenScaleLimiter
             _ => EmptyCrosshair,
         };
         activeCrosshair.Visible = true;
+    }
+
+    private async void HealAndUpdateHealth(float amount)
+    {
+        // heal effect
+
+        UpdateHealth(null);
     }
 
     private async void UpdateHealth(DamageInfo damageInfo)

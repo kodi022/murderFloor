@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://c7k0wyg1hxgdy"]
+
+[node name="LockerToolButton" type="Control" unique_id=1737365637]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="." unique_id=858432950]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2098116817]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.11198568, 0.11198568, 0.11198568, 1)
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1018520713]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="Label" type="Label" parent="." unique_id=461870625]
+layout_mode = 0
+offset_right = 105.0
+offset_bottom = 87.0
+text = "100"

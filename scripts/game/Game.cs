@@ -38,7 +38,7 @@ public partial class Game : Node
     public ulong GameSeed { get; private set; } = (ulong)Random.Shared.NextInt64();
 
     [Export]
-    public int MaxRound { get; private set; } = 5;
+    public int MaxRound { get; private set; } = 2; // 5?
     [Export]
     public int Round { get; private set; } = 0;
     [Export]
@@ -52,6 +52,8 @@ public partial class Game : Node
     public int TimeMsBetweenRounds { get; private set; } = 20000;
 
     public ulong LastRoundEndTime { get; private set; } = 0ul;
+
+    public SaveManager.SaveData GameSaveData { get; private set; } = new();
 
     // vsc says these should be uppercase
     private int FuncMobRoundWaveSize => 5 + Round + (int)GameDifficulty * 2;
@@ -196,6 +198,11 @@ public partial class Game : Node
     public void EndGame()
     {
         GameState = GameStateEnum.Stopped;
+
+        SaveManager.CurrentSave.Xp += GameSaveData.Xp;
+        SaveManager.CurrentSave.Loot.AddRange(GameSaveData.Loot);
+        SaveManager.Save(SaveManager.CurrentSave);
+
         foreach (var mob in MobPool)
         {
             mob?.Free();

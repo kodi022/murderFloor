@@ -6,6 +6,17 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lj7te"]
 bg_color = Color(0.16575891, 0.17362446, 0.19090384, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r4564"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 4
+border_width_right = 4
+border_color = Color(0.21063334, 0.21063334, 0.21063334, 1)
+anti_aliasing = false
+
 [node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("grid", "rect", "addToolButton", "removeToolButton")]
 layout_mode = 3
 anchors_preset = 15
@@ -62,7 +73,6 @@ size_flags_horizontal = 0
 
 [node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1391001294]
 layout_mode = 2
-alignment = 1
 
 [node name="CheckButton" type="CheckButton" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer" unique_id=1553068327]
 layout_mode = 2
@@ -77,10 +87,23 @@ popup/item_1/text = "gggg"
 popup/item_1/id = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=581436800]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="GridContainer" type="GridContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ScrollContainer" unique_id=1075273565]
 layout_mode = 2
-columns = 2
+columns = 3
+
+[node name="ViewBlockRight" type="Panel" parent="." unique_id=752174968]
+layout_mode = 0
+offset_left = 1920.0
+offset_right = 26920.0
+offset_bottom = 1080.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_r4564")
+
+[node name="ViewBlockLeft" type="Panel" parent="." unique_id=1843011846]
+layout_mode = 0
+offset_left = -25000.0
+offset_bottom = 1080.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_r4564")

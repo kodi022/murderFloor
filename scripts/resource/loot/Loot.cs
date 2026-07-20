@@ -13,6 +13,8 @@ public static class Loot
         public int ChallengeScaling { get; private set; }
         public float OverScaling { get; private set; }
 
+        public LootStateInfo() { }
+
         public LootStateInfo(ulong seed, int level, Game.GameDifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, float overscaling)
         {
             Seed = seed;
@@ -49,14 +51,13 @@ public static class Loot
         public static string Serialize(LootStateInfo self)
         {
             var str = "";
-            str += self.Seed + ',';
-            str += self.LootHashId + ',';
-            str += self.Level + ',';
-            str += (int)self.Difficulty + ',';
-            str += self.MapHashId + ',';
-            str += self.ChallengeScaling + ',';
+            str += self.Seed + ",";
+            str += self.LootHashId + ",";
+            str += self.Level + ",";
+            str += (int)self.Difficulty + ",";
+            str += self.MapHashId + ",";
+            str += self.ChallengeScaling + ",";
             str += self.OverScaling.ToString("#.#");
-            GD.Print(str);
             return str;
         }
 
@@ -208,7 +209,7 @@ public static class Loot
         Color.FromHtml("#acb3ff6f"), 1.06f)},
         {TierEnum.Epic,
         new TierInfo("base.loot.tier.epic",
-        Color.FromHtml("#d499ff81"), 1.09f)},
+        Color.FromHtml("#cb82ff81"), 1.09f)},
         {TierEnum.Exotic,
         new TierInfo("base.loot.tier.exotic",
         Color.FromHtml("#f153ff"), 1.12f)},
@@ -229,7 +230,7 @@ public static class Loot
         Color.FromHtml("#006a35"), 1.10f)},
         {TierEnum.Unknown,
         new TierInfo("base.loot.tier.unknown",
-        Color.FromHtml("#ffd1d1"), 1.10f)},
+        Color.FromHtml("#766666"), 1.10f)},
     };
 
     public struct TierInfo

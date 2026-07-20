@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class LockerMenu : Control
+public partial class LockerMenu : ScreenScaleLimiter
 {
     [Export]
     private GridContainer grid;
@@ -38,6 +38,43 @@ public partial class LockerMenu : Control
 
     private async void BuildList()
     {
+        var lockerToolButton = GD.Load<PackedScene>("res://scenes/ui/locker/LockerToolButton.tscn");
+        foreach (var loot in SaveManager.CurrentSave.Loot)
+        {
+            var lootState = Loot.LootStateInfo.Deserialize(loot);
+            var lootResource = ResourceManager.LootRegistry.First(c => lootState.LootHashId == c.HashId);
+            if (lootResource is Tool tool)
+            {
+                var newButton = lockerToolButton.Instantiate<Control>();
+
+                // var panelContainer = new PanelContainer();
+                // var button = new Button();
+                // panelContainer.AddChild(button);
+                // var rect = new TextureRect();
+                // panelContainer.AddChild(rect);
+
+                var lootRarity = new Loot.LootRarityInfo(lootState);
+
+                //var label = new Label() { Text = lootState.Level.ToString() };
+                //panelContainer.AddChild(label);
+                // ! continue on this
+                // button.ButtonDown += () =>
+                // {
+                //     selectedTool = tool;
+                //     SelectTool();
+                // };
+
+                // rect.Texture = await lootResource.GenerateThumbnailImage(128, 80);
+                // grid.AddChild(panelContainer);
+
+                if (selectedTool is null)
+                {
+                    selectedTool = tool;
+                    SelectTool();
+                }
+            }
+        }
+
         foreach (var tool in ResourceManager.ToolRegistry.GetAllResource())
         {
             if (tool.Value.FullId == "base:fists") continue;

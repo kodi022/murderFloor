@@ -202,9 +202,9 @@ public partial class Player : Pawn
 
         if (SelectedTool?.Aiming ?? false)
         {
-            viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.01f;
+            viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.02f;
             viewModelAimSway *= reduction;
-            viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.015f);
+            viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.014f);
         }
         else
         {

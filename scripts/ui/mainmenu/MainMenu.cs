@@ -27,6 +27,8 @@ public partial class MainMenu : ScreenScaleLimiter
 		OptionsMenu.ShowReturnButton = false;
 		var opt = OptionsManager.Load();
 		OptionsManager.Apply(opt);
+		var save = SaveManager.Load();
+		SaveManager.Apply(save);
 		camera.Fov = 50;
 
 		cameraTargetTransform = cameraMenuPositionNode.Transform;
