@@ -6,7 +6,7 @@ public static class ResourceManager
 	public static ResourceRegistry<Attachment> AttachmentRegistry { get; private set; } = new();
 	public static ResourceRegistry<Mob> MobRegistry { get; private set; } = new();
 
-	public static List<MFResource> LootRegistry { get; private set; } = new();
+	public static List<MFResource> LootRegistry { get; private set; } = [];
 
 	public static string ModsPath { get; private set; } = "user://mods";
 

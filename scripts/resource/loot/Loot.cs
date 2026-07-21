@@ -1,186 +1,12 @@
-namespace MurderFloor;
+namespace MurderFloor.Loot;
 
-public static class Loot
+public static class Tiers
 {
-    // this can be serialized, saved and networked
-    public struct LootStateInfo
-    {
-        public ulong Seed { get; private set; }
-        public int LootHashId { get; private set; } // necessary to save, if new loot is added, rng changes
-        public int Level { get; private set; }
-        public Game.GameDifficultyEnum Difficulty { get; private set; }
-        public int MapHashId { get; private set; }
-        public int ChallengeScaling { get; private set; }
-        public float OverScaling { get; private set; }
-
-        public LootStateInfo() { }
-
-        public LootStateInfo(ulong seed, int level, Game.GameDifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, float overscaling)
-        {
-            Seed = seed;
-            var lootCount = ResourceManager.LootRegistry.Count;
-            var rng = new RandomNumberGenerator() { Seed = seed };
-            var lootIndex = rng.RandiRange(0, lootCount - 1);
-            LootHashId = ResourceManager.LootRegistry[lootIndex].HashId;
-
-            Level = level;
-            Difficulty = difficulty;
-            MapHashId = mapHashId;
-            ChallengeScaling = (challenge1 ? 1 : 0) + (challenge2 ? 2 : 0);
-            OverScaling = overscaling;
-        }
-
-        public static Node3D MakeLootNode(LootStateInfo self)
-        {
-            var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<LiveLoot>();
-            newLoot.Position = Vector3.Up * 0.1f;
-            newLoot.StateInfo = self;
-            var importYaw = 0f;
-            var rigidBody = newLoot.FindChildren("RigidBody3D").First();
-            var loot = ResourceManager.LootRegistry.FirstOrDefault(l => l.HashId == self.LootHashId, null);
-            var meshScene = loot.MeshScene.Instantiate<Node3D>();
-            meshScene.RotationDegrees = new Vector3(90, importYaw, 0);
-            rigidBody.AddChild(meshScene);
-
-            var rarityInfo = new LootRarityInfo(self);
-            ((Sprite3D)rigidBody.GetChild(0)).Modulate = TierInfos[rarityInfo.Tier].Color;
-            ((Sprite3D)rigidBody.GetChild(1)).Modulate = TierInfos[rarityInfo.Tier].Color;
-            return newLoot;
-        }
-
-        public static string Serialize(LootStateInfo self)
-        {
-            var str = "";
-            str += self.Seed + ",";
-            str += self.LootHashId + ",";
-            str += self.Level + ",";
-            str += (int)self.Difficulty + ",";
-            str += self.MapHashId + ",";
-            str += self.ChallengeScaling + ",";
-            str += self.OverScaling.ToString("#.#");
-            return str;
-        }
-
-        public static LootStateInfo Deserialize(string state)
-        {
-            var strs = state.Split(',');
-            return new LootStateInfo()
-            {
-                Seed = Convert.ToUInt64(strs[0]),
-                LootHashId = strs[1].ToInt(),
-                Level = strs[2].ToInt(),
-                Difficulty = (Game.GameDifficultyEnum)strs[3].ToInt(),
-                MapHashId = strs[4].ToInt(),
-                ChallengeScaling = strs[5].ToInt(),
-                OverScaling = strs[6].ToFloat()
-            };
-        }
-    }
-
-    public struct LootRarityInfo
-    {
-        public ulong Seed { get; private set; } = 0;
-        public int Level { get; private set; } = 0;
-        public TierEnum Tier { get; private set; }
-        public WearEnum Wear { get; private set; }
-        public double SuperScale { get; private set; }
-
-        // loot drop algorithm must depend on difficulty settings and player level
-        // no high level loot on low difficulty
-        public LootRarityInfo(LootStateInfo lootStateInfo)
-        {
-            Seed = lootStateInfo.Seed;
-            Level = lootStateInfo.Level;
-
-            var tierOffset = lootStateInfo.Difficulty switch
-            {
-                Game.GameDifficultyEnum.Easy => -2.0f,
-                Game.GameDifficultyEnum.Medium => -1.4f,
-                Game.GameDifficultyEnum.Challenging => -0.7f,
-                Game.GameDifficultyEnum.Hard => 0f,
-                Game.GameDifficultyEnum.Extreme => 0.8f,
-                Game.GameDifficultyEnum.Ludicrous => 1.7f,
-                _ => -2.0f,
-            };
-            var wearLevelOffset = ((int)lootStateInfo.Difficulty - 3) * 1.5f;
-
-            SuperScale = lootStateInfo.ChallengeScaling * 0.5f;
-            SuperScale += lootStateInfo.OverScaling;
-            // ! map affect Superscale
-
-            var rng = new RandomNumberGenerator { Seed = Seed };
-            GenerateTier(rng, tierOffset);
-            GenerateWear(rng, wearLevelOffset);
-        }
-
-        private void GenerateTier(RandomNumberGenerator rng, float tierOffset)
-        {
-            float maxTicket = 0;
-            Dictionary<TierEnum, float> tiers = new();
-
-            void AddTierChance(TierEnum tier)
-            {
-                var val = Mathf.Pow((int)tier, 2.1f) + tierOffset;
-                maxTicket += val;
-                tiers.Add(tier, val);
-            }
-
-            if (Level < 50) AddTierChance(TierEnum.Common);
-            AddTierChance(TierEnum.Uncommon);
-            AddTierChance(TierEnum.Rare);
-            AddTierChance(TierEnum.Epic);
-            if (Level >= 50) AddTierChance(TierEnum.Exotic);
-            if (Level >= 60) AddTierChance(TierEnum.Mythical);
-            if (Level >= 70) AddTierChance(TierEnum.Legendary);
-            if (Level >= 80) AddTierChance(TierEnum.Opalescent);
-
-            var ticket = rng.RandfRange(0, maxTicket);
-            foreach (var tier in tiers.Reverse())
-            {
-                if (ticket <= tier.Value)
-                {
-                    Tier = tier.Key;
-                    break;
-                }
-                ticket -= tier.Value;
-            }
-
-            if (Tier == TierEnum.Opalescent && Level >= 100)
-            {
-                if (tierOffset > 1.2f)
-                {
-                    if (rng.RandiRange(1, 8) == 1) Tier = TierEnum.Transcendent;
-                }
-                else
-                {
-                    if (rng.RandiRange(1, 12) == 1) Tier = TierEnum.Transcendent;
-                }
-            }
-        }
-
-        private void GenerateWear(RandomNumberGenerator rng, float wearLevelOffset)
-        {
-            var wear = Mathf.Max(0, rng.Randfn(Level + wearLevelOffset - 10, 6));
-            // this linq is considered laggy but the alternative is a big chunk of ugly code
-            var wearEnum = WearEnum.Broken;
-            foreach (var val in Enum.GetValues(typeof(WearEnum)))
-            {
-                if (wear < (int)val) break;
-                wearEnum = (WearEnum)val;
-            }
-
-            if (Level < 100 && (int)wearEnum > (int)WearEnum.Perfect)
-                wearEnum = WearEnum.Perfect;
-
-            Wear = wearEnum;
-        }
-    }
-
-
-    // based on random value, with some level filtering
-    // https://www.desmos.com/calculator/hlps9tjlqp
-    // scales loot strength (less than wear) but also determines other factors like 
-    // changes power for reforging? sockets? attachments? skins?
+    /// <summary>
+    /// Based on random value, with some level filtering.
+    /// Scales loot strength (less than wear) but also determines other factors like 
+    /// reforging? sockets? attachments? skins?
+    /// </summary>
     public enum TierEnum
     {
         Common = 8,         // 0 - 50
@@ -196,7 +22,7 @@ public static class Loot
         Unknown = -3,       // special items
     }
 
-    public static Dictionary<TierEnum, TierInfo> TierInfos { get; private set; } = new()
+    public static Dictionary<TierEnum, TierInfo> TierList { get; private set; } = new()
     {
         {TierEnum.Common,
         new TierInfo("base.loot.tier.common",
@@ -249,8 +75,10 @@ public static class Loot
             PowerScale = powerScale;
         }
     }
+}
 
-
+public static class Wears
+{
     // uses normal distribution of at level for value
     // scales loots strength
     public enum WearEnum
@@ -278,7 +106,7 @@ public static class Loot
         UltimatePP = 110,   // only possible at level 100
     }
 
-    public static Dictionary<WearEnum, WearInfo> WearInfos { get; private set; } = new()
+    public static Dictionary<WearEnum, WearInfo> WearList { get; private set; } = new()
     {
         {WearEnum.Broken,       new WearInfo("base.loot.wear.broken",       1.00f)}, // increasing by 0.04
         {WearEnum.Tarnished,    new WearInfo("base.loot.wear.tarnished",    1.04f)},
@@ -314,5 +142,187 @@ public static class Loot
             NameLocalizationKey = locKey;
             PowerScale = powerScale;
         }
+    }
+}
+
+// the saved data of Loot
+public struct LootState
+{
+    public ulong Seed { get; private set; }
+    public int LootHashId { get; private set; } // necessary to save, if new loot is added, rng changes
+    public int Level { get; private set; }
+    public Game.GameDifficultyEnum Difficulty { get; private set; }
+    public int MapHashId { get; private set; }
+    public int ChallengeScaling { get; private set; }
+    public float OverScaling { get; private set; }
+
+    public LootState() { }
+
+    public LootState(ulong seed, int level, Game.GameDifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, float overscaling)
+    {
+        Seed = seed;
+        var lootCount = ResourceManager.LootRegistry.Count;
+        var rng = new RandomNumberGenerator() { Seed = seed };
+        var lootIndex = rng.RandiRange(0, lootCount - 1);
+        LootHashId = ResourceManager.LootRegistry[lootIndex].HashId;
+
+        Level = level;
+        Difficulty = difficulty;
+        MapHashId = mapHashId;
+        ChallengeScaling = (challenge1 ? 1 : 0) + (challenge2 ? 2 : 0);
+        OverScaling = overscaling;
+    }
+
+    public static MFResource GetLootRef(LootState self)
+    {
+        return ResourceManager.LootRegistry.First(c => c.HashId == self.LootHashId);
+    }
+
+    public static Node3D MakeLootNode(LootState self)
+    {
+        var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<LiveLoot>();
+        newLoot.Position = Vector3.Up * 0.1f;
+        newLoot.StateInfo = self;
+        var importYaw = 0f;
+        var rigidBody = newLoot.FindChildren("RigidBody3D").First();
+        var loot = ResourceManager.LootRegistry.FirstOrDefault(l => l.HashId == self.LootHashId, null);
+        var meshScene = loot.MeshScene.Instantiate<Node3D>();
+        meshScene.RotationDegrees = new Vector3(90, importYaw, 0);
+        rigidBody.AddChild(meshScene);
+
+        var rarityInfo = new LootRarity(self);
+        ((Sprite3D)rigidBody.GetChild(0)).Modulate = Tiers.TierList[rarityInfo.Tier].Color;
+        ((Sprite3D)rigidBody.GetChild(1)).Modulate = Tiers.TierList[rarityInfo.Tier].Color;
+        return newLoot;
+    }
+
+    public static string Serialize(LootState self)
+    {
+        var str = "";
+        str += self.Seed + ",";
+        str += self.LootHashId + ",";
+        str += self.Level + ",";
+        str += (int)self.Difficulty + ",";
+        str += self.MapHashId + ",";
+        str += self.ChallengeScaling + ",";
+        str += self.OverScaling.ToString("#.#");
+        return str;
+    }
+
+    public static LootState Deserialize(string state)
+    {
+        var strs = state.Split(',');
+        return new LootState()
+        {
+            Seed = Convert.ToUInt64(strs[0]),
+            LootHashId = strs[1].ToInt(),
+            Level = strs[2].ToInt(),
+            Difficulty = (Game.GameDifficultyEnum)strs[3].ToInt(),
+            MapHashId = strs[4].ToInt(),
+            ChallengeScaling = strs[5].ToInt(),
+            OverScaling = strs[6].ToFloat()
+        };
+    }
+}
+
+/// <summary>
+/// The rarity info of Loot, built from LootStateInfo
+/// </summary>
+public struct LootRarity
+{
+    public ulong Seed { get; private set; } = 0;
+    public int Level { get; private set; } = 0;
+    public Tiers.TierEnum Tier { get; private set; }
+    public Wears.WearEnum Wear { get; private set; }
+    public double SuperScale { get; private set; }
+
+    // loot drop algorithm must depend on difficulty settings and player level
+    // no high level loot on low difficulty
+    public LootRarity(LootState lootStateInfo)
+    {
+        Seed = lootStateInfo.Seed;
+        Level = lootStateInfo.Level;
+
+        var tierOffset = lootStateInfo.Difficulty switch
+        {
+            Game.GameDifficultyEnum.Easy => -2.0f,
+            Game.GameDifficultyEnum.Medium => -1.4f,
+            Game.GameDifficultyEnum.Challenging => -0.7f,
+            Game.GameDifficultyEnum.Hard => 0f,
+            Game.GameDifficultyEnum.Extreme => 0.8f,
+            Game.GameDifficultyEnum.Ludicrous => 1.7f,
+            _ => -2.0f,
+        };
+        var wearLevelOffset = ((int)lootStateInfo.Difficulty - 3) * 1.5f;
+
+        SuperScale = lootStateInfo.ChallengeScaling * 0.5f;
+        SuperScale += lootStateInfo.OverScaling;
+        // ! map affect Superscale
+
+        var rng = new RandomNumberGenerator { Seed = Seed };
+        GenerateTier(rng, tierOffset);
+        GenerateWear(rng, wearLevelOffset);
+    }
+
+    private void GenerateTier(RandomNumberGenerator rng, float tierOffset)
+    {
+        float maxTicket = 0;
+        Dictionary<Tiers.TierEnum, float> tiers = new();
+
+        void AddTierChance(Tiers.TierEnum tier)
+        {
+            var val = Mathf.Pow((int)tier, 2.1f) + tierOffset;
+            maxTicket += val;
+            tiers.Add(tier, val);
+        }
+
+        if (Level < 50) AddTierChance(Tiers.TierEnum.Common);
+        AddTierChance(Tiers.TierEnum.Uncommon);
+        AddTierChance(Tiers.TierEnum.Rare);
+        AddTierChance(Tiers.TierEnum.Epic);
+        if (Level >= 50) AddTierChance(Tiers.TierEnum.Exotic);
+        if (Level >= 60) AddTierChance(Tiers.TierEnum.Mythical);
+        if (Level >= 70) AddTierChance(Tiers.TierEnum.Legendary);
+        if (Level >= 80) AddTierChance(Tiers.TierEnum.Opalescent);
+
+        var ticket = rng.RandfRange(0, maxTicket);
+        foreach (var tier in tiers.Reverse())
+        {
+            if (ticket <= tier.Value)
+            {
+                Tier = tier.Key;
+                break;
+            }
+            ticket -= tier.Value;
+        }
+
+        if (Tier == Tiers.TierEnum.Opalescent && Level >= 100)
+        {
+            if (tierOffset > 1.2f)
+            {
+                if (rng.RandiRange(1, 8) == 1) Tier = Tiers.TierEnum.Transcendent;
+            }
+            else
+            {
+                if (rng.RandiRange(1, 12) == 1) Tier = Tiers.TierEnum.Transcendent;
+            }
+        }
+    }
+
+    private void GenerateWear(RandomNumberGenerator rng, float wearLevelOffset)
+    {
+        var wear = Mathf.Max(0, rng.Randfn(Level + wearLevelOffset - 10, 6));
+        // this linq is considered laggy but the alternative is a big chunk of ugly code
+        var wearEnum = Wears.WearEnum.Broken;
+        foreach (var val in Enum.GetValues(typeof(Wears.WearEnum)))
+        {
+            if (wear < (int)val) break;
+            wearEnum = (Wears.WearEnum)val;
+        }
+
+        if (Level < 100 && (int)wearEnum > (int)Wears.WearEnum.Perfect)
+            wearEnum = Wears.WearEnum.Perfect;
+
+        Wear = wearEnum;
     }
 }

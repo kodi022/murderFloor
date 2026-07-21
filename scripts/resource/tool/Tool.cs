@@ -69,7 +69,8 @@ public partial class Tool : MFResource
         sceneViewport.QueueFree();
 
         var imgTex = ImageTexture.CreateFromImage(image);
-        generatedThumbnails.Add(GetDictKey(resX, resY), imgTex);
+        if (!generatedThumbnails.ContainsKey(GetDictKey(resX, resY)))
+            generatedThumbnails.Add(GetDictKey(resX, resY), imgTex);
         return imgTex;
     }
 

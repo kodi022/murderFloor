@@ -1,5 +1,7 @@
 namespace MurderFloor;
 
+using Loot;
+
 public partial class LockerMenu : ScreenScaleLimiter
 {
     [Export]
@@ -7,16 +9,21 @@ public partial class LockerMenu : ScreenScaleLimiter
     [Export]
     private TextureRect rect;
     [Export]
+    private Control rectDragControl;
+    [Export]
     private Button addToolButton;
     [Export]
     private Button removeToolButton;
 
-    private bool previewSceneCreated = false;
+    private bool previewSceneCreated;
     private Camera3D cam;
 
     private Tool selectedTool;
     private SubViewport sceneViewport;
     private Node3D weaponScene;
+
+    private Vector2 mousePosition;
+    private Vector2 mouseScreenRelative;
 
     public override void _Ready()
     {
@@ -25,14 +32,31 @@ public partial class LockerMenu : ScreenScaleLimiter
         removeToolButton.Pressed += ToolRemoveFromInventory;
     }
 
+    public override void _Process(double delta)
+    {
+        if (weaponScene is null) return;
+        if (rectDragControl.GetGlobalRect().HasPoint(mousePosition))
+        {
+            weaponScene.Rotate(Vector3.Up, mouseScreenRelative.X * 0.006f);
+            weaponScene.Rotate(Vector3.Right, mouseScreenRelative.Y * 0.006f);
+            mouseScreenRelative = Vector2.Zero;
+        }
+        else
+        {
+            var target = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
+            weaponScene.RotationDegrees = weaponScene.RotationDegrees.Lerp(target, 3f * (float)delta);
+        }
+
+        base._Process(delta);
+    }
+
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
         if (@event is InputEventMouseMotion eventMouse)
         {
-            if (weaponScene is null) return;
-            weaponScene.Rotate(Vector3.Up, eventMouse.ScreenRelative.X * 0.005f);
-            weaponScene.Rotate(Vector3.Right, eventMouse.ScreenRelative.Y * 0.005f);
+            mousePosition = eventMouse.Position;
+            mouseScreenRelative = eventMouse.ScreenRelative;
         }
     }
 
@@ -41,31 +65,22 @@ public partial class LockerMenu : ScreenScaleLimiter
         var lockerToolButton = GD.Load<PackedScene>("res://scenes/ui/locker/LockerToolButton.tscn");
         foreach (var loot in SaveManager.CurrentSave.Loot)
         {
-            var lootState = Loot.LootStateInfo.Deserialize(loot);
+            var lootState = LootState.Deserialize(loot);
+            var lootRef = LootState.GetLootRef(lootState);
+            if (lootRef.FullId == "base:fists") continue;
+
             var lootResource = ResourceManager.LootRegistry.First(c => lootState.LootHashId == c.HashId);
             if (lootResource is Tool tool)
             {
-                var newButton = lockerToolButton.Instantiate<Control>();
+                var newButton = lockerToolButton.Instantiate<LockerToolButton>();
+                newButton.LootStateInfo = lootState;
+                newButton.Button.Pressed += () =>
+                {
+                    selectedTool = tool;
+                    SelectTool();
+                };
 
-                // var panelContainer = new PanelContainer();
-                // var button = new Button();
-                // panelContainer.AddChild(button);
-                // var rect = new TextureRect();
-                // panelContainer.AddChild(rect);
-
-                var lootRarity = new Loot.LootRarityInfo(lootState);
-
-                //var label = new Label() { Text = lootState.Level.ToString() };
-                //panelContainer.AddChild(label);
-                // ! continue on this
-                // button.ButtonDown += () =>
-                // {
-                //     selectedTool = tool;
-                //     SelectTool();
-                // };
-
-                // rect.Texture = await lootResource.GenerateThumbnailImage(128, 80);
-                // grid.AddChild(panelContainer);
+                grid.AddChild(newButton);
 
                 if (selectedTool is null)
                 {
@@ -75,31 +90,31 @@ public partial class LockerMenu : ScreenScaleLimiter
             }
         }
 
-        foreach (var tool in ResourceManager.ToolRegistry.GetAllResource())
-        {
-            if (tool.Value.FullId == "base:fists") continue;
+        // foreach (var tool in ResourceManager.ToolRegistry.GetAllResource())
+        // {
+        //     if (tool.Value.FullId == "base:fists") continue;
 
-            var panelContainer = new PanelContainer();
-            var button = new Button();
-            var rect = new TextureRect();
+        //     var panelContainer = new PanelContainer();
+        //     var button = new Button();
+        //     var rect = new TextureRect();
 
-            button.ButtonDown += () =>
-            {
-                selectedTool = tool.Value;
-                SelectTool();
-            };
+        //     button.ButtonDown += () =>
+        //     {
+        //         selectedTool = tool.Value;
+        //         SelectTool();
+        //     };
 
-            grid.AddChild(panelContainer);
-            panelContainer.AddChild(rect);
-            panelContainer.AddChild(button);
-            rect.Texture = await tool.Value.GenerateThumbnailImage(128, 96);
+        //     grid.AddChild(panelContainer);
+        //     panelContainer.AddChild(rect);
+        //     panelContainer.AddChild(button);
+        //     rect.Texture = await tool.Value.GenerateThumbnailImage(128, 96);
 
-            if (selectedTool is null)
-            {
-                selectedTool = tool.Value;
-                SelectTool();
-            }
-        }
+        //     if (selectedTool is null)
+        //     {
+        //         selectedTool = tool.Value;
+        //         SelectTool();
+        //     }
+        // }
     }
 
     private void SelectTool()
@@ -110,7 +125,7 @@ public partial class LockerMenu : ScreenScaleLimiter
 
             sceneViewport = new SubViewport
             {
-                Size = new Vector2I((int)rect.Size.X, (int)rect.Size.Y),
+                Size = (Vector2I)GetViewportRect().Size,
                 RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
                 OwnWorld3D = true,
                 TransparentBg = true,
@@ -120,9 +135,10 @@ public partial class LockerMenu : ScreenScaleLimiter
             weaponScene = selectedTool.MeshScene.Instantiate<Node3D>();
             weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             var dirLight = new DirectionalLight3D();
+            dirLight.RotationDegrees = new Vector3(-55, 35, 0);
             var camera = new Camera3D();
-            camera.Fov = 25f;
-            camera.LookAtFromPosition(new Vector3(-0.2f, 0, 2.6f), new Vector3(-0.2f, 0, 0));
+            camera.Fov = 30f;
+            camera.LookAtFromPosition(new Vector3(-0.2f, 0, 2.2f), new Vector3(-0.2f, 0, 0));
 
             sceneViewport.AddChild(weaponScene);
             sceneViewport.AddChild(dirLight);

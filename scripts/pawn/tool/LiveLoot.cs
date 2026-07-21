@@ -1,14 +1,16 @@
 namespace MurderFloor;
 
+using Loot;
+
 public partial class LiveLoot : Node3D
 {
-    public Loot.LootStateInfo StateInfo { get; set; }
+    public LootState StateInfo { get; set; }
 
     public override void _Ready()
     {
         GetChild<Usable>(0).UseAction = () =>
         {
-            SaveManager.CurrentSave.Loot.Add(Loot.LootStateInfo.Serialize(StateInfo));
+            SaveManager.CurrentSave.Loot.Add(LootState.Serialize(StateInfo));
             Free();
         };
     }

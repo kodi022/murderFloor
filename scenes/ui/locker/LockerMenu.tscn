@@ -6,6 +6,9 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lj7te"]
 bg_color = Color(0.16575891, 0.17362446, 0.19090384, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j4e7k"]
+bg_color = Color(0, 0, 0, 0.11764706)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r4564"]
 content_margin_left = 0.0
 content_margin_top = 0.0
@@ -17,7 +20,7 @@ border_width_right = 4
 border_color = Color(0.21063334, 0.21063334, 0.21063334, 1)
 anti_aliasing = false
 
-[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("grid", "rect", "addToolButton", "removeToolButton")]
+[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "addToolButton", "removeToolButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,12 +29,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_lj7te")
 script = ExtResource("1_1f3ys")
-grid = NodePath("PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/GridContainer")
-rect = NodePath("PanelContainer/MarginContainer/TextureRect")
-addToolButton = NodePath("PanelContainer/MarginContainer/TextureRect/PanelContainer/Button")
-removeToolButton = NodePath("PanelContainer/MarginContainer/TextureRect/PanelContainer/Button2")
+grid = NodePath("PanelContainer/LeftMarginContainer/VBoxContainer/ScrollContainer/GridContainer")
+rect = NodePath("PanelContainer/TextureRect")
+rectDragControl = NodePath("PanelContainer/TextureRect/Control/Control")
+addToolButton = NodePath("PanelContainer/BottomRightMarginContainer/PanelContainer/Button")
+removeToolButton = NodePath("PanelContainer/BottomRightMarginContainer/PanelContainer/Button2")
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1579098376]
+[node name="PanelContainer" type="Panel" parent="." unique_id=980932831]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,45 +44,77 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_lj7te")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=949399126]
-layout_mode = 2
+[node name="TextureRect" type="TextureRect" parent="PanelContainer" unique_id=1475781477]
+layout_mode = 1
+offset_right = 1920.0
+offset_bottom = 1080.0
+expand_mode = 1
+stretch_mode = 5
 
-[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer" unique_id=1475781477]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="Control" type="Control" parent="PanelContainer/TextureRect" unique_id=132801271]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/TextureRect" unique_id=58591883]
+[node name="Control" type="Control" parent="PanelContainer/TextureRect/Control" unique_id=90531422]
+custom_minimum_size = Vector2(800, 800)
+anchors_preset = 0
+offset_left = -526.0
+offset_top = -510.0
+offset_right = 970.0
+offset_bottom = 432.0
+
+[node name="BottomRightMarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=91869201]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -726.0
-offset_top = -30.0
+offset_left = -1516.0
+offset_top = -116.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Button" type="Button" parent="PanelContainer/MarginContainer/TextureRect/PanelContainer" unique_id=890875161]
+[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainer" unique_id=58591883]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Button" type="Button" parent="PanelContainer/BottomRightMarginContainer/PanelContainer" unique_id=890875161]
 layout_mode = 2
 text = "Add To Inventory"
 
-[node name="Button2" type="Button" parent="PanelContainer/MarginContainer/TextureRect/PanelContainer" unique_id=821011465]
+[node name="Button2" type="Button" parent="PanelContainer/BottomRightMarginContainer/PanelContainer" unique_id=821011465]
 layout_mode = 2
 text = "Remove From Inventory"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=1000894806]
+[node name="LeftMarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=949399126]
+layout_mode = 0
+offset_right = 414.0
+offset_bottom = 1080.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/LeftMarginContainer" unique_id=1000894806]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1391001294]
+[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/LeftMarginContainer/VBoxContainer" unique_id=1391001294]
 layout_mode = 2
 
-[node name="CheckButton" type="CheckButton" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer" unique_id=1553068327]
+[node name="CheckButton" type="CheckButton" parent="PanelContainer/LeftMarginContainer/VBoxContainer/PanelContainer" unique_id=1553068327]
 layout_mode = 2
 text = "banana"
 
-[node name="OptionButton" type="OptionButton" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer" unique_id=285939935]
+[node name="OptionButton" type="OptionButton" parent="PanelContainer/LeftMarginContainer/VBoxContainer/PanelContainer" unique_id=285939935]
 layout_mode = 2
 item_count = 2
 popup/item_0/text = "asdasd"
@@ -86,12 +122,13 @@ popup/item_0/id = 0
 popup/item_1/text = "gggg"
 popup/item_1/id = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=581436800]
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/LeftMarginContainer/VBoxContainer" unique_id=581436800]
 custom_minimum_size = Vector2(394, 0)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_j4e7k")
 
-[node name="GridContainer" type="GridContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ScrollContainer" unique_id=1075273565]
+[node name="GridContainer" type="GridContainer" parent="PanelContainer/LeftMarginContainer/VBoxContainer/ScrollContainer" unique_id=1075273565]
 layout_mode = 2
 columns = 3
 

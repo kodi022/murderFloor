@@ -4,19 +4,19 @@ public static class Debug
 {
     public static async void DebugGenerateLoot()
     {
-        var allLootTier = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.TierEnum, int>>();
-        var allLootWear = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.WearEnum, int>>();
+        var allLootTier = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.Tiers.TierEnum, int>>();
+        var allLootWear = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.Wears.WearEnum, int>>();
         var lootCount = 500_000;
         var level = 80;
 
         void GenerateLoot(Game.GameDifficultyEnum difficulty)
         {
-            var tierCount = new Dictionary<Loot.TierEnum, int>();
-            var wearCount = new Dictionary<Loot.WearEnum, int>();
+            var tierCount = new Dictionary<Loot.Tiers.TierEnum, int>();
+            var wearCount = new Dictionary<Loot.Wears.WearEnum, int>();
             for (int i = 0; i < lootCount; i++)
             {
-                var state = new Loot.LootStateInfo((ulong)Random.Shared.NextInt64(), level, difficulty, 0, false, false, 0);
-                var e = new Loot.LootRarityInfo(state);
+                var state = new Loot.LootState((ulong)Random.Shared.NextInt64(), level, difficulty, 0, false, false, 0);
+                var e = new Loot.LootRarity(state);
                 if (!tierCount.TryAdd(e.Tier, 1))
                     tierCount[e.Tier] += 1;
 

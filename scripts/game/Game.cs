@@ -164,13 +164,13 @@ public partial class Game : Node
         if (rngLoot.Randf() > 0.9f)
         {
             // ! level = map difficulty * difficulty + challenge or something
-            var state = new Loot.LootStateInfo(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Hard, 0, false, false, 0.5f);
-            var lootNode3d = Loot.LootStateInfo.MakeLootNode(state);
+            var state = new Loot.LootState(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Hard, 0, false, false, 0.5f);
+            var lootNode3d = Loot.LootState.MakeLootNode(state);
             lootNode.AddChild(lootNode3d);
             lootNode3d.GlobalPosition = (Vector3)damageInfo["hitposition"];
             ((RigidBody3D)lootNode3d.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
 
-            var loot = new Loot.LootRarityInfo(state);
+            var loot = new Loot.LootRarity(state);
             GD.Print($"{loot.Tier} ({(int)loot.Tier}),  {loot.Wear} ({(int)loot.Wear})");
         }
     }

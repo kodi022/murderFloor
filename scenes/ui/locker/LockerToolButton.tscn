@@ -1,31 +1,58 @@
 [gd_scene format=3 uid="uid://c7k0wyg1hxgdy"]
 
-[node name="LockerToolButton" type="Control" unique_id=1737365637]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_5n6ma"]
+[ext_resource type="Script" uid="uid://dr88878ld2l1a" path="res://scripts/ui/locker/LockerToolButton.cs" id="1_30wq4"]
 
-[node name="Button" type="Button" parent="." unique_id=858432950]
-layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sigli"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101960786, 0.101960786, 0.101960786, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="LockerToolButton" type="Control" unique_id=1388612364 node_paths=PackedStringArray("Button", "colorRect", "rect", "label")]
+custom_minimum_size = Vector2(128, 80)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 128.0
+offset_bottom = 80.0
+theme = ExtResource("1_5n6ma")
+script = ExtResource("1_30wq4")
+Button = NodePath("Button")
+colorRect = NodePath("ColorRect")
+rect = NodePath("TextureRect")
+label = NodePath("Label")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=2098116817]
+custom_minimum_size = Vector2(128, 80)
 layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
-color = Color(0.11198568, 0.11198568, 0.11198568, 1)
+offset_right = 128.0
+offset_bottom = 80.0
+color = Color(0.20405686, 0.20405686, 0.20405686, 1)
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1018520713]
+custom_minimum_size = Vector2(128, 80)
 layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+offset_right = 128.0
+offset_bottom = 80.0
 
 [node name="Label" type="Label" parent="." unique_id=461870625]
 layout_mode = 0
-offset_right = 105.0
-offset_bottom = 87.0
+offset_left = 69.0
+offset_top = -4.0
+offset_right = 127.0
+offset_bottom = 21.0
 text = "100"
+horizontal_alignment = 2
+
+[node name="Button" type="Button" parent="." unique_id=858432950]
+custom_minimum_size = Vector2(128, 80)
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 80.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_sigli")
