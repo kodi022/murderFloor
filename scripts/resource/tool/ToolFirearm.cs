@@ -65,10 +65,12 @@ public partial class ToolFirearm : Tool
     public float SpreadRecoveryRate { get; private set; } = 2f;
     [Export]
     public Vector2 SpreadIncreasePerShot { get; private set; } = new Vector2(0.5f, 0.5f);
-
-    // ! add movement min spread penalty
-    // ! add movement spread recovery penalty
-    // remember to base on speed, so slow walk has less penalty
+    [Export]
+    public Vector2 SlowWalkSpreadMult { get; private set; } = new Vector2(1.2f, 1.2f);
+    [Export]
+    public Vector2 FastWalkSpreadMult { get; private set; } = new Vector2(1.6f, 1.6f);
+    [Export]
+    public Vector2 AimSpreadMult { get; private set; } = new Vector2(0.7f, 0.7f);
 
     [Export, ExportSubgroup("Kick")]
     public Vector2 CameraRotationKick { get; private set; } = new Vector2(0.02f, 0f);

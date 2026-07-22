@@ -84,16 +84,25 @@ public partial class LiveTool : Node
         if (ToolResource is ToolFirearm firearm)
         {
             var plrVel = Player.Velocity.LengthSquared();
-            var movementPenalty = plrVel > 2f ? firearm.InitialDegreeSpread * 0.1f : Vector2.Zero;
-            movementPenalty += plrVel > 10f ? firearm.InitialDegreeSpread * 0.3f : Vector2.Zero;
+            var movementPenalty = Vector2.One;
+            if (plrVel > 10f)
+                movementPenalty = firearm.FastWalkSpreadMult;
+            else if (plrVel > 2f)
+                movementPenalty = firearm.SlowWalkSpreadMult;
 
-            var aimBuff = Aiming ? 0.75f : 1f;
+            var aimBuff = Aiming ? firearm.AimSpreadMult : Vector2.One;
 
-            MinSpread = firearm.InitialDegreeSpread * aimBuff + movementPenalty;
-            MaxSpread = firearm.MaxDegreeSpread + movementPenalty;
+            MinSpread = firearm.InitialDegreeSpread * aimBuff * movementPenalty;
+            MaxSpread = firearm.MaxDegreeSpread * movementPenalty;
 
             var recoveryRate = Vector2.One * firearm.SpreadRecoveryRate * (float)delta;
-            CurrentSpread = (CurrentSpread - recoveryRate).Max(MinSpread);
+
+            if (CurrentSpread < MinSpread)
+
+                CurrentSpread += (Vector2.One * (float)delta * 50f).Min(MinSpread);
+            else
+                CurrentSpread = (CurrentSpread - recoveryRate).Max(MinSpread);
+
             if (PrimaryInputState == 1) FirePrimary();
             if (PrimaryInputState == 2) UnFirePrimary();
 

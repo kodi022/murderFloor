@@ -24,13 +24,26 @@ public partial class ToolFirearmHitscan : ToolFirearm
         Rng.Randomize();
 
         fi.Player.CameraRotationKick += new Vector3(CameraRotationKick.X, 0, CameraRotationKick.Y);
-        fi.Player.ViewModelPositionKick += new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
-        fi.Player.ViewModelRotationKick += new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
+
+        var viewPosKick = new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
+        var viewRotKick = new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
+        if (fi.LiveTool.Aiming)
+        {
+            fi.Player.ViewModelPositionKick += viewPosKick * 0.7f;
+            fi.Player.ViewModelRotationKick += viewRotKick * 0.7f;
+            fi.Player.CameraShakeScale = ScreenShakeAmount * 0.8f;
+        }
+        else
+        {
+            fi.Player.ViewModelPositionKick += viewPosKick;
+            fi.Player.ViewModelRotationKick += viewRotKick;
+            fi.Player.CameraShakeScale = ScreenShakeAmount;
+        }
+
         fi.Player.ViewAngle += new Vector2(
             Rng.RandfRange(AimShiftRangeHorizontal.X, AimShiftRangeHorizontal.Y),
             Rng.RandfRange(AimShiftRangeVertical.X, AimShiftRangeVertical.Y)
         );
-        fi.Player.CameraShakeScale = ScreenShakeAmount;
 
         for (int i = 0; i < PelletCount; i++)
         {
