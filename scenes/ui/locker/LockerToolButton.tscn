@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_5n6ma"]
 [ext_resource type="Script" uid="uid://dr88878ld2l1a" path="res://scripts/ui/locker/LockerToolButton.cs" id="1_30wq4"]
+[ext_resource type="Texture2D" uid="uid://cvfw3rvh14hbq" path="res://images/ui/ninepatch.png" id="3_sigli"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sigli"]
 content_margin_left = 4.0
@@ -34,6 +35,19 @@ layout_mode = 0
 offset_right = 128.0
 offset_bottom = 80.0
 color = Color(0.20405686, 0.20405686, 0.20405686, 1)
+
+[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=96458077]
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 80.0
+texture = ExtResource("3_sigli")
+draw_center = false
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1018520713]
 custom_minimum_size = Vector2(128, 80)

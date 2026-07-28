@@ -149,23 +149,22 @@ public static class Wears
 public struct LootState
 {
     public ulong Seed { get; private set; }
-    public int LootHashId { get; private set; } // necessary to save, if new loot is added, rng changes
+    public int HashId { get; private set; }
+    public Global.Version Version { get; private set; }
     public int Level { get; private set; }
-    public Game.GameDifficultyEnum Difficulty { get; private set; }
+    public Game.DifficultyEnum Difficulty { get; private set; }
     public int MapHashId { get; private set; }
     public int ChallengeScaling { get; private set; }
     public float OverScaling { get; private set; }
 
     public LootState() { }
 
-    public LootState(ulong seed, int level, Game.GameDifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, float overscaling)
+    /// <summary> Constructor only for newly generated loot </summary>
+    public LootState(ulong seed, int level, Game.DifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, float overscaling)
     {
         Seed = seed;
-        var lootCount = ResourceManager.LootRegistry.Count;
-        var rng = new RandomNumberGenerator() { Seed = seed };
-        var lootIndex = rng.RandiRange(0, lootCount - 1);
-        LootHashId = ResourceManager.LootRegistry[lootIndex].HashId;
-
+        HashId = GetLootHashId(Seed);
+        Version = Global.GameVersion;
         Level = level;
         Difficulty = difficulty;
         MapHashId = mapHashId;
@@ -175,7 +174,15 @@ public struct LootState
 
     public static MFResource GetLootRef(LootState self)
     {
-        return ResourceManager.LootRegistry.First(c => c.HashId == self.LootHashId);
+        return ResourceManager.LootRegistry.GetResourceRef(self.HashId);
+    }
+
+    private static int GetLootHashId(ulong seed)
+    {
+        var rng = new RandomNumberGenerator { Seed = seed };
+        var lootCount = ResourceManager.LootRegistry.Count;
+        var lootIndex = rng.RandiRange(0, lootCount - 1);
+        return ResourceManager.LootRegistry.GetResourceAtIndex(lootIndex).HashId;
     }
 
     public static Node3D MakeLootNode(LootState self)
@@ -185,7 +192,7 @@ public struct LootState
         newLoot.StateInfo = self;
         var importYaw = 0f;
         var rigidBody = newLoot.FindChildren("RigidBody3D").First();
-        var loot = ResourceManager.LootRegistry.FirstOrDefault(l => l.HashId == self.LootHashId, null);
+        var loot = ResourceManager.LootRegistry.GetResourceRef(self.HashId);
         var meshScene = loot.MeshScene.Instantiate<Node3D>();
         meshScene.RotationDegrees = new Vector3(90, importYaw, 0);
         rigidBody.AddChild(meshScene);
@@ -200,7 +207,8 @@ public struct LootState
     {
         var str = "";
         str += self.Seed + ",";
-        str += self.LootHashId + ",";
+        str += self.HashId + ",";
+        str += self.Version.ToString() + ",";
         str += self.Level + ",";
         str += (int)self.Difficulty + ",";
         str += self.MapHashId + ",";
@@ -215,12 +223,13 @@ public struct LootState
         return new LootState()
         {
             Seed = Convert.ToUInt64(strs[0]),
-            LootHashId = strs[1].ToInt(),
-            Level = strs[2].ToInt(),
-            Difficulty = (Game.GameDifficultyEnum)strs[3].ToInt(),
-            MapHashId = strs[4].ToInt(),
-            ChallengeScaling = strs[5].ToInt(),
-            OverScaling = strs[6].ToFloat()
+            HashId = strs[1].ToInt(),
+            Version = Global.Version.FromString(strs[2]),
+            Level = strs[3].ToInt(),
+            Difficulty = (Game.DifficultyEnum)strs[4].ToInt(),
+            MapHashId = strs[5].ToInt(),
+            ChallengeScaling = strs[6].ToInt(),
+            OverScaling = strs[7].ToFloat()
         };
     }
 }
@@ -245,12 +254,12 @@ public struct LootRarity
 
         var tierOffset = lootStateInfo.Difficulty switch
         {
-            Game.GameDifficultyEnum.Easy => -2.0f,
-            Game.GameDifficultyEnum.Medium => -1.4f,
-            Game.GameDifficultyEnum.Challenging => -0.7f,
-            Game.GameDifficultyEnum.Hard => 0f,
-            Game.GameDifficultyEnum.Extreme => 0.8f,
-            Game.GameDifficultyEnum.Ludicrous => 1.7f,
+            Game.DifficultyEnum.Easy => -2.0f,
+            Game.DifficultyEnum.Medium => -1.4f,
+            Game.DifficultyEnum.Challenging => -0.7f,
+            Game.DifficultyEnum.Hard => 0f,
+            Game.DifficultyEnum.Extreme => 0.8f,
+            Game.DifficultyEnum.Ludicrous => 1.7f,
             _ => -2.0f,
         };
         var wearLevelOffset = ((int)lootStateInfo.Difficulty - 3) * 1.5f;

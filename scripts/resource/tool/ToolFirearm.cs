@@ -94,6 +94,17 @@ public partial class ToolFirearm : Tool
     [Export]
     public AudioStreamMP3 ManualFireSound { get; private set; }
 
+    // ! implement
+    [Export, ExportSubgroup("ShellCasings")]
+    public bool SpawnCasings { get; private set; } = true;
+    [Export]
+    public PackedScene CasingMeshScene { get; private set; }
+    [Export]
+    public Vector3 CasingEjectionForceMin { get; private set; }
+    [Export]
+    public Vector3 CasingEjectionForceMax { get; private set; }
+    // CasingEjectionPosition is from a Node3D on gun
+
     protected RandomNumberGenerator Rng { get; private set; } = new();
 
     public virtual void FireBullet(FireInfo fi) { }

@@ -20,7 +20,7 @@ border_width_right = 4
 border_color = Color(0.21063334, 0.21063334, 0.21063334, 1)
 anti_aliasing = false
 
-[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "addToolButton", "removeToolButton")]
+[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "equipToolButton", "modifyToolButton", "advancedToolButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,8 +32,9 @@ script = ExtResource("1_1f3ys")
 grid = NodePath("PanelContainer/LeftMarginContainer/VBoxContainer/ScrollContainer/GridContainer")
 rect = NodePath("PanelContainer/TextureRect")
 rectDragControl = NodePath("PanelContainer/TextureRect/Control/Control")
-addToolButton = NodePath("PanelContainer/BottomRightMarginContainer/PanelContainer/Button")
-removeToolButton = NodePath("PanelContainer/BottomRightMarginContainer/PanelContainer/Button2")
+equipToolButton = NodePath("PanelContainer/BottomRightMarginContainer/PanelContainer/Button")
+modifyToolButton = NodePath("PanelContainer/BottomRightMarginContainer/PanelContainer/Button2")
+advancedToolButton = NodePath("PanelContainer/BottomRightMarginContainer/PanelContainer/Button3")
 
 [node name="PanelContainer" type="Panel" parent="." unique_id=980932831]
 layout_mode = 1
@@ -91,12 +92,21 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="Button" type="Button" parent="PanelContainer/BottomRightMarginContainer/PanelContainer" unique_id=890875161]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Add To Inventory"
+text = "Equip
+"
 
 [node name="Button2" type="Button" parent="PanelContainer/BottomRightMarginContainer/PanelContainer" unique_id=821011465]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Remove From Inventory"
+text = "Modify
+"
+
+[node name="Button3" type="Button" parent="PanelContainer/BottomRightMarginContainer/PanelContainer" unique_id=1935168610]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Advanced"
 
 [node name="LeftMarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=949399126]
 layout_mode = 0

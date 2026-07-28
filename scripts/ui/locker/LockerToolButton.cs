@@ -15,18 +15,22 @@ public partial class LockerToolButton : Control
     [Export]
     private Label label;
 
-    public override void _Ready()
+    public override async void _Ready()
     {
-        AsyncReady();
-    }
-
-    private async void AsyncReady()
-    {
-        var lootResource = ResourceManager.LootRegistry.First(c => LootStateInfo.LootHashId == c.HashId);
+        var lootResource = ResourceManager.LootRegistry.GetResourceRef(LootStateInfo.HashId);
         var lootRarity = new LootRarity(LootStateInfo);
 
         label.Text = lootRarity.Level.ToString();
         rect.Texture = await lootResource.GenerateThumbnailImage(128, 80);
         colorRect.Color = Tiers.TierList[lootRarity.Tier].Color;
+    }
+
+    public override GodotObject _MakeCustomTooltip(string forText)
+    {
+        var control = new Control();
+        control.CustomMinimumSize = new Vector2(200, 200);
+        var label = new Label() { Text = forText };
+        control.AddChild(label);
+        return control;
     }
 }

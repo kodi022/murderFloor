@@ -23,6 +23,15 @@ public partial class Menu : Control
         buttonExitDesktop.Pressed += ExitDesktopButton;
     }
 
+    public override void _Process(double delta)
+    {
+        if (IsInstanceValid(openMenu))
+            GetChild<Control>(0).Modulate = new Color(0, 0, 0, 0);
+        else
+            GetChild<Control>(0).Modulate = new Color(1, 1, 1, 1);
+    }
+
+
     private void OptionButton()
     {
         openMenu = GD.Load<PackedScene>("res://scenes/ui/options/OptionsMenu.tscn").Instantiate<Control>();

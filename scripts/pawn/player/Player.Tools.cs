@@ -195,6 +195,17 @@ public partial class Player : Pawn
         return tools;
     }
 
+    public bool HasTool(Loot.LootState lootState)
+    {
+        var tools = GetAllLiveTools();
+
+        var a = tools.FirstOrDefault(c => c.ToolResource.HashId == lootState.HashId, null);
+        if (a is not null)
+            return true;
+
+        return false;
+    }
+
     public List<LiveTool> GetAllLiveTools()
     {
         List<LiveTool> tools = [];

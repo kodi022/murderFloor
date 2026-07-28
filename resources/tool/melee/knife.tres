@@ -5,8 +5,7 @@
 [resource]
 script = ExtResource("1_3goh5")
 RPM = 60.0
-Damage = 15.0
+Damage = 30.0
 MaxRange = 0.8
-NameLocalizationKey = "#tool.melee.fists"
-ResourceId = "fists"
+ResourceId = "knife"
 metadata/_custom_type_script = "uid://b6d5j21ujr1b7"

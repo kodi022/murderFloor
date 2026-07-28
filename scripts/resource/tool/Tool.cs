@@ -59,11 +59,6 @@ public partial class Tool : MFResource
         sceneViewport.AddChild(camera);
         ApplyThumbnailMaterialToParts(weaponScene);
 
-        // var outline = new Outlines.OutlinerComponent { Target = weaponScene };
-        // var outlineDisplay = new Outlines.OutlinesDisplayComponent { Camera = camera };
-        // sceneViewport.AddChild(outline);
-        // sceneViewport.AddChild(outlineDisplay);
-
         await sceneViewport.ToSignal(RenderingServer.Singleton, RenderingServerInstance.SignalName.FramePostDraw);
         var image = sceneViewport.GetViewport().GetTexture().GetImage();
         sceneViewport.QueueFree();

@@ -38,18 +38,22 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="Button" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1174658929]
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Return"
 
 [node name="Button2" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1483923876]
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Apply"
 
 [node name="Button3" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1083658141]
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Set Defaults"
 
 [node name="VSeparator" type="VSeparator" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=245359243]
+custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=24670792]

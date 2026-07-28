@@ -12,6 +12,8 @@ public partial class LiveTool : Node
     // reference to tool
     public Tool ToolResource { get; private set; }
 
+    public Loot.LootState LootState { get; private set; }
+
     [Export]
     public int PrimaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
     [Export]
@@ -48,14 +50,16 @@ public partial class LiveTool : Node
     private float currentAimingPositionLerp;
 
     private Node3D modelScene;
-    private Vector3 modelSceneStartPosition;
     private Node3D modelSceneGun;
     private Node3D muzzleNode;
-    private Vector3 sightPosition;
+    private Node3D sightNode;
     private Node3D sightAttachmentNode;
-    // private Node3D barrelNode;
-    // private Node3D addon1Node;
+    private Node3D ejectionNode;
+    private Node3D foregripNode;
     // private Node3D addon2Node;
+
+    private Vector3 modelSceneStartPosition;
+    private Vector3 sightPosition;
 
     public override void _Ready()
     {
@@ -141,19 +145,24 @@ public partial class LiveTool : Node
         }
         modelSceneStartPosition = modelScene.Position;
 
-        muzzleNode = (Node3D)modelScene.FindChildren("Muzzle").FirstOrDefault(new Node3D());
-        if (ToolResource is ToolFirearm && !muzzleNode.IsInsideTree())
-            GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Muzzle\"");
+        Node3D FindNode(string name)
+        {
+            var thing = (Node3D)modelScene.FindChildren(name).FirstOrDefault(new Node3D());
+            if (ToolResource is ToolFirearm && !thing.IsInsideTree())
+                GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"{name}\"");
 
-        var sightNode = (Node3D)modelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
-        if (ToolResource is ToolFirearm && !sightNode.IsInsideTree())
-            GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"Sight\"");
+            return thing;
+        }
+
+        muzzleNode = FindNode("Muzzle");
+        sightNode = FindNode("Sight");
+        sightAttachmentNode = FindNode("SightAttachment");
+        ejectionNode = FindNode("Ejection");
+        foregripNode = FindNode("Foregrip");
+
+        // ! find other attachments
 
         sightPosition = sightNode.Position.Rotated(Vector3.Up, -modelSceneGun.Rotation.Y);
-
-        sightAttachmentNode = (Node3D)modelScene.FindChildren("SightAttachment").FirstOrDefault(new Node3D());
-        if (ToolResource is ToolFirearm && !sightAttachmentNode.IsInsideTree())
-            GD.PrintErr($"Warning: {ToolResource.FullId} has no Node3D named \"SightAttachment\"");
 
         if (sightAttachmentNode.IsInsideTree())
         {
@@ -165,8 +174,6 @@ public partial class LiveTool : Node
             sightPosition = sightAttachmentNode.Position.Rotated(Vector3.Up, -modelSceneGun.Rotation.Y);
             sightPosition += attachSightNode.Position.Rotated(Vector3.Up, -etecModelScene.Rotation.Y);
         }
-
-        // ! find other attachments
 
         // await equip animation
         await Task.Delay(200);

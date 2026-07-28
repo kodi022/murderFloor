@@ -265,7 +265,7 @@ public partial class LiveMob : Pawn
 
             for (int i = 0; i < 10; i++)
             {
-                Debug.DebugDot(verticalActionMovementCurve.Samplef(i / 10f), 1000);
+                Debug.DebugDot(verticalActionMovementCurve.Samplef(i / 10f), msToDelete: 1000);
             }
         }
     }

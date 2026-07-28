@@ -29,6 +29,10 @@ public static class SaveManager
 
         using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Read);
         if (file is null) return new SaveData();
+
+        var text = file.GetAsText();
+        if (string.IsNullOrEmpty(text)) return new SaveData();
+
         var save = System.Text.Json.JsonSerializer.Deserialize<SaveData>(file.GetAsText());
         GD.Print("Loaded save " + SaveIndex);
         return save;

@@ -6,7 +6,8 @@ public static class ResourceManager
 	public static ResourceRegistry<Attachment> AttachmentRegistry { get; private set; } = new();
 	public static ResourceRegistry<Mob> MobRegistry { get; private set; } = new();
 
-	public static List<MFResource> LootRegistry { get; private set; } = [];
+	public static LootResourceRegistry LootRegistry { get; private set; } = new();
+	// special loot can be retrieved by file
 
 	public static string ModsPath { get; private set; } = "user://mods";
 
@@ -80,6 +81,71 @@ public static class ResourceManager
 		}
 
 		public Dictionary<int, T> GetAllResource()
+		{
+			return registry;
+		}
+	}
+
+	public class LootResourceRegistry
+	{
+		private readonly List<MFResource> registry = [];
+
+		public int Count => registry.Count;
+
+		public void Add(MFResource value)
+		{
+			registry.Add(value);
+		}
+
+		// public Dictionary<string, MFResource> GetAllResourceUnderVersion(Global.Version version)
+		// {
+		// 	var newDict = new Dictionary<string, MFResource>();
+		// 	foreach (var res in registry)
+		// 	{
+		// 		var resVer = Global.Version.FromString(res.Key);
+		// 		if (!version.IsGreaterThan(resVer)) newDict.Add(res.Key, res.Value);
+		// 	}
+		// 	return newDict;
+		// }
+
+		public MFResource GetResourceAtIndex(int index)
+		{
+			if (index < 0 || index >= Count)
+			{
+				GD.PushWarning("LootResourceRegistry.GetResourceAtIndex invalid index");
+				return null;
+			}
+
+			return registry.ElementAt(index);
+		}
+
+		/// <summary>
+		/// Gets resource by reference or null if fail
+		/// </summary>
+		public MFResource GetResourceRef(string fullId)
+		{
+			if (string.IsNullOrEmpty(fullId))
+			{
+				GD.PushWarning("LootResourceRegistry.GetResourceReference invalid fullId");
+				return null;
+			}
+
+			var hash = Global.StableHash(fullId);
+			var res = registry.FirstOrDefault(c => c.HashId == hash);
+
+			return res;
+		}
+
+		/// <summary>
+		/// Gets resource by reference or null if fail
+		/// </summary>
+		public MFResource GetResourceRef(int hashId)
+		{
+			var res = registry.FirstOrDefault(c => c.HashId == hashId);
+			return res;
+		}
+
+		public List<MFResource> GetAllResource()
 		{
 			return registry;
 		}

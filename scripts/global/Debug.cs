@@ -4,12 +4,12 @@ public static class Debug
 {
     public static async void DebugGenerateLoot()
     {
-        var allLootTier = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.Tiers.TierEnum, int>>();
-        var allLootWear = new Dictionary<Game.GameDifficultyEnum, Dictionary<Loot.Wears.WearEnum, int>>();
+        var allLootTier = new Dictionary<Game.DifficultyEnum, Dictionary<Loot.Tiers.TierEnum, int>>();
+        var allLootWear = new Dictionary<Game.DifficultyEnum, Dictionary<Loot.Wears.WearEnum, int>>();
         var lootCount = 500_000;
         var level = 80;
 
-        void GenerateLoot(Game.GameDifficultyEnum difficulty)
+        void GenerateLoot(Game.DifficultyEnum difficulty)
         {
             var tierCount = new Dictionary<Loot.Tiers.TierEnum, int>();
             var wearCount = new Dictionary<Loot.Wears.WearEnum, int>();
@@ -28,12 +28,12 @@ public static class Debug
             allLootWear.Add(difficulty, wearCount);
         }
 
-        var a = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Easy); });
-        var b = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Medium); });
-        var c = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Challenging); });
-        var d = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Hard); });
-        var e = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Extreme); });
-        var f = Task.Run(async () => { GenerateLoot(Game.GameDifficultyEnum.Ludicrous); });
+        var a = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Easy); });
+        var b = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Medium); });
+        var c = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Challenging); });
+        var d = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Hard); });
+        var e = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Extreme); });
+        var f = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Ludicrous); });
         Task.WaitAll(a, b, c, d, e, f);
         await Task.Delay(20); // necessary or above line isnt guaranteed
 

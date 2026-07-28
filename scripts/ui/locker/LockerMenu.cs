@@ -11,14 +11,18 @@ public partial class LockerMenu : ScreenScaleLimiter
     [Export]
     private Control rectDragControl;
     [Export]
-    private Button addToolButton;
+    private Button equipToolButton;
     [Export]
-    private Button removeToolButton;
+    private Button modifyToolButton;
+    [Export]
+    private Button advancedToolButton;
 
     private bool previewSceneCreated;
     private Camera3D cam;
 
+    private LootState selectedLootState;
     private Tool selectedTool;
+    private bool playerEquippedTool;
     private SubViewport sceneViewport;
     private Node3D weaponScene;
 
@@ -28,13 +32,18 @@ public partial class LockerMenu : ScreenScaleLimiter
     public override void _Ready()
     {
         BuildList();
-        addToolButton.Pressed += ToolAddToInventory;
-        removeToolButton.Pressed += ToolRemoveFromInventory;
+        equipToolButton.Pressed += ToolAddOrRemove;
+        modifyToolButton.Pressed += ModifyButton;
     }
 
     public override void _Process(double delta)
     {
         if (weaponScene is null) return;
+
+        playerEquippedTool = Player.Self.HasTool(selectedLootState);
+
+        equipToolButton.Text = playerEquippedTool ? "Unequip" : "Equip";
+
         if (rectDragControl.GetGlobalRect().HasPoint(mousePosition))
         {
             weaponScene.Rotate(Vector3.Up, mouseScreenRelative.X * 0.006f);
@@ -69,13 +78,14 @@ public partial class LockerMenu : ScreenScaleLimiter
             var lootRef = LootState.GetLootRef(lootState);
             if (lootRef.FullId == "base:fists") continue;
 
-            var lootResource = ResourceManager.LootRegistry.First(c => lootState.LootHashId == c.HashId);
+            var lootResource = ResourceManager.LootRegistry.GetResourceRef(lootState.HashId);
             if (lootResource is Tool tool)
             {
                 var newButton = lockerToolButton.Instantiate<LockerToolButton>();
                 newButton.LootStateInfo = lootState;
                 newButton.Button.Pressed += () =>
                 {
+                    selectedLootState = lootState;
                     selectedTool = tool;
                     SelectTool();
                 };
@@ -89,32 +99,6 @@ public partial class LockerMenu : ScreenScaleLimiter
                 }
             }
         }
-
-        // foreach (var tool in ResourceManager.ToolRegistry.GetAllResource())
-        // {
-        //     if (tool.Value.FullId == "base:fists") continue;
-
-        //     var panelContainer = new PanelContainer();
-        //     var button = new Button();
-        //     var rect = new TextureRect();
-
-        //     button.ButtonDown += () =>
-        //     {
-        //         selectedTool = tool.Value;
-        //         SelectTool();
-        //     };
-
-        //     grid.AddChild(panelContainer);
-        //     panelContainer.AddChild(rect);
-        //     panelContainer.AddChild(button);
-        //     rect.Texture = await tool.Value.GenerateThumbnailImage(128, 96);
-
-        //     if (selectedTool is null)
-        //     {
-        //         selectedTool = tool.Value;
-        //         SelectTool();
-        //     }
-        // }
     }
 
     private void SelectTool()
@@ -155,13 +139,16 @@ public partial class LockerMenu : ScreenScaleLimiter
         }
     }
 
-    private void ToolAddToInventory()
+    private void ToolAddOrRemove()
     {
-        Player.Self.Rpc("ToolAddRpc", selectedTool.FullId);
+        if (Player.Self.HasTool(selectedLootState))
+            Player.Self.Rpc("ToolRemoveRpc", selectedTool.FullId);
+        else
+            Player.Self.Rpc("ToolAddRpc", selectedTool.FullId);
     }
 
-    private void ToolRemoveFromInventory()
+    private void ModifyButton()
     {
-        Player.Self.Rpc("ToolRemoveRpc", selectedTool.FullId);
+
     }
 }

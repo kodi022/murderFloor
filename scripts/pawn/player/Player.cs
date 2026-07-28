@@ -100,11 +100,6 @@ public partial class Player : Pawn
 
         cameraRaycast.AddException(this);
         Camera.Current = true;
-        Rpc("ToolAddRpc", "base:testpistol");
-        Rpc("ToolAddRpc", "base:testgodpistol");
-        Rpc("ToolAddRpc", "base:testshotgun");
-        Rpc("ToolAddRpc", "base:shotgun1");
-        Rpc("ToolAddRpc", "base:testassaultrifle");
         worldModels.Free();
     }
 
@@ -143,6 +138,17 @@ public partial class Player : Pawn
             if (eventKey.Keycode == Key.F3 && eventKey.Pressed)
             {
                 Debug.DebugGenerateLoot();
+            }
+
+            if (eventKey.Keycode == Key.F4 && eventKey.Pressed)
+            {
+                // ! level = map difficulty * difficulty + challenge or something
+                var state = new Loot.LootState(346234616, 0, Game.DifficultyEnum.Hard, 0, false, false, 0.5f);
+                var lootNode3d = Loot.LootState.MakeLootNode(state);
+                GetTree().Root.AddChild(lootNode3d);
+                lootNode3d.GlobalPosition = GlobalPosition + Vector3.Up * 10;
+                var loot = new Loot.LootRarity(state);
+                GD.Print($"{loot.Tier} ({(int)loot.Tier}),  {loot.Wear} ({(int)loot.Wear})");
             }
         }
     }

@@ -2,7 +2,7 @@ namespace MurderFloor;
 
 public partial class Game : Node
 {
-    public enum GameDifficultyEnum
+    public enum DifficultyEnum
     {
         Easy = 0,
         Medium = 1,
@@ -11,7 +11,7 @@ public partial class Game : Node
         Extreme = 4,
         Ludicrous = 5,
     }
-    public enum GameStateEnum
+    public enum StateEnum
     {
         Stopped,
         Break,
@@ -31,9 +31,9 @@ public partial class Game : Node
     public delegate void GameStartEventHandler();
 
     [Export]
-    public GameStateEnum GameState { get; private set; } = GameStateEnum.Stopped;
+    public StateEnum GameState { get; private set; } = StateEnum.Stopped;
     [Export]
-    public GameDifficultyEnum GameDifficulty { get; private set; } = GameDifficultyEnum.Easy;
+    public DifficultyEnum GameDifficulty { get; private set; } = DifficultyEnum.Easy;
     [Export]
     public ulong GameSeed { get; private set; } = (ulong)Random.Shared.NextInt64();
 
@@ -92,7 +92,7 @@ public partial class Game : Node
 
     public override void _Process(double delta)
     {
-        if (GameState == GameStateEnum.Round)
+        if (GameState == StateEnum.Round)
         {
             if (20000ul < Time.GetTicksMsec() - lastWaveTime && ActiveMobs < MaxActiveMobs)
             {
@@ -164,7 +164,7 @@ public partial class Game : Node
         if (rngLoot.Randf() > 0.9f)
         {
             // ! level = map difficulty * difficulty + challenge or something
-            var state = new Loot.LootState(GameSeed + rngLoot.Randi(), 0, GameDifficultyEnum.Hard, 0, false, false, 0.5f);
+            var state = new Loot.LootState(GameSeed + rngLoot.Randi(), 0, DifficultyEnum.Hard, 0, false, false, 0.5f);
             var lootNode3d = Loot.LootState.MakeLootNode(state);
             lootNode.AddChild(lootNode3d);
             lootNode3d.GlobalPosition = (Vector3)damageInfo["hitposition"];
@@ -177,7 +177,7 @@ public partial class Game : Node
 
     public async void TimerToNextRound()
     {
-        GameState = GameStateEnum.Break;
+        GameState = StateEnum.Break;
         EmitSignal(SignalName.GameRoundEnd, Round);
         LastRoundEndTime = Time.GetTicksMsec();
         await Task.Delay(TimeMsBetweenRounds);
@@ -188,7 +188,7 @@ public partial class Game : Node
     public void NextRound()
     {
         Round++;
-        GameState = GameStateEnum.Round;
+        GameState = StateEnum.Round;
         MaxActiveMobs = FuncMobMaxActive;
         RoundMobsLeft = FuncMobRoundAmount;
         EmitSignal(SignalName.GameRoundStart, Round);
@@ -197,7 +197,7 @@ public partial class Game : Node
 
     public void EndGame()
     {
-        GameState = GameStateEnum.Stopped;
+        GameState = StateEnum.Stopped;
 
         SaveManager.CurrentSave.Xp += GameSaveData.Xp;
         SaveManager.CurrentSave.Loot.AddRange(GameSaveData.Loot);
