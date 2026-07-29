@@ -145,19 +145,26 @@ public static class Wears
     }
 }
 
-// the saved data of Loot
+
 public struct LootState
 {
+    // the saved data of Loot
     public ulong Seed { get; private set; }
     public int HashId { get; private set; }
-    public Global.Version Version { get; private set; }
+    public Version Version { get; private set; }
     public int Level { get; private set; }
     public Game.DifficultyEnum Difficulty { get; private set; }
     public int MapHashId { get; private set; }
     public int ChallengeScaling { get; private set; }
     public float OverScaling { get; private set; }
 
-    public LootState() { }
+    // generated values on creation
+    public float Dasfd { get; private set; }
+
+    public LootState()
+    {
+        GenerateStats();
+    }
 
     /// <summary> Constructor only for newly generated loot </summary>
     public LootState(ulong seed, int level, Game.DifficultyEnum difficulty, int mapHashId, bool challenge1, bool challenge2, float overscaling)
@@ -170,6 +177,12 @@ public struct LootState
         MapHashId = mapHashId;
         ChallengeScaling = (challenge1 ? 1 : 0) + (challenge2 ? 2 : 0);
         OverScaling = overscaling;
+        GenerateStats();
+    }
+
+    public void GenerateStats()
+    {
+        Dasfd = 10f;
     }
 
     public static MFResource GetLootRef(LootState self)
@@ -224,7 +237,7 @@ public struct LootState
         {
             Seed = Convert.ToUInt64(strs[0]),
             HashId = strs[1].ToInt(),
-            Version = Global.Version.FromString(strs[2]),
+            Version = Version.FromString(strs[2]),
             Level = strs[3].ToInt(),
             Difficulty = (Game.DifficultyEnum)strs[4].ToInt(),
             MapHashId = strs[5].ToInt(),

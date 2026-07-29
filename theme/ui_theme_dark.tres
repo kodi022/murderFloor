@@ -5,10 +5,10 @@
 [resource]
 default_font = ExtResource("1_p3tpv")
 default_font_size = 16
+Button/constants/border_width_left = 4
 HBoxContainer/constants/separation = 2
 MarginContainer/constants/margin_bottom = 10
 MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
-Panel/colors/bg_color = Color(1, 0, 0, 1)
 VBoxContainer/constants/separation = 2

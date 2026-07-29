@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Mob" format=3 uid="uid://m4fxpl0ogu2x"]
+
+[ext_resource type="PackedScene" uid="uid://pqbd3i4lbv5o" path="res://scenes/pawn/mob/LiveMob.tscn" id="1_p13sf"]
+[ext_resource type="Script" uid="uid://c4nkwdo5lew66" path="res://scripts/resource/mob/Mob.cs" id="2_ho7mt"]
+
+[resource]
+script = ExtResource("2_ho7mt")
+MaxHealth = 60.0
+Scale = 0.85
+MovementSpeedScale = 1.25
+AttackRateMs = 750
+AttackDamage = 5.0
+ResourceId = "testmob2"
+MeshScene = ExtResource("1_p13sf")
+metadata/_custom_type_script = "uid://c4nkwdo5lew66"

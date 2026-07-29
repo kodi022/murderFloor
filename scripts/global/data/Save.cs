@@ -60,8 +60,25 @@ public static class SaveManager
     public class SaveData
     {
         public int Level { get; set; } = 0;
-        public int Xp { get; set; } = 0;
+        public float Xp { get; private set; } = 0f;
+        public double TotalXp { get; private set; } = 0d;
         public List<string> Loot { get; set; } = [];
-        public List<string> Beans { get; set; } = [];
+        public List<int> Equipped { get; set; } = []; // hash ids of LootStates
+
+        public void AddXp(float amount)
+        {
+            Xp += amount;
+            TotalXp += amount;
+            while (Xp >= XpToNextLevel())
+            {
+                Xp -= XpToNextLevel();
+                Level++;
+            }
+        }
+
+        public float XpToNextLevel()
+        {
+            return 200 + Mathf.Pow(Level + 1, 2.5f) - Level;
+        }
     }
 }

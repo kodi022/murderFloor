@@ -56,7 +56,7 @@ public partial class LiveTool : Node
     private Node3D sightAttachmentNode;
     private Node3D ejectionNode;
     private Node3D foregripNode;
-    // private Node3D addon2Node;
+    private Node3D gadgetNode;
 
     private Vector3 modelSceneStartPosition;
     private Vector3 sightPosition;
@@ -159,6 +159,7 @@ public partial class LiveTool : Node
         sightAttachmentNode = FindNode("SightAttachment");
         ejectionNode = FindNode("Ejection");
         foregripNode = FindNode("Foregrip");
+        gadgetNode = FindNode("Gadget");
 
         // ! find other attachments
 

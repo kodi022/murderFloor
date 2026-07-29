@@ -125,8 +125,7 @@ public partial class HUD : ScreenScaleLimiter
                 dir = dir.Rotated(Vector3.Right, Mathf.Abs(pitch));
 
                 // do a Camera.UnprojectPosition manually with localized values
-                // this is because Camera has interpolation or something
-                // which creates incorrect values
+                // this is because Camera has something which creates incorrect values
                 var viewportSize = GetViewportRect().Size;
                 var scale = 1080f / viewportSize.Y;
                 var screenCenter = new Vector2I(
@@ -192,7 +191,7 @@ public partial class HUD : ScreenScaleLimiter
         UpdateHealth(null);
     }
 
-    private async void UpdateHealth(DamageInfo damageInfo)
+    private async void UpdateHealth(DamageInfoVariant damageInfoVariant)
     {
         healthBarFunctionCount++;
         var move = Player.Self.Health / Player.Self.MaxHealth;

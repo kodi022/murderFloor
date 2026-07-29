@@ -7,6 +7,8 @@ public partial class Tool : MFResource
     public PackedScene MeshSceneViewmodel { get; private set; }
     [Export]
     public string HoldTypeAnimation { get; private set; } = "holdtype_pistol";
+    [Export]
+    public int CarryWeight { get; private set; } = 1;
 
     public enum SlotEnum
     {

@@ -14,9 +14,10 @@ public partial class ToolFirearmHitscan : ToolFirearm
     {
         ["Head"] = 1.5f,
         ["Neck"] = 1.35f,
-        ["Hand"] = 0.8f,
+        ["LowerArm"] = 0.9f,
+        ["Hand"] = 0.7f,
         ["LowerLeg"] = 0.9f,
-        ["Foot"] = 0.8f,
+        ["Foot"] = 0.7f,
     };
 
     public override void FireBullet(FireInfo fi)
@@ -101,18 +102,17 @@ public partial class ToolFirearmHitscan : ToolFirearm
                     var hitObjName = ((Node)(GodotObject)ray["collider"]).GetParent().Name.ToString();
                     damage *= GetHitDamageMultiplier(hitObjName);
 
-                    // ! collect damages and send single Rpc, maybe comma separated values
                     var di = new DamageInfo()
                     {
-                        {"damage", damage},
-                        {"attacker", fi.Player.Id},
-                        {"attackerName", NetworkManager.Current._players[fi.Player.Id]["Name"]},
-                        {"weapon", "mind"},
-                        {"hitposition", (Vector3)ray["position"]},
-                        {"hitbox", hitObjName},
-                        {"hitdirection", (pos - fi.StartPosition).Normalized()}
+                        Damage = damage,
+                        AttackerId = fi.Player.Id,
+                        AttackerName = NetworkManager.Current._players[fi.Player.Id]["Name"],
+                        WeaponId = HashId,
+                        HitboxName = hitObjName,
+                        HitPosition = (Vector3)ray["position"],
+                        HitDirection = (pos - fi.StartPosition).Normalized()
                     };
-                    pawn.Rpc("OnDamageRpc", di);
+                    pawn.Rpc("OnDamageRpc", di.ToVariant());
                 }
             }
         }

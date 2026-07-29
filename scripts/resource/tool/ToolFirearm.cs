@@ -70,7 +70,7 @@ public partial class ToolFirearm : Tool
     [Export]
     public Vector2 FastWalkSpreadMult { get; private set; } = new Vector2(1.6f, 1.6f);
     [Export]
-    public Vector2 AimSpreadMult { get; private set; } = new Vector2(0.7f, 0.7f);
+    public Vector2 AimSpreadMult { get; private set; } = new Vector2(0.8f, 0.8f);
 
     [Export, ExportSubgroup("Kick")]
     public Vector2 CameraRotationKick { get; private set; } = new Vector2(0.02f, 0f);
@@ -120,5 +120,10 @@ public partial class ToolFirearm : Tool
         if (FirearmType == FirearmTypeEnum.Melee) return SlotEnum.Melee;
 
         return SlotEnum.Primary;
+    }
+
+    public virtual void EjectCasing()
+    {
+
     }
 }

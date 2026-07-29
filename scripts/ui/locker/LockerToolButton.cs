@@ -11,6 +11,8 @@ public partial class LockerToolButton : Control
     [Export]
     private ColorRect colorRect;
     [Export]
+    private NinePatchRect ninePatchRect;
+    [Export]
     private TextureRect rect;
     [Export]
     private Label label;
@@ -23,6 +25,7 @@ public partial class LockerToolButton : Control
         label.Text = lootRarity.Level.ToString();
         rect.Texture = await lootResource.GenerateThumbnailImage(128, 80);
         colorRect.Color = Tiers.TierList[lootRarity.Tier].Color;
+        ninePatchRect.Modulate = Tiers.TierList[lootRarity.Tier].Color;
     }
 
     public override GodotObject _MakeCustomTooltip(string forText)

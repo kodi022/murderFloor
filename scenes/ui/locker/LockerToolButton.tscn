@@ -16,7 +16,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="LockerToolButton" type="Control" unique_id=1388612364 node_paths=PackedStringArray("Button", "colorRect", "rect", "label")]
+[node name="LockerToolButton" type="Control" unique_id=1388612364 node_paths=PackedStringArray("Button", "colorRect", "ninePatchRect", "rect", "label")]
 custom_minimum_size = Vector2(128, 80)
 layout_mode = 3
 anchors_preset = 0
@@ -26,6 +26,7 @@ theme = ExtResource("1_5n6ma")
 script = ExtResource("1_30wq4")
 Button = NodePath("Button")
 colorRect = NodePath("ColorRect")
+ninePatchRect = NodePath("NinePatchRect")
 rect = NodePath("TextureRect")
 label = NodePath("Label")
 

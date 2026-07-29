@@ -8,6 +8,9 @@ public partial class Mob : MFResource
     [Export]
     public float Armor { get; private set; }
 
+    [Export, ExportSubgroup("Visual")]
+    public float Scale { get; private set; } = 1f;
+
     [Export, ExportSubgroup("Movement")]
     public float MovementSpeedScale { get; private set; } = 1f;
 
@@ -15,6 +18,8 @@ public partial class Mob : MFResource
     public ulong AttackRateMs { get; private set; } = 1000ul;
     [Export]
     public float AttackRange { get; private set; } = 1.2f;
+    [Export]
+    public float AttackDamage { get; private set; } = 8f;
 
     [Export, ExportSubgroup("Enragement")]
     public bool Enragement { get; private set; }

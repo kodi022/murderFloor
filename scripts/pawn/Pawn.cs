@@ -5,14 +5,14 @@ public partial class Pawn : CharacterBody3D
     [Signal]
     public delegate void PlayerOnHealEventHandler(float amount);
     [Signal]
-    public delegate void PlayerOnDamageEventHandler(DamageInfo damageInfo);
+    public delegate void PlayerOnDamageEventHandler(DamageInfoVariant damageInfoVariant);
     [Signal]
-    public delegate void PlayerOnDeathEventHandler(DamageInfo damageInfo);
+    public delegate void PlayerOnDeathEventHandler(DamageInfoVariant damageInfoVariant);
 
     [Signal]
-    public delegate void MobOnDamageEventHandler(DamageInfo damageInfo);
+    public delegate void MobOnDamageEventHandler(DamageInfoVariant damageInfoVariant);
     [Signal]
-    public delegate void MobOnDeathEventHandler(DamageInfo damageInfo);
+    public delegate void MobOnDeathEventHandler(DamageInfoVariant damageInfoVariant);
 
     [Export]
     public float MaxHealth { get; set; } = 100;
@@ -31,9 +31,10 @@ public partial class Pawn : CharacterBody3D
     /// <para>"hitbox": "int id"</para>
     /// </summary>
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    public virtual void OnDamageRpc(DamageInfo damageInfo)
+    public virtual void OnDamageRpc(DamageInfoVariant damageInfoVariant)
     {
-        var damage = damageInfo["damage"].AsSingle();
+        var damageInfo = DamageInfo.FromVariant(damageInfoVariant);
+        var damage = damageInfo.Damage;
 
         if (Armor > 0)
         {
@@ -61,15 +62,15 @@ public partial class Pawn : CharacterBody3D
         // gore
         // sounds
 
-        bool attackerIsSelf = damageInfo["attacker"].AsInt64() == Player.Self.Id;
+        bool attackerIsSelf = damageInfo.AttackerId == Player.Self.Id;
         if (attackerIsSelf && this is LiveMob)
         {
-            EmitSignal(SignalName.MobOnDamage, damageInfo);
+            EmitSignal(SignalName.MobOnDamage, damageInfo.ToVariant());
         }
 
         if (Player.Self == this)
         {
-            EmitSignal(SignalName.PlayerOnDamage, damageInfo);
+            EmitSignal(SignalName.PlayerOnDamage, damageInfo.ToVariant());
         }
     }
 

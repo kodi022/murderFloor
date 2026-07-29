@@ -9,21 +9,46 @@ public partial class Player : Pawn
 
     private void PhysicsProcessMovement()
     {
-        var forward = Input.GetAxis("backward", "forward");
+        var forward = Input.GetAxis("forward", "backward");
         var strafe = Input.GetAxis("left", "right");
-        var moveScale = Input.IsActionPressed("walk") ? 0.42f : 0.7f;
-        var wishMove = new Vector3(forward, 0f, strafe).Normalized() * moveScale;
-        wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X + 1.570796326794896f);
+        var wishMove = new Vector3(strafe, 0f, forward).Normalized(); // ! does not reduce from joystick
+
+        if (IsWalking())
+        {
+            if (wishMove.X < 0f) wishMove.X *= 0.2f;
+            wishMove *= 0.42f;
+        }
+        else
+        {
+            wishMove *= 0.72f;
+        }
+
+        wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X);
         if (Input.IsActionJustPressed("jump")) wishMove.Y = 14f;
         lastVel *= new Vector3(0.80f, 0.95f, 0.80f);
         lastVel += wishMove;
-        lastVel.Y -= 0.25f;
-        if (lastVel.Y < -1f) lastVel.Y *= 1.04f;
-        lastVel.Y = Mathf.Clamp(lastVel.Y, -25, 10);
+
+        Gravity();
+
         Velocity = lastVel;
 
         MoveAndSlide();
         NetworkedVelocity = Velocity;
         lastVel = Velocity;
+    }
+
+    private void Gravity()
+    {
+        lastVel.Y -= 0.25f;
+        if (lastVel.Y < -1f) lastVel.Y *= 1.04f;
+        lastVel.Y = Mathf.Clamp(lastVel.Y, -25, 10);
+    }
+
+    private bool IsWalking()
+    {
+        if (Input.IsActionPressed("walk")) return true;
+        if (SelectedTool is not null && SelectedTool.Aiming) return true;
+
+        return false;
     }
 }

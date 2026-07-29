@@ -53,8 +53,6 @@ public partial class Game : Node
 
     public ulong LastRoundEndTime { get; private set; } = 0ul;
 
-    public SaveManager.SaveData GameSaveData { get; private set; } = new();
-
     // vsc says these should be uppercase
     private int FuncMobRoundWaveSize => 5 + Round + (int)GameDifficulty * 2;
 
@@ -167,7 +165,7 @@ public partial class Game : Node
             var state = new Loot.LootState(GameSeed + rngLoot.Randi(), 0, DifficultyEnum.Hard, 0, false, false, 0.5f);
             var lootNode3d = Loot.LootState.MakeLootNode(state);
             lootNode.AddChild(lootNode3d);
-            lootNode3d.GlobalPosition = (Vector3)damageInfo["hitposition"];
+            lootNode3d.GlobalPosition = damageInfo.HitPosition;
             ((RigidBody3D)lootNode3d.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
 
             var loot = new Loot.LootRarity(state);
@@ -199,14 +197,12 @@ public partial class Game : Node
     {
         GameState = StateEnum.Stopped;
 
-        SaveManager.CurrentSave.Xp += GameSaveData.Xp;
-        SaveManager.CurrentSave.Loot.AddRange(GameSaveData.Loot);
+        SaveManager.CurrentSave.AddXp(100f);
         SaveManager.Save(SaveManager.CurrentSave);
 
         foreach (var mob in MobPool)
-        {
             mob?.Free();
-        }
+
         MobPool.Clear();
         Round = 0;
         RoundMobsLeft = 0;
@@ -235,7 +231,10 @@ public partial class Game : Node
             if (MobPool[i].Active) continue;
             if (spawned >= waveSize) return;
 
-            MobPool[i].OnSpawn(spawns[spawned], "base:testmob");
+            var allMob = ResourceManager.MobRegistry.GetAllResource();
+            var mob = allMob.ElementAt(rngSpawning.RandiRange(0, allMob.Count - 1));
+
+            MobPool[i].OnSpawn(spawns[spawned], mob.Value.FullId);
             ActiveMobs++;
             spawned++;
         }
