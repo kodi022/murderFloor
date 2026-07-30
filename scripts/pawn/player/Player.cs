@@ -94,6 +94,7 @@ public partial class Player : Pawn
             return;
         }
 
+        Rpc("ToolAddRpc", "0,-1219130955,0.1.0,0,0,0,0,0");
         OptionsMenu.ShowReturnButton = true;
         var opt = OptionsManager.Load();
         OptionsManager.Apply(opt);

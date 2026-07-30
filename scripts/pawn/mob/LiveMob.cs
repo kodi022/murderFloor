@@ -57,7 +57,7 @@ public partial class LiveMob : Pawn
 
     public void OnSpawn(Vector3 location, string mobFullId)
     {
-        MobResource = ResourceManager.MobRegistry.GetResourceReference(mobFullId);
+        MobResource = ResourceManager.MobRegistry.GetResourceRef(mobFullId);
         MaxHealth = MobResource.MaxHealth;
         Health = MaxHealth;
         Armor = MobResource.Armor;

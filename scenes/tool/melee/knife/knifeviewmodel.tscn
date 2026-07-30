@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cyq5wrw33o03c"]
+
+[ext_resource type="PackedScene" uid="uid://b85on0trpihqi" path="res://scenes/pawn/player/PlayerViewmodelBody.tscn" id="1_wfpuj"]
+[ext_resource type="Material" uid="uid://cvy7o7lqwfdr7" path="res://materials/surface/rock/Onyx.tres" id="2_0f4gw"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pbeot"]
+material = ExtResource("2_0f4gw")
+top_radius = 0.01
+bottom_radius = 0.02
+height = 0.3
+radial_segments = 12
+rings = 1
+
+[node name="Knifeviewmodel" type="Node3D" unique_id=2029888864]
+
+[node name="KincheePlayer" parent="." unique_id=51662591 instance=ExtResource("1_wfpuj")]
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0.050292015, -1.2218403, 0.10383394)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=706544784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2546723, 0, -0.28940105)
+mesh = SubResource("CylinderMesh_pbeot")

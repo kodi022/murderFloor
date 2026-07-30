@@ -2,6 +2,9 @@ namespace MurderFloor;
 
 public partial class Player : Pawn
 {
+    [Signal]
+    public delegate void PlayerToolChangeEventHandler();
+
     public List<LiveTool> ToolsPrimary { get; private set; } = [];
     public List<LiveTool> ToolsSecondary { get; private set; } = [];
     public List<LiveTool> ToolsSpecial { get; private set; } = [];
@@ -12,6 +15,9 @@ public partial class Player : Pawn
 
     public int ToolCount => ToolsPrimary.Count + ToolsSecondary.Count + ToolsSpecial.Count + ToolsMelee.Count;
 
+    public int MaxWeight { get; set; } = 20;
+    public int ToolWeight => GetToolsWeight();
+
     // reference from tool list
     public LiveTool SelectedTool = null;
 
@@ -19,41 +25,49 @@ public partial class Player : Pawn
 
     /// <summary> this should only be called using Rpc </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void ToolAddRpc(string toolId)
+    public void ToolAddRpc(string lootState)
     {
-        ToolAdd(toolId);
+        ToolAdd(lootState);
     }
 
     // should always be called through an Rpc
-    public void ToolAdd(string toolId)
+    public void ToolAdd(string lootState)
     {
+        var lootStateStruct = Loot.LootState.Deserialize(lootState);
+        var resource = ResourceManager.ToolRegistry.GetResourceRef(lootStateStruct.HashId);
+        if (ToolWeight + resource.CarryWeight > MaxWeight) return;
+
         var liveTool = GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate<LiveTool>();
         liveTool.SetMultiplayerAuthority(Id);
         liveTool.PlayerId = Id;
-        liveTool.ToolFullId = toolId;
+        liveTool.ToolFullId = resource.FullId;
+        liveTool.LootState = lootStateStruct;
         ToolsNode.AddChild(liveTool);
         liveTool.Owner = ToolsNode;
         var list = GetToolListFromTool(liveTool.ToolFullId);
-        liveTool.Name = $"{toolId}_" + list.Count(t => t.ToolFullId == toolId);
+        liveTool.Name = $"{resource.FullId}_" + list.Count(t => t.ToolFullId == resource.FullId);
         list.Add(liveTool);
+        EmitSignal(SignalName.PlayerToolChange);
     }
 
     /// <summary> this should only be called using Rpc </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void ToolRemoveRpc(string toolId)
+    public void ToolRemoveRpc(string lootState)
     {
-        ToolRemove(toolId);
+        ToolRemove(lootState);
     }
 
     // should always be called through an Rpc
-    public void ToolRemove(string toolId)
+    public async void ToolRemove(string lootState)
     {
+        var change = false;
+        var lootStateStruct = Loot.LootState.Deserialize(lootState);
         foreach (var tool in ToolsNode.GetChildren())
         {
             if (tool is not LiveTool) continue;
 
             LiveTool liveTool = (LiveTool)tool;
-            if (liveTool.ToolFullId == toolId)
+            if (liveTool.LootState == lootStateStruct)
             {
                 var list = GetToolListFromTool(liveTool.ToolFullId);
                 foreach (var item in list)
@@ -64,16 +78,35 @@ public partial class Player : Pawn
                         break;
                     }
                 }
+
+                if (tool == SelectedTool)
+                {
+                    SwappingWeapon = true;
+                    await SelectedTool.Unequip();
+                    SwappingWeapon = false;
+                    SelectedTool = null;
+                }
+
                 tool.Free();
+                change = true;
             }
         }
+
+        if (change) EmitSignal(SignalName.PlayerToolChange);
     }
 
     /// <summary> this should NOT be called using Rpc, will do so internally </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
     public async void ToolEquip(int slot, int index)
     {
+        if (SwappingWeapon) return;
+        SwappingWeapon = true;
+
         GD.Print("ToolEquip " + Name);
+
+        if (IsMultiplayerAuthority()) Rpc("ToolEquip", slot, index);
+
+        if (SelectedTool is not null) await SelectedTool.Unequip();
 
         if (!IsMultiplayerAuthority())
         {
@@ -81,15 +114,22 @@ public partial class Player : Pawn
             SelectedToolIndex = index;
         }
 
-        if (SwappingWeapon) return;
         List<LiveTool> list = GetToolListFromSlot(SelectedSlot);
-        if (list.Count == 0) return;
-        if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex]) return;
+        if (list.Count == 0)
+        {
+            SelectedSlot = Tool.SlotEnum.Melee;
+            SelectedToolIndex = 0;
+            SwappingWeapon = false;
+            return;
+        }
+        if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex])
+        {
+            SelectedSlot = Tool.SlotEnum.Melee;
+            SelectedToolIndex = 0;
+            SwappingWeapon = false;
+            return;
+        }
 
-        if (IsMultiplayerAuthority()) Rpc("ToolEquip", slot, index);
-
-        SwappingWeapon = true;
-        if (SelectedTool is not null) await SelectedTool.Unequip();
         SelectedTool = list[SelectedToolIndex];
 
         await SelectedTool.Equip();
@@ -199,11 +239,10 @@ public partial class Player : Pawn
     {
         var tools = GetAllLiveTools();
 
-        var a = tools.FirstOrDefault(c => c.ToolResource.HashId == lootState.HashId, null);
-        if (a is not null)
-            return true;
+        var a = tools.FirstOrDefault(c => c.LootState == lootState, null);
 
-        return false;
+        if (a is not null) return true;
+        else return false;
     }
 
     public List<LiveTool> GetAllLiveTools()
@@ -220,9 +259,20 @@ public partial class Player : Pawn
         return tools;
     }
 
+    private int GetToolsWeight()
+    {
+        var weight = 0;
+        foreach (var tool in GetAllLiveTools())
+        {
+            weight += tool.ToolResource.CarryWeight;
+        }
+
+        return weight;
+    }
+
     private List<LiveTool> GetToolListFromTool(string toolId)
     {
-        return ResourceManager.ToolRegistry.GetResourceReference(toolId).GetSlot() switch
+        return ResourceManager.ToolRegistry.GetResourceRef(toolId).GetSlot() switch
         {
             Tool.SlotEnum.Primary => ToolsPrimary,
             Tool.SlotEnum.Secondary => ToolsSecondary,

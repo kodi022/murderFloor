@@ -12,7 +12,7 @@ public partial class LiveTool : Node
     // reference to tool
     public Tool ToolResource { get; private set; }
 
-    public Loot.LootState LootState { get; private set; }
+    public Loot.LootState LootState { get; set; }
 
     [Export]
     public int PrimaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
@@ -64,7 +64,7 @@ public partial class LiveTool : Node
     public override void _Ready()
     {
         Player = Player.FindPlayer(PlayerId);
-        ToolResource = ResourceManager.ToolRegistry.GetResourceReference(ToolFullId);
+        ToolResource = ResourceManager.ToolRegistry.GetResourceRef(ToolFullId);
 
         if (ToolResource is ToolFirearm firearm)
         {
@@ -167,7 +167,7 @@ public partial class LiveTool : Node
 
         if (sightAttachmentNode.IsInsideTree())
         {
-            var etec = ResourceManager.AttachmentRegistry.GetResourceReference("base:etec");
+            var etec = ResourceManager.AttachmentRegistry.GetResourceRef("base:etec");
             var etecModelScene = etec.MeshScene.Instantiate<Node3D>();
             sightAttachmentNode.AddChild(etecModelScene);
             etecModelScene.RotationDegrees = new Vector3(0, etec.MeshSceneImportYaw, 0);
@@ -177,15 +177,16 @@ public partial class LiveTool : Node
         }
 
         // await equip animation
-        await Task.Delay(200);
+        await Task.Delay(250);
         equipped = true;
     }
 
     public async Task Unequip()
     {
         // await unequip animation
-        await Task.Delay(200);
+        await Task.Delay(250);
 
+        modelScene?.Free();
         modelScene = null;
         equipped = false;
     }

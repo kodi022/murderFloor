@@ -245,6 +245,27 @@ public struct LootState
             OverScaling = strs[7].ToFloat()
         };
     }
+
+    public readonly int GetStableHash()
+    {
+        unchecked
+        {
+            int hash = 13466917 + Seed.GetHashCode();
+            hash = hash * 31 + HashId;
+            hash = hash * 31 + Level;
+            hash = hash * 31 + (int)Difficulty;
+            hash = hash * 31 + MapHashId;
+            hash = hash * 31 + ChallengeScaling;
+            hash = hash * 31 + OverScaling.GetHashCode();
+            return hash;
+        }
+    }
+
+    public override int GetHashCode() => GetStableHash();
+    public bool Equals(LootState other) => GetStableHash() == other.GetStableHash();
+    public override bool Equals(object obj) => obj is LootState other && Equals(other);
+    public static bool operator ==(LootState left, LootState right) => left.Equals(right);
+    public static bool operator !=(LootState left, LootState right) => !left.Equals(right);
 }
 
 /// <summary>

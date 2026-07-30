@@ -47,8 +47,11 @@ public static class ResourceManager
 						if (resource.PackageId == "") GD.PushWarning($"{typeof(T).Name}Registry: Resource missing PackageId {path}");
 						if (resource.ResourceId == "") GD.PushWarning($"{typeof(T).Name}Registry: Resource missing ResourceId {path}");
 
+
 						resource.BuildIds();
 						folderRegisters.Add(resource.HashId, resource);
+
+						if (resource is ToolMelee) GD.Print(resource.HashId);
 
 						if (resource.UseInGame && resource.IsLoot) LootRegistry.Add(resource);
 					}
@@ -70,14 +73,27 @@ public static class ResourceManager
 		/// <summary>
 		/// Gets resource by reference or null if fail
 		/// </summary>
-		public T GetResourceReference(string fullId)
+		public T GetResourceRef(int hashId)
 		{
-			if (string.IsNullOrEmpty(fullId)) return null;
-
-			if (registry.TryGetValue(Global.StableHash(fullId), out T val))
+			if (registry.TryGetValue(hashId, out T val))
 				return val;
 
+			GD.PushWarning($"{typeof(T).Name}Registry.GetResourceRef: hashId not found");
 			return null;
+		}
+
+		/// <summary>
+		/// Gets resource by reference or null if fail
+		/// </summary>
+		public T GetResourceRef(string fullId)
+		{
+			if (string.IsNullOrEmpty(fullId))
+			{
+				GD.PushWarning($"{typeof(T).Name}Registry.GetResourceRef: invalid fullId");
+				return null;
+			}
+
+			return GetResourceRef(Global.StableHash(fullId));
 		}
 
 		public Dictionary<int, T> GetAllResource()
@@ -112,7 +128,7 @@ public static class ResourceManager
 		{
 			if (index < 0 || index >= Count)
 			{
-				GD.PushWarning("LootResourceRegistry.GetResourceAtIndex invalid index");
+				GD.PushWarning("LootResourceRegistry.GetResourceAtIndex: invalid index");
 				return null;
 			}
 
@@ -122,27 +138,25 @@ public static class ResourceManager
 		/// <summary>
 		/// Gets resource by reference or null if fail
 		/// </summary>
-		public MFResource GetResourceRef(string fullId)
+		public MFResource GetResourceRef(int hashId)
 		{
-			if (string.IsNullOrEmpty(fullId))
-			{
-				GD.PushWarning("LootResourceRegistry.GetResourceReference invalid fullId");
-				return null;
-			}
-
-			var hash = Global.StableHash(fullId);
-			var res = registry.FirstOrDefault(c => c.HashId == hash);
-
+			var res = registry.FirstOrDefault(c => c.HashId == hashId, null);
+			if (res is null) GD.PushWarning("LootResourceRegistry.GetResourceRef: hashId not found");
 			return res;
 		}
 
 		/// <summary>
 		/// Gets resource by reference or null if fail
 		/// </summary>
-		public MFResource GetResourceRef(int hashId)
+		public MFResource GetResourceRef(string fullId)
 		{
-			var res = registry.FirstOrDefault(c => c.HashId == hashId);
-			return res;
+			if (string.IsNullOrEmpty(fullId))
+			{
+				GD.PushWarning("LootResourceRegistry.GetResourceRef: invalid fullId");
+				return null;
+			}
+
+			return GetResourceRef(Global.StableHash(fullId));
 		}
 
 		public List<MFResource> GetAllResource()

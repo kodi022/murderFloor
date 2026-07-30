@@ -20,6 +20,7 @@ public partial class LockerMenu : ScreenScaleLimiter
     private bool previewSceneCreated;
     private Camera3D cam;
 
+    private LockerToolButton selectedLockerToolButton;
     private LootState selectedLootState;
     private Tool selectedTool;
     private bool playerEquippedTool;
@@ -41,7 +42,6 @@ public partial class LockerMenu : ScreenScaleLimiter
         if (weaponScene is null) return;
 
         playerEquippedTool = Player.Self.HasTool(selectedLootState);
-
         equipToolButton.Text = playerEquippedTool ? "Unequip" : "Equip";
 
         if (rectDragControl.GetGlobalRect().HasPoint(mousePosition))
@@ -85,6 +85,7 @@ public partial class LockerMenu : ScreenScaleLimiter
                 newButton.LootStateInfo = lootState;
                 newButton.Button.Pressed += () =>
                 {
+                    selectedLockerToolButton = newButton;
                     selectedLootState = lootState;
                     selectedTool = tool;
                     SelectTool();
@@ -142,9 +143,9 @@ public partial class LockerMenu : ScreenScaleLimiter
     private void ToolAddOrRemove()
     {
         if (Player.Self.HasTool(selectedLootState))
-            Player.Self.Rpc("ToolRemoveRpc", selectedTool.FullId);
+            Player.Self.Rpc("ToolRemoveRpc", LootState.Serialize(selectedLootState));
         else
-            Player.Self.Rpc("ToolAddRpc", selectedTool.FullId);
+            Player.Self.Rpc("ToolAddRpc", LootState.Serialize(selectedLootState));
     }
 
     private void ModifyButton()

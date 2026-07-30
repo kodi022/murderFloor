@@ -8,7 +8,7 @@ public partial class Tool : MFResource
     [Export]
     public string HoldTypeAnimation { get; private set; } = "holdtype_pistol";
     [Export]
-    public int CarryWeight { get; private set; } = 1;
+    public int CarryWeight { get; private set; } = 2;
 
     public enum SlotEnum
     {

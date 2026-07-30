@@ -39,6 +39,7 @@ public partial class HUD : ScreenScaleLimiter
         ShotgunCrosshair.Visible = false;
         Player.Self.PlayerOnDamage += UpdateHealth;
         Player.Self.PlayerOnHeal += HealAndUpdateHealth;
+        Player.Self.PlayerToolChange += GenerateToolLists;
     }
 
     public override void _Process(double delta)
@@ -76,13 +77,14 @@ public partial class HUD : ScreenScaleLimiter
         if (selectedTool != Player.Self.SelectedTool)
         {
             selectedTool = Player.Self.SelectedTool;
-            foreach (var child in weaponsContainer.GetChildren()) child.QueueFree();
             GenerateToolLists();
         }
     }
 
     private async void GenerateToolLists()
     {
+        foreach (var child in weaponsContainer.GetChildren()) child.QueueFree();
+
         async Task ListWeapons(List<LiveTool> tools)
         {
             var container = new HBoxContainer();
@@ -106,10 +108,17 @@ public partial class HUD : ScreenScaleLimiter
 
     private void ProcessCrosshairs()
     {
+        void DefaultSize()
+        {
+            activeCrosshair.Position = -Vector2.One * 4;
+            activeCrosshair.Size = Vector2.One * 8;
+        }
+
         var selectedTool = Player.Self.SelectedTool;
         if (selectedTool is null || selectedTool.ToolResource is ToolMelee)
         {
             ChangeCrosshair(0);
+            DefaultSize();
             return;
         }
 
@@ -144,7 +153,7 @@ public partial class HUD : ScreenScaleLimiter
             }
             else
             {
-                // ! set default size here
+                DefaultSize();
             }
 
             if (selectedTool.Aiming)
