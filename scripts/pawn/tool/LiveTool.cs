@@ -106,17 +106,17 @@ public partial class LiveTool : Node
                 CurrentSpread += (Vector2.One * (float)delta * 50f).Min(MinSpread);
             else
                 CurrentSpread = (CurrentSpread - recoveryRate).Max(MinSpread);
+        }
 
-            if (PrimaryInputState == 1) FirePrimary();
-            if (PrimaryInputState == 2) UnFirePrimary();
+        if (PrimaryInputState == 1) FirePrimary();
+        if (PrimaryInputState == 2) UnFirePrimary();
 
-            if (SecondaryInputState == 1) FireSecondary();
-            if (SecondaryInputState == 2) UnFireSecondary();
+        if (SecondaryInputState == 1) FireSecondary();
+        if (SecondaryInputState == 2) UnFireSecondary();
 
-            if (ReloadInputState == 1)
-            {
-                FireReload();
-            }
+        if (ReloadInputState == 1)
+        {
+            FireReload();
         }
     }
 

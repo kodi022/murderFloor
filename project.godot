@@ -37,7 +37,7 @@ project/assembly_name="murder_floor"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/MurderFloorTools/plugin.cfg")
+enabled=PackedStringArray("res://addons/MurderFloorTools/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [file_customization]
 
@@ -49,6 +49,15 @@ folder_colors={
 [gui]
 
 theme/default_font_antialiasing=2
+
+[importer_defaults]
+
+texture={
+&"compress/high_quality": true,
+&"compress/mode": 2,
+&"compress/normal_map": 2,
+&"mipmaps/generate": true
+}
 
 [input]
 
@@ -176,5 +185,6 @@ common/physics_interpolation=true
 [rendering]
 
 rendering_device/vsync/swapchain_image_count=2
+textures/canvas_textures/default_texture_filter=3
 rendering_device/driver.windows="d3d12"
 environment/subsurface_scattering/subsurface_scattering_quality=0

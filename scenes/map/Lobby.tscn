@@ -1,7 +1,12 @@
 [gd_scene format=3 uid="uid://bkl3ebr30q7u6"]
 
+[ext_resource type="Material" uid="uid://bed5evbe4kar" path="res://materials/surface/concrete/Concrete008.tres" id="1_4ryty"]
 [ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="1_6jt0u"]
 [ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_ras1x"]
+[ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://images/surface/grass/Grass005_1K-PNG_Color.png" id="3_cacm0"]
+[ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://images/surface/grass/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
+[ext_resource type="Texture2D" uid="uid://cke3r1f0hqyq8" path="res://images/surface/rock/Rocks011_1K-PNG_Color.png" id="5_4ryty"]
+[ext_resource type="Texture2D" uid="uid://cgil4svjqswf5" path="res://images/surface/rock/Rocks011_1K-PNG_NormalGL.png" id="6_t5wx4"]
 
 [sub_resource type="Environment" id="Environment_6jt0u"]
 background_mode = 1
@@ -22,6 +27,84 @@ volumetric_fog_albedo = Color(0.3290106, 0.6143604, 1, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_cdhm0"]
 size = Vector3(1.5195313, 2.2456055, 0.8495636)
 
+[sub_resource type="Gradient" id="Gradient_ootgo"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jnte4"]
+noise_type = 2
+frequency = 0.03
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_k7gih"]
+noise = SubResource("FastNoiseLite_jnte4")
+color_ramp = SubResource("Gradient_ootgo")
+seamless = true
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_ku1jm"]
+_shader_parameters = {
+&"bias_distance": 512.0,
+&"blend_sharpness": 0.5,
+&"depth_blur": 0.0,
+&"enable_macro_variation": true,
+&"enable_projection": true,
+&"flat_terrain_normals": false,
+&"macro_variation1": Color(1, 1, 1, 1),
+&"macro_variation2": Color(1, 1, 1, 1),
+&"macro_variation_slope": 0.333,
+&"mipmap_bias": 1.0,
+&"noise1_angle": 0.0,
+&"noise1_offset": Vector2(0.5, 0.5),
+&"noise1_scale": 0.04,
+&"noise2_scale": 0.076,
+&"noise_texture": SubResource("NoiseTexture2D_k7gih"),
+&"projection_threshold": 0.8
+}
+texture_filtering = 1
+show_region_grid = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eksbt"]
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+backlight_enabled = true
+backlight = Color(0.5, 0.5, 0.5, 1)
+distance_fade_mode = 1
+distance_fade_min_distance = 128.0
+distance_fade_max_distance = 96.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_4ryty"]
+generated_type = 1
+height_offset = 0.5
+material_override = SubResource("StandardMaterial3D_eksbt")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_eksbt"]
+name = "th-1035532166"
+albedo_texture = ExtResource("3_cacm0")
+normal_texture = ExtResource("4_eksbt")
+uv_scale = 0.05
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_2mlpq"]
+name = "Rocks011_1K-PNG_Color"
+id = 1
+albedo_texture = ExtResource("5_4ryty")
+normal_texture = ExtResource("6_t5wx4")
+uv_scale = 0.05
+
+[sub_resource type="Terrain3DAssets" id="Terrain3DAssets_t5wx4"]
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_4ryty")])
+texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_eksbt"), SubResource("Terrain3DTextureAsset_2mlpq")])
+
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1851156556]
@@ -38,11 +121,13 @@ follow_viewport_enabled = true
 
 [node name="CSGbuilding" type="CSGBox3D" parent="." unique_id=1300285792]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25624943, 0.33096385, -1.6390629)
+material_override = ExtResource("1_4ryty")
 use_collision = true
 size = Vector3(21.777893, 0.56396484, 12.311798)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGbuilding" unique_id=1901628277]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.039000005, 2.5, -6)
+material_override = ExtResource("1_4ryty")
 size = Vector3(21.954346, 4.5448, 0.31359863)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="CSGbuilding" unique_id=148755747]
@@ -76,7 +161,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 size = Vector3(0.2, 0.2, 0.2)
 
 [node name="CSGlocker2" type="CSGBox3D" parent="." unique_id=909743433]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.426, 0.772, 3.6792264)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27784348, 0.772, 3.6792264)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker2" unique_id=1532815372]
@@ -103,7 +188,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
 
 [node name="CSGlocker" type="CSGBox3D" parent="." unique_id=1938995103]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.025622, 0.7715962, 3.6823568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3217783, 0.7715962, 3.6823568)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker" unique_id=194450191]
@@ -128,3 +213,67 @@ collision_mask = 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CSGlocker/Usable/StaticBody3D" unique_id=2045810351]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
+
+[node name="CSGlocker3" type="CSGBox3D" parent="." unique_id=1340802104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4437947, 0.772, 3.6792264)
+size = Vector3(1.4848633, 0.3230957, 0.8)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker3" unique_id=686624336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.699, 0.918, 0)
+size = Vector3(0.084625244, 2.0430908, 0.79296875)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGlocker3" unique_id=582750211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.699, 0.918, 0)
+size = Vector3(0.084625244, 2.0430908, 0.79296875)
+
+[node name="Usable" type="Node3D" parent="CSGlocker3" unique_id=2060311973]
+script = ExtResource("2_ras1x")
+UseInfoText = "Open Locker"
+UiSceneToOpen = "res://scenes/ui/locker/LockerMenu.tscn"
+metadata/_custom_type_script = "uid://bwlrm48k447kp"
+
+[node name="StaticBody3D" type="StaticBody3D" parent="CSGlocker3/Usable" unique_id=1598280998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.80460316, 0)
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGlocker3/Usable/StaticBody3D" unique_id=674553038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
+shape = SubResource("BoxShape3D_cdhm0")
+
+[node name="CSGlocker4" type="CSGBox3D" parent="." unique_id=1649108258]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.844173, 0.7715962, 3.6823568)
+size = Vector3(1.4848633, 0.3230957, 0.8)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker4" unique_id=1438211805]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.699, 0.918, 0)
+size = Vector3(0.084625244, 2.0430908, 0.79296875)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGlocker4" unique_id=126687084]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.699, 0.918, 0)
+size = Vector3(0.084625244, 2.0430908, 0.79296875)
+
+[node name="Usable" type="Node3D" parent="CSGlocker4" unique_id=109597822]
+script = ExtResource("2_ras1x")
+UseInfoText = "Open Locker"
+UiSceneToOpen = "res://scenes/ui/locker/LockerMenu.tscn"
+metadata/_custom_type_script = "uid://bwlrm48k447kp"
+
+[node name="StaticBody3D" type="StaticBody3D" parent="CSGlocker4/Usable" unique_id=1671223414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.80460316, 0)
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGlocker4/Usable/StaticBody3D" unique_id=1533149768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
+shape = SubResource("BoxShape3D_cdhm0")
+
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=718634039]
+data_directory = "res://addon-terrain3D-data"
+material = SubResource("Terrain3DMaterial_ku1jm")
+assets = SubResource("Terrain3DAssets_t5wx4")
+save_16_bit = true
+show_grid = true
+show_region_grid = true
+top_level = true
+metadata/_edit_lock_ = true

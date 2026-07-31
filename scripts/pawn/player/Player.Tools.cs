@@ -95,30 +95,37 @@ public partial class Player : Pawn
         if (change) EmitSignal(SignalName.PlayerToolChange);
     }
 
-    /// <summary> this should NOT be called using Rpc, will do so internally </summary>
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
-    public async void ToolEquip(int slot, int index)
+    /// <summary> Call for Owner only. Will call ToolEquipRpc if successful </summary>
+    public void ToolEquipOwner()
     {
+        if (!IsMultiplayerAuthority()) return;
         if (SwappingWeapon) return;
+
+        if (IsMultiplayerAuthority()) Rpc("ToolEquipRpc", (int)SelectedSlot, SelectedToolIndex);
+        ToolEquip();
+    }
+
+    /// <summary> Never call manually. ToolEquipOwner calls this </summary>
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
+    private void ToolEquipRpc(int slot, int index)
+    {
+        SelectedSlot = (Tool.SlotEnum)slot;
+        SelectedToolIndex = index;
+        ToolEquip();
+    }
+
+    private async void ToolEquip()
+    {
         SwappingWeapon = true;
-
-        GD.Print("ToolEquip " + Name);
-
-        if (IsMultiplayerAuthority()) Rpc("ToolEquip", slot, index);
-
         if (SelectedTool is not null) await SelectedTool.Unequip();
-
-        if (!IsMultiplayerAuthority())
-        {
-            SelectedSlot = (Tool.SlotEnum)slot;
-            SelectedToolIndex = index;
-        }
 
         List<LiveTool> list = GetToolListFromSlot(SelectedSlot);
         if (list.Count == 0)
         {
             SelectedSlot = Tool.SlotEnum.Melee;
             SelectedToolIndex = 0;
+            SelectedTool = list[SelectedToolIndex];
+            await SelectedTool.Equip();
             SwappingWeapon = false;
             return;
         }
@@ -126,6 +133,8 @@ public partial class Player : Pawn
         {
             SelectedSlot = Tool.SlotEnum.Melee;
             SelectedToolIndex = 0;
+            SelectedTool = list[SelectedToolIndex];
+            await SelectedTool.Equip();
             SwappingWeapon = false;
             return;
         }
@@ -198,7 +207,7 @@ public partial class Player : Pawn
             SelectedToolIndex = 0;
         }
 
-        ToolEquip((int)SelectedSlot, SelectedToolIndex);
+        ToolEquipOwner();
     }
 
     public void SelectToolBySlot(Tool.SlotEnum slot)
@@ -212,13 +221,13 @@ public partial class Player : Pawn
         {
             SelectedToolIndex++;
             if (SelectedToolIndex >= list.Count) SelectedToolIndex = 0;
-            ToolEquip((int)SelectedSlot, SelectedToolIndex);
+            ToolEquipOwner();
             return;
         }
 
         SelectedSlot = slot;
         SelectedToolIndex = 0;
-        ToolEquip((int)SelectedSlot, SelectedToolIndex);
+        ToolEquipOwner();
     }
 
     public Godot.Collections.Array<string> GetAllTools()

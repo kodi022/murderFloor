@@ -15,8 +15,12 @@ public partial class Player : Pawn
 
         if (IsWalking())
         {
-            if (wishMove.X < 0f) wishMove.X *= 0.2f;
-            wishMove *= 0.42f;
+            if (IsAiming())
+            {
+                if (wishMove.Z > 0f) wishMove.Z *= 0.75f;
+                wishMove.X *= 0.75f;
+            }
+            wishMove *= 0.45f;
         }
         else
         {
@@ -47,6 +51,13 @@ public partial class Player : Pawn
     private bool IsWalking()
     {
         if (Input.IsActionPressed("walk")) return true;
+        if (IsAiming()) return true;
+
+        return false;
+    }
+
+    private bool IsAiming()
+    {
         if (SelectedTool is not null && SelectedTool.Aiming) return true;
 
         return false;
