@@ -74,6 +74,8 @@ public partial class LockerMenu : ScreenScaleLimiter
         var lockerToolButton = GD.Load<PackedScene>("res://scenes/ui/locker/LockerToolButton.tscn");
         foreach (var loot in SaveManager.CurrentSave.Loot)
         {
+            if (string.IsNullOrEmpty(loot)) continue;
+
             var lootState = LootState.Deserialize(loot);
             var lootRef = LootState.GetLootRef(lootState);
             if (lootRef.FullId == "base:fists") continue;
@@ -85,24 +87,29 @@ public partial class LockerMenu : ScreenScaleLimiter
                 newButton.LootStateInfo = lootState;
                 newButton.Button.Pressed += () =>
                 {
-                    selectedLockerToolButton = newButton;
                     selectedLootState = lootState;
                     selectedTool = tool;
-                    SelectTool();
+                    selectedLockerToolButton.CheckState(selectedLootState);
+                    selectedLockerToolButton = newButton;
+                    selectedLockerToolButton.CheckState(selectedLootState);
+                    BuildToolViewport();
                 };
-
                 grid.AddChild(newButton);
 
                 if (selectedTool is null)
                 {
+                    selectedLockerToolButton = newButton;
+                    selectedLootState = lootState;
                     selectedTool = tool;
-                    SelectTool();
+                    BuildToolViewport();
                 }
+
+                newButton.CheckState(selectedLootState);
             }
         }
     }
 
-    private void SelectTool()
+    private void BuildToolViewport()
     {
         if (!previewSceneCreated)
         {
@@ -146,6 +153,8 @@ public partial class LockerMenu : ScreenScaleLimiter
             Player.Self.Rpc("ToolRemoveRpc", LootState.Serialize(selectedLootState));
         else
             Player.Self.Rpc("ToolAddRpc", LootState.Serialize(selectedLootState));
+
+        selectedLockerToolButton.CheckState(selectedLootState);
     }
 
     private void ModifyButton()

@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bkl3ebr30q7u6"]
 
 [ext_resource type="Material" uid="uid://bed5evbe4kar" path="res://materials/surface/concrete/Concrete008.tres" id="1_4ryty"]
-[ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="1_6jt0u"]
 [ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_ras1x"]
 [ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://images/surface/grass/Grass005_1K-PNG_Color.png" id="3_cacm0"]
 [ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://images/surface/grass/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
@@ -120,7 +119,7 @@ layer = -1
 follow_viewport_enabled = true
 
 [node name="CSGbuilding" type="CSGBox3D" parent="." unique_id=1300285792]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25624943, 0.33096385, -1.6390629)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.256, -0.189, -1.639)
 material_override = ExtResource("1_4ryty")
 use_collision = true
 size = Vector3(21.777893, 0.56396484, 12.311798)
@@ -150,18 +149,8 @@ size = Vector3(0.32824707, 4.5448, 8.022938)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7875767, 2.5, -5.126313)
 size = Vector3(0.32824707, 4.5448, 1.9736099)
 
-[node name="CSGground" type="CSGBox3D" parent="." unique_id=1763985082]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0023540468, -0.043527126, -0.0063944906)
-use_collision = true
-size = Vector3(40, 1, 40)
-material = ExtResource("1_6jt0u")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGground" unique_id=546151111]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
-size = Vector3(0.2, 0.2, 0.2)
-
 [node name="CSGlocker2" type="CSGBox3D" parent="." unique_id=909743433]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27784348, 0.772, 3.6792264)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27784348, 0.222, 3.6792264)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker2" unique_id=1532815372]
@@ -188,7 +177,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
 
 [node name="CSGlocker" type="CSGBox3D" parent="." unique_id=1938995103]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3217783, 0.7715962, 3.6823568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3217783, 0.222, 3.6823568)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker" unique_id=194450191]
@@ -215,7 +204,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
 
 [node name="CSGlocker3" type="CSGBox3D" parent="." unique_id=1340802104]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4437947, 0.772, 3.6792264)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4437947, 0.222, 3.6792264)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker3" unique_id=686624336]
@@ -242,7 +231,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
 
 [node name="CSGlocker4" type="CSGBox3D" parent="." unique_id=1649108258]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.844173, 0.7715962, 3.6823568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.844173, 0.222, 3.6823568)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker4" unique_id=1438211805]

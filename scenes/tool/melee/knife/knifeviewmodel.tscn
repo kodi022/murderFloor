@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cyq5wrw33o03c"]
 
 [ext_resource type="PackedScene" uid="uid://b85on0trpihqi" path="res://scenes/pawn/player/PlayerViewmodelBody.tscn" id="1_wfpuj"]
-[ext_resource type="Material" uid="uid://cvy7o7lqwfdr7" path="res://materials/surface/rock/Onyx.tres" id="2_0f4gw"]
+[ext_resource type="Material" uid="uid://bed5evbe4kar" path="res://materials/surface/concrete/Concrete008.tres" id="2_0f4gw"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_pbeot"]
 material = ExtResource("2_0f4gw")

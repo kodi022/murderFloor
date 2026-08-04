@@ -11,7 +11,8 @@ public partial class Player : Pawn
     {
         var forward = Input.GetAxis("forward", "backward");
         var strafe = Input.GetAxis("left", "right");
-        var wishMove = new Vector3(strafe, 0f, forward).Normalized(); // ! does not reduce from joystick
+        var input = new Vector3(strafe, 0f, forward);
+        var wishMove = input.Normalized();
 
         if (IsWalking())
         {
@@ -26,6 +27,10 @@ public partial class Player : Pawn
         {
             wishMove *= 0.72f;
         }
+        // ! does not reduce from joystick
+        // abs input
+        // wishMove.X *= input.X
+        // wishMove.Z *= input.Z
 
         wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X);
         if (Input.IsActionJustPressed("jump")) wishMove.Y = 14f;
@@ -44,7 +49,7 @@ public partial class Player : Pawn
     private void Gravity()
     {
         lastVel.Y -= 0.25f;
-        if (lastVel.Y < -1f) lastVel.Y *= 1.04f;
+        if (lastVel.Y < -0.3f) lastVel.Y *= 1.04f;
         lastVel.Y = Mathf.Clamp(lastVel.Y, -25, 10);
     }
 
