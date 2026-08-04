@@ -16,6 +16,8 @@ public partial class LockerMenu : ScreenScaleLimiter
     private Button modifyToolButton;
     [Export]
     private Button advancedToolButton;
+    [Export]
+    private RichTextLabel totalWeightLabel;
 
     private bool previewSceneCreated;
     private Camera3D cam;
@@ -54,6 +56,14 @@ public partial class LockerMenu : ScreenScaleLimiter
         {
             var target = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             weaponScene.RotationDegrees = weaponScene.RotationDegrees.Lerp(target, 3f * (float)delta);
+        }
+
+        if (selectedTool is not null)
+        {
+            if (Player.Self.HasTool(selectedLootState))
+                totalWeightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (-{selectedTool.CarryWeight})";
+            else
+                totalWeightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (+{selectedTool.CarryWeight})";
         }
 
         base._Process(delta);

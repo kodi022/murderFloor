@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://bkl3ebr30q7u6"]
 
-[ext_resource type="Material" uid="uid://bed5evbe4kar" path="res://materials/surface/concrete/Concrete008.tres" id="1_4ryty"]
+[ext_resource type="Material" uid="uid://bed5evbe4kar" path="res://materials/surface/concrete/concrete008/Concrete008.tres" id="1_4ryty"]
 [ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_ras1x"]
-[ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://images/surface/grass/Grass005_1K-PNG_Color.png" id="3_cacm0"]
-[ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://images/surface/grass/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
-[ext_resource type="Texture2D" uid="uid://cke3r1f0hqyq8" path="res://images/surface/rock/Rocks011_1K-PNG_Color.png" id="5_4ryty"]
-[ext_resource type="Texture2D" uid="uid://cgil4svjqswf5" path="res://images/surface/rock/Rocks011_1K-PNG_NormalGL.png" id="6_t5wx4"]
+[ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://materials/surface/grass/grass005/Grass005_1K-PNG_Color.png" id="3_cacm0"]
+[ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/grass/grass005/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
+[ext_resource type="Texture2D" uid="uid://cke3r1f0hqyq8" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_Color.png" id="5_4ryty"]
+[ext_resource type="Texture2D" uid="uid://cgil4svjqswf5" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_NormalGL.png" id="6_t5wx4"]
 
 [sub_resource type="Environment" id="Environment_6jt0u"]
 background_mode = 1
@@ -16,8 +16,8 @@ ssao_enabled = true
 ssao_radius = 2.0
 ssao_intensity = 2.5
 sdfgi_enabled = true
-sdfgi_cascades = 3
-sdfgi_min_cell_size = 0.1953125
+sdfgi_cascades = 5
+sdfgi_y_scale = 2
 fog_enabled = true
 fog_light_color = Color(0.6907189, 0.83994883, 1, 1)
 fog_density = 0.005
@@ -125,21 +125,21 @@ use_collision = true
 size = Vector3(21.777893, 0.56396484, 12.311798)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGbuilding" unique_id=1901628277]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.039000005, 2.5, -6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.039000005, 2.5, -6.0988464)
 material_override = ExtResource("1_4ryty")
-size = Vector3(21.954346, 4.5448, 0.31359863)
+size = Vector3(21.954346, 4.5448, 0.5112915)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="CSGbuilding" unique_id=148755747]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117, 2.5, 5.9797783)
-size = Vector3(21.954346, 4.5448, 0.31359863)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117, 2.5, 6.1416893)
+size = Vector3(21.954346, 4.5448, 0.63742065)
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="CSGbuilding" unique_id=2016795496]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.797854, 2.5, -0.019000053)
-size = Vector3(0.32824707, 4.5448, 12.206985)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.925265, 2.5, 0.04777813)
+size = Vector3(0.58306885, 4.5448, 12.77367)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGbuilding" unique_id=41249336]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.735049, 2.5, -0.009625435)
-size = Vector3(0.32824707, 4.5448, 12.206985)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.890735, 2.5, 0.042434692)
+size = Vector3(0.6396179, 4.5448, 12.79162)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="CSGbuilding" unique_id=348717698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.788, 2.5, 1.989891)

@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dhbkxogb3eq6p"]
+
+[ext_resource type="Texture2D" uid="uid://cw0xovn2yrdi5" path="res://materials/surface/plastic/plastic016b/Plastic016B_1K-PNG_Color.png" id="1_hfe7t"]
+[ext_resource type="Texture2D" uid="uid://6gn5w5k2n7i8" path="res://materials/surface/plastic/plastic016b/Plastic016B_1K-PNG_NormalGL.png" id="2_478ii"]
+[ext_resource type="Texture2D" uid="uid://003pogptkwh4" path="res://materials/surface/plastic/plastic016b/Plastic016B_1K-PNG_Roughness.png" id="3_e2fsw"]
+
+[resource]
+albedo_texture = ExtResource("1_hfe7t")
+roughness_texture = ExtResource("3_e2fsw")
+normal_enabled = true
+normal_texture = ExtResource("2_478ii")
+texture_filter = 4

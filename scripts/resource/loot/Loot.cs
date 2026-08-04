@@ -226,7 +226,7 @@ public struct LootState
         str += (int)self.Difficulty + ",";
         str += self.MapHashId + ",";
         str += self.ChallengeScaling + ",";
-        str += self.OverScaling.ToString("#.#");
+        str += self.OverScaling.ToString(".0");
         return str;
     }
 

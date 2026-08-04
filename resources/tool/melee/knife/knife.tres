@@ -9,5 +9,6 @@ RPM = 60.0
 Damage = 30.0
 MaxRange = 1.2
 MeshSceneViewmodel = ExtResource("1_p3vpv")
+CarryWeight = 0
 ResourceId = "knife"
 metadata/_custom_type_script = "uid://b6d5j21ujr1b7"
