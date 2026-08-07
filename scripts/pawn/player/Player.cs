@@ -133,7 +133,7 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
             {
-                NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/dev/Dev.tscn");
+                NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
             }
 
             if (eventKey.Keycode == Key.F3 && eventKey.Pressed)

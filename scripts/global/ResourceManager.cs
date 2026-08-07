@@ -5,19 +5,22 @@ public static class ResourceManager
 	public static ResourceRegistry<Tool> ToolRegistry { get; private set; } = new();
 	public static ResourceRegistry<Attachment> AttachmentRegistry { get; private set; } = new();
 	public static ResourceRegistry<Mob> MobRegistry { get; private set; } = new();
+	public static ResourceRegistry<Map> MapRegistry { get; private set; } = new();
 
 	public static LootResourceRegistry LootRegistry { get; private set; } = new();
 	// special loot can be retrieved by file
 
-	public static string ModsPath { get; private set; } = "user://mods";
+	public static string ModsPath { get; private set; } = "user://mods/";
 
 	public static void Ready()
 	{
 		ToolRegistry.RegisterFolder("res://resources/tool/");
 		AttachmentRegistry.RegisterFolder("res://resources/tool/attachment/");
 		MobRegistry.RegisterFolder("res://resources/mob/");
+		MapRegistry.RegisterFolder("res://scenes/map/");
 
-		// string dirToMods = OS.GetUserDataDir();
+		// collect mod data
+		//foreach (var file in Direct)
 	}
 
 	public class ResourceRegistry<T> where T : MFResource

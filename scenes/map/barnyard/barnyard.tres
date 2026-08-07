@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Map" format=3 uid="uid://busv7owlb6wm2"]
+
+[ext_resource type="PackedScene" uid="uid://dp4jd0ipg1xs6" path="res://scenes/map/barnyard/barnyard.tscn" id="1_2qgt3"]
+[ext_resource type="Script" uid="uid://ifnxoeyd77ie" path="res://scripts/resource/map/Map.cs" id="1_vladt"]
+
+[resource]
+script = ExtResource("1_vladt")
+Scene = ExtResource("1_2qgt3")
+ResourceId = "barnyard"
+metadata/_custom_type_script = "uid://ifnxoeyd77ie"

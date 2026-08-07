@@ -2,8 +2,8 @@
 
 [ext_resource type="Material" uid="uid://bed5evbe4kar" path="res://materials/surface/concrete/concrete008/Concrete008.tres" id="1_4ryty"]
 [ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_ras1x"]
-[ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://materials/surface/grass/grass005/Grass005_1K-PNG_Color.png" id="3_cacm0"]
-[ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/grass/grass005/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
+[ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_Color.png" id="3_cacm0"]
+[ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
 [ext_resource type="Texture2D" uid="uid://cke3r1f0hqyq8" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_Color.png" id="5_4ryty"]
 [ext_resource type="Texture2D" uid="uid://cgil4svjqswf5" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_NormalGL.png" id="6_t5wx4"]
 [ext_resource type="Material" uid="uid://e5b8snlyaqsp" path="res://materials/debug/debugscalingground.tres" id="7_jnte4"]
@@ -78,7 +78,6 @@ _shader_parameters = {
 &"projection_threshold": 0.8
 }
 texture_filtering = 1
-show_region_grid = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eksbt"]
 transparency = 4
@@ -102,14 +101,14 @@ lod0_range = 128.0
 name = "th-1035532166"
 albedo_texture = ExtResource("3_cacm0")
 normal_texture = ExtResource("4_eksbt")
-uv_scale = 0.05
+uv_scale = 0.061
 
 [sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_2mlpq"]
 name = "Rocks011_1K-PNG_Color"
 id = 1
 albedo_texture = ExtResource("5_4ryty")
 normal_texture = ExtResource("6_t5wx4")
-uv_scale = 0.05
+uv_scale = 0.061
 
 [sub_resource type="Terrain3DAssets" id="Terrain3DAssets_t5wx4"]
 mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_4ryty")])
@@ -279,8 +278,6 @@ data_directory = "res://addon-terrain3D-data"
 material = SubResource("Terrain3DMaterial_ku1jm")
 assets = SubResource("Terrain3DAssets_t5wx4")
 save_16_bit = true
-show_grid = true
-show_region_grid = true
 top_level = true
 metadata/_edit_lock_ = true
 
@@ -362,3 +359,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.04453636, -10.000002)
 
 [node name="tunnelstraight" parent="." unique_id=1868503491 instance=ExtResource("13_2u80r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6087971, -0.078771114, -26.993225)
+
+[node name="tunnelstraight" parent="tunnelstraight" unique_id=369675900 instance=ExtResource("13_2u80r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+
+[node name="tunnelstraight" parent="tunnelstraight/tunnelstraight" unique_id=1507552423 instance=ExtResource("13_2u80r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)

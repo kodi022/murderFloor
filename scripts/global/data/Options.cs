@@ -7,6 +7,8 @@ public static class OptionsManager
 
     private static Control framerateDisplay;
 
+    // ! DisplayServer.WindowRequestAttention use for round start or finished loading or something
+
     public static void Save(Options options)
     {
         var json = System.Text.Json.JsonSerializer.Serialize(options);
@@ -36,6 +38,14 @@ public static class OptionsManager
             options.VSync ? DisplayServer.VSyncMode.Enabled : DisplayServer.VSyncMode.Disabled
         );
 
+        var displayMode = options.WindowMode switch
+        {
+            "Exclusive Fullscreen" => DisplayServer.WindowMode.ExclusiveFullscreen,
+            "Fullscreen" => DisplayServer.WindowMode.Fullscreen,
+            _ => DisplayServer.WindowMode.Windowed
+        };
+        DisplayServer.WindowSetMode(displayMode);
+
         if (Engine.GetMainLoop() is SceneTree tree)
         {
             var viewport = tree.Root.GetWindow();
@@ -48,7 +58,7 @@ public static class OptionsManager
             };
 
             viewport.Scaling3DScale = options.ScalingRenderScale / 100f;
-            viewport.FsrSharpness = 2f - options.ScalingSharpness;
+            viewport.FsrSharpness = 2f - (options.ScalingSharpness * 2f);
 
             viewport.Msaa3D = options.AntiAliasing switch
             {
@@ -67,7 +77,7 @@ public static class OptionsManager
 
             viewport.UseTaa = options.TAA;
 
-            // ! not working
+            // ! not working, figure out presets anyway
             var sdfgiEnabled = options.SDFGI != "Off";
             foreach (Node child in tree.Root.GetChildren())
             {
@@ -120,10 +130,10 @@ public static class OptionsManager
         [OptionBool("Control", "")]
         public bool SensitivityFieldOfViewScaling { get; set; } = true;
 
-        [OptionString("Display", ["Windowed", "Maximized", "Fullscreen", "Exclusive Fullscreen"], "")]
+        [OptionString("Display", ["Windowed", "Fullscreen", "Exclusive Fullscreen"], "")]
         public string WindowMode { get; set; } = "Windowed";
         // [OptionFloat("Display", 24f, 300f, 1f)]
-        // public Vector2I Resolution { get; set; } = 144f;
+        // public Vector2I FullscreenResolution { get; set; } = 144f;
         [OptionBool("Display", "")]
         public bool UseFramerateLimit { get; set; } = false;
         [OptionFloat("Display", 24f, 300f, 1f, "")]
@@ -131,7 +141,7 @@ public static class OptionsManager
         [OptionBool("Display", "")]
         public bool VSync { get; set; } = true;
 
-        [OptionFloat("Graphics", 60f, 100f, 1f, "")]
+        [OptionFloat("Graphics", 60f, 110f, 1f, "")]
         public float FieldOfView { get; set; } = 90;
         [OptionFloat("Graphics", 0.6f, 1.2f, 0.01f, "")]
         public float ViewmodelFieldOfViewScale { get; set; } = 0.8f;
@@ -139,8 +149,8 @@ public static class OptionsManager
         public string Scaling { get; set; } = "None";
         [OptionFloat("Graphics", 25f, 200f, 5f, "Resource intensive and FSR not supported when above 100.")]
         public float ScalingRenderScale { get; set; } = 100f;
-        [OptionFloat("Graphics", 0f, 2f, 0.1f, "Used only with FSR.")]
-        public float ScalingSharpness { get; set; } = 1.8f;
+        [OptionFloat("Graphics", 0f, 1f, 0.1f, "Used only with FSR.")]
+        public float ScalingSharpness { get; set; } = 0.9f;
         [OptionString("Graphics", ["MSAA8x", "MSAA4x", "MSAA2x", "SMAA", "FXAA", "Off"], "Not Recommended with FSR2.2 enabled. MSAA can be resource intensive.")]
         public string AntiAliasing { get; set; } = "FXAA";
         [OptionBool("Graphics", "Ignored when FSR2.2 is enabled.")]
@@ -153,9 +163,9 @@ public static class OptionsManager
         public string AntisotropicFiltering { get; set; } = "8x";
 
         [OptionFloat("Gameplay", 0f, 1f, 0.05f, "")]
-        public float CrosshairOpacity { get; set; } = 1f;
+        public float CrosshairOpacity { get; set; } = 0.8f;
         [OptionFloat("Gameplay", 0f, 1f, 0.05f, "")]
-        public float AimCrosshairOpacity { get; set; } = 0.25f;
+        public float AimCrosshairOpacity { get; set; } = 0.2f;
         [OptionBool("Gameplay", "")]
         public bool ScalingCrosshair { get; set; } = true;
         [OptionBool("Gameplay", "")]
@@ -170,6 +180,8 @@ public static class OptionsManager
             Sensitivity = other.Sensitivity;
             SensitivityFieldOfViewScaling = other.SensitivityFieldOfViewScaling;
 
+            WindowMode = other.WindowMode;
+            // FullscreenResolution = other.FullscreenResolution;
             UseFramerateLimit = other.UseFramerateLimit;
             FramerateLimit = other.FramerateLimit;
             VSync = other.VSync;

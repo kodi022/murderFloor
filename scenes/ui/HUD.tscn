@@ -65,6 +65,7 @@ bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
 
 [node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "EmptyCrosshair", "GunCrosshair", "ShotgunCrosshair", "healthBarPanel", "useInfoLabel", "weaponsContainer")]
 layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_vertical = 2

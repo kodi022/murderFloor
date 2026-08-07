@@ -1,7 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://jv460lcd3mx6"]
 
-[ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://materials/surface/grass/grass005/Grass005_1K-PNG_Color.png" id="1_xkdor"]
-[ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/grass/grass005/Grass005_1K-PNG_NormalGL.png" id="2_0ryvs"]
+[ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_Color.png" id="1_xkdor"]
+[ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_NormalGL.png" id="2_0ryvs"]
 
 [resource]
 albedo_texture = ExtResource("1_xkdor")

@@ -4,8 +4,7 @@ namespace MurderFloor;
 public partial class Map : MFResource
 {
     [Export]
-    public PackedScene Scene { get; private set; }
-
+    public Vector2 MapLocation { get; private set; } = Vector2.Zero;
     [Export]
-    public float DifficultyScale { get; private set; } = 1f;
+    public float MapDifficultyScale { get; private set; } = 1f;
 }
