@@ -6,22 +6,33 @@
 [ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/grass/grass005/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
 [ext_resource type="Texture2D" uid="uid://cke3r1f0hqyq8" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_Color.png" id="5_4ryty"]
 [ext_resource type="Texture2D" uid="uid://cgil4svjqswf5" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_NormalGL.png" id="6_t5wx4"]
+[ext_resource type="Material" uid="uid://e5b8snlyaqsp" path="res://materials/debug/debugscalingground.tres" id="7_jnte4"]
+[ext_resource type="Material" uid="uid://bx6mpnesdxait" path="res://materials/surface/concrete/concrete017/Concrete017.tres" id="7_t5wx4"]
+[ext_resource type="Texture2D" uid="uid://cj1cs8xm7liyg" path="res://images/debug/ruler2.png" id="8_ootgo"]
+[ext_resource type="FontFile" uid="uid://d0k2lrfxrv5c2" path="res://fonts/Quantico-Regular.ttf" id="9_ootgo"]
+[ext_resource type="Material" uid="uid://s3n0bhfr6o0j" path="res://materials/surface/wood/wood095/Wood095.tres" id="11_k7gih"]
+[ext_resource type="PackedScene" uid="uid://bysve08qsh4kt" path="res://models/prop/street/newsbox/newsbox.blend" id="12_2mlpq"]
+[ext_resource type="PackedScene" uid="uid://q2xs38ym4gvf" path="res://models/structure/tunneltileset/tunnelstraight.blend" id="13_2u80r"]
 
-[sub_resource type="Environment" id="Environment_6jt0u"]
+[sub_resource type="Environment" id="Environment_k7gih"]
 background_mode = 1
-background_color = Color(0.59229803, 0.70424664, 0.77621365, 1)
+background_color = Color(0.5789182, 0.31991723, 0.36675778, 1)
 tonemap_mode = 2
 tonemap_white = 6.0
+ssr_enabled = true
 ssao_enabled = true
 ssao_radius = 2.0
 ssao_intensity = 2.5
 sdfgi_enabled = true
-sdfgi_cascades = 5
-sdfgi_y_scale = 2
-fog_enabled = true
-fog_light_color = Color(0.6907189, 0.83994883, 1, 1)
-fog_density = 0.005
-volumetric_fog_albedo = Color(0.3290106, 0.6143604, 1, 1)
+sdfgi_use_occlusion = true
+sdfgi_y_scale = 0
+glow_enabled = true
+glow_intensity = 0.5
+fog_light_color = Color(0.4755057, 0.34755355, 0.39579752, 1)
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.03
+volumetric_fog_emission = Color(0.5526121, 0.23632917, 0.23632917, 1)
+volumetric_fog_length = 1024.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cdhm0"]
 size = Vector3(1.5195313, 2.2456055, 0.8495636)
@@ -104,6 +115,12 @@ uv_scale = 0.05
 mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_4ryty")])
 texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_eksbt"), SubResource("Terrain3DTextureAsset_2mlpq")])
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jnte4"]
+albedo_texture = ExtResource("8_ootgo")
+
+[sub_resource type="QuadMesh" id="QuadMesh_k7gih"]
+size = Vector2(2.002, 0.4)
+
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1851156556]
@@ -111,8 +128,8 @@ transform = Transform3D(0.73122287, -0.5771171, 0.36366072, -0.022016406, 0.5128
 light_color = Color(0.73422515, 0.31225622, 0.220022, 1)
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2025338174]
-environment = SubResource("Environment_6jt0u")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1583823142]
+environment = SubResource("Environment_k7gih")
 
 [node name="PostProcessing" type="CanvasLayer" parent="." unique_id=1554231790]
 layer = -1
@@ -266,3 +283,82 @@ show_grid = true
 show_region_grid = true
 top_level = true
 metadata/_edit_lock_ = true
+
+[node name="CSGGroundDev" type="CSGBox3D" parent="." unique_id=1366096514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.046353817, -24.717268)
+material_override = ExtResource("7_jnte4")
+size = Vector3(32, 0.1, 32)
+material = ExtResource("7_t5wx4")
+
+[node name="CSGScale" type="CSGBox3D" parent="CSGGroundDev" unique_id=13628808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.999987, 0.048374653, -11.786388)
+size = Vector3(1, 0.05, 0.01)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale" unique_id=600775593]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.501, 0.22265625, 0)
+material_override = SubResource("StandardMaterial3D_jnte4")
+mesh = SubResource("QuadMesh_k7gih")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale/MeshInstance3D2" unique_id=2102641634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_jnte4")
+mesh = SubResource("QuadMesh_k7gih")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale/MeshInstance3D2/MeshInstance3D2" unique_id=230729896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_jnte4")
+mesh = SubResource("QuadMesh_k7gih")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=78648720]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_jnte4")
+mesh = SubResource("QuadMesh_k7gih")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGScale" unique_id=1993321887]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.2, 0)
+size = Vector3(0.1, 0.45, 0.1)
+
+[node name="Label3D" type="Label3D" parent="CSGGroundDev/CSGScale" unique_id=982360536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8744254, 0.6467638, -0.04206848)
+pixel_size = 0.006
+text = "Put models here for scaling
+Textures should scale 16px/m (same as ground plane)"
+font = ExtResource("9_ootgo")
+outline_size = 10
+line_spacing = -8.0
+
+[node name="CSGramps" type="CSGBox3D" parent="CSGGroundDev" unique_id=723167262]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, -7.843754, 0.16409242, -13.059757)
+material_override = ExtResource("7_t5wx4")
+calculate_tangents = false
+use_collision = true
+size = Vector3(2, 1, 5)
+material = ExtResource("11_k7gih")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps" unique_id=2145138724]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps/CSGBox3D" unique_id=1093574532]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps/CSGBox3D/CSGBox3D" unique_id=221857999]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps/CSGBox3D/CSGBox3D/CSGBox3D" unique_id=1778352330]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGPlayer" type="CSGCylinder3D" parent="CSGGroundDev" unique_id=1466864108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.875281, 0.9533652, -11.893618)
+radius = 0.4
+height = 1.8
+sides = 16
+
+[node name="newsbox" parent="CSGGroundDev" unique_id=1714770627 instance=ExtResource("12_2mlpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.04453636, -10.000002)
+
+[node name="tunnelstraight" parent="." unique_id=1868503491 instance=ExtResource("13_2u80r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6087971, -0.078771114, -26.993225)

@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://e5b8snlyaqsp"]
+
+[ext_resource type="Texture2D" uid="uid://cj4ude0e3yubo" path="res://materials/debug/debugscalingtexture.png" id="1_cr2pd"]
+
+[resource]
+albedo_texture = ExtResource("1_cr2pd")
+texture_filter = 4
