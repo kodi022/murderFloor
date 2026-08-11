@@ -64,7 +64,7 @@ public partial class MainMenu : ScreenScaleLimiter
 							var error = NetworkManager.Current.CreateServer();
 							if (error == Error.Ok)
 							{
-								GetTree().ChangeSceneToFile("res://scenes/map/Lobby.tscn");
+								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
 							}
 							return;
 						}
@@ -78,7 +78,7 @@ public partial class MainMenu : ScreenScaleLimiter
 							var error = NetworkManager.Current.JoinServer();
 							if (error == Error.Ok)
 							{
-								GetTree().ChangeSceneToFile("res://scenes/map/Lobby.tscn");
+								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
 							}
 						}
 						break;

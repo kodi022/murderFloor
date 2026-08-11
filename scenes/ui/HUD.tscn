@@ -49,6 +49,10 @@ anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6ll6g"]
 bg_color = Color(0, 0, 0, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atyv1"]
+bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw0id"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -57,17 +61,26 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
+corner_detail = 1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig75s"]
+bg_color = Color(0.2901961, 0.29204994, 0.56078434, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atyv1"]
-bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvmx1"]
+bg_color = Color(0.40392157, 0.49411765, 0.40392157, 1)
 
-[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "EmptyCrosshair", "GunCrosshair", "ShotgunCrosshair", "healthBarPanel", "useInfoLabel", "weaponsContainer")]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_dx04r"]
+grow_begin = 0.0
+grow_end = 0.0
+thickness = 2
+vertical = true
+
+[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "EmptyCrosshair", "GunCrosshair", "ShotgunCrosshair", "healthBarPanel", "armorBarPanel", "weightBarPanel", "useInfoLabel", "weaponsContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_atyv1")
 script = ExtResource("1_kw0id")
@@ -76,7 +89,9 @@ roundTimerPanel = NodePath("Center-Top/RoundTimerPanel")
 EmptyCrosshair = NodePath("Center/EmptyCrosshair")
 GunCrosshair = NodePath("Center/GunCrosshair")
 ShotgunCrosshair = NodePath("Center/ShotgunCrosshair")
-healthBarPanel = NodePath("Bottom - Right/Panel/Panel/healthbarPanel")
+healthBarPanel = NodePath("Bottom - Right/HealthPanel/healthbar")
+armorBarPanel = NodePath("Bottom - Right/ArmorPanel/armorbar")
+weightBarPanel = NodePath("Bottom - Right/WeightPanel/weightbar")
 useInfoLabel = NodePath("Center/UseInfoLabel")
 weaponsContainer = NodePath("Bottom - Right/VBoxContainer")
 
@@ -250,39 +265,218 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -145.0
-offset_top = -250.0
+offset_left = -467.0
+offset_top = -427.0
 offset_right = -10.0
-offset_bottom = -210.0
+offset_bottom = -76.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Panel" type="Panel" parent="Bottom - Right" unique_id=1130721444]
+[node name="HealthPanel" type="Panel" parent="Bottom - Right" unique_id=1130721444]
+clip_contents = true
 layout_mode = 0
-offset_left = -303.0
-offset_top = -20.0
-offset_right = -83.0
+offset_left = -300.0
+offset_top = -24.0
+offset_right = -75.0
 offset_bottom = -10.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
 
-[node name="border" type="Panel" parent="Bottom - Right/Panel" unique_id=1956631621]
-layout_mode = 0
-offset_right = 220.0
-offset_bottom = 10.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
-
-[node name="Panel" type="Panel" parent="Bottom - Right/Panel" unique_id=1615737957]
-clip_children = 1
+[node name="healthbar" type="Panel" parent="Bottom - Right/HealthPanel" unique_id=463223751]
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
-offset_right = 218.0
-offset_bottom = 8.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ig75s")
-
-[node name="healthbarPanel" type="Panel" parent="Bottom - Right/Panel/Panel" unique_id=463223751]
-layout_mode = 0
-offset_right = 216.0
-offset_bottom = 6.0
+offset_right = 223.0
+offset_bottom = 12.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_atyv1")
+
+[node name="border" type="Panel" parent="Bottom - Right/HealthPanel" unique_id=1956631621]
+clip_contents = true
+layout_mode = 0
+offset_right = 225.0
+offset_bottom = 14.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="ArmorPanel" type="Panel" parent="Bottom - Right" unique_id=422478128]
+clip_contents = true
+layout_mode = 0
+offset_left = -300.0
+offset_top = -40.0
+offset_right = -75.0
+offset_bottom = -26.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
+
+[node name="armorbar" type="Panel" parent="Bottom - Right/ArmorPanel" unique_id=845088452]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 223.0
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ig75s")
+
+[node name="border" type="Panel" parent="Bottom - Right/ArmorPanel" unique_id=1760721554]
+clip_contents = true
+layout_mode = 0
+offset_right = 225.0
+offset_bottom = 14.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="WeightPanel" type="Panel" parent="Bottom - Right" unique_id=1038518463]
+clip_contents = true
+layout_mode = 0
+offset_left = -275.0
+offset_top = -60.0
+offset_right = -75.0
+offset_bottom = -48.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
+
+[node name="weightbar" type="Panel" parent="Bottom - Right/WeightPanel" unique_id=1987976836]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 198.0
+offset_bottom = 10.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jvmx1")
+
+[node name="border" type="Panel" parent="Bottom - Right/WeightPanel" unique_id=1827636103]
+clip_contents = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 12.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border" unique_id=131144472]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 2.0
+offset_right = 11.0
+offset_bottom = 10.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel" unique_id=204971949]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel" unique_id=974510902]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel" unique_id=1144707360]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel" unique_id=760742193]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel" unique_id=447609488]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=2144993320]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=170197389]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=508970378]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=8543852]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=1316548150]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=448819154]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=1296938170]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=479569315]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=657913999]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=820762758]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=525553791]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=148229192]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")
+
+[node name="Panel" type="Panel" parent="Bottom - Right/WeightPanel/border/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel/Panel" unique_id=472922457]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 12.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxLine_dx04r")

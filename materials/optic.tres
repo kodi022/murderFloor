@@ -7,4 +7,4 @@
 render_priority = 0
 shader = ExtResource("1_dor3p")
 shader_parameter/Texture = ExtResource("2_sjm5c")
-shader_parameter/Tint = Color(1.1001844, 18.892157, 0, 1)
+shader_parameter/Tint = Color(0.43069524, 7.9112988, 0, 1)

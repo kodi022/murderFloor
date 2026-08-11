@@ -17,12 +17,17 @@ public partial class HUD : ScreenScaleLimiter
     [Export]
     private Panel healthBarPanel;
     [Export]
+    private Panel armorBarPanel;
+    [Export]
+    private Panel weightBarPanel;
+    [Export]
     private Label useInfoLabel;
     [Export]
     private VBoxContainer weaponsContainer;
 
-    private int healthBarFunctionCount = 0;
+    private int updateBarsFuncCount = 0;
     private Vector2 lastHealthBarPos = Vector2.Zero;
+    private Vector2 lastArmorBarPos = Vector2.Zero;
     private bool hookedGameEvents = false;
 
     private LiveTool selectedTool;
@@ -37,7 +42,7 @@ public partial class HUD : ScreenScaleLimiter
         EmptyCrosshair.Visible = false;
         GunCrosshair.Visible = false;
         ShotgunCrosshair.Visible = false;
-        Player.Self.PlayerOnDamage += UpdateHealth;
+        Player.Self.PlayerOnDamage += UpdateHealthAndArmor;
         Player.Self.PlayerOnHeal += HealAndUpdateHealth;
         Player.Self.PlayerToolChange += GenerateToolLists;
     }
@@ -56,6 +61,10 @@ public partial class HUD : ScreenScaleLimiter
         ProcessCrosshairs();
 
         useInfoLabel.Text = Player.Self.UseInfoText;
+
+        var weightMove = (float)Player.Self.ToolWeight / Player.Self.MaxWeight;
+        var newWeightBarPos = new Vector2((weightBarPanel.Size.X * weightMove) - weightBarPanel.Size.X, 2);
+        weightBarPanel.SetPosition(newWeightBarPos);
 
         // string players = "";
         // players += $"-> {Player.Self.Id}-{NetworkManager.Current._playerInfo["Name"]}\n";
@@ -197,14 +206,17 @@ public partial class HUD : ScreenScaleLimiter
     {
         // heal effect
 
-        UpdateHealth(null);
+        UpdateHealthAndArmor(null);
     }
 
-    private async void UpdateHealth(DamageInfoVariant damageInfoVariant)
+    private async void UpdateHealthAndArmor(DamageInfoVariant damageInfoVariant)
     {
-        healthBarFunctionCount++;
-        var move = Player.Self.Health / Player.Self.MaxHealth;
-        var newHealthBarPos = new Vector2((healthBarPanel.Size.X * move) - healthBarPanel.Size.X, 0);
+        updateBarsFuncCount++;
+        var healthMove = Player.Self.Health / Player.Self.MaxHealth;
+        var newHealthBarPos = new Vector2((healthBarPanel.Size.X * healthMove) - healthBarPanel.Size.X, 2);
+
+        var armorMove = Player.Self.Armor / Player.Self.MaxArmor;
+        var newArmorBarPos = new Vector2((armorBarPanel.Size.X * armorMove) - armorBarPanel.Size.X, 2);
 
         var deltas = 0d;
         // smooth over 250 ms
@@ -214,19 +226,24 @@ public partial class HUD : ScreenScaleLimiter
             await Task.Delay((int)(delta * 1000d));
 
             deltas += delta;
+
             var currentHealthBarPos = lastHealthBarPos.Lerp(newHealthBarPos, (float)deltas * 4f);
-            if (healthBarFunctionCount > 1)
+            var currentArmorBarPos = lastArmorBarPos.Lerp(newArmorBarPos, (float)deltas * 4f);
+            if (updateBarsFuncCount > 1)
             {
                 lastHealthBarPos = currentHealthBarPos;
-                healthBarFunctionCount--;
+                lastArmorBarPos = currentArmorBarPos;
+                updateBarsFuncCount--;
                 return;
             }
 
             healthBarPanel.SetPosition(currentHealthBarPos);
+            armorBarPanel.SetPosition(currentArmorBarPos);
         }
 
-        healthBarFunctionCount--;
+        updateBarsFuncCount--;
         lastHealthBarPos = newHealthBarPos;
+        lastArmorBarPos = newArmorBarPos;
     }
 
     private async void AnimateRoundTimer(int round)
@@ -238,7 +255,7 @@ public partial class HUD : ScreenScaleLimiter
         var time = Game.Current.TimeMsBetweenRounds / 1000;
         while (time > 0)
         {
-            numberLabel.Text = $"{time}";
+            numberLabel.Text = time.ToString();
             time--;
             await Task.Delay(1000);
         }
@@ -250,7 +267,7 @@ public partial class HUD : ScreenScaleLimiter
     {
         roundTimerPanel.Visible = false;
         var numberLabel = (Label)roundStartPanel.GetChild(1);
-        numberLabel.Text = $"{round}";
+        numberLabel.Text = round.ToString();
         roundStartPanel.Visible = true;
 
         await Task.Delay(6000);
