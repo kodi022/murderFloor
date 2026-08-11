@@ -39,7 +39,15 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
+_subresources={
+"materials": {
+"Material.001": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://materials/surface/rock/rock023/rock023.tres",
+"use_external/path": "uid://jll8vttkovs2"
+}
+}
+}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true

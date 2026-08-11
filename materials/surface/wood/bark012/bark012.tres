@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://brwupwaa6u7ad"]
+
+[ext_resource type="Texture2D" uid="uid://dn05d7l5pik4k" path="res://materials/surface/wood/bark012/Bark012_1K-PNG_Color.png" id="1_kmq8m"]
+[ext_resource type="Texture2D" uid="uid://bmld0syhybf3n" path="res://materials/surface/wood/bark012/Bark012_1K-PNG_NormalGL.png" id="2_0nwf5"]
+[ext_resource type="Texture2D" uid="uid://cw0uc3r6jjcoc" path="res://materials/surface/wood/bark012/Bark012_1K-PNG_Roughness.png" id="3_idoft"]
+
+[resource]
+albedo_texture = ExtResource("1_kmq8m")
+roughness_texture = ExtResource("3_idoft")
+normal_enabled = true
+normal_texture = ExtResource("2_0nwf5")
+texture_filter = 4

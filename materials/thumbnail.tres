@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://yni07wv3fuog"]
 
-[ext_resource type="Shader" uid="uid://cb4qkegs8o0yo" path="res://shader/thumbnail.tres" id="1_smq6e"]
+[ext_resource type="Shader" uid="uid://cb4qkegs8o0yo" path="res://materials/thumbnail-vs.tres" id="1_smq6e"]
 
 [resource]
 render_priority = 1

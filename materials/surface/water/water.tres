@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dpwpnuy37xxs"]
+
+[ext_resource type="Shader" uid="uid://dlnuywpvk0rx4" path="res://materials/surface/water/water-vs.tres" id="1_ko8r2"]
+[ext_resource type="Texture2D" uid="uid://by1gg5vrldtl2" path="res://materials/surface/water/water_normal1.tres" id="2_w237j"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ko8r2")
+shader_parameter/Texture2DParameter = ExtResource("2_w237j")
