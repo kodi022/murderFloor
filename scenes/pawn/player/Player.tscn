@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://7iw4twbox4f7"]
 
 [ext_resource type="Script" uid="uid://cxa4injtgdy3b" path="res://scripts/pawn/player/Player.cs" id="1_klv6p"]
-[ext_resource type="PackedScene" uid="uid://cclji8rued6d6" path="res://scenes/ui/HUD.tscn" id="2_lba76"]
+[ext_resource type="PackedScene" uid="uid://cclji8rued6d6" path="res://scenes/ui/hud/HUD.tscn" id="2_lba76"]
 [ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://scenes/pawn/player/KincheePlayer.blend" id="3_eoey4"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v0dpb"]

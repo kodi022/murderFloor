@@ -207,14 +207,17 @@ public partial class Player : Pawn
         Rotation = new Vector3(0, ViewAngle.X, 0);
         viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
+        Camera.Fov = OptionsManager.CurrentOptions.FieldOfView;
         if (SelectedTool?.Aiming ?? false)
         {
+            ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.AimingViewmodelFieldOfViewScale);
             viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.02f;
             viewModelAimSway *= reduction;
             viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.014f);
         }
         else
         {
+            ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.ViewmodelFieldOfViewScale);
             viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
             viewModelAimSway *= reduction;
             viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.06f);
@@ -227,8 +230,6 @@ public partial class Player : Pawn
         if (CameraShakeScale > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * CameraShakeScale;
         else Camera.Position = Vector3.Zero;
 
-        Camera.Fov = OptionsManager.CurrentOptions.FieldOfView;
-        ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.ViewmodelFieldOfViewScale);
 
         if (openUI is not null) return;
 

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cln0raaiaax5f"
-path.s3tc="res://.godot/imported/Gun_rough.png-f25d253784d4ee88afaf83d0292d7478.s3tc.ctex"
+uid="uid://d31isv0e3n1fx"
+path.bptc="res://.godot/imported/Gun_rough.png-f25d253784d4ee88afaf83d0292d7478.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -12,17 +12,17 @@ metadata={
 [deps]
 
 source_file="res://scenes/tool/gun/pistol/testpistol/Gun_rough.png"
-dest_files=["res://.godot/imported/Gun_rough.png-f25d253784d4ee88afaf83d0292d7478.s3tc.ctex"]
+dest_files=["res://.godot/imported/Gun_rough.png-f25d253784d4ee88afaf83d0292d7478.bptc.ctex"]
 
 [params]
 
 compress/mode=2
-compress/high_quality=false
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=2
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1

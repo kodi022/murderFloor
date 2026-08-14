@@ -89,6 +89,7 @@ public partial class LiveMob : Pawn
             var di = new DamageInfo()
             {
                 Damage = MobResource.AttackDamage,
+                DamageType = DamageInfo.DamageTypeEnum.Physical,
                 AttackerId = 0,
                 AttackerName = "Mob",
                 WeaponId = 0,

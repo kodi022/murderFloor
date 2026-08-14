@@ -19,7 +19,7 @@ public partial class Mob : MFResource
     [Export]
     public float AttackRange { get; private set; } = 1.2f;
     [Export]
-    public float AttackDamage { get; private set; } = 8f;
+    public float AttackDamage { get; private set; } = 10f;
 
     [Export, ExportSubgroup("Enragement")]
     public bool Enragement { get; private set; }

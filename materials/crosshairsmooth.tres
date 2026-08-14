@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c6sqfkcxldlfw"]
+
+[ext_resource type="Shader" uid="uid://xoucvsh3mh5p" path="res://materials/crosshairsmooth-vs.tres" id="1_nrvip"]
+
+[resource]
+shader = ExtResource("1_nrvip")

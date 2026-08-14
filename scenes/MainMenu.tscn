@@ -3,6 +3,25 @@
 [ext_resource type="PackedScene" uid="uid://d0hvqk3om0og7" path="res://scenes/ui/mainmenu/MainMenuUI.tscn" id="1_0ykhv"]
 [ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="3_l72w3"]
 
+[sub_resource type="Environment" id="Environment_0ykhv"]
+background_mode = 1
+background_color = Color(0.5789182, 0.31991723, 0.36675778, 1)
+tonemap_mode = 2
+tonemap_white = 6.0
+ssr_enabled = true
+ssao_enabled = true
+ssao_radius = 2.0
+ssao_intensity = 3.0
+sdfgi_enabled = true
+glow_enabled = true
+glow_intensity = 0.5
+fog_light_color = Color(0.4755057, 0.34755355, 0.39579752, 1)
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.04
+volumetric_fog_albedo = Color(0.6578363, 0.4889902, 0.4889902, 1)
+volumetric_fog_gi_inject = 0.03
+volumetric_fog_length = 1024.0
+
 [node name="MainMenu" type="Node3D" unique_id=1762461589]
 
 [node name="MainMenuUi" parent="." unique_id=1517158564 node_paths=PackedStringArray("camera", "cameraMenuPositionNode", "cameraLocalPositionNode", "cameraOnlinePositionNode", "cameraOptionsPositionNode") instance=ExtResource("1_0ykhv")]
@@ -29,9 +48,12 @@ transform = Transform3D(0.6570011, 0.12178234, 0.7439884, 0.043347247, 0.9791314
 [node name="OptionsPosition" type="Node3D" parent="." unique_id=535555842]
 transform = Transform3D(0.83201194, -0.39061674, 0.39392206, 0.20746633, 0.87764436, 0.43208575, -0.51450336, -0.27777496, 0.81125045, 0.6020174, 1.3613317, 0.6940243)
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=526955565]
+environment = SubResource("Environment_0ykhv")
+
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1737427734]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7625351, -0.24224854, -0.8673401)
-size = Vector3(6.810684, 0.5155029, 4.61969)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.763, 0, -0.867)
+size = Vector3(51.2, 0.516, 51.2)
 material = ExtResource("3_l72w3")
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGBox3D" unique_id=1629958678]
@@ -41,12 +63,12 @@ material = ExtResource("3_l72w3")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D" unique_id=123919977]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8448875, 1.0549644, -0.95187855)
-size = Vector3(3.590149, 1.6571045, 0.65478516)
+size = Vector3(51.2, 51.2, 1)
 material = ExtResource("3_l72w3")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D/CSGBox3D" unique_id=1084682083]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22929311, 1.0617851, 1.111064)
-size = Vector3(6.199295, 0.5068054, 2.8908997)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.062, 0)
+size = Vector3(51.2, 0.507, 51.2)
 material = ExtResource("3_l72w3")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1453834677]
@@ -56,3 +78,6 @@ light_indirect_energy = 0.04
 light_volumetric_fog_energy = 0.0
 directional_shadow_mode = 0
 directional_shadow_max_distance = 27.7
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=768391777]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.94454813, 1.0237107, -0.57901835)

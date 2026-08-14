@@ -5,8 +5,7 @@
 
 [resource]
 script = ExtResource("1_woa5v")
-MeshScene = ExtResource("1_7n26w")
-MaxHealth = 100.0
-Health = 100.0
+AttackDamage = 10.0
 ResourceId = "testmob"
+MeshScene = ExtResource("1_7n26w")
 metadata/_custom_type_script = "uid://c4nkwdo5lew66"

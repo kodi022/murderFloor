@@ -21,11 +21,11 @@ public partial class Player : Pawn
                 if (wishMove.Z > 0f) wishMove.Z *= 0.75f;
                 wishMove.X *= 0.75f;
             }
-            wishMove *= 0.45f;
+            wishMove *= 0.33f;
         }
         else
         {
-            wishMove *= 0.72f;
+            wishMove *= 0.52f;
         }
         // ! does not reduce from joystick
         // abs input
@@ -34,7 +34,7 @@ public partial class Player : Pawn
 
         wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X);
         if (Input.IsActionJustPressed("jump")) wishMove.Y = 14f;
-        lastVel *= new Vector3(0.80f, 0.95f, 0.80f);
+        lastVel *= new Vector3(0.86f, 0.95f, 0.86f);
         lastVel += wishMove;
 
         Gravity();

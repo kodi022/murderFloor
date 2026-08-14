@@ -41,6 +41,14 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "nodes": {
+"PATH:_Collision": {
+"generate/physics": true,
+"mesh_instance/layers": 0
+},
+"PATH:_Collision2": {
+"generate/physics": true,
+"mesh_instance/layers": 0
+},
 "PATH:_Wall_reference": {
 "import/skip_import": true
 },

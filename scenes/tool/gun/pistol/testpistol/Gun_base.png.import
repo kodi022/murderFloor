@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcud1xc6yvv5v"
-path.s3tc="res://.godot/imported/Gun_base.png-5375afef464ab750ad7fc1694bb393e5.s3tc.ctex"
+uid="uid://ieipldkpst7i"
+path.bptc="res://.godot/imported/Gun_base.png-5375afef464ab750ad7fc1694bb393e5.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -12,22 +12,22 @@ metadata={
 [deps]
 
 source_file="res://scenes/tool/gun/pistol/testpistol/Gun_base.png"
-dest_files=["res://.godot/imported/Gun_base.png-5375afef464ab750ad7fc1694bb393e5.s3tc.ctex"]
+dest_files=["res://.godot/imported/Gun_base.png-5375afef464ab750ad7fc1694bb393e5.bptc.ctex"]
 
 [params]
 
 compress/mode=2
-compress/high_quality=false
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=1
+compress/normal_map=2
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=1
-roughness/src_normal="res://scenes/tool/gun/pistol/testpistol/Gun_base.png"
+roughness/mode=0
+roughness/src_normal=""
 process/channel_remap/red=0
 process/channel_remap/green=1
 process/channel_remap/blue=2

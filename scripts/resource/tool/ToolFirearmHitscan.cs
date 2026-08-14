@@ -105,6 +105,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
                     var di = new DamageInfo()
                     {
                         Damage = damage,
+                        DamageType = DamageInfo.DamageTypeEnum.Physical,
                         AttackerId = fi.Player.Id,
                         AttackerName = NetworkManager.Current._players[fi.Player.Id]["Name"],
                         WeaponId = HashId,

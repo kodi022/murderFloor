@@ -5,8 +5,13 @@
 [ext_resource type="Texture2D" uid="uid://cfpj0poi14m1n" path="res://materials/surface/foliage/leafset024/LeafSet024_1K-PNG_Roughness.png" id="3_blooy"]
 
 [resource]
-transparency = 4
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
 albedo_texture = ExtResource("1_kvh5o")
 roughness_texture = ExtResource("3_blooy")
 normal_enabled = true
 normal_texture = ExtResource("2_o1vuw")
+uv1_scale = Vector3(0.33, 0.33, 0.33)
+texture_filter = 4

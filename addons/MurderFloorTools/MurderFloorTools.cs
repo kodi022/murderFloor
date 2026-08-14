@@ -10,7 +10,7 @@ public partial class MurderFloorTools : EditorPlugin
 		// Initialization of the plugin goes here.
 		var texture = GD.Load<Texture2D>("res://images/missing.png");
 
-		var mobSpawnAreaScript = GD.Load<CSharpScript>("res://scripts/game/mob/MobSpawnArea.cs");
+		var mobSpawnAreaScript = GD.Load<CSharpScript>("res://scripts/game/gamescripts/MobSpawnArea.cs");
 		AddCustomType("MobSpawnArea", "Node3D", mobSpawnAreaScript, texture);
 
 		mobSpawnAreaGizmo = (MobSpawnAreaGizmo)(GodotObject)GD.Load<CSharpScript>("res://addons/MurderFloorTools/MobSpawnAreaGizmo.cs").New();
