@@ -121,7 +121,7 @@ public partial class Player : Pawn
             {
                 if (debugUI is null)
                 {
-                    debugUI = GD.Load<PackedScene>("res://scenes/ui/HUDDebug.tscn").Instantiate<Control>();
+                    debugUI = GD.Load<PackedScene>("res://scenes/ui/hud/debug/HUDDebug.tscn").Instantiate<Control>();
                     AddChild(debugUI);
                 }
                 else

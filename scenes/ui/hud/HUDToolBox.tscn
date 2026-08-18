@@ -2,31 +2,56 @@
 
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_hndvj"]
 [ext_resource type="Script" uid="uid://cr16vipo0yrsi" path="res://scripts/ui/hud/HUDToolBox.cs" id="2_km0wi"]
+[ext_resource type="Texture2D" uid="uid://c85wq0g572wis" path="res://images/ui/ninepatch-greyscale.png" id="3_ei2h0"]
 [ext_resource type="Texture2D" uid="uid://bb644t6jgxfr8" path="res://images/ui/lockertoolbutton-default.png" id="3_km0wi"]
 
-[node name="HudToolBox" type="Panel" unique_id=1195478945 node_paths=PackedStringArray("PanelContainer", "TextureRect", "Label")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ei2h0"]
+bg_color = Color(0.1755, 0.23062503, 0.27, 0.78431374)
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
+
+[node name="HudToolBox" type="Panel" unique_id=1195478945 node_paths=PackedStringArray("NinePatchRect", "TextureRect", "Label")]
+clip_children = 2
 custom_minimum_size = Vector2(80, 50)
 offset_right = 80.0
 offset_bottom = 50.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+offset_transform_enabled = true
 theme = ExtResource("1_hndvj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ei2h0")
 script = ExtResource("2_km0wi")
-PanelContainer = NodePath("")
+NinePatchRect = NodePath("NinePatchRect")
 TextureRect = NodePath("TextureRect")
 Label = NodePath("Label")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1462943349]
-custom_minimum_size = Vector2(80, 40)
+[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=499370765]
+modulate = Color(0.61237115, 0.72265726, 0.8025197, 1)
 layout_mode = 0
-offset_top = -3.0
 offset_right = 80.0
-offset_bottom = 37.0
+offset_bottom = 50.0
+texture = ExtResource("3_ei2h0")
+draw_center = false
+patch_margin_left = 9
+patch_margin_top = 9
+patch_margin_right = 9
+patch_margin_bottom = 9
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1462943349]
+custom_minimum_size = Vector2(76, 38)
+layout_mode = 0
+offset_left = 2.0
+offset_right = 78.0
+offset_bottom = 38.0
 texture = ExtResource("3_km0wi")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="." unique_id=1186716639]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 29.0
-offset_right = 105.0
-offset_bottom = 52.0
-text = "16/60"
+offset_top = 30.0
+offset_right = 80.0
+offset_bottom = 50.125
+theme_override_font_sizes/font_size = 14
+text = "16 / 60"
+horizontal_alignment = 1

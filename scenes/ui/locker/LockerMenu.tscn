@@ -32,10 +32,10 @@ script = ExtResource("1_1f3ys")
 grid = NodePath("PanelContainer/LeftMarginContainer/VBoxContainer/ScrollContainer/GridContainer")
 rect = NodePath("PanelContainer/TextureRect")
 rectDragControl = NodePath("PanelContainer/TextureRect/Control/Control")
-equipToolButton = NodePath("PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer/Button")
-modifyToolButton = NodePath("PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer/Button2")
-advancedToolButton = NodePath("PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer/Button3")
-totalWeightLabel = NodePath("PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer2/RichTextLabel")
+equipToolButton = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button")
+modifyToolButton = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button2")
+advancedToolButton = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button3")
+totalWeightLabel = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2/RichTextLabel")
 
 [node name="PanelContainer" type="Panel" parent="." unique_id=980932831]
 layout_mode = 1
@@ -75,7 +75,7 @@ offset_top = -510.0
 offset_right = 970.0
 offset_bottom = 432.0
 
-[node name="BottomRightMarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=91869201]
+[node name="BottomRightMarginContainerControls" type="MarginContainer" parent="PanelContainer" unique_id=91869201]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -87,48 +87,93 @@ offset_top = -116.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainer" unique_id=1427906525]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls" unique_id=1427906525]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer" unique_id=456752679]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer" unique_id=456752679]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 
-[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer" unique_id=58591883]
+[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=58591883]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="Button" type="Button" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer" unique_id=890875161]
-custom_minimum_size = Vector2(100, 0)
+[node name="Button" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=890875161]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Equip
 "
 
-[node name="Button2" type="Button" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer" unique_id=821011465]
-custom_minimum_size = Vector2(100, 0)
+[node name="Button2" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=821011465]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Modify
 "
 
-[node name="Button3" type="Button" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer" unique_id=1935168610]
-custom_minimum_size = Vector2(100, 0)
+[node name="Button3" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=1935168610]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-text = "Advanced"
+text = "View Adv."
 
-[node name="PanelContainer2" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer" unique_id=1457938847]
+[node name="Button4" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=381872662]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Scrap"
+
+[node name="PanelContainer2" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=1457938847]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer/VBoxContainer/PanelContainer2" unique_id=1045715072]
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2" unique_id=1045715072]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 bbcode_enabled = true
 text = "[img]res://images/ui/icon-weight.png[/img]0 / 2"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainer/HBoxContainer" unique_id=1004177023]
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer" unique_id=1004177023]
 custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="BottomRightMarginContainerStats" type="MarginContainer" parent="PanelContainer" unique_id=627361572]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -521.0
+offset_top = -467.0
+offset_bottom = -116.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="VBoxContainerSimple" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerStats" unique_id=1088630960]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Panel" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=772792544]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerSimple/Panel" unique_id=353416458]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "gsdfgdfg"
+
+[node name="Panel2" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=784138032]
+layout_mode = 2
+
+[node name="VBoxContainerAdvanced" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerStats" unique_id=1034604243]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Panel" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=15224974]
+layout_mode = 2
+
+[node name="Panel2" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=56471849]
 layout_mode = 2
 
 [node name="LeftMarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=949399126]

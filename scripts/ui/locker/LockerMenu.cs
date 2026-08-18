@@ -27,43 +27,36 @@ public partial class LockerMenu : ScreenScaleLimiter
     private Tool selectedTool;
     private bool playerEquippedTool;
     private SubViewport sceneViewport;
+    private Node3D weaponSceneParent;
     private Node3D weaponScene;
 
-    private Vector2 mousePosition;
+    private bool draggingRect;
     private Vector2 mouseScreenRelative;
 
     public override void _Ready()
     {
         BuildList();
         equipToolButton.Pressed += ToolAddOrRemove;
+        equipToolButton.Pressed += SelectTool;
         modifyToolButton.Pressed += ModifyButton;
     }
 
     public override void _Process(double delta)
     {
-        if (weaponScene is null) return;
+        if (weaponSceneParent is null) return;
 
         playerEquippedTool = Player.Self.HasTool(selectedLootState);
         equipToolButton.Text = playerEquippedTool ? "Unequip" : "Equip";
 
-        if (rectDragControl.GetGlobalRect().HasPoint(mousePosition))
+        if (draggingRect)
         {
-            weaponScene.Rotate(Vector3.Up, mouseScreenRelative.X * 0.006f);
-            weaponScene.Rotate(Vector3.Right, mouseScreenRelative.Y * 0.006f);
+            weaponSceneParent.Rotate(Vector3.Up, mouseScreenRelative.X * 0.006f);
+            weaponSceneParent.Rotate(Vector3.Right, mouseScreenRelative.Y * 0.006f);
             mouseScreenRelative = Vector2.Zero;
         }
         else
         {
-            var target = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
-            weaponScene.RotationDegrees = weaponScene.RotationDegrees.Lerp(target, 3f * (float)delta);
-        }
-
-        if (selectedTool is not null)
-        {
-            if (Player.Self.HasTool(selectedLootState))
-                totalWeightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (-{selectedTool.CarryWeight})";
-            else
-                totalWeightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (+{selectedTool.CarryWeight})";
+            weaponSceneParent.Rotation = weaponSceneParent.Rotation.Lerp(Vector3.Zero, 3f * (float)delta);
         }
 
         base._Process(delta);
@@ -72,10 +65,20 @@ public partial class LockerMenu : ScreenScaleLimiter
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
-        if (@event is InputEventMouseMotion eventMouse)
+        if (@event is InputEventMouseButton eventMouseButton)
         {
-            mousePosition = eventMouse.Position;
-            mouseScreenRelative = eventMouse.ScreenRelative;
+            if (eventMouseButton.ButtonIndex == MouseButton.Left)
+            {
+                if (eventMouseButton.Pressed && rectDragControl.GetGlobalRect().HasPoint(eventMouseButton.Position))
+                    draggingRect = true;
+                else
+                    draggingRect = false;
+            }
+        }
+
+        if (@event is InputEventMouseMotion eventMouseMotion)
+        {
+            mouseScreenRelative = eventMouseMotion.ScreenRelative;
         }
     }
 
@@ -102,6 +105,7 @@ public partial class LockerMenu : ScreenScaleLimiter
                     selectedLockerToolButton.CheckState(selectedLootState);
                     selectedLockerToolButton = newButton;
                     selectedLockerToolButton.CheckState(selectedLootState);
+                    SelectTool();
                     BuildToolViewport();
                 };
                 grid.AddChild(newButton);
@@ -119,30 +123,47 @@ public partial class LockerMenu : ScreenScaleLimiter
         }
     }
 
+    private void SelectTool()
+    {
+        var strIcon = "[img]res://images/ui/icon-weight.png[/img]";
+        if (Player.Self.HasTool(selectedLootState))
+        {
+            totalWeightLabel.Text = strIcon + $"{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (-{selectedTool.CarryWeight})";
+            equipToolButton.Disabled = false;
+        }
+        else
+        {
+            totalWeightLabel.Text = strIcon + $"{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (+{selectedTool.CarryWeight})";
+            equipToolButton.Disabled = Player.Self.ToolWeight + selectedTool.CarryWeight > Player.Self.MaxWeight;
+        }
+    }
+
     private void BuildToolViewport()
     {
         if (!previewSceneCreated)
         {
             previewSceneCreated = true;
 
+            var windowSize = GetWindow().Size;
             sceneViewport = new SubViewport
             {
-                Size = (Vector2I)GetViewportRect().Size,
+                Size = new Vector2I((int)(windowSize.Y * 1.7777778f), (int)windowSize.Y),
                 RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
                 OwnWorld3D = true,
                 TransparentBg = true,
             };
             AddChild(sceneViewport);
 
+            weaponSceneParent = new Node3D();
             weaponScene = selectedTool.MeshScene.Instantiate<Node3D>();
             weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
-            var dirLight = new DirectionalLight3D();
-            dirLight.RotationDegrees = new Vector3(-55, 35, 0);
-            var camera = new Camera3D();
-            camera.Fov = 30f;
-            camera.LookAtFromPosition(new Vector3(-0.2f, 0, 2.2f), new Vector3(-0.2f, 0, 0));
+            weaponSceneParent.AddChild(weaponScene);
 
-            sceneViewport.AddChild(weaponScene);
+            var dirLight = new DirectionalLight3D() { RotationDegrees = new Vector3(-55, 35, 0) };
+            var camera = new Camera3D() { Fov = 35f };
+            camera.LookAtFromPosition(new Vector3(-0.2f, 0, 2f), new Vector3(-0.2f, 0, 0));
+
+            sceneViewport.AddChild(weaponSceneParent);
             sceneViewport.AddChild(dirLight);
             sceneViewport.AddChild(camera);
             rect.Texture = sceneViewport.GetTexture();
@@ -150,10 +171,10 @@ public partial class LockerMenu : ScreenScaleLimiter
         else
         {
             weaponScene?.Free();
-            weaponScene = null;
             weaponScene = selectedTool.MeshScene.Instantiate<Node3D>();
             weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
-            sceneViewport.AddChild(weaponScene);
+            weaponSceneParent.AddChild(weaponScene);
+            sceneViewport.AddChild(weaponSceneParent);
         }
     }
 

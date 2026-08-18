@@ -221,20 +221,23 @@ public partial class LiveTool : Node
     {
         if (!equipped) return;
 
-        // could make Viewing instead of Authority, allowing spetating
-        if (IsMultiplayerAuthority())
+        if (ToolResource is ToolFirearm)
         {
-            if (!Aiming)
+            // could make Viewing instead of Authority, allowing spetating
+            if (IsMultiplayerAuthority())
             {
-                Aiming = true;
-                var x = modelSceneGun.Position.X + sightPosition.X;
-                var y = modelSceneGun.Position.Y + sightPosition.Y;
-                modelSceneAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
+                if (!Aiming)
+                {
+                    Aiming = true;
+                    var x = modelSceneGun.Position.X + sightPosition.X;
+                    var y = modelSceneGun.Position.Y + sightPosition.Y;
+                    modelSceneAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
+                }
             }
-        }
-        else
-        {
+            else
+            {
 
+            }
         }
     }
 

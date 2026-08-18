@@ -3,10 +3,6 @@
 [ext_resource type="FontFile" uid="uid://d0k2lrfxrv5c2" path="res://fonts/Quantico-Regular.ttf" id="1_p3tpv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3tpv"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 bg_color = Color(0.1755, 0.23062503, 0.27, 0.6666667)
 corner_radius_top_right = 5
 corner_radius_bottom_left = 5

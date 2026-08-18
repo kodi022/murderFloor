@@ -5,6 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://c85wq0g572wis" path="res://images/ui/ninepatch-greyscale.png" id="3_sigli"]
 [ext_resource type="Texture2D" uid="uid://bb644t6jgxfr8" path="res://images/ui/lockertoolbutton-default.png" id="4_s3qbf"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3qbf"]
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sigli"]
 content_margin_left = 4.0
 content_margin_top = 4.0
@@ -17,13 +22,14 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="LockerToolButton" type="Control" unique_id=1388612364 node_paths=PackedStringArray("Button", "colorRect", "ninePatchRect", "rect", "levelLabel", "weightLabel")]
+[node name="LockerToolButton" type="Panel" unique_id=1741733491 node_paths=PackedStringArray("Button", "colorRect", "ninePatchRect", "rect", "levelLabel", "weightLabel")]
+clip_children = 1
 custom_minimum_size = Vector2(128, 80)
-layout_mode = 3
-anchors_preset = 0
 offset_right = 128.0
 offset_bottom = 80.0
+offset_transform_enabled = true
 theme = ExtResource("1_5n6ma")
+theme_override_styles/panel = SubResource("StyleBoxFlat_s3qbf")
 script = ExtResource("1_30wq4")
 Button = NodePath("Button")
 colorRect = NodePath("ColorRect")
@@ -45,10 +51,10 @@ offset_right = 128.0
 offset_bottom = 80.0
 texture = ExtResource("3_sigli")
 draw_center = false
-patch_margin_left = 5
-patch_margin_top = 5
-patch_margin_right = 5
-patch_margin_bottom = 5
+patch_margin_left = 9
+patch_margin_top = 9
+patch_margin_right = 9
+patch_margin_bottom = 9
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1018520713]
 custom_minimum_size = Vector2(128, 80)
@@ -58,23 +64,24 @@ offset_right = 160.0
 offset_bottom = 88.0
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("4_s3qbf")
-expand_mode = 3
+expand_mode = 1
 
 [node name="Label" type="Label" parent="." unique_id=461870625]
 layout_mode = 0
-offset_left = 1.0
-offset_top = -4.0
+offset_left = 5.0
+offset_top = 1.0
 offset_right = 127.0
-offset_bottom = 20.0
+offset_bottom = 24.0
 text = "100"
-horizontal_alignment = 2
 
 [node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1554639362]
 layout_mode = 0
-offset_left = 1.0
-offset_top = 56.0
-offset_right = 127.0
-offset_bottom = 80.00012
+offset_left = 5.0
+offset_top = 57.0
+offset_right = 123.0
+offset_bottom = 103.0
+scale = Vector2(0.5, 0.5)
+theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
 text = "[img]res://images/ui/icon-weight.png[/img]2"
 scroll_active = false
@@ -82,7 +89,6 @@ scroll_active = false
 [node name="Button" type="Button" parent="." unique_id=858432950]
 custom_minimum_size = Vector2(128, 80)
 layout_mode = 0
-offset_top = 2.0
 offset_right = 128.0
-offset_bottom = 82.0
+offset_bottom = 80.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_sigli")

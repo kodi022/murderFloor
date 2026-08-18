@@ -75,21 +75,38 @@ public static class OptionsManager
                 _ => Viewport.ScreenSpaceAAEnum.Disabled
             };
 
-            viewport.UseTaa = options.TAA;
+            //viewport.UseTaa = options.TAA;
 
-            // ! not working, figure out presets anyway
-            var sdfgiEnabled = options.SDFGI != "Off";
             foreach (Node child in tree.Root.GetChildren())
             {
-                if (child is WorldEnvironment worldEnvironment && worldEnvironment.Environment != null)
+                foreach (Node child2 in child.GetChildren())
                 {
-                    worldEnvironment.Environment.SdfgiEnabled = sdfgiEnabled;
-                    switch (options.SDFGI)
+                    if (child2 is WorldEnvironment worldEnvironment && worldEnvironment.Environment != null)
                     {
-                        case "Ultra":
-                            break;
-                        default:
-                            break;
+                        var sdfgiEnabled = options.SDFGI != "Off";
+                        worldEnvironment.Environment.SdfgiEnabled = sdfgiEnabled;
+
+                        switch (options.SDFGI)
+                        {
+                            case "Ultra": // 512m
+                                worldEnvironment.Environment.SdfgiMinCellSize = 0.125f;
+                                worldEnvironment.Environment.SdfgiCascades = 6;
+                                break;
+                            case "High": // 512m
+                                worldEnvironment.Environment.SdfgiMinCellSize = 0.25f;
+                                worldEnvironment.Environment.SdfgiCascades = 5;
+                                break;
+                            case "Medium": // 256m
+                                worldEnvironment.Environment.SdfgiMinCellSize = 0.25f;
+                                worldEnvironment.Environment.SdfgiCascades = 4;
+                                break;
+                            case "Low": // 256m
+                                worldEnvironment.Environment.SdfgiMinCellSize = 0.5f;
+                                worldEnvironment.Environment.SdfgiCascades = 3;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -135,32 +152,32 @@ public static class OptionsManager
         // [OptionFloat("Display", 24f, 300f, 1f)]
         // public Vector2I FullscreenResolution { get; set; } = 144f;
         [OptionBool("Display", "")]
+        public bool VSync { get; set; } = true;
+        [OptionBool("Display", "")]
         public bool UseFramerateLimit { get; set; } = false;
         [OptionFloat("Display", 24f, 300f, 1f, "")]
         public float FramerateLimit { get; set; } = DisplayServer.ScreenGetRefreshRate();
         [OptionBool("Display", "")]
-        public bool VSync { get; set; } = true;
+        public bool DisplayFramerate { get; set; } = false;
 
         [OptionFloat("Graphics", 60f, 110f, 1f, "")]
         public float FieldOfView { get; set; } = 90;
         [OptionFloat("Graphics", 0.5f, 1.2f, 0.01f, "")]
         public float ViewmodelFieldOfViewScale { get; set; } = 0.8f;
         [OptionFloat("Graphics", 0.3f, 1f, 0.01f, "")]
-        public float AimingViewmodelFieldOfViewScale { get; set; } = 0.8f;
+        public float AimingViewmodelFieldOfViewScale { get; set; } = 0.6f;
         [OptionString("Graphics", ["FSR2.2", "FSR1.0", "None"], "")]
         public string Scaling { get; set; } = "None";
         [OptionFloat("Graphics", 25f, 200f, 5f, "Resource intensive and FSR not supported when above 100.")]
         public float ScalingRenderScale { get; set; } = 100f;
         [OptionFloat("Graphics", 0f, 1f, 0.1f, "Used only with FSR.")]
-        public float ScalingSharpness { get; set; } = 0.9f;
+        public float ScalingSharpness { get; set; } = 0.8f;
         [OptionString("Graphics", ["MSAA8x", "MSAA4x", "MSAA2x", "SMAA", "FXAA", "Off"], "Not Recommended with FSR2.2 enabled. MSAA can be resource intensive.")]
         public string AntiAliasing { get; set; } = "FXAA";
-        [OptionBool("Graphics", "Ignored when FSR2.2 is enabled.")]
-        public bool TAA { get; set; } = false;
+        // [OptionBool("Graphics", "Ignored when FSR2.2 is enabled.")]
+        // public bool TAA { get; set; } = false;
         [OptionString("Graphics", ["Ultra", "High", "Medium", "Low", "Off"], "")]
-        public string SDFGI { get; set; } = "Medium";
-        [OptionBool("Graphics", "")]
-        public bool SDFGIHalfResolution { get; set; } = false;
+        public string SDFGI { get; set; } = "High";
         [OptionString("Graphics", ["16x", "8x", "4x", "2x", "Off"], "")]
         public string AntisotropicFiltering { get; set; } = "8x";
 
@@ -170,8 +187,7 @@ public static class OptionsManager
         public float AimCrosshairOpacity { get; set; } = 0.2f;
         [OptionBool("Gameplay", "")]
         public bool ScalingCrosshair { get; set; } = true;
-        [OptionBool("Gameplay", "")]
-        public bool DisplayFramerate { get; set; } = false;
+
 
         public Options()
         {
@@ -184,9 +200,10 @@ public static class OptionsManager
 
             WindowMode = other.WindowMode;
             // FullscreenResolution = other.FullscreenResolution;
+            VSync = other.VSync;
             UseFramerateLimit = other.UseFramerateLimit;
             FramerateLimit = other.FramerateLimit;
-            VSync = other.VSync;
+            DisplayFramerate = other.DisplayFramerate;
 
             FieldOfView = other.FieldOfView;
             ViewmodelFieldOfViewScale = other.ViewmodelFieldOfViewScale;
@@ -195,22 +212,21 @@ public static class OptionsManager
             ScalingRenderScale = other.ScalingRenderScale;
             ScalingSharpness = other.ScalingSharpness;
             AntiAliasing = other.AntiAliasing;
-            TAA = other.TAA;
+            // TAA = other.TAA;
             SDFGI = other.SDFGI;
-            SDFGIHalfResolution = other.SDFGIHalfResolution;
             AntisotropicFiltering = other.AntisotropicFiltering;
 
             CrosshairOpacity = other.CrosshairOpacity;
             AimCrosshairOpacity = other.AimCrosshairOpacity;
             ScalingCrosshair = other.ScalingCrosshair;
-            DisplayFramerate = other.DisplayFramerate;
         }
     }
 
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class OptionAttribute(string category, string tip) : Attribute
     {
         public string Category { get; set; } = category;
+        public string NameLocalizationKey { get; set; } = "";
         public string Tip { get; set; } = tip;
     }
 

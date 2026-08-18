@@ -40,8 +40,6 @@ public partial class OptionsMenu : Control
         DefaultsButton.Pressed += () =>
         {
             currentOptions = new OptionsManager.Options();
-            OptionsManager.Save(currentOptions);
-            OptionsManager.Apply(currentOptions);
             selectedTab = "";
             BuildList(categories.First());
         };
@@ -105,22 +103,30 @@ public partial class OptionsMenu : Control
                     Step = floatAtt.Step,
                     MinValue = floatAtt.Min,
                     MaxValue = floatAtt.Max,
-                    CustomMinimumSize = new Vector2(400, 0)
+                    CustomMinimumSize = new Vector2(400, 0),
+                    Scrollable = false,
                 };
                 hbox.AddChild(slider);
+
+                string SetText()
+                {
+                    if (floatAtt.Step >= 1f) return slider.Value.ToString("F0");
+                    else if (floatAtt.Step >= 0.01f) return slider.Value.ToString("F2");
+                    else return slider.Value.ToString("F3");
+                }
 
                 slider.Value = (float)prop.GetValue(currentOptions);
                 // using a function for Text does not work, memory bug
                 var valueLabel = new Label()
                 {
-                    Text = floatAtt.Step >= 1 ? slider.Value.ToString("F0") : slider.Value.ToString("F2"),
+                    Text = SetText(),
                     CustomMinimumSize = new Vector2(60, 0)
                 };
                 hbox.AddChild(valueLabel);
 
                 slider.ValueChanged += (value) =>
                 {
-                    valueLabel.Text = floatAtt.Step >= 1 ? value.ToString("F0") : value.ToString("F2");
+                    valueLabel.Text = SetText();
                     prop.SetValue(currentOptions, (float)value);
                 };
             }

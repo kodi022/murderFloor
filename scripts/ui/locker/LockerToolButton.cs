@@ -2,7 +2,7 @@ namespace MurderFloor;
 
 using Loot;
 
-public partial class LockerToolButton : Control
+public partial class LockerToolButton : Panel
 {
     public LootState LootStateInfo { get; set; }
 

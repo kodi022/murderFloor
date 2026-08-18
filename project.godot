@@ -152,7 +152,7 @@ walk={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/en_loot.en.translation", "res://translations/en_ui.en.translation")
+locale/translations=PackedStringArray("res://translations/en/loot.en.translation", "res://translations/en/ui.en.translation")
 
 [layer_names]
 
