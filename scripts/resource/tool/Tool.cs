@@ -54,7 +54,7 @@ public partial class Tool : MFResource
         var modelWidth = bounds.End.Abs().X + bounds.Position.Abs().X;
         weaponScene.Position = -modelCenter;
         weaponScene.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
-        camera.SetOrthogonal(MathF.Max(modelWidth, 0.5f), 0.1f, 20f);
+        camera.SetOrthogonal(MathF.Max(modelWidth * 0.55f, 0.5f), 0.1f, 20f);
         camera.LookAtFromPosition(new Vector3(0, 0, 3f), Vector3.Zero);
 
         sceneViewport.AddChild(weaponScene);
@@ -101,7 +101,7 @@ public partial class Tool : MFResource
             bounds = bounds.Merge(childBounds);
         }
 
-        //bounds = node.Transform * bounds;
+        bounds = node.Transform * bounds;
 
         return bounds;
     }

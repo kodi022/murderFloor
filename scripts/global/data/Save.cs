@@ -62,7 +62,7 @@ public static class SaveManager
         public int Level { get; set; } = 0;
         public float Xp { get; private set; } = 0f;
         public double TotalXp { get; private set; } = 0d;
-        public List<string> Loot { get; set; } = [];
+        public List<string> Loot { get; set; } = []; // LootStates
         public List<int> Equipped { get; set; } = []; // hash ids of LootStates
 
         public void AddXp(float amount)

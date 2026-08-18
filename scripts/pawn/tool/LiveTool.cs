@@ -154,12 +154,12 @@ public partial class LiveTool : Node
             return thing;
         }
 
-        muzzleNode = FindNode("Muzzle");
-        sightNode = FindNode("Sight");
-        sightAttachmentNode = FindNode("SightAttachment");
-        ejectionNode = FindNode("Ejection");
-        foregripNode = FindNode("Foregrip");
-        gadgetNode = FindNode("Gadget");
+        muzzleNode = FindNode("Point-Muzzle");
+        sightNode = FindNode("Point-Sight");
+        sightAttachmentNode = FindNode("Point-SightAttachment");
+        ejectionNode = FindNode("Point-Ejection");
+        foregripNode = FindNode("Point-Foregrip");
+        gadgetNode = FindNode("Point-Gadget");
 
         // ! find other attachments
 

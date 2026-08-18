@@ -11,3 +11,6 @@
 
 # Project nogit folder
 .nogit/
+
+# weird file that terrain3d keeps adding/removing
+addons/terrain_3d/bin/~libterrain.windows.debug.x86_64.dll

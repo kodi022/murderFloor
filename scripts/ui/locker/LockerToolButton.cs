@@ -29,7 +29,7 @@ public partial class LockerToolButton : Control
 
         levelLabel.Text = lootRarity.Level.ToString();
         weightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{lootResource.CarryWeight}";
-        rect.Texture = await lootResource.GenerateThumbnailImage(128, 80);
+        rect.Texture = await lootResource.GenerateThumbnailImage(256, 128);
     }
 
     public override Control _MakeCustomTooltip(string forText)

@@ -3,4 +3,5 @@ root = true
 [*]
 charset = utf-8
 
-dotnet_diagnostic.IDE0290.severity = silent
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = silent

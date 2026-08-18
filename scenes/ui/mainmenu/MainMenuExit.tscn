@@ -13,9 +13,9 @@ theme = ExtResource("1_87y3x")
 
 [node name="Panel" type="Panel" parent="." unique_id=2023250606]
 layout_mode = 0
-offset_left = 240.0
+offset_left = 280.0
 offset_top = -90.0
-offset_right = 480.0
+offset_right = 520.0
 offset_bottom = 90.0
 
 [node name="Label" type="Label" parent="Panel" unique_id=1020413086]

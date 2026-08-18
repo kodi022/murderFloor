@@ -17,6 +17,7 @@
 [sub_resource type="Environment" id="Environment_k7gih"]
 background_mode = 1
 background_color = Color(0.5789182, 0.31991723, 0.36675778, 1)
+reflected_light_source = 2
 tonemap_mode = 2
 tonemap_white = 6.0
 ssr_enabled = true

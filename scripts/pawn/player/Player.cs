@@ -143,13 +143,14 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F4 && eventKey.Pressed)
             {
-                // ! level = map difficulty * difficulty + challenge or something
-                var state = new Loot.LootState(346234616, 0, Game.DifficultyEnum.Hard, 0, false, false, 0.5f);
-                var lootNode3d = Loot.LootState.MakeLootNode(state);
-                GetTree().Root.AddChild(lootNode3d);
-                lootNode3d.GlobalPosition = GlobalPosition + Vector3.Up * 10;
-                var loot = new Loot.LootRarity(state);
-                GD.Print($"{loot.Tier} ({(int)loot.Tier}),  {loot.Wear} ({(int)loot.Wear})");
+                if (openUI is null)
+                {
+                    OpenUI("res://scenes/ui/hud/debug/HUDDebugItemList.tscn");
+                }
+                else
+                {
+                    CloseUI();
+                }
             }
         }
     }

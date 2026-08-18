@@ -17,7 +17,7 @@ public static class ResourceManager
 		ToolRegistry.RegisterFolder("res://resources/tool/");
 		AttachmentRegistry.RegisterFolder("res://resources/tool/attachment/");
 		MobRegistry.RegisterFolder("res://resources/mob/");
-		MapRegistry.RegisterFolder("res://scenes/map/");
+		MapRegistry.RegisterFolder("res://resources/map/");
 
 		// collect mod data
 		//foreach (var file in Direct)

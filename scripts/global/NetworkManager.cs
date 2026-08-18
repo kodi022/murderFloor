@@ -1,9 +1,9 @@
 namespace MurderFloor;
 
+// https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html
 public partial class NetworkManager : Node
 {
     public static NetworkManager Current;
-    // https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html
 
     private const int DefaultPort = 7000;
     private const string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
@@ -11,11 +11,6 @@ public partial class NetworkManager : Node
 
     public string ServerIP { get; set; } = default;
     public int Port { get; set; } = default;
-
-    public bool Playing { get; set; } = false;
-
-    // servers ID is always 1
-    // server is at Multiplayer.MultiplayerPeer
 
     // These signals can be connected to by a UI lobby scene or the game scene.
     [Signal]
@@ -25,7 +20,8 @@ public partial class NetworkManager : Node
     [Signal]
     public delegate void ServerDisconnectedEventHandler();
 
-    private int _playersLoaded = 0;
+    // servers ID is always 1
+    // server is at Multiplayer.MultiplayerPeer
 
     // This will contain player info for every player,
     // with the keys being each player's unique IDs.
@@ -41,6 +37,8 @@ public partial class NetworkManager : Node
         { "Coolness", "1" },
     };
 
+    private int _playersLoaded = 0;
+
     public override void _EnterTree()
     {
         Current = this;
@@ -51,7 +49,7 @@ public partial class NetworkManager : Node
         Multiplayer.ServerDisconnected += OnServerDisconnected;
     }
 
-    // i know this is shit, too bad
+    // i know this is not good, too bad
     public override void _Ready()
     {
         ResourceManager.Ready();

@@ -38,7 +38,7 @@ public partial class Game : Node
     public ulong GameSeed { get; private set; } = (ulong)Random.Shared.NextInt64();
 
     [Export]
-    public int MaxRound { get; private set; } = 2; // 5?
+    public int MaxRound { get; private set; } = 5; // 5?
     [Export]
     public int Round { get; private set; } = 0;
     [Export]
@@ -57,7 +57,6 @@ public partial class Game : Node
     private int FuncMobRoundWaveSize => 5 + Round + (int)GameDifficulty * 2;
 
     private int FuncMobMaxActive => 30 + (Round * 3) + ((int)GameDifficulty * 10);
-    //private int FuncMobMaxActive => 1;
 
     private int FuncMobRoundAmount => (int)(30f + Round * ((float)GameDifficulty + 1f * 0.33f));
 

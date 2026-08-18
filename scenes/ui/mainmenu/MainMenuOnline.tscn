@@ -13,9 +13,9 @@ theme = ExtResource("1_oficc")
 
 [node name="Panel" type="Panel" parent="." unique_id=1967849019 node_paths=PackedStringArray("joinButton", "hostButton", "IPline", "portLine", "nameLine", "coolLine")]
 layout_mode = 0
-offset_left = 240.0
+offset_left = 280.0
 offset_top = -120.0
-offset_right = 540.0
+offset_right = 580.0
 offset_bottom = 120.0
 script = ExtResource("1_ufkyb")
 joinButton = NodePath("VBoxContainer/Button")

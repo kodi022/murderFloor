@@ -25,6 +25,13 @@ public partial class ToolFirearm : Tool
         Melee
     }
 
+    public enum CasingSpawnEventEnum
+    {
+        Fire,
+        Pump,
+        Reload
+    }
+
     [Export]
     public FirearmTypeEnum FirearmType { get; private set; }
     [Export]

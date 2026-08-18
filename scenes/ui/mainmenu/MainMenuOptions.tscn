@@ -13,5 +13,5 @@ theme = ExtResource("1_ekuey")
 
 [node name="OptionsMenu" parent="." unique_id=1770553190 instance=ExtResource("2_icbt4")]
 layout_mode = 1
-offset_left = 640.0
-offset_right = 640.0
+offset_left = 680.0
+offset_right = 680.0

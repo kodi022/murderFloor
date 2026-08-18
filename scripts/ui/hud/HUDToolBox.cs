@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class HUDToolBox : Control
+public partial class HUDToolBox : Panel
 {
     [Export]
     public PanelContainer PanelContainer { get; private set; }
@@ -15,8 +15,7 @@ public partial class HUDToolBox : Control
 
     public override async void _Ready()
     {
-        TextureRect.Texture = await LiveTool.ToolResource.GenerateThumbnailImage(96, 64);
-        TextureRect.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
+        TextureRect.Texture = await LiveTool.ToolResource.GenerateThumbnailImage(256, 128);
         Label.Text = $"{LiveTool.CurrentMag} / {LiveTool.CurrentReserve}";
     }
 

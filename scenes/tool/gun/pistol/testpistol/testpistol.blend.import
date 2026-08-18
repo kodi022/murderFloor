@@ -19,7 +19,7 @@ nodes/root_script=null
 mesh_library/use_node_names_as_mesh_names=false
 array_mesh/deduplicate_surfaces=true
 nodes/apply_root_scale=true
-nodes/root_scale=0.056
+nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
 nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
@@ -48,6 +48,9 @@ _subresources={
 }
 },
 "nodes": {
+"PATH:Armature_001": {
+"import/skip_import": true
+},
 "PATH:pic1": {
 "import/skip_import": true
 },
