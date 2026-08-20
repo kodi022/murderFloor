@@ -23,15 +23,7 @@ public partial class Pawn : CharacterBody3D
     [Export]
     public float Armor { get; set; } = 0;
 
-    /// <summary>
-    /// this should only be called using Rpc
-    /// <para>"damage": "float"</para>
-    /// <para>"attacker": "player id OR 0 if mob"</para>
-    /// <para>"attackerName": "player name OR mob name"</para>
-    /// <para>"weapon": "weaponresourceid OR empty if mob"</para>
-    /// <para>"hitposition": "vector3"</para>
-    /// <para>"hitbox": "int id"</para>
-    /// </summary>
+    /// <summary>this should only be called using Rpc</summary>
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public virtual void OnDamageRpc(DamageInfoVariant damageInfoVariant)
     {
@@ -83,6 +75,14 @@ public partial class Pawn : CharacterBody3D
 
     public virtual void OnDeath(DamageInfo damageInfo)
     {
+        if (this is LiveMob)
+        {
+            EmitSignal(SignalName.MobOnDeath, damageInfo.ToVariant());
+        }
 
+        if (Player.Self == this)
+        {
+            EmitSignal(SignalName.PlayerOnDeath, damageInfo.ToVariant());
+        }
     }
 }

@@ -104,15 +104,16 @@ public partial class LiveMob : Pawn
     public override void OnDeath(DamageInfo damageInfo)
     {
         if (!Active) return;
-
         Active = false;
 
+        base.OnDeath(damageInfo);
         Game.Current.MobDeath(damageInfo, MobPoolId);
 
         var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
         var liveSk = worldModels.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
         var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
         var copyCount = Math.Min(liveSk.GetBoneCount(), ragSk.GetBoneCount());
+
         ragdoll.GlobalTransform = GlobalTransform;
         for (int i = 0; i < copyCount; i++)
         {
@@ -121,12 +122,14 @@ public partial class LiveMob : Pawn
             ragSk.SetBonePosePosition(i, pos);
             ragSk.SetBonePoseRotation(i, rot);
         }
+
         var hitCollider = damageInfo.HitboxName;
         // ragdoll has different colliders
         if (hitCollider == "Head") hitCollider = "Neck";
         if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
         if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
-        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, 20f);
+        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
+
         Game.Current.AddChild(ragdoll);
     }
 }

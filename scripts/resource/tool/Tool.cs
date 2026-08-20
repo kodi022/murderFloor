@@ -50,14 +50,15 @@ public partial class Tool : MFResource
         var weaponScene = MeshScene.Instantiate<Node3D>();
         var camera = new Camera3D();
         var bounds = GetBounds(weaponScene);
-        var modelCenter = (bounds.End + bounds.Position) / 2;
         var modelWidth = bounds.End.Abs().X + bounds.Position.Abs().X;
-        weaponScene.Position = -modelCenter;
         weaponScene.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
         camera.SetOrthogonal(MathF.Max(modelWidth * 0.55f, 0.5f), 0.1f, 20f);
         camera.LookAtFromPosition(new Vector3(0, 0, 3f), Vector3.Zero);
 
         sceneViewport.AddChild(weaponScene);
+        var modelCenter = (bounds.End + bounds.Position) / 2;
+        weaponScene.GlobalPosition = -modelCenter;
+
         sceneViewport.AddChild(camera);
         ApplyThumbnailMaterialToParts(weaponScene);
 
@@ -69,40 +70,5 @@ public partial class Tool : MFResource
         if (!generatedThumbnails.ContainsKey(GetDictKey(resX, resY)))
             generatedThumbnails.Add(GetDictKey(resX, resY), imgTex);
         return imgTex;
-    }
-
-    private static void ApplyThumbnailMaterialToParts(Node3D weaponScene)
-    {
-        foreach (var child in weaponScene.GetChildren())
-        {
-            if (child is MeshInstance3D mesh)
-            {
-                mesh.MaterialOverride = GD.Load<Material>("res://materials/thumbnail.tres");
-            }
-        }
-    }
-
-    private static Aabb GetBounds(Node3D node)
-    {
-        var bounds = new Aabb();
-        if (node.IsQueuedForDeletion()) return bounds;
-
-        if (node is VisualInstance3D inst)
-        {
-            bounds = inst.GetAabb();
-        }
-
-        foreach (var child in node.GetChildren())
-        {
-            if (child is not VisualInstance3D childInst) continue;
-            if (childInst.GetAabb() == default) continue;
-
-            var childBounds = childInst.GetAabb();
-            bounds = bounds.Merge(childBounds);
-        }
-
-        bounds = node.Transform * bounds;
-
-        return bounds;
     }
 }

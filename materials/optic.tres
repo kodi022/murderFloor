@@ -1,10 +1,10 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bedu7k08fpirv"]
 
 [ext_resource type="Shader" uid="uid://cpy22kkfgmaq7" path="res://materials/optic-vs.tres" id="1_dor3p"]
-[ext_resource type="Texture2D" uid="uid://txeg83k6c1y1" path="res://images/optic/smallCross.png" id="2_sjm5c"]
+[ext_resource type="Texture2D" uid="uid://37yg46i0k6ln" path="res://images/reticle/dot.png" id="2_dor3p"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_dor3p")
-shader_parameter/Texture = ExtResource("2_sjm5c")
-shader_parameter/Tint = Color(0.43069524, 7.9112988, 0, 1)
+shader_parameter/Texture = ExtResource("2_dor3p")
+shader_parameter/Tint = Color(3.294, 0, 0, 1)

@@ -13,7 +13,7 @@ public struct Version
         Patch = patch;
     }
 
-    public override string ToString()
+    public readonly override string ToString()
     {
         return $"{Major}.{Minor}.{Patch}";
     }
@@ -30,7 +30,7 @@ public struct Version
     }
 
     /// <summary> Returns false if given version is equal or less than </summary>
-    public bool IsGreaterThan(Version ver)
+    public readonly bool IsGreaterThan(Version ver)
     {
         if (Major == ver.Major)
         {
@@ -38,5 +38,17 @@ public struct Version
             else return Minor > ver.Minor;
         }
         else return Major > ver.Major;
+    }
+
+    public readonly override int GetHashCode() => GetStableHash();
+    private readonly int GetStableHash()
+    {
+        unchecked
+        {
+            int hash = 13466917 + Major;
+            hash = hash * 31 + Minor;
+            hash = hash * 31 + Patch;
+            return hash;
+        }
     }
 }

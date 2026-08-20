@@ -60,8 +60,8 @@ public static class SaveManager
     public class SaveData
     {
         public int Level { get; set; } = 0;
-        public float Xp { get; private set; } = 0f;
-        public double TotalXp { get; private set; } = 0d;
+        public float Xp { get; internal set; } = 0f;
+        public double TotalXp { get; internal set; } = 0d;
         public List<string> Loot { get; set; } = []; // LootStates
         public List<int> Equipped { get; set; } = []; // hash ids of LootStates
 

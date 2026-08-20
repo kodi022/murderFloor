@@ -22,10 +22,19 @@ public partial class LockerMenu : ScreenScaleLimiter
     private bool previewSceneCreated;
     private Camera3D cam;
 
-    private LockerToolButton selectedLockerToolButton;
-    private LootState selectedLootState;
+    private bool listShowAttachments = false;
+
     private Tool selectedTool;
-    private bool playerEquippedTool;
+    private LockerToolButton selectedToolLockerToolButton;
+    private LootState selectedToolLootState;
+
+    private bool playerEquippedSelectedTool;
+
+    private Attachment selectedAttachment;
+    private LockerToolButton selectedAttachmentLockerToolButton;
+    private LootState selectedAttachmentLootState;
+    private int selectedAttachmentSaveIndex;
+
     private SubViewport sceneViewport;
     private Node3D weaponSceneParent;
     private Node3D weaponScene;
@@ -33,10 +42,11 @@ public partial class LockerMenu : ScreenScaleLimiter
     private bool draggingRect;
     private Vector2 mouseScreenRelative;
 
+
     public override void _Ready()
     {
         BuildList();
-        equipToolButton.Pressed += ToolAddOrRemove;
+        equipToolButton.Pressed += EquipButton;
         equipToolButton.Pressed += SelectTool;
         modifyToolButton.Pressed += ModifyButton;
     }
@@ -45,8 +55,8 @@ public partial class LockerMenu : ScreenScaleLimiter
     {
         if (weaponSceneParent is null) return;
 
-        playerEquippedTool = Player.Self.HasTool(selectedLootState);
-        equipToolButton.Text = playerEquippedTool ? "Unequip" : "Equip";
+        equipToolButton.Text = playerEquippedSelectedTool ? "Unequip" : "Equip";
+        modifyToolButton.Text = listShowAttachments ? "Stop Modify" : "Modify";
 
         if (draggingRect)
         {
@@ -84,6 +94,8 @@ public partial class LockerMenu : ScreenScaleLimiter
 
     private async void BuildList()
     {
+        foreach (var child in grid.GetChildren()) child.Free();
+
         var lockerToolButton = GD.Load<PackedScene>("res://scenes/ui/locker/LockerToolButton.tscn");
         foreach (var loot in SaveManager.CurrentSave.Loot)
         {
@@ -94,39 +106,68 @@ public partial class LockerMenu : ScreenScaleLimiter
             if (lootRef.FullId == "base:fists") continue;
 
             var lootResource = ResourceManager.LootRegistry.GetResourceRef(lootState.HashId);
-            if (lootResource is Tool tool)
-            {
-                var newButton = lockerToolButton.Instantiate<LockerToolButton>();
-                newButton.LootStateInfo = lootState;
-                newButton.Button.Pressed += () =>
-                {
-                    selectedLootState = lootState;
-                    selectedTool = tool;
-                    selectedLockerToolButton.CheckState(selectedLootState);
-                    selectedLockerToolButton = newButton;
-                    selectedLockerToolButton.CheckState(selectedLootState);
-                    SelectTool();
-                    BuildToolViewport();
-                };
-                grid.AddChild(newButton);
 
-                if (selectedTool is null)
+            if (listShowAttachments && lootResource is Tool) continue;
+            if (!listShowAttachments && lootResource is Attachment) continue;
+
+            var newButton = lockerToolButton.Instantiate<LockerToolButton>();
+            newButton.LootState = lootState;
+            newButton.Button.Pressed += () =>
+            {
+                if (lootResource is Tool tool)
                 {
-                    selectedLockerToolButton = newButton;
-                    selectedLootState = lootState;
                     selectedTool = tool;
-                    BuildToolViewport();
+                    selectedToolLootState = lootState;
+                    if (IsInstanceValid(selectedToolLockerToolButton))
+                        selectedToolLockerToolButton.CheckState(selectedToolLootState);
+                    selectedToolLockerToolButton = newButton;
+                    SelectTool();
                 }
 
-                newButton.CheckState(selectedLootState);
+                if (lootResource is Attachment att)
+                {
+                    selectedAttachment = att;
+                    selectedAttachmentLootState = lootState;
+                    selectedAttachmentLockerToolButton = newButton;
+                    selectedAttachmentSaveIndex = SaveManager.CurrentSave.Loot.IndexOf(loot);
+                    SelectAttachment();
+                }
+            };
+            grid.AddChild(newButton);
+
+            if (lootResource is Tool tool)
+            {
+                if (selectedTool is null)
+                {
+                    selectedTool = tool;
+                    selectedToolLootState = lootState;
+                    if (IsInstanceValid(selectedToolLockerToolButton))
+                        selectedToolLockerToolButton.CheckState(selectedToolLootState);
+                    selectedToolLockerToolButton = newButton;
+                    SelectTool();
+                }
+                else if (!IsInstanceValid(selectedToolLockerToolButton) && selectedToolLootState == lootState)
+                {
+                    selectedToolLockerToolButton = newButton;
+                }
+
+                newButton.CheckState(selectedToolLootState);
+            }
+
+            if (lootResource is Attachment)
+            {
+                newButton.CheckState(new LootState());
             }
         }
     }
 
     private void SelectTool()
     {
+        playerEquippedSelectedTool = Player.Self.HasTool(selectedToolLootState);
+        selectedToolLockerToolButton.CheckState(selectedToolLootState);
+
         var strIcon = "[img]res://images/ui/icon-weight.png[/img]";
-        if (Player.Self.HasTool(selectedLootState))
+        if (Player.Self.HasTool(selectedToolLootState))
         {
             totalWeightLabel.Text = strIcon + $"{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (-{selectedTool.CarryWeight})";
             equipToolButton.Disabled = false;
@@ -136,6 +177,17 @@ public partial class LockerMenu : ScreenScaleLimiter
             totalWeightLabel.Text = strIcon + $"{Player.Self.MaxWeight} / {Player.Self.ToolWeight} (+{selectedTool.CarryWeight})";
             equipToolButton.Disabled = Player.Self.ToolWeight + selectedTool.CarryWeight > Player.Self.MaxWeight;
         }
+
+        BuildToolViewport();
+    }
+
+    private void SelectAttachment()
+    {
+        if (selectedAttachmentLootState.HasCustomData("0")) return;
+        selectedAttachmentLootState.AddCustomData(0, Compression.IntToArithmeticBase64(selectedToolLootState.GetHashCode()));
+        SaveManager.CurrentSave.Loot[selectedAttachmentSaveIndex] = LootState.Serialize(selectedAttachmentLootState);
+        selectedAttachmentLockerToolButton.CheckState(selectedAttachmentLootState);
+        SaveManager.Save(SaveManager.CurrentSave);
     }
 
     private void BuildToolViewport()
@@ -147,7 +199,7 @@ public partial class LockerMenu : ScreenScaleLimiter
             var windowSize = GetWindow().Size;
             sceneViewport = new SubViewport
             {
-                Size = new Vector2I((int)(windowSize.Y * 1.7777778f), (int)windowSize.Y),
+                Size = new Vector2I((int)(windowSize.Y * 1.7777778f), windowSize.Y),
                 RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
                 OwnWorld3D = true,
                 TransparentBg = true,
@@ -156,7 +208,6 @@ public partial class LockerMenu : ScreenScaleLimiter
 
             weaponSceneParent = new Node3D();
             weaponScene = selectedTool.MeshScene.Instantiate<Node3D>();
-            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             weaponSceneParent.AddChild(weaponScene);
 
             var dirLight = new DirectionalLight3D() { RotationDegrees = new Vector3(-55, 35, 0) };
@@ -167,29 +218,48 @@ public partial class LockerMenu : ScreenScaleLimiter
             sceneViewport.AddChild(dirLight);
             sceneViewport.AddChild(camera);
             rect.Texture = sceneViewport.GetTexture();
+
+            var bounds = MFResource.GetBounds(weaponScene);
+            var modelCenter = (bounds.End + bounds.Position) / 2;
+            weaponScene.GlobalPosition = -modelCenter;
+            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
         }
         else
         {
             weaponScene?.Free();
             weaponScene = selectedTool.MeshScene.Instantiate<Node3D>();
-            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
             weaponSceneParent.AddChild(weaponScene);
-            sceneViewport.AddChild(weaponSceneParent);
+
+            var bounds = MFResource.GetBounds(weaponScene);
+            var modelCenter = (bounds.End + bounds.Position) / 2;
+            weaponScene.GlobalPosition = -modelCenter;
+            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
         }
     }
 
-    private void ToolAddOrRemove()
+    private void EquipButton()
     {
-        if (Player.Self.HasTool(selectedLootState))
-            Player.Self.Rpc("ToolRemoveRpc", LootState.Serialize(selectedLootState));
+        var lootStateHash = selectedToolLootState.GetHashCode();
+        if (Player.Self.HasTool(selectedToolLootState))
+        {
+            SaveManager.CurrentSave.Equipped.Remove(lootStateHash);
+            Player.Self.Rpc("ToolRemoveRpc", LootState.Serialize(selectedToolLootState));
+        }
         else
-            Player.Self.Rpc("ToolAddRpc", LootState.Serialize(selectedLootState));
+        {
+            if (!SaveManager.CurrentSave.Equipped.Contains(lootStateHash))
+                SaveManager.CurrentSave.Equipped.Add(lootStateHash);
+            Player.Self.Rpc("ToolAddRpc", LootState.Serialize(selectedToolLootState));
+        }
 
-        selectedLockerToolButton.CheckState(selectedLootState);
+        playerEquippedSelectedTool = Player.Self.HasTool(selectedToolLootState);
+        selectedToolLockerToolButton.CheckState(selectedToolLootState);
+        SaveManager.Save(SaveManager.CurrentSave);
     }
 
     private void ModifyButton()
     {
-
+        listShowAttachments = !listShowAttachments;
+        BuildList();
     }
 }

@@ -35,7 +35,7 @@ public partial class Game : Node
     [Export]
     public DifficultyEnum GameDifficulty { get; private set; } = DifficultyEnum.Easy;
     [Export]
-    public ulong GameSeed { get; private set; } = (ulong)Random.Shared.NextInt64();
+    public ulong GameSeed { get; private set; } = 12345678;
 
     [Export]
     public int MaxRound { get; private set; } = 5; // 5?
@@ -91,7 +91,7 @@ public partial class Game : Node
     {
         if (GameState == StateEnum.Round)
         {
-            if (20000ul < Time.GetTicksMsec() - lastWaveTime && ActiveMobs < MaxActiveMobs)
+            if (4000ul < Time.GetTicksMsec() - lastWaveTime && ActiveMobs < MaxActiveMobs)
             {
                 SpawnMobWave();
             }

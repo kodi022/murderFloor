@@ -278,6 +278,7 @@ data_directory = "res://scenes/map/lobby/lobby-terrain"
 material = SubResource("Terrain3DMaterial_ku1jm")
 assets = SubResource("Terrain3DAssets_t5wx4")
 save_16_bit = true
+free_editor_textures = false
 top_level = true
 metadata/_edit_lock_ = true
 

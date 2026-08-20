@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://txeg83k6c1y1"
-path.s3tc="res://.godot/imported/smallCross.png-ba7c39a605d5007df4012712b80b7a19.s3tc.ctex"
+uid="uid://37yg46i0k6ln"
+path.s3tc="res://.godot/imported/dot.png-9d4d759d4a4632760a6276e09ddf20a2.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/optic/smallCross.png"
-dest_files=["res://.godot/imported/smallCross.png-ba7c39a605d5007df4012712b80b7a19.s3tc.ctex"]
+source_file="res://images/reticle/dot.png"
+dest_files=["res://.godot/imported/dot.png-9d4d759d4a4632760a6276e09ddf20a2.s3tc.ctex"]
 
 [params]
 

@@ -1,6 +1,6 @@
 [gd_resource type="VisualShader" format=3 uid="uid://cpy22kkfgmaq7"]
 
-[ext_resource type="Texture2D" uid="uid://txeg83k6c1y1" path="res://images/optic/smallCross.png" id="1_iy75m"]
+[ext_resource type="Texture2D" uid="uid://txeg83k6c1y1" path="res://images/reticle/smallCross.png" id="1_iy75m"]
 
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_s8w17"]
 operator = 2
@@ -36,7 +36,6 @@ constant = Color(0.01333797, 0.01333797, 0.01333797, 1)
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_f5p8x"]
 parameter_name = "Texture"
-texture_type = 1
 color_default = 1
 texture_filter = 2
 texture_repeat = 2
@@ -65,7 +64,7 @@ operator = 3
 [sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_vmqro"]
 parameter_name = "Tint"
 default_value_enabled = true
-default_value = Color(1.5966519, 0, 0, 1)
+default_value = Color(18.892157, 0, 0, 1)
 
 [sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_ufmuy"]
 default_input_values = [0, 0.0, 1, 0.5]
@@ -97,6 +96,7 @@ operator = 3
 input_name = "screen_uv"
 
 [resource]
+preview_params/Texture = "Resource(\"uid://37yg46i0k6ln\", \"res://images/reticle/dot.png\")"
 nodes/fragment/0/position = Vector2(400, 200)
 nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_f5p8x")
 nodes/fragment/2/position = Vector2(-640, 220)
@@ -107,19 +107,19 @@ nodes/fragment/9/position = Vector2(-2320, 360)
 nodes/fragment/11/node = SubResource("VisualShaderNodeVectorOp_s8w17")
 nodes/fragment/11/position = Vector2(-400, 180)
 nodes/fragment/13/node = SubResource("VisualShaderNodeVectorLen_f5p8x")
-nodes/fragment/13/position = Vector2(-440, 680)
+nodes/fragment/13/position = Vector2(-520, 680)
 nodes/fragment/16/node = SubResource("VisualShaderNodeVectorOp_b3kgg")
-nodes/fragment/16/position = Vector2(-640, 680)
+nodes/fragment/16/position = Vector2(-720, 680)
 nodes/fragment/17/node = SubResource("VisualShaderNodeFloatOp_f3geo")
-nodes/fragment/17/position = Vector2(-240, 680)
+nodes/fragment/17/position = Vector2(-320, 680)
 nodes/fragment/18/node = SubResource("VisualShaderNodeCompare_l55vy")
 nodes/fragment/18/position = Vector2(-200, 380)
 nodes/fragment/19/node = SubResource("VisualShaderNodeSwitch_w5s00")
 nodes/fragment/19/position = Vector2(40, 380)
 nodes/fragment/20/node = SubResource("VisualShaderNodeColorConstant_df4c1")
-nodes/fragment/20/position = Vector2(-420, 520)
+nodes/fragment/20/position = Vector2(-380, 540)
 nodes/fragment/21/node = SubResource("VisualShaderNodeTexture2DParameter_f5p8x")
-nodes/fragment/21/position = Vector2(-1080, 40)
+nodes/fragment/21/position = Vector2(-1040, 40)
 nodes/fragment/22/node = SubResource("VisualShaderNodeInput_0fhwt")
 nodes/fragment/22/position = Vector2(-2320, 720)
 nodes/fragment/23/node = SubResource("VisualShaderNodeFloatOp_tgreu")

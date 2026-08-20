@@ -96,7 +96,7 @@ public static class ResourceManager
 				return null;
 			}
 
-			return GetResourceRef(Global.StableHash(fullId));
+			return GetResourceRef(Hashing.StableHash(fullId));
 		}
 
 		public Dictionary<int, T> GetAllResource()
@@ -144,7 +144,7 @@ public static class ResourceManager
 		public MFResource GetResourceRef(int hashId)
 		{
 			var res = registry.FirstOrDefault(c => c.HashId == hashId, null);
-			if (res is null) GD.PushWarning("LootResourceRegistry.GetResourceRef: hashId not found");
+			if (res is null) GD.PushWarning($"LootResourceRegistry.GetResourceRef: hashId not found ({hashId})");
 			return res;
 		}
 
@@ -159,7 +159,7 @@ public static class ResourceManager
 				return null;
 			}
 
-			return GetResourceRef(Global.StableHash(fullId));
+			return GetResourceRef(Hashing.StableHash(fullId));
 		}
 
 		public List<MFResource> GetAllResource()

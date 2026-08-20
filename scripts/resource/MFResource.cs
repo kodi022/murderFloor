@@ -32,8 +32,43 @@ public partial class MFResource : Resource
     public void BuildIds()
     {
         FullId = $"{PackageId}:{ResourceId}";
-        HashId = Global.StableHash(FullId);
+        HashId = Hashing.StableHash(FullId);
     }
 
     public virtual async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY) => Global.MissingTextureImage;
+
+    public static Aabb GetBounds(Node3D weaponScene)
+    {
+        var bounds = new Aabb();
+        if (weaponScene.IsQueuedForDeletion()) return bounds;
+
+        if (weaponScene is VisualInstance3D inst)
+        {
+            bounds = inst.GetAabb();
+        }
+
+        foreach (var child in weaponScene.GetChildren())
+        {
+            if (child is not VisualInstance3D childInst) continue;
+            if (childInst.GetAabb() == default) continue;
+
+            var childBounds = childInst.GetAabb();
+            bounds = bounds.Merge(childBounds);
+        }
+
+        bounds = weaponScene.Transform * bounds;
+
+        return bounds;
+    }
+
+    private protected static void ApplyThumbnailMaterialToParts(Node3D weaponScene)
+    {
+        foreach (var child in weaponScene.GetChildren())
+        {
+            if (child is MeshInstance3D mesh)
+            {
+                mesh.MaterialOverride = GD.Load<Material>("res://materials/thumbnail.tres");
+            }
+        }
+    }
 }

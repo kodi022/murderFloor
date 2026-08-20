@@ -4,7 +4,7 @@ using Loot;
 
 public partial class LockerToolButton : Panel
 {
-    public LootState LootStateInfo { get; set; }
+    public LootState LootState { get; set; }
 
     [Export]
     public Button Button { get; private set; }
@@ -21,21 +21,30 @@ public partial class LockerToolButton : Panel
     private RichTextLabel weightLabel;
 
     private LootRarity lootRarity;
+    private bool isTool;
 
     public override async void _Ready()
     {
-        var lootResource = (Tool)ResourceManager.LootRegistry.GetResourceRef(LootStateInfo.HashId);
-        lootRarity = new LootRarity(LootStateInfo);
+        var lootResource = ResourceManager.LootRegistry.GetResourceRef(LootState.HashId);
+        lootRarity = new LootRarity(LootState);
+        isTool = lootResource is Tool;
 
         levelLabel.Text = lootRarity.Level.ToString();
-        weightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{lootResource.CarryWeight}";
         rect.Texture = await lootResource.GenerateThumbnailImage(256, 128);
+
+        if (isTool)
+        {
+            weightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{((Tool)lootResource).CarryWeight}";
+        }
+        else
+        {
+            weightLabel.Visible = false;
+        }
     }
 
     public override Control _MakeCustomTooltip(string forText)
     {
-        var control = new Control();
-        control.CustomMinimumSize = new Vector2(200, 200);
+        var control = new Control() { CustomMinimumSize = new Vector2(200, 200) };
         var label = new Label() { Text = forText };
         control.AddChild(label);
         return control;
@@ -45,13 +54,23 @@ public partial class LockerToolButton : Panel
     {
         ninePatchRect.Modulate = Tiers.TierList[lootRarity.Tier].Color;
 
-        if (LootStateInfo == lockerSelected && Player.Self.HasTool(LootStateInfo))
-            colorRect.Color = new Color(0.2f, 0.38f, 0.38f);
-        else if (LootStateInfo == lockerSelected)
-            colorRect.Color = new Color(0.2f, 0.35f, 0.2f);
-        else if (Player.Self.HasTool(LootStateInfo))
-            colorRect.Color = new Color(0.2f, 0.2f, 0.35f);
+        if (isTool)
+        {
+            if (LootState == lockerSelected && Player.Self.HasTool(LootState))
+                colorRect.Color = new Color(0.2f, 0.38f, 0.38f);
+            else if (LootState == lockerSelected)
+                colorRect.Color = new Color(0.2f, 0.35f, 0.2f);
+            else if (Player.Self.HasTool(LootState))
+                colorRect.Color = new Color(0.2f, 0.2f, 0.35f);
+            else
+                colorRect.Color = new Color(0.12f, 0.12f, 0.12f);
+        }
         else
-            colorRect.Color = new Color(0.12f, 0.12f, 0.12f);
+        {
+            if (LootState.HasCustomData("0"))
+                colorRect.Color = new Color(0.2f, 0.35f, 0.2f);
+            else
+                colorRect.Color = new Color(0.12f, 0.12f, 0.12f);
+        }
     }
 }
