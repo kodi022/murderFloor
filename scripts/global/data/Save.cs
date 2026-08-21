@@ -2,6 +2,9 @@ namespace MurderFloor;
 
 public static class SaveManager
 {
+    public static System.Text.Json.JsonSerializerOptions JsonOptions { get; private set; } = new()
+    { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+
     public static SaveData CurrentSave { get; private set; } = new SaveData();
     public static string SaveFolder => "user://saves";
     public static string SaveIndexPath => SaveFolder + "/saveindex.txt";
@@ -12,7 +15,7 @@ public static class SaveManager
     {
         if (!DirAccess.DirExistsAbsolute(SaveFolder)) DirAccess.MakeDirAbsolute("user://saves");
 
-        var json = System.Text.Json.JsonSerializer.Serialize(save);
+        var json = System.Text.Json.JsonSerializer.Serialize(save, JsonOptions);
         SaveSaveIndex();
 
         using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);

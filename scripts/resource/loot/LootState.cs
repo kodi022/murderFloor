@@ -1,14 +1,24 @@
 namespace MurderFloor.Loot;
 
+////////////
+/// LootState CustomData basegame mapping
+/// attachment:
+///     g = Gun LootState HashId
+///     r = reticle image uid
+///     c = reticle color
+////////////
+
 public struct LootState
 {
     private const string SerializationDelimiter = ",";
     private const string CustomDataDelimiter = "_";
     private const string CustomDataKVPDelimiter = "=";
 
+    public readonly int HashId => GetHashCode();
+
     // the saved data of Loot
     public ulong Seed { get; private set; }
-    public int HashId { get; private set; }
+    public int ResourceHashId { get; private set; }
     public Version Version { get; private set; }
     public int Level { get; private set; }
     public Game.DifficultyEnum Difficulty { get; private set; }
@@ -26,7 +36,7 @@ public struct LootState
     public LootState(ulong seed, int level, Game.DifficultyEnum difficulty, int mapHashId, bool c1, bool c2, float difficultyMaxer)
     {
         Seed = seed;
-        HashId = GetLootHashId(Seed);
+        ResourceHashId = GetLootHashId(Seed);
         Version = Global.GameVersion;
         Level = level;
         Difficulty = difficulty;
@@ -43,11 +53,7 @@ public struct LootState
         ModifiedStats.Add("Damage", 1.2f);
     }
 
-    public static MFResource GetLootRef(LootState self)
-    {
-        GD.Print(self.HashId);
-        return ResourceManager.LootRegistry.GetResourceRef(self.HashId);
-    }
+    public static MFResource GetLootRef(LootState self) => ResourceManager.LootRegistry.GetResourceRef(self.ResourceHashId);
 
     private static int GetLootHashId(ulong seed)
     {
@@ -64,7 +70,7 @@ public struct LootState
         newLoot.StateInfo = self;
         var importYaw = 0f;
         var rigidBody = newLoot.FindChildren("RigidBody3D").First();
-        var loot = ResourceManager.LootRegistry.GetResourceRef(self.HashId);
+        var loot = ResourceManager.LootRegistry.GetResourceRef(self.ResourceHashId);
         var meshScene = loot.MeshScene.Instantiate<Node3D>();
         meshScene.RotationDegrees = new Vector3(90, importYaw, 0);
         rigidBody.AddChild(meshScene);
@@ -75,28 +81,27 @@ public struct LootState
         return newLoot;
     }
 
-    public readonly bool HasCustomData(string key)
-    {
-        return CustomData.ContainsKey(key);
-    }
+    public readonly bool HasCustomData(string key) => CustomData.ContainsKey(key);
 
     /// <summary>Tries to get custom data from LootState. Returns true if successful. Use HasCustomData(key) if value is not needed.</summary>
-    public readonly bool GetCustomData(string key, out string value)
-    {
-        return CustomData.TryGetValue(key, out value);
-    }
+    public readonly bool GetCustomData(string key, out string value) => CustomData.TryGetValue(key, out value);
 
     /// <summary>Adds data to be saved to LootState. Highly recommended to keep key and value as short as possible.</summary>
     public readonly void AddCustomData(string key, string value)
     {
         if (CustomData.ContainsKey(key))
         {
-            GD.PushError("LootState.AddCustomData already contains key");
+            GD.PushError($"LootState.AddCustomData already contains key \"{key}\"");
             return;
         }
-        if (key.Contains(CustomDataDelimiter))
+        if (!CustomDataArgIsValid(key))
         {
-            GD.PushError($"LootState.AddCustomData key cannot contain \"{CustomDataDelimiter}\"");
+            GD.PushError($"LootState.AddCustomData key cannot contain: \"{SerializationDelimiter}\" \"{CustomDataDelimiter}\" \"{CustomDataKVPDelimiter}\"");
+            return;
+        }
+        if (!CustomDataArgIsValid(key))
+        {
+            GD.PushError($"LootState.AddCustomData value cannot contain: \"{SerializationDelimiter}\" \"{CustomDataDelimiter}\" \"{CustomDataKVPDelimiter}\"");
             return;
         }
         if (key.Length < 2)
@@ -108,23 +113,22 @@ public struct LootState
         CustomData.Add(key, value);
     }
 
-    /// <summary> internal function reserved for base game. key 0 - 63 only. </summary>
-    internal readonly void AddCustomData(int key, string value)
+    /// <summary> internal function reserved for base game. base64 single character only. </summary>
+    internal readonly void AddCustomData(char key, string value)
     {
-        if (key > 63)
+        if (!Compression.ArithmeticBase64.Contains(key))
         {
-            GD.PushError("LootState.AddCustomData key greater than 63");
+            GD.PushError("LootState.AddCustomData does not contain char key");
             return;
         }
 
-        var strKey = Compression.ArithmeticBase64[key].ToString();
-        if (CustomData.ContainsKey(strKey))
+        if (CustomData.ContainsKey(key.ToString()))
         {
             GD.PushError("LootState.AddCustomData already contains key");
             return;
         }
 
-        CustomData.Add(strKey, value);
+        CustomData.Add(key.ToString(), value);
     }
 
     /// <summary>Removes data saved to LootState. Returns true if successfully removed.</summary>
@@ -141,12 +145,12 @@ public struct LootState
 
     public static string Serialize(LootState self)
     {
-        var str = self.Seed + SerializationDelimiter;
-        str += self.HashId + SerializationDelimiter;
+        var str = Compression.ULToAB64(self.Seed) + SerializationDelimiter;
+        str += Compression.IntToAB64(self.ResourceHashId) + SerializationDelimiter;
         str += self.Version.ToString() + SerializationDelimiter;
         str += self.Level + SerializationDelimiter;
         str += (int)self.Difficulty + SerializationDelimiter;
-        str += self.MapHashId + SerializationDelimiter;
+        str += Compression.IntToAB64(self.MapHashId) + SerializationDelimiter;
         str += self.ChallengeScaling + SerializationDelimiter;
         str += self.OverScaling.ToString(".00") + SerializationDelimiter;
         str += SerializeCustomData(self.CustomData);
@@ -158,15 +162,15 @@ public struct LootState
         var strs = state.Split(SerializationDelimiter);
         var ls = new LootState()
         {
-            Seed = Convert.ToUInt64(strs[0]),
-            HashId = strs[1].ToInt(),
+            Seed = Compression.AB64ToUL(strs[0]),
+            ResourceHashId = Compression.AB64ToInt(strs[1]),
             Version = Version.FromString(strs[2]),
             Level = strs[3].ToInt(),
             Difficulty = (Game.DifficultyEnum)strs[4].ToInt(),
-            MapHashId = strs[5].ToInt(),
+            MapHashId = Compression.AB64ToInt(strs[5]),
             ChallengeScaling = strs[6].ToInt(),
             OverScaling = strs[7].ToFloat(),
-            CustomData = [],
+            CustomData = DeserializeCustomData(strs[8]),
         };
         ls.GenerateStats();
         return ls;
@@ -184,6 +188,8 @@ public struct LootState
 
     private static Dictionary<string, string> DeserializeCustomData(string customData)
     {
+        if (string.IsNullOrEmpty(customData)) return [];
+
         Dictionary<string, string> vals = [];
         var kvps = customData.Split(CustomDataDelimiter);
         foreach (var kvp in kvps)
@@ -194,13 +200,18 @@ public struct LootState
         return vals;
     }
 
+    private static bool CustomDataArgIsValid(string arg)
+    {
+        return !(arg.Contains(SerializationDelimiter) || arg.Contains(CustomDataDelimiter) || arg.Contains(CustomDataKVPDelimiter));
+    }
+
     public readonly override int GetHashCode() => GetStableHash();
     private readonly int GetStableHash()
     {
         unchecked
         {
             int hash = 13466917 + Seed.GetHashCode();
-            hash = hash * 31 + HashId;
+            hash = hash * 31 + ResourceHashId;
             hash = hash * 31 + Level;
             hash = hash * 31 + Version.GetHashCode();
             hash = hash * 31 + (int)Difficulty;
@@ -212,15 +223,8 @@ public struct LootState
     }
 
     // LootState
-    public readonly bool Equals(LootState other) => GetHashCode() == other.GetHashCode();
+    public readonly bool Equals(LootState other) => HashId == other.HashId;
     public readonly override bool Equals(object obj) => obj is LootState other && Equals(other);
     public static bool operator ==(LootState left, LootState right) => left.Equals(right);
     public static bool operator !=(LootState left, LootState right) => !left.Equals(right);
-
-    // int
-    public readonly bool Equals(int other) => GetHashCode() == other;
-    public static bool operator ==(LootState left, int right) => left.Equals(right);
-    public static bool operator !=(LootState left, int right) => !left.Equals(right);
-    public static bool operator ==(int left, LootState right) => right.Equals(left);
-    public static bool operator !=(int left, LootState right) => !right.Equals(left);
 }

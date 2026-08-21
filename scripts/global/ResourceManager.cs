@@ -50,11 +50,8 @@ public static class ResourceManager
 						if (resource.PackageId == "") GD.PushWarning($"{typeof(T).Name}Registry: Resource missing PackageId {path}");
 						if (resource.ResourceId == "") GD.PushWarning($"{typeof(T).Name}Registry: Resource missing ResourceId {path}");
 
-
 						resource.BuildIds();
 						folderRegisters.Add(resource.HashId, resource);
-
-						if (resource is ToolMelee) GD.Print(resource.HashId);
 
 						if (resource.UseInGame && resource.IsLoot) LootRegistry.Add(resource);
 					}

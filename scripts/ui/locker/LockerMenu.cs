@@ -105,7 +105,7 @@ public partial class LockerMenu : ScreenScaleLimiter
             var lootRef = LootState.GetLootRef(lootState);
             if (lootRef.FullId == "base:fists") continue;
 
-            var lootResource = ResourceManager.LootRegistry.GetResourceRef(lootState.HashId);
+            var lootResource = ResourceManager.LootRegistry.GetResourceRef(lootState.ResourceHashId);
 
             if (listShowAttachments && lootResource is Tool) continue;
             if (!listShowAttachments && lootResource is Attachment) continue;
@@ -183,8 +183,8 @@ public partial class LockerMenu : ScreenScaleLimiter
 
     private void SelectAttachment()
     {
-        if (selectedAttachmentLootState.HasCustomData("0")) return;
-        selectedAttachmentLootState.AddCustomData(0, Compression.IntToArithmeticBase64(selectedToolLootState.GetHashCode()));
+        if (selectedAttachmentLootState.HasCustomData("g")) return;
+        selectedAttachmentLootState.AddCustomData('g', Compression.IntToAB64(selectedToolLootState.GetHashCode()));
         SaveManager.CurrentSave.Loot[selectedAttachmentSaveIndex] = LootState.Serialize(selectedAttachmentLootState);
         selectedAttachmentLockerToolButton.CheckState(selectedAttachmentLootState);
         SaveManager.Save(SaveManager.CurrentSave);

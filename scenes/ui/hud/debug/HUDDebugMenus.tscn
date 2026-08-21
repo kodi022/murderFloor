@@ -1,0 +1,298 @@
+[gd_scene format=3 uid="uid://ceyq260isuvbk"]
+
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_dkw4l"]
+[ext_resource type="Script" uid="uid://bhop8hav4xv11" path="res://scripts/ui/hud/debug/HudDebugMenus.cs" id="2_dkw4l"]
+[ext_resource type="FontFile" uid="uid://bvu2jo6ood5j1" path="res://fonts/IBMPlexMono-Regular.ttf" id="3_od0cq"]
+
+[node name="HudDebugMenus" type="Control" unique_id=1984865689 node_paths=PackedStringArray("tabContainer")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 479.99976
+offset_bottom = 269.99988
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.8, 0.8)
+theme = ExtResource("1_dkw4l")
+script = ExtResource("2_dkw4l")
+tabContainer = NodePath("TabContainer")
+
+[node name="TabContainer" type="TabContainer" parent="." unique_id=1084343744]
+custom_minimum_size = Vector2(1000, 1350)
+layout_mode = 0
+offset_right = 1000.0
+offset_bottom = 1350.0
+current_tab = 3
+
+[node name="ResourceTree" type="Tree" parent="TabContainer" unique_id=216491271]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+columns = 4
+column_titles_visible = true
+metadata/_tab_index = 0
+
+[node name="Base64Test" type="Panel" parent="TabContainer" unique_id=61083247]
+visible = false
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_tab_index = 1
+
+[node name="LineEdit" type="LineEdit" parent="TabContainer/Base64Test" unique_id=1918010359]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 60.0
+offset_right = 407.49997
+offset_bottom = 91.0
+text = "2147483647"
+
+[node name="Button" type="Button" parent="TabContainer/Base64Test/LineEdit" unique_id=35699190]
+layout_mode = 0
+offset_top = 31.249992
+offset_right = 111.249985
+offset_bottom = 62.249992
+text = "Hit it"
+
+[node name="Label" type="Label" parent="TabContainer/Base64Test/LineEdit" unique_id=1319142571]
+layout_mode = 0
+offset_left = 267.5
+offset_right = 297.5
+offset_bottom = 31.25
+text = "->"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/Base64Test/LineEdit/Label" unique_id=812538207]
+layout_mode = 0
+offset_left = 30.0
+offset_right = 206.24997
+offset_bottom = 31.25
+text = "base64"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="TabContainer/Base64Test/LineEdit" unique_id=1021492002]
+layout_mode = 0
+offset_left = 473.75
+offset_right = 503.75
+offset_bottom = 31.25
+text = "->"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/Base64Test/LineEdit/Label2" unique_id=295234303]
+layout_mode = 0
+offset_left = 30.0
+offset_right = 206.24997
+offset_bottom = 31.25
+text = "return"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="TabContainer/Base64Test/LineEdit" unique_id=592106702]
+layout_mode = 0
+offset_top = -22.499998
+offset_right = 40.0
+offset_bottom = 0.5000019
+text = "Int to ArithmeticBase64"
+
+[node name="LineEdit2" type="LineEdit" parent="TabContainer/Base64Test" unique_id=1695212041]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 160.0
+offset_right = 407.5
+offset_bottom = 191.0
+text = "18446744073709551615"
+
+[node name="Button" type="Button" parent="TabContainer/Base64Test/LineEdit2" unique_id=1742074740]
+layout_mode = 0
+offset_top = 31.25
+offset_right = 111.249985
+offset_bottom = 62.25
+text = "Hit it"
+
+[node name="Label" type="Label" parent="TabContainer/Base64Test/LineEdit2" unique_id=358483996]
+layout_mode = 0
+offset_left = 267.5
+offset_right = 297.5
+offset_bottom = 31.25
+text = "->"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/Base64Test/LineEdit2/Label" unique_id=538225621]
+layout_mode = 0
+offset_left = 30.0
+offset_right = 206.24997
+offset_bottom = 31.25
+text = "base64"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="TabContainer/Base64Test/LineEdit2" unique_id=415652458]
+layout_mode = 0
+offset_left = 473.75
+offset_right = 503.75
+offset_bottom = 31.25
+text = "->"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/Base64Test/LineEdit2/Label2" unique_id=664240470]
+layout_mode = 0
+offset_left = 30.0
+offset_right = 206.24997
+offset_bottom = 31.25
+text = "return"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="TabContainer/Base64Test/LineEdit2" unique_id=475572301]
+layout_mode = 0
+offset_top = -22.499998
+offset_right = 40.0
+offset_bottom = 0.5000019
+text = "ULong to ArithmeticBase64"
+
+[node name="LootStateSerialization" type="Panel" parent="TabContainer" unique_id=1274650392]
+visible = false
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_tab_index = 2
+
+[node name="Panel" type="Panel" parent="TabContainer/LootStateSerialization" unique_id=881701608]
+layout_mode = 0
+offset_left = 5.000002
+offset_top = 5.250002
+offset_right = 367.49997
+offset_bottom = 333.99997
+
+[node name="Button" type="Button" parent="TabContainer/LootStateSerialization/Panel" unique_id=1759404776]
+layout_mode = 0
+offset_left = 8.750002
+offset_top = 8.75
+offset_right = 158.74998
+offset_bottom = 43.75002
+text = "Make Empty"
+
+[node name="Button2" type="Button" parent="TabContainer/LootStateSerialization/Panel" unique_id=1262768405]
+layout_mode = 0
+offset_left = 165.0
+offset_top = 8.75
+offset_right = 355.0
+offset_bottom = 43.75002
+text = "Make With Values"
+
+[node name="LineEdit" type="LineEdit" parent="TabContainer/LootStateSerialization/Panel" unique_id=1824672446]
+layout_mode = 0
+offset_left = 8.749998
+offset_top = 63.749996
+offset_right = 352.49997
+offset_bottom = 94.75
+text = "501572857"
+
+[node name="Label" type="Label" parent="TabContainer/LootStateSerialization/Panel/LineEdit" unique_id=309553627]
+layout_mode = 0
+offset_top = -21.250017
+offset_right = 40.0
+offset_bottom = 1.7499828
+text = "seed"
+
+[node name="LineEdit2" type="LineEdit" parent="TabContainer/LootStateSerialization/Panel" unique_id=1171668184]
+layout_mode = 0
+offset_left = 8.749998
+offset_top = 114.99999
+offset_right = 352.49997
+offset_bottom = 146.0
+text = "25"
+
+[node name="Label" type="Label" parent="TabContainer/LootStateSerialization/Panel/LineEdit2" unique_id=506542627]
+layout_mode = 0
+offset_top = -21.250017
+offset_right = 40.0
+offset_bottom = 1.7499828
+text = "level"
+
+[node name="LineEdit4" type="LineEdit" parent="TabContainer/LootStateSerialization/Panel" unique_id=1307233061]
+layout_mode = 0
+offset_left = 8.749998
+offset_top = 166.25
+offset_right = 352.49997
+offset_bottom = 197.25002
+text = "2"
+
+[node name="Label" type="Label" parent="TabContainer/LootStateSerialization/Panel/LineEdit4" unique_id=1912198305]
+layout_mode = 0
+offset_top = -21.250017
+offset_right = 40.0
+offset_bottom = 1.7499828
+text = "difficulty"
+
+[node name="LineEdit3" type="LineEdit" parent="TabContainer/LootStateSerialization/Panel" unique_id=1607164182]
+layout_mode = 0
+offset_left = 8.75
+offset_top = 252.49994
+offset_right = 352.49997
+offset_bottom = 319.99994
+editable = false
+
+[node name="LootGenerator" type="Panel" parent="TabContainer" unique_id=62031307]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_tab_index = 3
+
+[node name="LineEdit" type="LineEdit" parent="TabContainer/LootGenerator" unique_id=1526759095]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 30.250004
+offset_right = 334.99997
+offset_bottom = 61.250004
+text = "200000"
+
+[node name="Label" type="Label" parent="TabContainer/LootGenerator/LineEdit" unique_id=839949212]
+layout_mode = 0
+offset_left = 1.2500046
+offset_top = -21.249989
+offset_right = 41.250004
+offset_bottom = 1.7500114
+text = "amount per difficulty"
+
+[node name="LineEdit2" type="LineEdit" parent="TabContainer/LootGenerator" unique_id=252467677]
+layout_mode = 0
+offset_left = 341.24997
+offset_top = 30.25
+offset_right = 661.24994
+offset_bottom = 61.25
+text = "25"
+
+[node name="Label" type="Label" parent="TabContainer/LootGenerator/LineEdit2" unique_id=1264330915]
+layout_mode = 0
+offset_left = 1.2500046
+offset_top = -21.249989
+offset_right = 41.250004
+offset_bottom = 1.7500114
+text = "level"
+
+[node name="Button" type="Button" parent="TabContainer/LootGenerator" unique_id=1365449711]
+layout_mode = 0
+offset_left = 14.999998
+offset_top = 65.249985
+offset_right = 244.99997
+offset_bottom = 96.249985
+text = "Run"
+
+[node name="TextEdit" type="TextEdit" parent="TabContainer/LootGenerator" unique_id=1935293036]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 131.49998
+offset_right = 986.2499
+offset_bottom = 742.75
+theme_override_constants/line_spacing = 2
+theme_override_fonts/font = ExtResource("3_od0cq")
+theme_override_font_sizes/font_size = 12
+text = "waiting..."
+editable = false

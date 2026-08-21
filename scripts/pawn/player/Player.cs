@@ -94,7 +94,7 @@ public partial class Player : Pawn
             return;
         }
 
-        Rpc("ToolAddRpc", "0,-1219130955,0.1.0,0,0,0,0,0");
+        Rpc("ToolAddRpc", "0,-18GDpb,0.1.0,0,0,0,0,.00,");
         OptionsMenu.ShowReturnButton = true;
         var opt = OptionsManager.Load();
         OptionsManager.Apply(opt);
@@ -117,9 +117,14 @@ public partial class Player : Pawn
 
         if (@event is InputEventKey eventKey)
         {
-            if (eventKey.Keycode == Key.F1 && eventKey.Pressed)
+            if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
             {
-                if (debugUI is null)
+                NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
+            }
+
+            if (eventKey.Keycode == Key.F3 && eventKey.Pressed && OS.HasFeature("editor"))
+            {
+                if (!IsInstanceValid(debugUI))
                 {
                     debugUI = GD.Load<PackedScene>("res://scenes/ui/hud/debug/HUDDebug.tscn").Instantiate<Control>();
                     AddChild(debugUI);
@@ -129,23 +134,15 @@ public partial class Player : Pawn
                     debugUI.Free();
                     debugUI = null;
                 }
+
+                // Debug.DebugGenerateLoot();
             }
 
-            if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
+            if (eventKey.Keycode == Key.F4 && eventKey.Pressed && OS.HasFeature("editor"))
             {
-                NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
-            }
-
-            if (eventKey.Keycode == Key.F3 && eventKey.Pressed)
-            {
-                Debug.DebugGenerateLoot();
-            }
-
-            if (eventKey.Keycode == Key.F4 && eventKey.Pressed)
-            {
-                if (openUI is null)
+                if (!IsInstanceValid(openUI))
                 {
-                    OpenUI("res://scenes/ui/hud/debug/HUDDebugItemList.tscn");
+                    OpenUI("res://scenes/ui/hud/debug/HUDDebugMenus.tscn");
                 }
                 else
                 {
@@ -191,7 +188,7 @@ public partial class Player : Pawn
 
         if (Input.IsActionJustPressed("exit"))
         {
-            if (openUI is null)
+            if (!IsInstanceValid(openUI))
             {
                 OpenUI("res://scenes/ui/Menu.tscn");
             }

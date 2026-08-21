@@ -34,7 +34,7 @@ public partial class Player : Pawn
     public void ToolAdd(string lootState)
     {
         var lootStateStruct = Loot.LootState.Deserialize(lootState);
-        var resource = ResourceManager.ToolRegistry.GetResourceRef(lootStateStruct.HashId);
+        var resource = ResourceManager.ToolRegistry.GetResourceRef(lootStateStruct.ResourceHashId);
         if (ToolWeight + resource.CarryWeight > MaxWeight) return;
 
         var liveTool = GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate<LiveTool>();

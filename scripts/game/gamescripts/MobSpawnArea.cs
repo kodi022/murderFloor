@@ -26,7 +26,7 @@ public partial class MobSpawnArea : Node3D
 
             if (aabb.HasPoint(pos))
             {
-                Debug.DebugDot(GlobalPosition + pos, 2, msToDelete: 5000);
+                if (OS.HasFeature("editor")) Debug.DebugDot(GlobalPosition + pos, 4, msToDelete: 5000);
                 vectors.Add(GlobalPosition + pos);
             }
 

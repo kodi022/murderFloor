@@ -25,7 +25,7 @@ public partial class LockerToolButton : Panel
 
     public override async void _Ready()
     {
-        var lootResource = ResourceManager.LootRegistry.GetResourceRef(LootState.HashId);
+        var lootResource = ResourceManager.LootRegistry.GetResourceRef(LootState.ResourceHashId);
         lootRarity = new LootRarity(LootState);
         isTool = lootResource is Tool;
 

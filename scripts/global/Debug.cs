@@ -2,18 +2,16 @@ namespace MurderFloor;
 
 public static class Debug
 {
-    public static async void DebugGenerateLoot()
+    public static async Task<List<string>> DebugGenerateLoot(int count = 500000, int level = 80)
     {
         var allLootTier = new Dictionary<Game.DifficultyEnum, Dictionary<Loot.Tiers.TierEnum, int>>();
         var allLootWear = new Dictionary<Game.DifficultyEnum, Dictionary<Loot.Wears.WearEnum, int>>();
-        var lootCount = 500_000;
-        var level = 80;
 
         void GenerateLoot(Game.DifficultyEnum difficulty)
         {
             var tierCount = new Dictionary<Loot.Tiers.TierEnum, int>();
             var wearCount = new Dictionary<Loot.Wears.WearEnum, int>();
-            for (int i = 0; i < lootCount; i++)
+            for (int i = 0; i < count; i++)
             {
                 var state = new Loot.LootState((ulong)Random.Shared.NextInt64(), level, difficulty, 0, false, false, 0);
                 var e = new Loot.LootRarity(state);
@@ -28,17 +26,16 @@ public static class Debug
             allLootWear.Add(difficulty, wearCount);
         }
 
-        var a = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Easy); });
-        var b = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Medium); });
-        var c = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Challenging); });
-        var d = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Hard); });
-        var e = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Extreme); });
-        var f = Task.Run(async () => { GenerateLoot(Game.DifficultyEnum.Ludicrous); });
-        Task.WaitAll(a, b, c, d, e, f);
-        await Task.Delay(20); // necessary or above line isnt guaranteed
+        var difficulties = Enum.GetValues<Game.DifficultyEnum>();
+        var tasks = difficulties.Select(difficulty =>
+            Task.Run(() => GenerateLoot(difficulty))
+        );
+
+        await Task.WhenAll(tasks);
 
         List<string> diffStrings = [];
-        diffStrings.Add($"CountPerDifficulty:{lootCount}  Level:{level}  CSKnife:0.25");
+        diffStrings.Add($"CountPerDifficulty:{count}  Level:{level}  CSKnife:0.25");
+        diffStrings.Add("");
 
         diffStrings.Add("Tiers");
         foreach (var difficulty in allLootTier.OrderBy(c => c.Key))
@@ -49,13 +46,14 @@ public static class Debug
             foreach (var tier in difficulty.Value.OrderByDescending(t => (int)t.Key))
             {
                 var name = tier.Key.ToString()[..4];
-                var perc = (float)tier.Value / (float)lootCount * 100f;
+                var perc = (float)tier.Value / (float)count * 100f;
                 values += $"{name}:{perc:0.00}, ";
             }
             values = values[..^2];
 
             diffStrings.Add(diff + values);
         }
+        diffStrings.Add("");
 
         diffStrings.Add("Wears");
         foreach (var difficulty in allLootWear.OrderBy(c => c.Key))
@@ -67,7 +65,7 @@ public static class Debug
             {
                 var name = wear.Key.ToString();
                 name = name.Length > 3 ? name[..4] : name;
-                var perc = (float)wear.Value / (float)lootCount * 100f;
+                var perc = (float)wear.Value / (float)count * 100f;
                 values += $"{name}:{perc:0.00}, ";
             }
             values = values[..^2];
@@ -75,26 +73,7 @@ public static class Debug
             diffStrings.Add(diff + values);
         }
 
-        PrintContainerStrings(diffStrings);
-    }
-
-    private static void PrintContainerStrings(List<string> strings)
-    {
-        var longest = 0;
-
-        foreach (var str in strings)
-        {
-            if (str.Length > longest) longest = str.Length;
-        }
-
-        GD.Print('╔' + "".PadRight(longest, '═') + '╗');
-
-        foreach (var str in strings)
-        {
-            GD.Print('║' + str.PadRight(longest) + '║');
-        }
-
-        GD.Print('╚' + "".PadRight(longest, '═') + '╝');
+        return diffStrings;
     }
 
     public static void DebugDot(Node3D parentNode, Vector3 position, float scale = 1f, Color? color = null, ulong msToDelete = 10000ul)

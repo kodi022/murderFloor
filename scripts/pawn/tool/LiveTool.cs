@@ -161,8 +161,6 @@ public partial class LiveTool : Node
         foregripNode = FindNode("Point-Foregrip");
         gadgetNode = FindNode("Point-Gadget");
 
-        // ! find other attachments
-
         sightPosition = sightNode.Position.Rotated(Vector3.Up, -modelSceneGun.Rotation.Y);
 
         if (sightAttachmentNode.IsInsideTree())

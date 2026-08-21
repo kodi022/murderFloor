@@ -6,11 +6,10 @@
 [ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_kxss7"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_38nlf"]
-friction = 0.5
 bounce = 0.4
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_38nlf"]
-size = Vector3(0.5, 0.06, 0.5)
+size = Vector3(0.5, 0.1, 0.5)
 
 [node name="Loot" type="Node3D" unique_id=1658198493]
 script = ExtResource("1_sbwe0")
@@ -24,6 +23,7 @@ metadata/_custom_type_script = "uid://bwlrm48k447kp"
 collision_layer = 32
 mass = 4.0
 physics_material_override = SubResource("PhysicsMaterial_38nlf")
+gravity_scale = 0.8
 
 [node name="Sprite3D" type="Sprite3D" parent="Usable/RigidBody3D" unique_id=1205720480]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)

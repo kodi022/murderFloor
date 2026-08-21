@@ -18,7 +18,6 @@ public partial class ToolMelee : Tool
 
     public virtual void FireMelee(FireInfo fi)
     {
-        GD.Print("aaee");
         var space = fi.Player.GetWorld3D().DirectSpaceState;
         var query = PhysicsRayQueryParameters3D.Create(fi.StartPosition, fi.StartPosition + fi.ViewForward * MaxRange, 5);
         var ray = space.IntersectRay(query);
