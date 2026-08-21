@@ -9,7 +9,7 @@ public partial class HudDebugMenus : Control
 
     public override void _Ready()
     {
-        // page 0
+        // * page 0
         var tree = tabContainer.GetChild<Tree>(0);
         var root = tree.CreateItem();
         tree.HideRoot = true;
@@ -23,10 +23,12 @@ public partial class HudDebugMenus : Control
             switch (item.GetParent().GetText(0))
             {
                 case "Tools":
-                    Player.Self.Rpc("ToolAddRpc", $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
+                    if (column == 0)
+                        Player.Self.Rpc("ToolAddRpc", $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
+                    else if (column == 1)
+                        GD.Print(item.GetText(1).ToInt());
                     break;
             }
-            GD.Print($"{item} {item.GetParent().GetText(0)} {column} {id} {mouseButtonIndex}");
         };
 
         void AddChildrenToRoot<T>(string itemName, Dictionary<int, T> resources, bool hasFunction = false) where T : MFResource
@@ -40,6 +42,7 @@ public partial class HudDebugMenus : Control
                 child.SetText(0, item.Value.FullId);
                 if (hasFunction) child.AddButton(0, Global.MissingTexture);
                 child.SetText(1, item.Value.HashId.ToString());
+                child.AddButton(1, Global.MissingTexture);
                 child.SetText(2, item.Value.IsLoot.ToString());
             }
         }
@@ -49,7 +52,7 @@ public partial class HudDebugMenus : Control
         AddChildrenToRoot("Mobs", ResourceManager.MobRegistry.GetAllResource(), true);
         AddChildrenToRoot("Maps", ResourceManager.MapRegistry.GetAllResource());
 
-        // page 1
+        // * page 1
         var compPanel = tabContainer.GetChild<Panel>(1);
         var lineEdit1 = compPanel.GetChild<LineEdit>(0);
         lineEdit1.GetChild<Button>(0).Pressed += () =>
@@ -68,7 +71,7 @@ public partial class HudDebugMenus : Control
             lineEdit2.GetChild(2).GetChild<Label>(0).Text = uncomp.ToString();
         };
 
-        // page 2
+        // * page 2
         var lsPanel = tabContainer.GetChild<Panel>(2);
         var lsCreatorPanel = lsPanel.GetChild<Panel>(0);
         lsCreatorPanel.GetChild<Button>(0).Pressed += () =>
@@ -83,7 +86,7 @@ public partial class HudDebugMenus : Control
             ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = LootState.Serialize(new LootState(seed, level, (Game.DifficultyEnum)difficulty, 0, false, false, 0));
         };
 
-        //page 3
+        // * page 3
         var genPanel = tabContainer.GetChild<Panel>(3);
         genPanel.GetChild<Button>(2).Pressed += async () =>
         {

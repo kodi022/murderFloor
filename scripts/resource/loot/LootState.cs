@@ -50,6 +50,8 @@ public struct LootState
     private readonly void GenerateStats()
     {
         var loot = GetLootRef(this);
+        if (loot is null) return;
+
         ModifiedStats.Add("Damage", 1.2f);
     }
 
@@ -192,11 +194,11 @@ public struct LootState
 
         Dictionary<string, string> vals = [];
         var kvps = customData.Split(CustomDataDelimiter);
-        foreach (var kvp in kvps)
-        {
-            var split = kvp.Split(CustomDataKVPDelimiter);
-            vals.Add(split[0], split[1]);
-        }
+        // foreach (var kvp in kvps)
+        // {
+        //     var split = kvp.Split(CustomDataKVPDelimiter);
+        //     vals.Add(split[0], split[1]);
+        // }
         return vals;
     }
 

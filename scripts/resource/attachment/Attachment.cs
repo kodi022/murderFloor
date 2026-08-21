@@ -8,7 +8,7 @@ public partial class Attachment : MFResource
         Optic,
         Muzzle,
         Barrel,
-        Trinket,
+        Gadget,
     }
 
     [Export]

@@ -23,10 +23,9 @@ custom_minimum_size = Vector2(1000, 1350)
 layout_mode = 0
 offset_right = 1000.0
 offset_bottom = 1350.0
-current_tab = 3
+current_tab = 0
 
 [node name="ResourceTree" type="Tree" parent="TabContainer" unique_id=216491271]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 columns = 4
@@ -240,6 +239,7 @@ offset_bottom = 319.99994
 editable = false
 
 [node name="LootGenerator" type="Panel" parent="TabContainer" unique_id=62031307]
+visible = false
 clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3

@@ -94,7 +94,7 @@ public partial class Player : Pawn
             return;
         }
 
-        Rpc("ToolAddRpc", "0,-18GDpb,0.1.0,0,0,0,0,.00,");
+        Rpc("ToolAddRpc", "0,a/Hw/,0.1.0,0,0,0,0,.00,");
         OptionsMenu.ShowReturnButton = true;
         var opt = OptionsManager.Load();
         OptionsManager.Apply(opt);
@@ -178,9 +178,9 @@ public partial class Player : Pawn
                 worldAnimationTree.Set("parameters/moving/scale", 1f);
                 worldAnimationTree.Set("parameters/timescale_walk/scale", vel);
             }
-            Hold = SelectedTool?.ToolResource.HoldTypeAnimation ?? "";
+            // Hold = SelectedTool?.ToolResource.HoldTypeAnimation ?? "";
+            // var holdtype = SelectedTool?.ToolResource.HoldTypeAnimation ?? "holdtype_idle";
 
-            var holdtype = SelectedTool?.ToolResource.HoldTypeAnimation ?? "holdtype_idle";
             return;
         }
 

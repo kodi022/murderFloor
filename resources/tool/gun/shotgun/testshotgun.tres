@@ -6,7 +6,6 @@
 [ext_resource type="AudioStream" uid="uid://bb8jtfret08g5" path="res://sounds/tool/gun/bolt/freesound_community-realistic-shotgun-cocking-sound-38640.mp3" id="3_7mp16"]
 [ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/reload/gunreload.mp3" id="3_djgqg"]
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="4_rxxii"]
-[ext_resource type="PackedScene" uid="uid://c6c07l7hrrc38" path="res://scenes/tool/gun/shotgun/model37/model37viewmodel.tscn" id="5_xn2wi"]
 
 [resource]
 script = ExtResource("4_rxxii")
@@ -27,7 +26,6 @@ InitialDegreeSpread = Vector2(4, 4)
 MaxDegreeSpread = Vector2(8, 8)
 SpreadRecoveryRate = 2.75
 SpreadIncreasePerShot = Vector2(2, 2)
-AimSpreadBuffMult = Vector2(0.8, 0.8)
 CameraRotationKick = Vector2(0.1, 0)
 ViewmodelPositionKick = Vector2(0, 0.1)
 ViewmodelRotationKick = Vector2(0.03, 0)
@@ -36,8 +34,7 @@ AimShiftRangeHorizontal = Vector2(-0.008, 0.008)
 ScreenShakeAmount = 0.1
 FireMode = 2
 ManualFireSound = ExtResource("3_7mp16")
-MeshSceneViewmodel = ExtResource("5_xn2wi")
-HoldTypeAnimation = "holdtype_shotgun"
+CarryWeight = 5
 ResourceId = "testshotgun"
 MeshScene = ExtResource("2_ttrhh")
 IsLoot = true

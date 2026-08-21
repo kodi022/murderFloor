@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ToolMelee" format=3 uid="uid://bqhotkqb85nmp"]
+
+[ext_resource type="PackedScene" uid="uid://by4grvbohcsgp" path="res://scenes/tool/melee/fists/fists.blend" id="1_e4ftb"]
+[ext_resource type="Script" uid="uid://b6d5j21ujr1b7" path="res://scripts/resource/tool/ToolMelee.cs" id="2_y06do"]
+
+[resource]
+script = ExtResource("2_y06do")
+RPM = 90.0
+Damage = 12.0
+MaxRange = 1.2
+CarryWeight = 0
+ResourceId = "fists"
+MeshScene = ExtResource("1_e4ftb")
+metadata/_custom_type_script = "uid://b6d5j21ujr1b7"

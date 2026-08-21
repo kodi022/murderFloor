@@ -46,6 +46,9 @@ public partial class ToolFirearm : Tool
     [Export]
     public float HoldingSpeed { get; private set; } = 1f;
 
+    [Export]
+    public string IdleAnimationName { get; private set; } = "idle";
+
     [Export, ExportSubgroup("Reload")]
     public int ReloadDelayMs { get; private set; } = 800;
     [Export]
@@ -132,5 +135,96 @@ public partial class ToolFirearm : Tool
     public virtual void EjectCasing()
     {
 
+    }
+
+    public override async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY)
+    {
+        if (MeshScene is null) return Global.MissingTextureImage;
+
+        string GetDictKey(int resX, int resY) { return $"{HashId}-{resX}-{resY}"; }
+        if (generatedThumbnails.TryGetValue(GetDictKey(resX, resY), out ImageTexture val))
+            return val;
+
+        var sceneViewport = new SubViewport
+        {
+            Size = new Vector2I(resX, resY),
+            OwnWorld3D = true,
+            RenderTargetUpdateMode = SubViewport.UpdateMode.Once,
+            Msaa3D = Viewport.Msaa.Msaa8X,
+            TransparentBg = true,
+        };
+        ((SceneTree)Engine.GetMainLoop()).Root.AddChild(sceneViewport);
+
+        var weaponScene = MeshScene.Instantiate<Node3D>();
+        var camera = new Camera3D();
+        var bounds = GetBounds(weaponScene);
+        var modelWidth = bounds.End.Abs().X + bounds.Position.Abs().X;
+        weaponScene.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
+        camera.SetOrthogonal(MathF.Max(modelWidth * 0.55f, 0.5f), 0.1f, 20f);
+        camera.LookAtFromPosition(new Vector3(0, 0, 3f), Vector3.Zero);
+
+        sceneViewport.AddChild(weaponScene);
+        var modelCenter = (bounds.End + bounds.Position) / 2;
+        weaponScene.GlobalPosition = -modelCenter;
+
+        sceneViewport.AddChild(camera);
+        ApplyThumbnailMaterialToParts(weaponScene);
+
+        await sceneViewport.ToSignal(RenderingServer.Singleton, RenderingServerInstance.SignalName.FramePostDraw);
+        var image = sceneViewport.GetViewport().GetTexture().GetImage();
+        sceneViewport.QueueFree();
+
+        var imgTex = ImageTexture.CreateFromImage(image);
+        if (!generatedThumbnails.ContainsKey(GetDictKey(resX, resY)))
+            generatedThumbnails.Add(GetDictKey(resX, resY), imgTex);
+        return imgTex;
+    }
+
+    public override BuiltToolData BuildToolScene(BuildToolData buildToolData)
+    {
+        var builtToolData = new BuiltToolData() { ToolHashId = HashId };
+
+        var toolResource = ResourceManager.ToolRegistry.GetResourceRef(HashId);
+        builtToolData.Node3D = toolResource.MeshScene.Instantiate<Node3D>();
+        builtToolData.Node3D.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
+
+        Node3D FindNode(string name)
+        {
+            var thing = (Node3D)builtToolData.Node3D.FindChildren(name).FirstOrDefault(new Node3D());
+            if (!thing.IsInsideTree())
+                GD.PrintErr($"Warning: {toolResource.FullId} has no Node3D named \"{name}\"");
+
+            return thing;
+        }
+
+        var muzzleNode = FindNode("Point-Muzzle");
+        var sightNode = FindNode("Point-Sight");
+        var sightAttachmentNode = FindNode("Point-SightAttachment");
+        var ejectionNode = FindNode("Point-Ejection");
+        var foregripNode = FindNode("Point-Foregrip");
+        var gadgetNode = FindNode("Point-Gadget");
+
+        builtToolData.SightPosition = sightNode.Position.Rotated(Vector3.Up, -builtToolData.Node3D.Rotation.Y);
+
+        foreach (var hashId in buildToolData.AttachmentHashIds)
+        {
+            var attachment = ResourceManager.AttachmentRegistry.GetResourceRef(hashId);
+            switch (attachment.AttachmentType)
+            {
+                case Attachment.AttachmentTypeEnum.Optic:
+                    if (sightAttachmentNode.IsInsideTree())
+                    {
+                        var opticModelScene = attachment.MeshScene.Instantiate<Node3D>();
+                        sightAttachmentNode.AddChild(opticModelScene);
+                        opticModelScene.RotationDegrees = new Vector3(0, attachment.MeshSceneImportYaw, 0);
+                        var attachSightNode = (Node3D)opticModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+                        builtToolData.SightPosition = sightAttachmentNode.Position.Rotated(Vector3.Up, -builtToolData.Node3D.Rotation.Y);
+                        builtToolData.SightPosition += attachSightNode.Position.Rotated(Vector3.Up, -opticModelScene.Rotation.Y);
+                    }
+                    break;
+            }
+        }
+
+        return builtToolData;
     }
 }

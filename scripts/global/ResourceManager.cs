@@ -136,13 +136,11 @@ public static class ResourceManager
 		}
 
 		/// <summary>
-		/// Gets resource by reference or null if fail
+		/// Gets resource by reference or null if fail. Does not warn because in rare cases a Tool will be used that is not Loot
 		/// </summary>
 		public MFResource GetResourceRef(int hashId)
 		{
-			var res = registry.FirstOrDefault(c => c.HashId == hashId, null);
-			if (res is null) GD.PushWarning($"LootResourceRegistry.GetResourceRef: hashId not found ({hashId})");
-			return res;
+			return registry.FirstOrDefault(c => c.HashId == hashId, null);
 		}
 
 		/// <summary>

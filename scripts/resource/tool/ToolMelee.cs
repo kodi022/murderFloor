@@ -10,10 +10,13 @@ public partial class ToolMelee : Tool
     [Export]
     public float MaxRange { get; private set; } = 1f;
 
+    [Export]
+    public string IdleAnimationName { get; private set; } = "idle";
+
     private static readonly Dictionary<string, float> HitboxDamageMultipliers = new()
     {
-        ["Head"] = 1.1f,
-        ["Neck"] = 1.05f,
+        ["Head"] = 1.25f,
+        ["Neck"] = 1.15f,
     };
 
     public virtual void FireMelee(FireInfo fi)
@@ -72,5 +75,37 @@ public partial class ToolMelee : Tool
         }
 
         return 1f;
+    }
+
+    public override BuiltToolData BuildToolScene(BuildToolData buildToolData)
+    {
+        var builtToolData = new BuiltToolData() { ToolHashId = HashId };
+
+        var toolResource = ResourceManager.ToolRegistry.GetResourceRef(HashId);
+        builtToolData.Node3D = toolResource.MeshScene.Instantiate<Node3D>();
+
+        Node3D FindNode(string name)
+        {
+            var thing = (Node3D)builtToolData.Node3D.FindChildren(name).FirstOrDefault(new Node3D());
+            if (!thing.IsInsideTree())
+                GD.PrintErr($"Warning: {toolResource.FullId} has no Node3D named \"{name}\"");
+
+            return thing;
+        }
+
+        var gadgetNode = FindNode("Point-Gadget");
+
+        foreach (var hashId in buildToolData.AttachmentHashIds)
+        {
+            var attachment = ResourceManager.AttachmentRegistry.GetResourceRef(hashId);
+            switch (attachment.AttachmentType)
+            {
+                case Attachment.AttachmentTypeEnum.Gadget:
+
+                    break;
+            }
+        }
+
+        return builtToolData;
     }
 }

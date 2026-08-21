@@ -1,11 +1,16 @@
 [gd_resource type="Resource" script_class="Map" format=3 uid="uid://busv7owlb6wm2"]
 
 [ext_resource type="PackedScene" uid="uid://dp4jd0ipg1xs6" path="res://scenes/map/barnyard/barnyard.tscn" id="1_2ejlq"]
+[ext_resource type="Resource" uid="uid://3rulslqa6ivq" path="res://resources/tool/gun/shotgun/shotgun1.tres" id="1_tyn5g"]
 [ext_resource type="Script" uid="uid://ifnxoeyd77ie" path="res://scripts/resource/map/Map.cs" id="2_tyn5g"]
 
 [resource]
 script = ExtResource("2_tyn5g")
 MapDifficultyScale = 0.8
+MapCompletionLoot = Dictionary[int, Array]({
+4: [ExtResource("1_tyn5g")],
+5: [ExtResource("1_tyn5g")]
+})
 ResourceId = "barnyard"
 MeshScene = ExtResource("1_2ejlq")
 metadata/_custom_type_script = "uid://ifnxoeyd77ie"

@@ -1,14 +1,12 @@
 [gd_resource type="Resource" script_class="ToolMelee" format=3 uid="uid://c0r6m8shnirhq"]
 
 [ext_resource type="Script" uid="uid://b6d5j21ujr1b7" path="res://scripts/resource/tool/ToolMelee.cs" id="1_3goh5"]
-[ext_resource type="PackedScene" uid="uid://cyq5wrw33o03c" path="res://scenes/tool/melee/knife/knifeviewmodel.tscn" id="1_p3vpv"]
 
 [resource]
 script = ExtResource("1_3goh5")
-RPM = 60.0
+RPM = 75.0
 Damage = 30.0
 MaxRange = 1.2
-MeshSceneViewmodel = ExtResource("1_p3vpv")
-CarryWeight = 0
+CarryWeight = 1
 ResourceId = "knife"
 metadata/_custom_type_script = "uid://b6d5j21ujr1b7"

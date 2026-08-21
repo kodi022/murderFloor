@@ -7,4 +7,6 @@ public partial class Map : MFResource
     public Vector2 MapLocation { get; private set; } = Vector2.Zero;
     [Export]
     public float MapDifficultyScale { get; private set; } = 1f;
+    [Export]
+    public Godot.Collections.Dictionary<Game.DifficultyEnum, MFResource[]> MapCompletionLoot { get; private set; }
 }
