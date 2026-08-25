@@ -127,7 +127,7 @@ ToolsNode = NodePath("Tools")
 AudioStreamPlayer3D = NodePath("AudioStreamPlayer3D")
 worldModels = NodePath("WorldModels")
 worldAnimationTree = NodePath("WorldModels/KincheePlayer/AnimationTree")
-ViewAimViewmodel = NodePath("ViewAim/ViewModel")
+ViewAimViewmodel = NodePath("ViewAim/Viewmodel")
 Camera = NodePath("ViewAim/Camera3D")
 viewAim = NodePath("ViewAim")
 cameraRaycast = NodePath("ViewAim/RayCast3D")
@@ -135,7 +135,6 @@ cameraRaycast = NodePath("ViewAim/RayCast3D")
 [node name="Tools" type="Node" parent="." unique_id=764631333]
 
 [node name="Hud" parent="." unique_id=392130317 instance=ExtResource("2_lba76")]
-grow_horizontal = 2
 
 [node name="ViewAim" type="Node3D" parent="." unique_id=993364331]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6229631, 0)
@@ -145,7 +144,7 @@ physics_interpolation_mode = 2
 fov = 90.0
 near = 0.02
 
-[node name="ViewModel" type="Node3D" parent="ViewAim" unique_id=268001501]
+[node name="Viewmodel" type="Node3D" parent="ViewAim" unique_id=268001501]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, -1.6229631, 0)
 
 [node name="RayCast3D" type="RayCast3D" parent="ViewAim" unique_id=470747985]

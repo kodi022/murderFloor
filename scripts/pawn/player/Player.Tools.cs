@@ -96,25 +96,43 @@ public partial class Player : Pawn
     }
 
     /// <summary> Call for Owner only. Will call ToolEquipRpc if successful </summary>
-    public void ToolEquipOwner()
+    public async void ToolEquipOwner()
     {
         if (!IsMultiplayerAuthority()) return;
         if (SwappingWeapon) return;
 
         if (IsMultiplayerAuthority()) Rpc("ToolEquipRpc", (int)SelectedSlot, SelectedToolIndex);
-        ToolEquip();
+
+        try
+        {
+            await ToolEquip();
+        }
+        catch (Exception exception)
+        {
+            GD.PushError($"Tool equip failed: {exception}");
+            SwappingWeapon = false;
+        }
     }
 
     /// <summary> Never call manually. ToolEquipOwner calls this </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
-    private void ToolEquipRpc(int slot, int index)
+    private async void ToolEquipRpc(int slot, int index)
     {
         SelectedSlot = (Tool.SlotEnum)slot;
         SelectedToolIndex = index;
-        ToolEquip();
+
+        try
+        {
+            await ToolEquip();
+        }
+        catch (Exception exception)
+        {
+            GD.PushError($"Tool equip failed: {exception}");
+            SwappingWeapon = false;
+        }
     }
 
-    private async void ToolEquip()
+    private async Task ToolEquip()
     {
         SwappingWeapon = true;
         if (SelectedTool is not null) await SelectedTool.Unequip();
@@ -123,6 +141,7 @@ public partial class Player : Pawn
         if (list.Count == 0)
         {
             SelectedSlot = Tool.SlotEnum.Melee;
+            list = GetToolListFromSlot(SelectedSlot);
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
             await SelectedTool.Equip();
@@ -132,6 +151,7 @@ public partial class Player : Pawn
         if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex])
         {
             SelectedSlot = Tool.SlotEnum.Melee;
+            list = GetToolListFromSlot(SelectedSlot);
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
             await SelectedTool.Equip();

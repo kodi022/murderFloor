@@ -9,6 +9,7 @@ RPM = 90.0
 Damage = 12.0
 MaxRange = 1.2
 CarryWeight = 0
+ViewmodelScene = ExtResource("1_e4ftb")
 ResourceId = "fists"
 MeshScene = ExtResource("1_e4ftb")
 metadata/_custom_type_script = "uid://b6d5j21ujr1b7"

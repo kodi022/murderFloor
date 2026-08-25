@@ -21,8 +21,6 @@ public partial class ToolFirearm : Tool
         AR,
         Shotgun,
         DMR,
-        Special,
-        Melee
     }
 
     public enum CasingSpawnEventEnum
@@ -125,9 +123,6 @@ public partial class ToolFirearm : Tool
         {
             return SlotEnum.Secondary;
         }
-
-        if (FirearmType == FirearmTypeEnum.Special) return SlotEnum.Special;
-        if (FirearmType == FirearmTypeEnum.Melee) return SlotEnum.Melee;
 
         return SlotEnum.Primary;
     }

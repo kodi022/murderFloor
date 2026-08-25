@@ -19,6 +19,8 @@ public partial class ToolMelee : Tool
         ["Neck"] = 1.15f,
     };
 
+    public override SlotEnum GetSlot() => SlotEnum.Melee;
+
     public virtual void FireMelee(FireInfo fi)
     {
         var space = fi.Player.GetWorld3D().DirectSpaceState;

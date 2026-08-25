@@ -21,8 +21,8 @@ public partial class MFResource : Resource
     public bool UseInGame { get; private set; } = true;
     [Export]
     public bool IsLoot { get; private set; } = false;
-    [Export] // this is for splitting the LootRegistry for older loot
-    public string LootInclusionVer { get; private set; } = "0.1.0"; // formatted like "0.1.0" or "3.12.26"
+    [Export]
+    public string LootInclusionVer { get; private set; } = "0.1.0"; // see also: Version
 
     [Export]
     public string NameLocalizationGroup { get; private set; } = "";

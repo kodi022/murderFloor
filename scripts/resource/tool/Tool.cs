@@ -5,6 +5,10 @@ public partial class Tool : MFResource
 {
     [Export]
     public int CarryWeight { get; private set; } = 2;
+    [Export]
+    public PackedScene ViewmodelScene { get; private set; }
+    [Export]
+    public float ViewmodelImportYaw { get; private set; }
 
     public enum SlotEnum
     {

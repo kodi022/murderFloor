@@ -51,14 +51,7 @@ public partial class LiveTool : Node
     private Vector3 modelSceneAimingPosition;
     private float currentAimingPositionLerp;
 
-    private Node3D modelSceneArms;
-    private Node3D modelSceneGun;
-    private Node3D muzzleNode;
-    private Node3D sightNode;
-    private Node3D sightAttachmentNode;
-    private Node3D ejectionNode;
-    private Node3D foregripNode;
-    private Node3D gadgetNode;
+    private Node3D viewmodelScene;
 
     private Vector3 modelSceneStartPosition;
     private Vector3 sightPosition;
@@ -85,7 +78,7 @@ public partial class LiveTool : Node
 
         currentAimingPositionLerp += Aiming ? (float)delta * 4f : -(float)delta * 4f;
         currentAimingPositionLerp = Mathf.Clamp(currentAimingPositionLerp, 0f, 1f);
-        modelSceneArms.Position = modelSceneStartPosition.Lerp(modelSceneAimingPosition, currentAimingPositionLerp);
+        viewmodelScene.Position = modelSceneStartPosition.Lerp(modelSceneAimingPosition, currentAimingPositionLerp);
 
         if (ToolResource is ToolFirearm firearm)
         {
@@ -132,39 +125,27 @@ public partial class LiveTool : Node
 
         if (IsMultiplayerAuthority())
         {
+            viewmodelScene = ToolResource.ViewmodelScene.Instantiate<Node3D>();
+            viewmodelScene.RotationDegrees += new Vector3(0, 90, 0);
+
+            var oldGun = (Node3D)viewmodelScene.FindChild("Armature*");
+            var oldGunPos = oldGun.Position;
+            var oldGunRot = oldGun.Rotation;
+            viewmodelScene.FindChild("Armature*").Free();
+
             var built = ToolResource.BuildToolScene(new MFResource.BuildToolData() { AttachmentHashIds = [] });
-            modelSceneArms = GD.Load<PackedScene>("res://scenes/pawn/player/PlayerViewmodelBody.tscn").Instantiate<Node3D>();
-            modelSceneArms.RotationDegrees = new Vector3(0, 180, 0); // idk why this is necessary
-            modelSceneGun = built.Node3D;
-            modelSceneGun.RotationDegrees -= new Vector3(0, 90, 0); // idk why this is necessary
+            var newGun = built.Node3D.GetChild<Node3D>(0);
+            newGun.Owner = null;
+            newGun.Position = oldGunPos;
+            newGun.Rotation = oldGunRot;
+            newGun.Reparent(viewmodelScene, false);
+            sightPosition = built.SightPosition;
 
-            var offsets = (Node3D)modelSceneGun.FindChild("Player");
+            AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
+            AnimationPlayer.Play("idle");
+            GD.Print(string.Join(',', AnimationPlayer.GetAnimationList()));
 
-            if (offsets is Node3D o)
-            {
-                modelSceneArms.Position = new Vector3(0, o.Position.Y, 0);
-                modelSceneGun.Position = new Vector3(-o.Position.X, -o.Position.Y, o.Position.Z);
-            }
-
-            // if model has more than AnimationPlayer (aka not fists)
-            if (modelSceneGun.GetChildCount() > 1)
-                modelSceneArms.AddChild(modelSceneGun);
-
-            var find = modelSceneArms.FindChild("AnimationPlayer");
-            if (find is AnimationPlayer ap1)
-            {
-                var find2 = modelSceneGun.FindChild("AnimationPlayer");
-                if (find2 is AnimationPlayer ap2)
-                {
-                    ap1.AddAnimationLibrary("t", ap2.GetAnimationLibrary(""));
-                }
-
-                AnimationPlayer = ap1;
-                AnimationPlayer.Play(ALAccessKey + "idle", customSpeed: 0.000001f);
-                GD.Print(string.Join(',', AnimationPlayer.GetAnimationList()));
-            }
-
-            posNode.AddChild(modelSceneArms);
+            posNode.AddChild(viewmodelScene);
         }
         else
         {
@@ -173,7 +154,7 @@ public partial class LiveTool : Node
             // modelScene.RotationDegrees = new Vector3(0, ToolResource.MeshSceneImportYaw, 0);
         }
 
-        modelSceneStartPosition = modelSceneArms.Position;
+        modelSceneStartPosition = viewmodelScene.Position;
 
         // await equip animation
         await Task.Delay(250);
@@ -185,8 +166,8 @@ public partial class LiveTool : Node
         // await unequip animation
         await Task.Delay(250);
 
-        modelSceneArms?.Free();
-        modelSceneArms = null;
+        viewmodelScene?.Free();
+        viewmodelScene = null;
         equipped = false;
     }
 
@@ -228,8 +209,8 @@ public partial class LiveTool : Node
                 if (!Aiming)
                 {
                     Aiming = true;
-                    var x = modelSceneGun.Position.X + sightPosition.X;
-                    var y = modelSceneGun.Position.Y + sightPosition.Y;
+                    var x = viewmodelScene.Position.X + sightPosition.X;
+                    var y = viewmodelScene.Position.Y + sightPosition.Y;
                     modelSceneAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
                 }
             }
@@ -281,6 +262,8 @@ public partial class LiveTool : Node
             msSinceFire = ticksMs;
             firearm.FireBullet(fi);
 
+            AnimationPlayer.Stop();
+            AnimationPlayer.Play("fire");
             var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
             poly.PlayStream(firearm.FireSound, bus: "Effects");
 
