@@ -13,6 +13,7 @@
 [ext_resource type="Material" uid="uid://s3n0bhfr6o0j" path="res://materials/surface/wood/wood095/Wood095.tres" id="11_k7gih"]
 [ext_resource type="PackedScene" uid="uid://bysve08qsh4kt" path="res://models/prop/street/newsbox/newsbox.blend" id="12_2mlpq"]
 [ext_resource type="PackedScene" uid="uid://q2xs38ym4gvf" path="res://models/structure/tunneltileset/tunnelstraight.blend" id="13_2u80r"]
+[ext_resource type="PackedScene" uid="uid://d86jfkuss0wx" path="res://scenes/ui/mapselect/MapSelect.tscn" id="14_wt7li"]
 
 [sub_resource type="Environment" id="Environment_k7gih"]
 background_mode = 1
@@ -119,6 +120,33 @@ albedo_texture = ExtResource("8_ootgo")
 
 [sub_resource type="QuadMesh" id="QuadMesh_k7gih"]
 size = Vector2(2.002, 0.4)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_05gjf"]
+resource_local_to_scene = false
+resource_name = "v"
+viewport_path = NodePath("MapScreen/SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_iy75m"]
+resource_local_to_scene = false
+resource_name = "vv"
+viewport_path = NodePath("MapScreen/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dx04r"]
+resource_local_to_scene = true
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+albedo_texture = SubResource("ViewportTexture_05gjf")
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_operator = 1
+emission_texture = SubResource("ViewportTexture_iy75m")
+texture_filter = 0
+texture_repeat = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_pbeot"]
+material = SubResource("StandardMaterial3D_dx04r")
+size = Vector2(5.6, 3.5)
 
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 
@@ -282,41 +310,50 @@ free_editor_textures = false
 top_level = true
 metadata/_edit_lock_ = true
 
-[node name="CSGGroundDev" type="CSGBox3D" parent="." unique_id=1366096514]
+[node name="DevGround" type="CSGBox3D" parent="." unique_id=1366096514]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.046353817, -24.717268)
 material_override = ExtResource("7_jnte4")
 size = Vector3(32, 0.1, 32)
 material = ExtResource("7_t5wx4")
 
-[node name="CSGScale" type="CSGBox3D" parent="CSGGroundDev" unique_id=13628808]
+[node name="tunnelstraight" parent="DevGround" unique_id=1868503491 instance=ExtResource("13_2u80r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6087971, -0.12512493, -2.275957)
+
+[node name="tunnelstraight" parent="DevGround/tunnelstraight" unique_id=369675900 instance=ExtResource("13_2u80r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+
+[node name="tunnelstraight" parent="DevGround/tunnelstraight/tunnelstraight" unique_id=1507552423 instance=ExtResource("13_2u80r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+
+[node name="CSGScale" type="CSGBox3D" parent="DevGround" unique_id=13628808]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.999987, 0.048374653, -11.786388)
 size = Vector3(1, 0.05, 0.01)
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale" unique_id=600775593]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale" unique_id=600775593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.501, 0.22265625, 0)
 material_override = SubResource("StandardMaterial3D_jnte4")
 mesh = SubResource("QuadMesh_k7gih")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale/MeshInstance3D2" unique_id=2102641634]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2" unique_id=2102641634]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
 material_override = SubResource("StandardMaterial3D_jnte4")
 mesh = SubResource("QuadMesh_k7gih")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale/MeshInstance3D2/MeshInstance3D2" unique_id=230729896]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2/MeshInstance3D2" unique_id=230729896]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
 material_override = SubResource("StandardMaterial3D_jnte4")
 mesh = SubResource("QuadMesh_k7gih")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="CSGGroundDev/CSGScale/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=78648720]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=78648720]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
 material_override = SubResource("StandardMaterial3D_jnte4")
 mesh = SubResource("QuadMesh_k7gih")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGScale" unique_id=1993321887]
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGScale" unique_id=1993321887]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.2, 0)
 size = Vector3(0.1, 0.45, 0.1)
 
-[node name="Label3D" type="Label3D" parent="CSGGroundDev/CSGScale" unique_id=982360536]
+[node name="Label3D" type="Label3D" parent="DevGround/CSGScale" unique_id=982360536]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8744254, 0.6467638, -0.04206848)
 pixel_size = 0.006
 text = "Put models here for scaling
@@ -325,7 +362,7 @@ font = ExtResource("9_ootgo")
 outline_size = 10
 line_spacing = -8.0
 
-[node name="CSGramps" type="CSGBox3D" parent="CSGGroundDev" unique_id=723167262]
+[node name="CSGramps" type="CSGBox3D" parent="DevGround" unique_id=723167262]
 transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, -7.843754, 0.16409242, -13.059757)
 material_override = ExtResource("7_t5wx4")
 calculate_tangents = false
@@ -333,36 +370,46 @@ use_collision = true
 size = Vector3(2, 1, 5)
 material = ExtResource("11_k7gih")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps" unique_id=2145138724]
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps" unique_id=2145138724]
 transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
 size = Vector3(2, 1, 5)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps/CSGBox3D" unique_id=1093574532]
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D" unique_id=1093574532]
 transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
 size = Vector3(2, 1, 5)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps/CSGBox3D/CSGBox3D" unique_id=221857999]
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D/CSGBox3D" unique_id=221857999]
 transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
 size = Vector3(2, 1, 5)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGGroundDev/CSGramps/CSGBox3D/CSGBox3D/CSGBox3D" unique_id=1778352330]
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D/CSGBox3D/CSGBox3D" unique_id=1778352330]
 transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
 size = Vector3(2, 1, 5)
 
-[node name="CSGPlayer" type="CSGCylinder3D" parent="CSGGroundDev" unique_id=1466864108]
+[node name="CSGPlayer" type="CSGCylinder3D" parent="DevGround" unique_id=1466864108]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.875281, 0.9533652, -11.893618)
 radius = 0.4
 height = 1.8
 sides = 16
 
-[node name="newsbox" parent="CSGGroundDev" unique_id=1714770627 instance=ExtResource("12_2mlpq")]
+[node name="newsbox" parent="DevGround" unique_id=1714770627 instance=ExtResource("12_2mlpq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.04453636, -10.000002)
 
-[node name="tunnelstraight" parent="." unique_id=1868503491 instance=ExtResource("13_2u80r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6087971, -0.078771114, -26.993225)
+[node name="MapScreen" type="Node3D" parent="." unique_id=22849170]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.324935, 2.5822277, -7.461064)
 
-[node name="tunnelstraight" parent="tunnelstraight" unique_id=369675900 instance=ExtResource("13_2u80r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MapScreen" unique_id=601955783]
+mesh = SubResource("QuadMesh_pbeot")
 
-[node name="tunnelstraight" parent="tunnelstraight/tunnelstraight" unique_id=1507552423 instance=ExtResource("13_2u80r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+[node name="SubViewport" type="SubViewport" parent="MapScreen" unique_id=1544395065]
+disable_3d = true
+transparent_bg = true
+scaling_3d_mode = 5
+anisotropic_filtering_level = 0
+sdf_scale = 0
+oversampling = false
+size = Vector2i(1600, 1000)
+size_2d_override = Vector2i(-320, -80)
+render_target_update_mode = 4
+
+[node name="MapSelect" parent="MapScreen/SubViewport" unique_id=834133945 instance=ExtResource("14_wt7li")]
