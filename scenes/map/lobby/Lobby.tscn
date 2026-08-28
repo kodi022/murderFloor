@@ -121,32 +121,32 @@ albedo_texture = ExtResource("8_ootgo")
 [sub_resource type="QuadMesh" id="QuadMesh_k7gih"]
 size = Vector2(2.002, 0.4)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_05gjf"]
-resource_local_to_scene = false
-resource_name = "v"
-viewport_path = NodePath("MapScreen/SubViewport")
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_iy75m"]
-resource_local_to_scene = false
-resource_name = "vv"
-viewport_path = NodePath("MapScreen/SubViewport")
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wt7li"]
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dx04r"]
 resource_local_to_scene = true
 transparency = 2
 alpha_scissor_threshold = 0.5
 alpha_antialiasing_mode = 0
-albedo_texture = SubResource("ViewportTexture_05gjf")
+albedo_texture = SubResource("ViewportTexture_iy75m")
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
 emission_operator = 1
-emission_texture = SubResource("ViewportTexture_iy75m")
+emission_texture = SubResource("ViewportTexture_wt7li")
 texture_filter = 0
 texture_repeat = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_pbeot"]
+resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_dx04r")
 size = Vector2(5.6, 3.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wt7li"]
+size = Vector3(5.505, 3.411, 0.1)
 
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 
@@ -401,15 +401,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.324935, 2.5822277, -7.46106
 [node name="MeshInstance3D" type="MeshInstance3D" parent="MapScreen" unique_id=601955783]
 mesh = SubResource("QuadMesh_pbeot")
 
-[node name="SubViewport" type="SubViewport" parent="MapScreen" unique_id=1544395065]
-disable_3d = true
+[node name="Usable" type="Node3D" parent="MapScreen" unique_id=1179068980]
+script = ExtResource("2_ras1x")
+UseInfoText = "Map Select"
+UiSceneToOpen = "res://scenes/ui/mapselect/MapSelect.tscn"
+metadata/_custom_type_script = "uid://bwlrm48k447kp"
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MapScreen/Usable" unique_id=1592454837]
+collision_layer = 17
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MapScreen/Usable/StaticBody3D" unique_id=1410756257]
+shape = SubResource("BoxShape3D_wt7li")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1544395065]
 transparent_bg = true
 scaling_3d_mode = 5
 anisotropic_filtering_level = 0
-sdf_scale = 0
-oversampling = false
 size = Vector2i(1600, 1000)
-size_2d_override = Vector2i(-320, -80)
-render_target_update_mode = 4
+size_2d_override = Vector2i(1600, 1000)
 
-[node name="MapSelect" parent="MapScreen/SubViewport" unique_id=834133945 instance=ExtResource("14_wt7li")]
+[node name="MapSelect" parent="SubViewport" unique_id=834133945 instance=ExtResource("14_wt7li")]
+OnScreen = false

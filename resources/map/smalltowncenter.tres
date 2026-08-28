@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Map" format=3 uid="uid://daivtpxmifg0d"]
+
+[ext_resource type="Script" uid="uid://ifnxoeyd77ie" path="res://scripts/resource/map/Map.cs" id="1_n8hik"]
+
+[resource]
+script = ExtResource("1_n8hik")
+MapLocation = Vector2(0.06, 0.348)
+MapDifficultyScale = 0.85
+MapCompletionLoot = null
+ResourceId = "smalltowncenter"
+metadata/_custom_type_script = "uid://ifnxoeyd77ie"

@@ -6,7 +6,8 @@
 
 [resource]
 script = ExtResource("2_tyn5g")
-MapDifficultyScale = 0.8
+MapLocation = Vector2(0.158, 0.242)
+MapDifficultyScale = 0.75
 MapCompletionLoot = Dictionary[int, Array]({
 4: [ExtResource("1_tyn5g")],
 5: [ExtResource("1_tyn5g")]

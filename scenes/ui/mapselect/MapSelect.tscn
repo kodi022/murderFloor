@@ -4,12 +4,95 @@
 [ext_resource type="Texture2D" uid="uid://0xemm4wqbecs" path="res://images/ui/mapselect/Cheia 2026-08-26-16-50.png" id="2_0enw4"]
 [ext_resource type="Script" uid="uid://ilseasxtvywo" path="res://scripts/ui/mapselect/MapSelect.cs" id="2_0ibht"]
 [ext_resource type="Texture2D" uid="uid://calfq051vope3" path="res://images/ui/ninepatch.png" id="2_o5y65"]
+[ext_resource type="Texture2D" uid="uid://dbbpp8flo6dx8" path="res://materials/surface/ground/ground099/Ground099_1K-PNG_Color.png" id="4_x53mc"]
 
-[node name="MapSelect" type="Control" unique_id=834133945 node_paths=PackedStringArray("locationRichTextLabel", "difficultyRichTextLabel", "overscalingRichTextLabel", "gorpRichTextLabel", "morpRichTextLabel", "mapTextureRect")]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0ibht"]
+texture = ExtResource("4_x53mc")
+expand_margin_bottom = 241.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iy75m"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.3158576, 0.3158576, 0.3158576, 1)
+border_blend = true
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+corner_detail = 20
+shadow_size = 1
+shadow_offset = Vector2(2, 2)
+anti_aliasing_size = 0.75
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hggcq"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+corner_detail = 20
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+shadow_color = Color(0, 0, 0, 0.87058824)
+shadow_size = 1
+shadow_offset = Vector2(2, 2)
+anti_aliasing_size = 0.75
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x53mc"]
+bg_color = Color(1, 0.89459085, 0.89459085, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.5, 0.5, 0.5, 1)
+border_blend = true
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+corner_detail = 20
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2(2, 2)
+anti_aliasing_size = 0.75
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hln10"]
+bg_color = Color(0.51, 0.14279999, 0.14279999, 0.89411765)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4539644, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+corner_detail = 20
+shadow_offset = Vector2(2, 2)
+anti_aliasing_size = 0.75
+
+[node name="MapSelect" type="Control" unique_id=834133945 node_paths=PackedStringArray("locationRichTextLabel", "difficultyRichTextLabel", "overscalingRichTextLabel", "gorpRichTextLabel", "morpRichTextLabel", "mapTextureRect", "referenceMapButton", "backgroundPanel")]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_hgtbq")
@@ -19,38 +102,78 @@ difficultyRichTextLabel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxCont
 overscalingRichTextLabel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer/RichTextLabel6")
 gorpRichTextLabel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer/RichTextLabel8")
 morpRichTextLabel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer/RichTextLabel10")
-mapTextureRect = NodePath("Panel/MarginContainer/HBoxContainer/TextureRect")
+mapTextureRect = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/Panel/TextureRect")
+referenceMapButton = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/Panel/TextureRect/ReferenceButton")
+backgroundPanel = NodePath("Background")
+
+[node name="Background" type="Panel" parent="." unique_id=987648953]
+visible = false
+layout_mode = 0
+offset_left = -800.0
+offset_top = -500.0
+offset_right = 800.0
+offset_bottom = 500.0
+
+[node name="Panel" type="Panel" parent="Background" unique_id=1359049915]
+layout_mode = 0
+offset_right = 1600.0
+offset_bottom = 1000.0
+
+[node name="Panel" type="Panel" parent="Background/Panel" unique_id=340975575]
+layout_mode = 0
+offset_right = 1600.0
+offset_bottom = 1000.0
+
+[node name="Panel" type="Panel" parent="Background/Panel/Panel" unique_id=529368294]
+layout_mode = 0
+offset_right = 1600.0
+offset_bottom = 1000.0
 
 [node name="Panel" type="Panel" parent="." unique_id=1113182951]
 layout_mode = 0
-offset_left = 160.0
-offset_top = 40.0
-offset_right = 1760.0
-offset_bottom = 1040.0
+offset_left = -800.0
+offset_top = -500.0
+offset_right = 800.0
+offset_bottom = 500.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel" unique_id=1015263884]
+layout_mode = 0
+offset_right = 800.0
+offset_bottom = 500.0
+scale = Vector2(2, 2)
+texture = ExtResource("2_o5y65")
+region_rect = Rect2(0, 0, 32, 32)
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=1500989375]
 layout_mode = 0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 1590.0
+offset_bottom = 990.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer" unique_id=58690707]
-custom_minimum_size = Vector2(1580, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer" unique_id=954708632]
+custom_minimum_size = Vector2(424, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=600261060]
-custom_minimum_size = Vector2(400, 48)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/normal_font_size = 40
 text = "LOCATION:
 "
@@ -60,16 +183,16 @@ autowrap_trim_flags = 0
 tab_size = 6
 
 [node name="RichTextLabel2" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1368235563]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/normal_font_size = 40
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 32
 text = "BARNYARD"
 scroll_active = false
 autowrap_mode = 0
@@ -78,15 +201,15 @@ tab_size = 6
 horizontal_alignment = 1
 
 [node name="RichTextLabel3" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=731429498]
-custom_minimum_size = Vector2(400, 48)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/normal_font_size = 40
 text = "DIFFICULTY:
 "
@@ -96,16 +219,16 @@ autowrap_trim_flags = 0
 tab_size = 6
 
 [node name="RichTextLabel4" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=488908383]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/normal_font_size = 40
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 32
 text = "EASY
 "
 scroll_active = false
@@ -115,15 +238,15 @@ tab_size = 6
 horizontal_alignment = 1
 
 [node name="RichTextLabel5" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1103094215]
-custom_minimum_size = Vector2(400, 48)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/normal_font_size = 40
 text = "OVERSCALING:
 "
@@ -133,16 +256,16 @@ autowrap_trim_flags = 0
 tab_size = 6
 
 [node name="RichTextLabel6" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=611386785]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/normal_font_size = 40
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 32
 text = "0.00
 "
 scroll_active = false
@@ -152,15 +275,15 @@ tab_size = 6
 horizontal_alignment = 1
 
 [node name="RichTextLabel7" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1804158818]
-custom_minimum_size = Vector2(400, 48)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/normal_font_size = 40
 text = "gorp:
 "
@@ -170,16 +293,16 @@ autowrap_trim_flags = 0
 tab_size = 6
 
 [node name="RichTextLabel8" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=389929221]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/normal_font_size = 40
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 32
 text = "j
 "
 scroll_active = false
@@ -189,15 +312,15 @@ tab_size = 6
 horizontal_alignment = 1
 
 [node name="RichTextLabel9" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=291596993]
-custom_minimum_size = Vector2(400, 48)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 6
 theme_override_font_sizes/normal_font_size = 40
 text = "morp:"
 scroll_active = false
@@ -206,16 +329,16 @@ autowrap_trim_flags = 0
 tab_size = 6
 
 [node name="RichTextLabel10" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1382851322]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.9221189, 0.8880144, 1)
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.25882354)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
 theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 0
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/normal_font_size = 40
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 32
 text = "k
 "
 scroll_active = false
@@ -224,22 +347,52 @@ autowrap_trim_flags = 0
 tab_size = 6
 horizontal_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="Panel/MarginContainer/HBoxContainer" unique_id=1057161472]
-custom_minimum_size = Vector2(1113, 843)
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer" unique_id=901623137]
 layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=329987617]
+custom_minimum_size = Vector2(400, 48)
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 0.9143204, 0.93196034, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.68, 0.68, 0.68, 0.1882353)
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 40
+text = "EARTH?"
+scroll_active = false
+autowrap_mode = 0
+autowrap_trim_flags = 0
+tab_size = 6
+horizontal_alignment = 1
+
+[node name="Panel" type="Panel" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=60217112]
+custom_minimum_size = Vector2(1134, 894)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0ibht")
+
+[node name="TextureRect" type="TextureRect" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/Panel" unique_id=1057161472]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 4462.0
+offset_bottom = 3486.0
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_0enw4")
 expand_mode = 1
+stretch_mode = 4
 
-[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=1015263884]
+[node name="ReferenceButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/Panel/TextureRect" unique_id=1140890762]
 layout_mode = 0
-offset_left = 160.0
-offset_top = 40.0
-offset_right = 960.0
-offset_bottom = 540.0
-scale = Vector2(2, 2)
-texture = ExtResource("2_o5y65")
-region_rect = Rect2(0, 0, 32, 32)
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 72.0
+offset_bottom = 72.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_iy75m")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hggcq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_x53mc")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_hln10")
