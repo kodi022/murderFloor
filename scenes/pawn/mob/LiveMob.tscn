@@ -23,7 +23,6 @@ filters = ["Armature/Skeleton3D:Clavicle.L", "Armature/Skeleton3D:Clavicle.R", "
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_hhn42"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_jrfuh"]
-graph_offset = Vector2(-1254, -11)
 nodes/output/position = Vector2(340, 80)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_hhn42")
 nodes/Animation/position = Vector2(-900, 80)
@@ -139,7 +138,7 @@ parameters/Blend2/blend_amount = 1.0
 
 [node name="UpperLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1453147456]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.00037566246, 0.012138636, -0.16154413, 0.0042673345, -0.16148773, -0.012144326, -0.16194281, -0.0042835004, 5.4720007e-05, 0.097630955, 0.8667116, -0.030339016)
+transform = Transform3D(-0.00037578362, 0.0121389, -0.16154411, -0.09729498, -0.129181, -0.009480719, -0.12952751, 0.09699949, 0.0075901183, 0.097630955, 0.8667116, -0.030339016)
 bone_name = "UpperLeg.L"
 bone_idx = 43
 use_external_skeleton = true
@@ -157,7 +156,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="UpperLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1118039744]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.00041580838, -0.009929186, 0.16169488, 0.112126164, -0.116724394, -0.0068793497, 0.116927125, 0.11189648, 0.0071719, -0.097630925, 0.8667116, -0.030339016)
+transform = Transform3D(-0.00041608614, -0.009929607, 0.16169487, 0.010857271, -0.16133358, -0.009879481, 0.16163649, 0.010811362, 0.0010798448, -0.097630925, 0.8667116, -0.030339016)
 bone_name = "UpperLeg.R"
 bone_idx = 46
 use_external_skeleton = true
@@ -175,7 +174,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=871783084]
 physics_interpolation_mode = 0
-transform = Transform3D(0.0004997239, -0.0030840484, -0.16196983, 0.045595508, -0.15542014, 0.003100006, -0.15544976, -0.045596484, 0.00038858777, 0.12412572, 0.5142352, -0.03968854)
+transform = Transform3D(0.00049943296, -0.003083991, -0.16196983, 0.038366538, -0.1573602, 0.0031145182, -0.15739019, -0.038368538, 0.00024522978, 0.12412631, 0.58475053, 0.18138003)
 bone_name = "LowerLeg.L"
 bone_idx = 44
 use_external_skeleton = true
@@ -193,7 +192,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=519781593]
 physics_interpolation_mode = 0
-transform = Transform3D(0.00048239747, 0.005297746, 0.1619126, -0.036787074, -0.15768048, 0.0052688713, 0.15776752, -0.036784165, 0.00073351857, -0.11930315, 0.61193943, 0.21389532)
+transform = Transform3D(0.00048183804, 0.005297815, 0.16191262, -0.04653968, -0.1550835, 0.0052128634, 0.15517145, -0.046530608, 0.0010607019, -0.119304076, 0.5145718, -0.006741254)
 bone_name = "LowerLeg.R"
 bone_idx = 47
 use_external_skeleton = true
@@ -409,7 +408,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=731315567]
 physics_interpolation_mode = 0
-transform = Transform3D(0.014687547, 0.040971197, -0.15604365, -0.13143425, -0.087827384, -0.03543136, -0.09355887, 0.12981366, 0.025277987, 0.1161544, 0.11252204, -0.15754141)
+transform = Transform3D(0.014687561, 0.040971484, -0.15604359, -0.14935394, -0.055795964, -0.028707936, -0.061004575, 0.1464653, 0.032714516, 0.116155125, 0.17802288, 0.08220918)
 bone_name = "Foot.L"
 bone_idx = 45
 use_external_skeleton = true
@@ -427,7 +426,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=180640536]
 physics_interpolation_mode = 0
-transform = Transform3D(0.011750724, -0.03939194, 0.1566978, 0.15135364, -0.052307185, -0.02449937, 0.056553636, 0.14817663, 0.033008873, -0.105610125, 0.2043841, 0.11881962)
+transform = Transform3D(0.0117505845, -0.039392456, 0.15669768, 0.13839352, -0.078629166, -0.03014468, 0.083386436, 0.13605133, 0.027949069, -0.10561087, 0.11372876, -0.12700851)
 bone_name = "Foot.R"
 bone_idx = 48
 use_external_skeleton = true
@@ -487,7 +486,7 @@ neighbor_distance = 4.0
 max_neighbors = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=866785201]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0, 0.9, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_ex06h")
 debug_color = Color(0.7019608, 0.050980393, 0, 0.14901961)
 

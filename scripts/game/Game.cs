@@ -1,12 +1,17 @@
 namespace MurderFloor;
 
+// - terminology help
+// Game is multiple Waves
+// Wave is multiple Groups until a wave spawn count is reached
+// Group is a count of mobs spawned in one location simultaneously
+
 public partial class Game : Node
 {
     public enum DifficultyEnum
     {
         Easy = 0,
         Medium = 1,
-        Challenging = 2, // ! find different name?
+        Challenging = 2,
         Hard = 3,
         Extreme = 4,
         Ludicrous = 5,
@@ -15,16 +20,16 @@ public partial class Game : Node
     {
         Stopped,
         Break,
-        Round,
+        Wave,
     }
 
     public static Game Current;
     public static List<LiveMob> MobPool { get; private set; } = [];
 
     [Signal]
-    public delegate void GameRoundStartEventHandler(int round);
+    public delegate void GameWaveStartEventHandler(int round);
     [Signal]
-    public delegate void GameRoundEndEventHandler(int round);
+    public delegate void GameWaveEndEventHandler(int round);
     [Signal]
     public delegate void GameWinEventHandler();
     [Signal]
@@ -33,36 +38,33 @@ public partial class Game : Node
     [Export]
     public StateEnum GameState { get; private set; } = StateEnum.Stopped;
     [Export]
-    public DifficultyEnum GameDifficulty { get; private set; } = DifficultyEnum.Easy;
-    [Export]
     public ulong GameSeed { get; private set; } = 12345678;
 
+    public static DifficultyConfig DifficultyConfig { get; set; }
+
+    public int MobGroupSize => DifficultyConfig.GetGroupSize(Wave);
+    public int MobMaxActive => DifficultyConfig.GetMaxActive(Wave);
+    public int MobWaveAmount => DifficultyConfig.GetWaveAmount(Wave);
+    public ulong TimeMsBetweenGroups => DifficultyConfig.GetTimeBetweenGroups(Wave);
+    public ulong TimeMsBetweenWaves => DifficultyConfig.GetTimeBetweenWaves(Wave);
+
     [Export]
-    public int MaxRound { get; private set; } = 5; // 5?
+    public int MaxWave { get; private set; } = 5;
     [Export]
-    public int Round { get; private set; } = 0;
+    public int Wave { get; private set; } = 0;
     [Export]
     public int MaxActiveMobs { get; private set; } = 25;
     [Export]
-    public int RoundMobsLeft { get; private set; } = 0;
+    public int WaveMobsLeft { get; private set; } = 0;
     [Export]
     public int ActiveMobs { get; private set; } = 0;
 
-    [Export]
-    public int TimeMsBetweenRounds { get; private set; } = 20000;
+    private ulong lastGroupTime = 0ul;
 
-    public ulong LastRoundEndTime { get; private set; } = 0ul;
-
-    // vsc says these should be uppercase
-    private int FuncMobRoundWaveSize => 5 + Round + (int)GameDifficulty * 2;
-
-    private int FuncMobMaxActive => 30 + (Round * 3) + ((int)GameDifficulty * 10);
-
-    private int FuncMobRoundAmount => (int)(30f + Round * ((float)GameDifficulty + 1f * 0.33f));
+    public ulong LastWaveEndTime { get; private set; } = 0ul;
 
     private List<MobSpawnArea> spawnAreas = [];
     private int lastSpawnAreaIndex = -1;
-    private ulong lastWaveTime = 0ul;
     private RandomNumberGenerator rngSpawning = new();
     private RandomNumberGenerator rngLoot = new();
 
@@ -89,11 +91,11 @@ public partial class Game : Node
 
     public override void _Process(double delta)
     {
-        if (GameState == StateEnum.Round)
+        if (GameState == StateEnum.Wave)
         {
-            if (4000ul < Time.GetTicksMsec() - lastWaveTime && ActiveMobs < MaxActiveMobs)
+            if (TimeMsBetweenGroups < Time.GetTicksMsec() - lastGroupTime && ActiveMobs < MaxActiveMobs)
             {
-                SpawnMobWave();
+                SpawnMobGroup();
             }
         }
     }
@@ -128,30 +130,30 @@ public partial class Game : Node
         }
         EmitSignal(SignalName.GameStart);
 
-        NextRound();
+        NextWave();
     }
 
     public void MobDeath(DamageInfo damageInfo, int mobPoolId)
     {
         ActiveMobs--;
-        RoundMobsLeft--;
+        WaveMobsLeft--;
         ProcessLoot(damageInfo, mobPoolId);
 
-        if (RoundMobsLeft <= 0)
+        if (WaveMobsLeft <= 0)
         {
-            if (Round == MaxRound)
+            if (Wave == MaxWave)
             {
                 EndGame();
                 return;
             }
 
-            TimerToNextRound();
+            TimerToNextWave();
             return;
         }
 
         if (ActiveMobs < 8)
         {
-            SpawnMobWave();
+            SpawnMobGroup();
         }
     }
 
@@ -172,49 +174,49 @@ public partial class Game : Node
         }
     }
 
-    public async void TimerToNextRound()
+    public async void TimerToNextWave()
     {
         GameState = StateEnum.Break;
-        EmitSignal(SignalName.GameRoundEnd, Round);
-        LastRoundEndTime = Time.GetTicksMsec();
-        await Task.Delay(TimeMsBetweenRounds);
+        EmitSignal(SignalName.GameWaveEnd, Wave);
+        LastWaveEndTime = Time.GetTicksMsec();
+        await Task.Delay((int)TimeMsBetweenWaves);
 
-        NextRound();
+        NextWave();
     }
 
-    public void NextRound()
+    public void NextWave()
     {
-        Round++;
-        GameState = StateEnum.Round;
-        MaxActiveMobs = FuncMobMaxActive;
-        RoundMobsLeft = FuncMobRoundAmount;
-        EmitSignal(SignalName.GameRoundStart, Round);
-        SpawnMobWave();
+        Wave++;
+        GameState = StateEnum.Wave;
+        MaxActiveMobs = MobMaxActive;
+        WaveMobsLeft = MobWaveAmount;
+        EmitSignal(SignalName.GameWaveStart, Wave);
+        SpawnMobGroup();
     }
 
     public void EndGame()
     {
         GameState = StateEnum.Stopped;
 
-        SaveManager.CurrentSave.AddXp(100f);
+        SaveManager.CurrentSave.AddXp(100f * (int)DifficultyConfig.Difficulty);
         SaveManager.Save(SaveManager.CurrentSave);
 
         foreach (var mob in MobPool)
             mob?.Free();
 
         MobPool.Clear();
-        Round = 0;
-        RoundMobsLeft = 0;
+        Wave = 0;
+        WaveMobsLeft = 0;
         ActiveMobs = 0;
     }
 
-    private void SpawnMobWave()
+    private void SpawnMobGroup()
     {
-        lastWaveTime = Time.GetTicksMsec();
+        lastGroupTime = Time.GetTicksMsec();
 
-        var waveSize = FuncMobRoundWaveSize;
-        if (waveSize + ActiveMobs > MaxActiveMobs) waveSize = MaxActiveMobs - ActiveMobs;
-        if (waveSize + ActiveMobs > RoundMobsLeft) waveSize = RoundMobsLeft - ActiveMobs;
+        var groupSize = MobGroupSize;
+        if (groupSize + ActiveMobs > MaxActiveMobs) groupSize = MaxActiveMobs - ActiveMobs;
+        if (groupSize + ActiveMobs > WaveMobsLeft) groupSize = WaveMobsLeft - ActiveMobs;
 
         var spawnAreaIndex = rngSpawning.RandiRange(0, spawnAreas.Count - 1);
 
@@ -224,11 +226,11 @@ public partial class Game : Node
         lastSpawnAreaIndex = spawnAreaIndex;
 
         var spawned = 0;
-        var spawns = spawnAreas[spawnAreaIndex].GetSpawnVectorList(waveSize);
+        var spawns = spawnAreas[spawnAreaIndex].GetSpawnVectorList(groupSize);
         for (int i = 0; i < MobPool.Count; i++)
         {
             if (MobPool[i].Active) continue;
-            if (spawned >= waveSize) return;
+            if (spawned >= groupSize) return;
 
             var allMob = ResourceManager.MobRegistry.GetAllResource();
             var mob = allMob.ElementAt(rngSpawning.RandiRange(0, allMob.Count - 1));

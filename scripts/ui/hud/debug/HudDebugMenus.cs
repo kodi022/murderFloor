@@ -15,7 +15,7 @@ public partial class HudDebugMenus : Control
         tree.HideRoot = true;
         tree.SetColumnTitle(0, "FullId");
         tree.SetColumnTitle(1, "HashId");
-        tree.SetColumnTitle(2, "IsLoot");
+        tree.SetColumnTitle(2, "IsRandomLoot");
         tree.SetColumnTitle(3, "");
 
         tree.ButtonClicked += (item, column, id, mouseButtonIndex) =>
@@ -43,7 +43,7 @@ public partial class HudDebugMenus : Control
                 if (hasFunction) child.AddButton(0, Global.MissingTexture);
                 child.SetText(1, item.Value.HashId.ToString());
                 child.AddButton(1, Global.MissingTexture);
-                child.SetText(2, item.Value.IsLoot.ToString());
+                child.SetText(2, item.Value.IsRandomLoot.ToString());
             }
         }
 

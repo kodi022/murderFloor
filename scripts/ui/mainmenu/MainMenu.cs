@@ -32,10 +32,10 @@ public partial class MainMenu : ScreenScaleLimiter
 		camera.Fov = 50;
 
 		cameraTargetTransform = cameraMenuPositionNode.Transform;
-		((Button)buttonsList.GetChild(0)).ButtonDown += LocalButton;
-		((Button)buttonsList.GetChild(1)).ButtonDown += OnlineButton;
-		((Button)buttonsList.GetChild(2)).ButtonDown += OptionsButton;
-		((Button)buttonsList.GetChild(3)).ButtonDown += ExitButton;
+		((Button)buttonsList.GetChild(1)).ButtonDown += LocalButton;
+		((Button)buttonsList.GetChild(2)).ButtonDown += OnlineButton;
+		((Button)buttonsList.GetChild(3)).ButtonDown += OptionsButton;
+		((Button)buttonsList.GetChild(4)).ButtonDown += ExitButton;
 
 		var args = OS.GetCmdlineArgs();
 		if (args.Contains("--delay"))

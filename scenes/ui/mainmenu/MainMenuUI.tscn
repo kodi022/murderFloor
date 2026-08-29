@@ -40,7 +40,7 @@ theme = ExtResource("2_eb6x1")
 layout_mode = 0
 offset_left = 28.0
 offset_top = -142.5
-offset_right = 318.0
+offset_right = 367.0
 offset_bottom = -64.5
 theme_override_font_sizes/font_size = 40
 text = "Murder Floor"
@@ -50,7 +50,19 @@ layout_mode = 0
 offset_left = 31.0
 offset_top = -65.5
 offset_right = 224.0
-offset_bottom = 89.5
+offset_bottom = 174.5
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Control/Panel" unique_id=407015957]
+texture_filter = 2
+layout_mode = 0
+offset_right = 193.0
+offset_bottom = 240.0
+texture = ExtResource("3_fsfol")
+region_rect = Rect2(0, 0, 32, 32)
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
 
 [node name="Button" type="Button" parent="Control/Panel" unique_id=1888925912]
 layout_mode = 0
@@ -63,39 +75,28 @@ text = "Local"
 [node name="Button2" type="Button" parent="Control/Panel" unique_id=1373186814]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 41.0
+offset_top = 43.0
 offset_right = 185.0
-offset_bottom = 72.0
+offset_bottom = 74.0
 text = "Online"
 
 [node name="Button3" type="Button" parent="Control/Panel" unique_id=1664400078]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 83.0
+offset_top = 166.0
 offset_right = 185.0
-offset_bottom = 114.0
+offset_bottom = 197.0
 text = "Options
 "
 
 [node name="Button4" type="Button" parent="Control/Panel" unique_id=673707183]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 116.0
+offset_top = 201.0
 offset_right = 185.0
-offset_bottom = 147.0
+offset_bottom = 232.0
 text = "Exit
 "
-
-[node name="NinePatchRect" type="NinePatchRect" parent="Control/Panel" unique_id=407015957]
-layout_mode = 0
-offset_right = 193.0
-offset_bottom = 155.0
-texture = ExtResource("3_fsfol")
-region_rect = Rect2(0, 0, 32, 32)
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
 
 [node name="ViewBlockRight" type="Panel" parent="." unique_id=1106262579]
 layout_mode = 0

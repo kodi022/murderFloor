@@ -17,12 +17,13 @@ public partial class MFResource : Resource
     [Export]
     public float MeshSceneImportYaw { get; private set; }
 
+    [Export, ExportSubgroup("Loot")]
+    public bool IsRandomLoot { get; private set; } = false;
     [Export]
-    public bool UseInGame { get; private set; } = true;
-    [Export]
-    public bool IsLoot { get; private set; } = false;
-    [Export]
-    public string LootInclusionVer { get; private set; } = "0.1.0"; // see also: Version
+    public int LootMinimumSpawnLevel { get; private set; } = 0;
+
+    [Export, ExportSubgroup("")]
+    public string InclusionVersion { get; private set; } = "0.1.0"; // see also: Version
 
     [Export]
     public string NameLocalizationGroup { get; private set; } = "";

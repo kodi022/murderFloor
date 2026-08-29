@@ -53,7 +53,7 @@ public static class ResourceManager
 						resource.BuildIds();
 						folderRegisters.Add(resource.HashId, resource);
 
-						if (resource.UseInGame && resource.IsLoot) LootRegistry.Add(resource);
+						if (resource.IsRandomLoot) LootRegistry.Add(resource);
 					}
 				}
 			}

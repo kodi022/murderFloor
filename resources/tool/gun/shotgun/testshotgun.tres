@@ -6,7 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://bb8jtfret08g5" path="res://sounds/tool/gun/bolt/freesound_community-realistic-shotgun-cocking-sound-38640.mp3" id="3_7mp16"]
 [ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/reload/gunreload.mp3" id="3_djgqg"]
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="4_rxxii"]
-[ext_resource type="PackedScene" uid="uid://4ht8inaewl4n" path="res://scenes/tool/gun/shotgun/model37/model37viewmodel.blend" id="6_xn2wi"]
+[ext_resource type="PackedScene" uid="uid://bglibynpq6kjh" path="res://scenes/tool/gun/shotgun/model37/model37viewmodel.blend" id="6_xn2wi"]
 
 [resource]
 script = ExtResource("4_rxxii")
@@ -39,6 +39,6 @@ CarryWeight = 5
 ViewmodelScene = ExtResource("6_xn2wi")
 ResourceId = "testshotgun"
 MeshScene = ExtResource("2_ttrhh")
-IsLoot = true
+IsRandomLoot = true
 NameLocalizationGroup = "tool"
 metadata/_custom_type_script = "uid://dh0saosikvolb"

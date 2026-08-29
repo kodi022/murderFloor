@@ -2,20 +2,99 @@
 
 [ext_resource type="FontFile" uid="uid://d0k2lrfxrv5c2" path="res://fonts/Quantico-Regular.ttf" id="1_p3tpv"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5vsp"]
+bg_color = Color(0.7, 0.62299997, 0.62299997, 0.1882353)
+border_width_left = 3
+border_width_top = 1
+border_width_right = 3
+border_width_bottom = 1
+border_color = Color(0.11003343, 0.17255309, 0.21720988, 0.7254902)
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fsfol"]
+bg_color = Color(0.11198568, 0.11198568, 0.11198568, 0.50980395)
+border_width_left = 3
+border_width_top = 1
+border_width_right = 3
+border_width_bottom = 1
+border_color = Color(0.055000003, 0.081999995, 0.1, 0.7254902)
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qfit3"]
+bg_color = Color(0, 0, 0, 0.5921569)
+border_width_left = 3
+border_width_top = 1
+border_width_right = 3
+border_width_bottom = 1
+border_color = Color(0.055000003, 0.081999995, 0.1, 0.75686276)
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pgprr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ljads"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_texxy"]
+bg_color = Color(0.7, 0.62299997, 0.62299997, 0.1882353)
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qb5rl"]
+bg_color = Color(0.7, 0.62299997, 0.62299997, 0.1882353)
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r3bgs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hggcq"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_pbeot"]
+color = Color(0.13, 0.13, 0.13, 0.78431374)
+grow_begin = 2.0
+grow_end = 2.0
+thickness = 2
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3tpv"]
 bg_color = Color(0.1755, 0.23062503, 0.27, 0.6666667)
 corner_radius_top_right = 5
 corner_radius_bottom_left = 5
 corner_detail = 1
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_p3tpv"]
+color = Color(0.13, 0.13, 0.13, 0.78431374)
+grow_begin = 2.0
+grow_end = 2.0
+thickness = 2
+vertical = true
+
 [resource]
 default_font = ExtResource("1_p3tpv")
 default_font_size = 16
 Button/constants/border_width_left = 4
+Button/styles/hover = SubResource("StyleBoxFlat_q5vsp")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_q5vsp")
+Button/styles/normal = SubResource("StyleBoxFlat_fsfol")
+Button/styles/pressed = SubResource("StyleBoxFlat_qfit3")
+CheckButton/styles/disabled = SubResource("StyleBoxEmpty_pgprr")
+CheckButton/styles/focus = SubResource("StyleBoxEmpty_ljads")
+CheckButton/styles/hover = SubResource("StyleBoxFlat_texxy")
+CheckButton/styles/hover_pressed = SubResource("StyleBoxFlat_qb5rl")
+CheckButton/styles/normal = SubResource("StyleBoxEmpty_r3bgs")
+CheckButton/styles/pressed = SubResource("StyleBoxEmpty_hggcq")
 HBoxContainer/constants/separation = 2
+HSeparator/styles/separator = SubResource("StyleBoxLine_pbeot")
 MarginContainer/constants/margin_bottom = 10
 MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
 Panel/styles/panel = SubResource("StyleBoxFlat_p3tpv")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_p3tpv")
 VBoxContainer/constants/separation = 2
+VSeparator/styles/separator = SubResource("StyleBoxLine_p3tpv")

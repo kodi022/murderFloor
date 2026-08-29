@@ -66,8 +66,8 @@ public partial class HUD : ScreenScaleLimiter
 
         if (!hookedGameEvents && Game.Current is not null)
         {
-            Game.Current.GameRoundStart += AnimateNewRound;
-            Game.Current.GameRoundEnd += AnimateRoundTimer;
+            Game.Current.GameWaveStart += AnimateNewRound;
+            Game.Current.GameWaveEnd += AnimateRoundTimer;
             hookedGameEvents = true;
         }
 
@@ -275,7 +275,7 @@ public partial class HUD : ScreenScaleLimiter
 
         roundTimerPanel.Visible = true;
 
-        var time = Game.Current.TimeMsBetweenRounds / 1000;
+        var time = Game.Current.TimeMsBetweenWaves / 1000;
         while (time > 0)
         {
             numberLabel.Text = time.ToString();
