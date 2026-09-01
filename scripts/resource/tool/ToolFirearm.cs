@@ -154,7 +154,6 @@ public partial class ToolFirearm : Tool
         var camera = new Camera3D();
         var bounds = GetBounds(weaponScene);
         var modelWidth = bounds.End.Abs().X + bounds.Position.Abs().X;
-        weaponScene.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
         camera.SetOrthogonal(MathF.Max(modelWidth * 0.55f, 0.5f), 0.1f, 20f);
         camera.LookAtFromPosition(new Vector3(0, 0, 3f), Vector3.Zero);
 
@@ -180,12 +179,11 @@ public partial class ToolFirearm : Tool
         var builtToolData = new BuiltToolData() { ToolHashId = HashId };
 
         var toolResource = ResourceManager.ToolRegistry.GetResourceRef(HashId);
-        builtToolData.Node3D = toolResource.MeshScene.Instantiate<Node3D>();
-        builtToolData.Node3D.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
+        builtToolData.Tool = toolResource.MeshScene.Instantiate<Node3D>();
 
         Node3D FindNode(string name)
         {
-            var thing = (Node3D)builtToolData.Node3D.FindChildren(name).FirstOrDefault(new Node3D());
+            var thing = (Node3D)builtToolData.Tool.FindChildren(name).FirstOrDefault(new Node3D());
             if (!thing.IsInsideTree())
                 GD.PrintErr($"Warning: {toolResource.FullId} has no Node3D named \"{name}\"");
 
@@ -199,26 +197,27 @@ public partial class ToolFirearm : Tool
         var foregripNode = FindNode("Point-Foregrip");
         var gadgetNode = FindNode("Point-Gadget");
 
-        builtToolData.SightPosition = sightNode.Position.Rotated(Vector3.Up, -builtToolData.Node3D.Rotation.Y);
+        builtToolData.SightPositionOffset = new Vector3(-sightNode.Position.Z, -sightNode.Position.Y, 0);
 
-        foreach (var hashId in buildToolData.AttachmentHashIds)
-        {
-            var attachment = ResourceManager.AttachmentRegistry.GetResourceRef(hashId);
-            switch (attachment.AttachmentType)
-            {
-                case Attachment.AttachmentTypeEnum.Optic:
-                    if (sightAttachmentNode.IsInsideTree())
-                    {
-                        var opticModelScene = attachment.MeshScene.Instantiate<Node3D>();
-                        sightAttachmentNode.AddChild(opticModelScene);
-                        opticModelScene.RotationDegrees = new Vector3(0, attachment.MeshSceneImportYaw, 0);
-                        var attachSightNode = (Node3D)opticModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
-                        builtToolData.SightPosition = sightAttachmentNode.Position.Rotated(Vector3.Up, -builtToolData.Node3D.Rotation.Y);
-                        builtToolData.SightPosition += attachSightNode.Position.Rotated(Vector3.Up, -opticModelScene.Rotation.Y);
-                    }
-                    break;
-            }
-        }
+        // ! bring back soon
+        // foreach (var hashId in buildToolData.AttachmentHashIds)
+        // {
+        //     var attachment = ResourceManager.AttachmentRegistry.GetResourceRef(hashId);
+        //     switch (attachment.AttachmentType)
+        //     {
+        //         case Attachment.AttachmentTypeEnum.Optic:
+        //             if (sightAttachmentNode.IsInsideTree())
+        //             {
+        //                 var opticModelScene = attachment.MeshScene.Instantiate<Node3D>();
+        //                 sightAttachmentNode.AddChild(opticModelScene);
+        //                 opticModelScene.RotationDegrees = new Vector3(0, attachment.MeshSceneImportYaw, 0);
+        //                 var attachSightNode = (Node3D)opticModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+        //                 builtToolData.SightPosition = sightAttachmentNode.Position.Rotated(Vector3.Up, -builtToolData.Node3D.Rotation.Y);
+        //                 builtToolData.SightPosition += attachSightNode.Position.Rotated(Vector3.Up, -opticModelScene.Rotation.Y);
+        //             }
+        //             break;
+        //     }
+        // }
 
         return builtToolData;
     }

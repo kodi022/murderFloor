@@ -84,11 +84,11 @@ public partial class ToolMelee : Tool
         var builtToolData = new BuiltToolData() { ToolHashId = HashId };
 
         var toolResource = ResourceManager.ToolRegistry.GetResourceRef(HashId);
-        builtToolData.Node3D = toolResource.MeshScene.Instantiate<Node3D>();
+        builtToolData.Tool = toolResource.MeshScene.Instantiate<Node3D>();
 
         Node3D FindNode(string name)
         {
-            var thing = (Node3D)builtToolData.Node3D.FindChildren(name).FirstOrDefault(new Node3D());
+            var thing = (Node3D)builtToolData.Tool.FindChildren(name).FirstOrDefault(new Node3D());
             if (!thing.IsInsideTree())
                 GD.PrintErr($"Warning: {toolResource.FullId} has no Node3D named \"{name}\"");
 

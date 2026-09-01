@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://3f3btq20l0k4"
-path="res://.godot/imported/etec.blend-79923c3244da01a0a91d244d3a179c73.scn"
+uid="uid://s06ynlcvjgq0"
+path="res://.godot/imported/knifeviewmodel.blend-76cbaa476796b1a9c9b83b681d5cfff5.scn"
 
 [deps]
 
-source_file="res://scenes/tool/attachment/optic/etec/etec.blend"
-dest_files=["res://.godot/imported/etec.blend-79923c3244da01a0a91d244d3a179c73.scn"]
+source_file="res://scenes/tool/melee/knife/knifeviewmodel.blend"
+dest_files=["res://.godot/imported/knifeviewmodel.blend-76cbaa476796b1a9c9b83b681d5cfff5.scn"]
 
 [params]
 
@@ -19,7 +19,7 @@ nodes/root_script=null
 mesh_library/use_node_names_as_mesh_names=false
 array_mesh/deduplicate_surfaces=true
 nodes/apply_root_scale=true
-nodes/root_scale=0.12
+nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
 nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
@@ -39,36 +39,14 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={
-"materials": {
-"sight": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://materials/optic.tres",
-"use_external/path": "uid://bedu7k08fpirv"
-}
-},
-"nodes": {
-"PATH:Cube_001": {
-"import/skip_import": true
-},
-"PATH:Cube_002": {
-"import/skip_import": true
-},
-"PATH:Empty": {
-"import/skip_import": true
-},
-"PATH:Empty_001": {
-"import/skip_import": true
-}
-}
-}
+_subresources={}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true
 blender/nodes/cameras=true
 blender/nodes/custom_properties=true
 blender/nodes/modifiers=1
-blender/meshes/vertex_colors=2
+blender/meshes/vertex_colors=1
 blender/meshes/uvs=true
 blender/meshes/normals=true
 blender/meshes/export_geometry_nodes_instances=false
@@ -82,4 +60,4 @@ blender/animation/limit_playback=true
 blender/animation/always_sample=true
 blender/animation/group_tracks=true
 gltf/naming_version=2
-gltf/texture_map_mode=0
+gltf/texture_map_mode=1

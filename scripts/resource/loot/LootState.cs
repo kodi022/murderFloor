@@ -55,7 +55,12 @@ public struct LootState
         ModifiedStats.Add("Damage", 1.2f);
     }
 
-    public static MFResource GetLootRef(LootState self) => ResourceManager.LootRegistry.GetResourceRef(self.ResourceHashId);
+    public static MFResource GetLootRef(LootState self)
+    {
+        var loot = ResourceManager.LootRegistry.GetResourceRef(self.ResourceHashId);
+        if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({self.HashId}) Maybe Item is not IsRandomLoot?");
+        return loot;
+    }
 
     private static int GetLootHashId(ulong seed)
     {

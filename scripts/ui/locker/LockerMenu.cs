@@ -222,7 +222,6 @@ public partial class LockerMenu : ScreenScaleLimiter
             var bounds = MFResource.GetBounds(weaponScene);
             var modelCenter = (bounds.End + bounds.Position) / 2;
             weaponScene.GlobalPosition = -modelCenter;
-            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
         }
         else
         {
@@ -233,7 +232,6 @@ public partial class LockerMenu : ScreenScaleLimiter
             var bounds = MFResource.GetBounds(weaponScene);
             var modelCenter = (bounds.End + bounds.Position) / 2;
             weaponScene.GlobalPosition = -modelCenter;
-            weaponScene.RotationDegrees = new Vector3(0, selectedTool.MeshSceneImportYaw, 0);
         }
     }
 

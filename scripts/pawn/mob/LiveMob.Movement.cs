@@ -4,6 +4,15 @@ public partial class LiveMob : Pawn
 {
     private Vector3 velocityNoGravity;
 
+    private ulong lastWaypointTime;
+    private ulong lastTargetUpdateTime;
+
+    private bool verticalAction;
+    private ulong verticalActionStartTime;
+    private Curve3D verticalActionMovementCurve;
+
+    private int startPosHash;
+
     public void PhysicsProcessMovement()
     {
         if ((processTick + MobProcessOffset) % 20 == 0) CheckNavigationTarget(ticksMs);
@@ -89,11 +98,12 @@ public partial class LiveMob : Pawn
 
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
 
-        // ! randomize path better, this is bad
+        var hash = Hashing.StableHash(targetPos) + startPosHash;
+        var rand = new Vector3(hash % 13 / 13f, hash % 10 / 10f, hash % 7 / 7f);
         var distSqr = targetPos.DistanceSquaredTo(targetPawn.Position);
-        targetPos += new Vector3(mobRng.Randf() - 0.5f, -0.1f, mobRng.Randf() - 0.5f) * distSqr * 0.05f;
+        targetPos += rand * distSqr * 0.05f;
 
-        velocityNoGravity = GlobalPosition.DirectionTo(targetPos) * MobResource.MovementSpeedScale * 3f;
+        velocityNoGravity = GlobalPosition.DirectionTo(targetPos) * MobResource.MovementSpeedScale * 2.9f;
 
         if (velocityNoGravity.Y > 0.05f)
             Velocity = velocityNoGravity + Vector3.Down * 0.2f;

@@ -1,6 +1,8 @@
 [gd_resource type="Resource" script_class="Map" format=3 uid="uid://daivtpxmifg0d"]
 
 [ext_resource type="Script" uid="uid://ifnxoeyd77ie" path="res://scripts/resource/map/Map.cs" id="1_n8hik"]
+[ext_resource type="PackedScene" uid="uid://b0pt4v78lmdus" path="res://scenes/map/smalltowncenter/smalltowncenter.tscn" id="1_qfokg"]
+[ext_resource type="Texture2D" uid="uid://466q7o6xk72a" path="res://images/missing.png" id="2_3r7cj"]
 
 [resource]
 script = ExtResource("1_n8hik")
@@ -8,4 +10,5 @@ MapLocation = Vector2(0.06, 0.348)
 MapDifficultyScale = 0.85
 MapCompletionLoot = null
 ResourceId = "smalltowncenter"
+MeshScene = ExtResource("1_qfokg")
 metadata/_custom_type_script = "uid://ifnxoeyd77ie"

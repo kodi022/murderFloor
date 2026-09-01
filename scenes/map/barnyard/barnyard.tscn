@@ -519,12 +519,12 @@ metadata/_edit_lock_ = true
 [node name="NavigationLink3D" type="NavigationLink3D" parent="NavigationRegion3D" unique_id=139410241]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.407957, 1.1576586, 30.672003)
 end_position = Vector3(0, 6.235, 2)
-travel_cost = 2.0
+travel_cost = 0.2
 
 [node name="NavigationLink3D2" type="NavigationLink3D" parent="NavigationRegion3D" unique_id=684932234]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.059803, 1.1576586, 9.3364315)
 end_position = Vector3(1.706, 4.26, 0.096)
-travel_cost = 2.0
+travel_cost = 0.2
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=413890576]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.017837524, -1.3922486, -0.029344559)

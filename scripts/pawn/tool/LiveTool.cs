@@ -48,13 +48,12 @@ public partial class LiveTool : Node
 
     public bool Aiming { get; private set; } = false;
 
-    private Vector3 modelSceneAimingPosition;
     private float currentAimingPositionLerp;
 
     private Node3D viewmodelScene;
-
-    private Vector3 modelSceneStartPosition;
-    private Vector3 sightPosition;
+    private Vector3 viewmodelSceneStartPos;
+    private Vector3 viewmodelSceneSightPosition;
+    private MFResource.BuiltToolData builtTool;
 
     public override void _Ready()
     {
@@ -78,7 +77,7 @@ public partial class LiveTool : Node
 
         currentAimingPositionLerp += Aiming ? (float)delta * 4f : -(float)delta * 4f;
         currentAimingPositionLerp = Mathf.Clamp(currentAimingPositionLerp, 0f, 1f);
-        viewmodelScene.Position = modelSceneStartPosition.Lerp(modelSceneAimingPosition, currentAimingPositionLerp);
+        viewmodelScene.Position = viewmodelSceneStartPos.Lerp(viewmodelSceneSightPosition + builtTool.SightPositionOffset, currentAimingPositionLerp);
 
         if (ToolResource is ToolFirearm firearm)
         {
@@ -128,18 +127,21 @@ public partial class LiveTool : Node
             viewmodelScene = ToolResource.ViewmodelScene.Instantiate<Node3D>();
             viewmodelScene.RotationDegrees += new Vector3(0, 90, 0);
 
-            var oldGun = (Node3D)viewmodelScene.FindChild("Armature*");
-            var oldGunPos = oldGun.Position;
-            var oldGunRot = oldGun.Rotation;
-            viewmodelScene.FindChild("Armature*").Free();
+            if (ToolResource.FullId != "base:fists")
+            {
+                var oldGun = (Node3D)viewmodelScene.FindChild("Armature*");
+                var oldGunPos = oldGun.Position;
+                var oldGunRot = oldGun.Rotation;
+                oldGun.Free();
 
-            var built = ToolResource.BuildToolScene(new MFResource.BuildToolData() { AttachmentHashIds = [] });
-            var newGun = built.Node3D.GetChild<Node3D>(0);
-            newGun.Owner = null;
-            newGun.Position = oldGunPos;
-            newGun.Rotation = oldGunRot;
-            newGun.Reparent(viewmodelScene, false);
-            sightPosition = built.SightPosition;
+                builtTool = ToolResource.BuildToolScene(new MFResource.BuildToolData() { AttachmentHashIds = [] });
+                var newGun = builtTool.Tool.GetChild<Node3D>(0);
+                newGun.Owner = null;
+                newGun.Position = oldGunPos;
+                newGun.Rotation = oldGunRot;
+                newGun.Reparent(viewmodelScene, false);
+                viewmodelSceneSightPosition = new Vector3(-oldGunPos.Z, -oldGunPos.Y, 0);
+            }
 
             AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
             AnimationPlayer.Play("idle");
@@ -154,7 +156,7 @@ public partial class LiveTool : Node
             // modelScene.RotationDegrees = new Vector3(0, ToolResource.MeshSceneImportYaw, 0);
         }
 
-        modelSceneStartPosition = viewmodelScene.Position;
+        viewmodelSceneStartPos = viewmodelScene.Position;
 
         // await equip animation
         await Task.Delay(250);
@@ -203,21 +205,7 @@ public partial class LiveTool : Node
 
         if (ToolResource is ToolFirearm)
         {
-            // could make Viewing instead of Authority, allowing spetating
-            if (IsMultiplayerAuthority())
-            {
-                if (!Aiming)
-                {
-                    Aiming = true;
-                    var x = viewmodelScene.Position.X + sightPosition.X;
-                    var y = viewmodelScene.Position.Y + sightPosition.Y;
-                    modelSceneAimingPosition = new Vector3(-x, -y, modelSceneStartPosition.Z);
-                }
-            }
-            else
-            {
-
-            }
+            Aiming = true;
         }
     }
 

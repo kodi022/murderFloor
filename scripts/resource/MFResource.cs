@@ -14,8 +14,6 @@ public partial class MFResource : Resource
 
     [Export]
     public PackedScene MeshScene { get; private set; }
-    [Export]
-    public float MeshSceneImportYaw { get; private set; }
 
     [Export, ExportSubgroup("Loot")]
     public bool IsRandomLoot { get; private set; } = false;
@@ -38,6 +36,7 @@ public partial class MFResource : Resource
 
     public virtual async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY) => Global.MissingTextureImage;
 
+    /// <summary> Builds the tool itself with additional data. DOES NOT BUILD VIEWMODEL </summary>
     public virtual BuiltToolData BuildToolScene(BuildToolData buildToolData) => new();
 
     public static Aabb GetBounds(Node3D weaponScene)
@@ -66,7 +65,7 @@ public partial class MFResource : Resource
 
     private protected static void ApplyThumbnailMaterialToParts(Node3D weaponScene)
     {
-        foreach (var child in weaponScene.GetChildren())
+        foreach (var child in weaponScene.FindChildren("*", nameof(MeshInstance3D)))
         {
             if (child is MeshInstance3D mesh)
             {
@@ -83,8 +82,8 @@ public partial class MFResource : Resource
     public struct BuiltToolData
     {
         public int ToolHashId { get; set; }
-        public Node3D Node3D { get; set; }
-        public Vector3 SightPosition { get; set; }
+        public Node3D Tool { get; set; }
+        public Vector3 SightPositionOffset { get; set; }
         public Vector3 MuzzleFlarePosition { get; set; }
     }
 }

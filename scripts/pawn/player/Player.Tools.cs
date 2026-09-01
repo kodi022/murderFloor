@@ -181,6 +181,7 @@ public partial class Player : Pawn
 
         GD.Print($"ToolsSyncRpc ({Id} sync for {Self.Id})");
 
+        // needed for something i dont remember
         foreach (var tool in tools)
         {
             ToolRemove(tool);

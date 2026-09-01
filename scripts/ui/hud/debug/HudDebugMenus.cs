@@ -15,8 +15,8 @@ public partial class HudDebugMenus : Control
         tree.HideRoot = true;
         tree.SetColumnTitle(0, "FullId");
         tree.SetColumnTitle(1, "HashId");
-        tree.SetColumnTitle(2, "IsRandomLoot");
-        tree.SetColumnTitle(3, "");
+        tree.SetColumnTitle(2, "HashBase64Id");
+        tree.SetColumnTitle(3, "IsRandomLoot");
 
         tree.ButtonClicked += (item, column, id, mouseButtonIndex) =>
         {
@@ -25,8 +25,13 @@ public partial class HudDebugMenus : Control
                 case "Tools":
                     if (column == 0)
                         Player.Self.Rpc("ToolAddRpc", $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
-                    else if (column == 1)
-                        GD.Print(item.GetText(1).ToInt());
+                    else if (column == 2)
+                    {
+                        DisplayServer.ClipboardSet(item.GetText(2));
+                        GD.Print("Copied to clipboard");
+                    }
+                    break;
+                default:
                     break;
             }
         };
@@ -41,9 +46,10 @@ public partial class HudDebugMenus : Control
                 var child = newItem.CreateChild();
                 child.SetText(0, item.Value.FullId);
                 if (hasFunction) child.AddButton(0, Global.MissingTexture);
-                child.SetText(1, item.Value.HashId.ToString());
-                child.AddButton(1, Global.MissingTexture);
-                child.SetText(2, item.Value.IsRandomLoot.ToString());
+                child.SetText(1, Compression.IntToAB64(item.Value.HashId));
+                child.SetText(2, item.Value.HashId.ToString());
+                child.AddButton(2, Global.MissingTexture);
+                child.SetText(3, item.Value.IsRandomLoot.ToString());
             }
         }
 

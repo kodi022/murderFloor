@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://by4grvbohcsgp"
-path="res://.godot/imported/fists.blend-b409cf0de8e2afc8e2c071f42bbb8fb0.scn"
+uid="uid://bm77n1h7frusq"
+path="res://.godot/imported/knife.blend-1f946caab5f5be8979421e76f2a9eec3.scn"
 
 [deps]
 
-source_file="res://scenes/tool/melee/fists/fists.blend"
-dest_files=["res://.godot/imported/fists.blend-b409cf0de8e2afc8e2c071f42bbb8fb0.scn"]
+source_file="res://scenes/tool/melee/knife/knife.blend"
+dest_files=["res://.godot/imported/knife.blend-1f946caab5f5be8979421e76f2a9eec3.scn"]
 
 [params]
 
@@ -39,16 +39,7 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={
-"nodes": {
-"PATH:Armature": {
-"import/skip_import": true
-},
-"PATH:Armature/Skeleton3D": {
-"import/skip_import": true
-}
-}
-}
+_subresources={}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true

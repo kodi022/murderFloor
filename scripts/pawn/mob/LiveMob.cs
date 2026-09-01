@@ -36,13 +36,7 @@ public partial class LiveMob : Pawn
     private bool _active;
     private Pawn targetPawn;
     private int processTick;
-    private ulong lastWaypointTime;
-    private ulong lastTargetUpdateTime;
     private ulong lastAttackTime;
-
-    private bool verticalAction;
-    private ulong verticalActionStartTime;
-    private Curve3D verticalActionMovementCurve;
 
     private ulong ticksMs;
     private float distToTarget;
@@ -63,6 +57,7 @@ public partial class LiveMob : Pawn
         Armor = MobResource.Armor;
         Scale = Vector3.One * MobResource.Scale;
         GlobalPosition = location;
+        startPosHash = Hashing.StableHash(location);
         Active = true;
         ChangeNavigationTarget();
     }
@@ -79,7 +74,7 @@ public partial class LiveMob : Pawn
 
         PhysicsProcessMovement();
 
-        // attack, allow movement
+        // attack, continue movement
         if (distToTarget < MobResource.AttackRange && MobResource.AttackRateMs < ticksMs - lastAttackTime)
         {
             lastAttackTime = ticksMs;

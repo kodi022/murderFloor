@@ -36,7 +36,6 @@ public partial class Attachment : MFResource
         var camera = new Camera3D();
         var bounds = GetBounds(weaponScene);
         var modelWidth = bounds.End.Abs().X + bounds.Position.Abs().X;
-        weaponScene.RotationDegrees = new Vector3(0, MeshSceneImportYaw, 0);
         camera.SetOrthogonal(modelWidth * 0.65f, 0.1f, 20f);
         camera.LookAtFromPosition(new Vector3(3f, 0, 3f), Vector3.Zero);
 
