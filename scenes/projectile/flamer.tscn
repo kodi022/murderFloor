@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bjjwb2mlggmm6"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dx04r"]
+direction = Vector3(0, -1, 0)
+spread = 6.0
+initial_velocity_min = 2.0
+initial_velocity_max = 2.0
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pbeot"]
+size = Vector3(0.06, 0.06, 0.06)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_pbeot"]
+radius = 0.06
+height = 0.16
+radial_segments = 8
+rings = 2
+
+[node name="Flamer" type="Node3D" unique_id=1941450409]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=123570927]
+amount = 6
+lifetime = 0.09
+process_material = SubResource("ParticleProcessMaterial_dx04r")
+draw_pass_1 = SubResource("BoxMesh_pbeot")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=838442957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.058818325, 0)
+mesh = SubResource("CapsuleMesh_pbeot")

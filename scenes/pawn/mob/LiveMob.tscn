@@ -39,52 +39,52 @@ nodes/Blend2/position = Vector2(-220, 80)
 node_connections = [&"output", 0, &"oneshot_melee", &"oneshot_melee", 0, &"Blend2", &"oneshot_melee", 1, &"Animation 2", &"timescale_walk", 0, &"Animation", &"Blend2", 0, &"timescale_walk", &"Blend2", 1, &"Animation 3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_drloa"]
-radius = 0.1
-height = 0.45
+radius = 0.605
+height = 2.955
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ufksc"]
-radius = 0.08
-height = 0.52
+radius = 0.436
+height = 3.144
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fx5p6"]
-radius = 0.1
-height = 0.39
+radius = 0.72
+height = 2.505
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l4il3"]
-radius = 0.15
-height = 0.35
+radius = 0.77
+height = 2.145
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_e5eql"]
-radius = 0.16
-height = 0.38
+radius = 0.76
+height = 2.19
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l00qg"]
-radius = 0.09
-height = 0.3
+radius = 0.445
+height = 1.78
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_igqow"]
-radius = 0.06
-height = 0.33
+radius = 0.365
+height = 2.165
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_36gnr"]
-radius = 0.058
-height = 0.33
+radius = 0.338
+height = 2.261
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_uoj7a"]
-radius = 0.045
-height = 0.19441406
+radius = 0.265
+height = 1.28
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tbe8m"]
-radius = 0.06
-height = 0.28
+radius = 0.305
+height = 1.78
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xhrtx"]
-radius = 0.065
-height = 0.2
+radius = 0.425
+height = 1.345
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0uf52"]
-radius = 0.1
-height = 0.25
+radius = 0.57
+height = 1.37
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ex06h"]
 radius = 0.4
@@ -138,7 +138,7 @@ parameters/Blend2/blend_amount = 1.0
 
 [node name="UpperLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1453147456]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.00037578362, 0.0121389, -0.16154411, -0.09729498, -0.129181, -0.009480719, -0.12952751, 0.09699949, 0.0075901183, 0.097630955, 0.8667116, -0.030339016)
+transform = Transform3D(-0.00037578717, 0.012138883, -0.16154413, -0.10798715, -0.12043785, -0.008798859, -0.12075789, 0.10766317, 0.0083709955, 0.097630955, 0.8667116, -0.030339016)
 bone_name = "UpperLeg.L"
 bone_idx = 43
 use_external_skeleton = true
@@ -150,13 +150,13 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperLeg_L/StaticBody3D" unique_id=1146053894]
-transform = Transform3D(6.173, 1.149811e-08, -4.1829855e-17, -1.149811e-08, 6.173, -1.5136182e-08, 1.3636516e-17, 1.5136182e-08, 6.173, 0, 0.14, 0)
+transform = Transform3D(1, 1.8626454e-09, -6.7762607e-18, -1.8626454e-09, 1, -2.4519977e-09, 2.2090586e-18, 2.4519977e-09, 1, 0, 0.935, 0)
 shape = SubResource("CapsuleShape3D_drloa")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="UpperLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1118039744]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.00041608614, -0.009929607, 0.16169487, 0.010857271, -0.16133358, -0.009879481, 0.16163649, 0.010811362, 0.0010798448, -0.097630925, 0.8667116, -0.030339016)
+transform = Transform3D(-0.00041606952, -0.0099297, 0.16169487, -0.003503081, -0.16165704, -0.00993639, 0.16196285, -0.003521975, 0.00020045786, -0.097630925, 0.8667116, -0.030339016)
 bone_name = "UpperLeg.R"
 bone_idx = 46
 use_external_skeleton = true
@@ -168,13 +168,13 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperLeg_R/StaticBody3D" unique_id=1531352371]
-transform = Transform3D(6.173, 1.5100584e-17, -2.874527e-09, 0, 6.173, 3.2428257e-08, 2.874527e-09, -3.2428257e-08, 6.173, 0, 0.14, 0)
+transform = Transform3D(1, 2.4462312e-18, -4.656613e-10, 0, 1, 5.2532414e-09, 4.656613e-10, -5.2532414e-09, 1, 0, 0.935, 0)
 shape = SubResource("CapsuleShape3D_drloa")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=871783084]
 physics_interpolation_mode = 0
-transform = Transform3D(0.00049943296, -0.003083991, -0.16196983, 0.038366538, -0.1573602, 0.0031145182, -0.15739019, -0.038368538, 0.00024522978, 0.12412631, 0.58475053, 0.18138003)
+transform = Transform3D(0.00049943844, -0.0030840312, -0.16196984, 0.037463635, -0.15757756, 0.0031158985, -0.1576076, -0.03746579, 0.00022735904, 0.12412626, 0.603834, 0.20465544)
 bone_name = "LowerLeg.L"
 bone_idx = 44
 use_external_skeleton = true
@@ -186,13 +186,13 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerLeg_L/StaticBody3D" unique_id=1824569290]
-transform = Transform3D(6.173, -2.399989e-18, 1.4372635e-09, 0, 6.173, 1.03078746e-08, -1.4372635e-09, -1.03078746e-08, 6.173, 0, 0.19, 0)
+transform = Transform3D(1, -3.8878812e-19, 2.3283064e-10, 0, 1, 1.6698323e-09, -2.3283064e-10, -1.6698323e-09, 1, 0, 1.09, 0)
 shape = SubResource("CapsuleShape3D_ufksc")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=519781593]
 physics_interpolation_mode = 0
-transform = Transform3D(0.00048183804, 0.005297815, 0.16191262, -0.04653968, -0.1550835, 0.0052128634, 0.15517145, -0.046530608, 0.0010607019, -0.119304076, 0.5145718, -0.006741254)
+transform = Transform3D(0.00048181936, 0.0052977297, 0.16191262, -0.047735043, -0.15472001, 0.0052044373, 0.15480796, -0.047725108, 0.0011008561, -0.11930429, 0.5138658, -0.038026363)
 bone_name = "LowerLeg.R"
 bone_idx = 47
 use_external_skeleton = true
@@ -204,7 +204,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerLeg_R/StaticBody3D" unique_id=1181168680]
-transform = Transform3D(6.173, -2.399989e-18, 1.4372635e-09, 0, 6.173, 1.03078746e-08, -1.4372635e-09, -1.03078746e-08, 6.173, 0, 0.19, 0)
+transform = Transform3D(1, -3.8878812e-19, 2.3283064e-10, 0, 1, 1.6698323e-09, -2.3283064e-10, -1.6698323e-09, 1, 0, 1.09, 0)
 shape = SubResource("CapsuleShape3D_ufksc")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -222,7 +222,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Hip/StaticBody3D" unique_id=1781605290]
-transform = Transform3D(-2.698304e-07, -6.173, -1.5541755e-26, 6.173, -2.698304e-07, 3.5555397e-19, -3.5555397e-19, 1.1888765e-33, 6.173, 0, 0.06, 0)
+transform = Transform3D(-4.3711395e-08, -1, 0, 1, -4.3711395e-08, 5.759824e-20, -5.9292306e-20, 0, 1, -1.239448e-08, 0.1273756, 0)
 shape = SubResource("CapsuleShape3D_fx5p6")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -240,7 +240,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerSpine/StaticBody3D" unique_id=1446875631]
-transform = Transform3D(-2.698304e-07, -6.173, -1.27990925e-26, 6.173, -2.698304e-07, 2.9280914e-19, -2.9280914e-19, 1.1888765e-33, 6.173, 0, 0.1, 0)
+transform = Transform3D(-4.371139e-08, -1, -2.0733992e-27, 1, -4.371139e-08, 4.7433848e-20, -4.7433848e-20, 1.92593e-34, 1, 0, 0.1, 0)
 shape = SubResource("CapsuleShape3D_l4il3")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -258,7 +258,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperSpine/StaticBody3D" unique_id=628477364]
-transform = Transform3D(-2.698304e-07, -6.173, -1.27990925e-26, 6.173, -2.698304e-07, 2.9280914e-19, -2.9280914e-19, 1.1888765e-33, 6.173, 0, 0.14, 0)
+transform = Transform3D(-4.371139e-08, -1, -2.0733992e-27, 1, -4.371139e-08, 4.7433848e-20, -4.7433848e-20, 1.92593e-34, 1, 0, 0.14, 0)
 shape = SubResource("CapsuleShape3D_e5eql")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -276,7 +276,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Clavicle_L/StaticBody3D" unique_id=1843935373]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0.025, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025, 0.655, 0)
 shape = SubResource("CapsuleShape3D_l00qg")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -294,7 +294,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Clavicle_R/StaticBody3D" unique_id=723528956]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, -0.025, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.025, 0.655, 0)
 shape = SubResource("CapsuleShape3D_l00qg")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -312,7 +312,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperArm_L/StaticBody3D" unique_id=1514812673]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0, 0.13, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68, 0)
 shape = SubResource("CapsuleShape3D_igqow")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -330,7 +330,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperArm_R/StaticBody3D" unique_id=1829397316]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0, 0.13, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68, 0)
 shape = SubResource("CapsuleShape3D_igqow")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -348,7 +348,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerArm_L/StaticBody3D" unique_id=1210674114]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0, 0.12, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.775, 0)
 shape = SubResource("CapsuleShape3D_36gnr")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -366,7 +366,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerArm_R/StaticBody3D" unique_id=272891115]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0, 0.12, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.775, 0)
 shape = SubResource("CapsuleShape3D_36gnr")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -384,7 +384,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Hand_L/StaticBody3D" unique_id=1805380230]
-transform = Transform3D(6.173, 1.8396986e-07, -4.599245e-08, -1.8396986e-07, 6.173, -9.198491e-08, 4.5992444e-08, 9.198491e-08, 6.173, -1.4901161e-08, 0.06117186, -2.3841858e-07)
+transform = Transform3D(1, 2.9802344e-08, -7.450583e-09, -2.9802344e-08, 1, -1.4901168e-08, 7.450582e-09, 1.4901168e-08, 1, -1.4901161e-08, 0.436, -2.3841858e-07)
 shape = SubResource("CapsuleShape3D_uoj7a")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -402,13 +402,13 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Hand_R/StaticBody3D" unique_id=460281174]
-transform = Transform3D(6.173, -2.0696596e-07, 4.15459e-08, 2.0696596e-07, 6.173, -3.2338474e-09, -4.15459e-08, 3.2338487e-09, 6.173, 0, 0.07103518, -1.4901161e-08)
+transform = Transform3D(1, -3.3527616e-08, 6.730261e-09, 3.3527616e-08, 1, -5.2386967e-10, -6.730261e-09, 5.238699e-10, 1, 0, 0.436, -1.4901161e-08)
 shape = SubResource("CapsuleShape3D_uoj7a")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=731315567]
 physics_interpolation_mode = 0
-transform = Transform3D(0.014687561, 0.040971484, -0.15604359, -0.14935394, -0.055795964, -0.028707936, -0.061004575, 0.1464653, 0.032714516, 0.116155125, 0.17802288, 0.08220918)
+transform = Transform3D(0.014687542, 0.04097149, -0.15604362, -0.15109135, -0.051443756, -0.02772872, -0.0565647, 0.14805007, 0.033548515, 0.116154976, 0.19654454, 0.107817926)
 bone_name = "Foot.L"
 bone_idx = 45
 use_external_skeleton = true
@@ -420,13 +420,13 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Foot_L/StaticBody3D" unique_id=774812004]
-transform = Transform3D(5.594638, -2.6088228, -7.013697e-08, 2.6088228, 5.594638, 6.878869e-08, 3.449432e-08, -9.198489e-08, 6.173, 0.009, 0.1, -0.002)
+transform = Transform3D(0.9396926, -0.34202012, -1.1361894e-08, 0.34202012, 0.9396926, 1.1143476e-08, 6.865395e-09, -1.4357439e-08, 1, 0.084, 0.595, -0.057)
 shape = SubResource("CapsuleShape3D_tbe8m")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=180640536]
 physics_interpolation_mode = 0
-transform = Transform3D(0.0117505845, -0.039392456, 0.15669768, 0.13839352, -0.078629166, -0.03014468, 0.083386436, 0.13605133, 0.027949069, -0.10561087, 0.11372876, -0.12700851)
+transform = Transform3D(0.011750665, -0.03939249, 0.15669768, 0.13639499, -0.0818057, -0.030793453, 0.08661662, 0.13416538, 0.027232714, -0.1056113, 0.11396237, -0.16138104)
 bone_name = "Foot.R"
 bone_idx = 48
 use_external_skeleton = true
@@ -438,7 +438,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Foot_R/StaticBody3D" unique_id=129971578]
-transform = Transform3D(5.594638, 2.6088228, 0, -2.6088228, 5.594638, 0, 0, 0, 6.173, -0.009, 0.1, -0.002)
+transform = Transform3D(0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 0, 0, 1, -0.084, 0.595, -0.057)
 shape = SubResource("CapsuleShape3D_tbe8m")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -456,7 +456,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Neck/StaticBody3D" unique_id=435686837]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0, 0.075, 0.01)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37, 0.01)
 shape = SubResource("CapsuleShape3D_xhrtx")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -474,7 +474,7 @@ collision_mask = 0
 input_ray_pickable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Head/StaticBody3D" unique_id=1285633759]
-transform = Transform3D(6.173, 0, 0, 0, 6.173, 0, 0, 0, 6.173, 0, 0.065, 0.015)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.39, 0.08)
 shape = SubResource("CapsuleShape3D_0uf52")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 

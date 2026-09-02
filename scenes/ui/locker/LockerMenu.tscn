@@ -1,13 +1,26 @@
 [gd_scene format=3 uid="uid://cdyb3alpyg6ee"]
 
-[ext_resource type="Script" uid="uid://bnjls7s41ytxt" path="res://scripts/ui/locker/LockerMenu.cs" id="1_1f3ys"]
+[ext_resource type="Script" uid="uid://cnc8o08thku2o" path="res://scripts/ui/locker/LockerMenu.cs" id="1_1f3ys"]
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="2_lj7te"]
+[ext_resource type="Texture2D" uid="uid://bb644t6jgxfr8" path="res://images/ui/lockertoolbutton-default.png" id="3_r4564"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lj7te"]
 bg_color = Color(0.16575891, 0.17362446, 0.19090384, 1)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pbeot"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dx04r"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j4e7k"]
-bg_color = Color(0, 0, 0, 0.11764706)
+bg_color = Color(0.7, 0.62299997, 0.62299997, 0.1882353)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4180532, 0.4432311, 0.4605409, 0.7254902)
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r4564"]
 content_margin_left = 0.0
@@ -20,7 +33,7 @@ border_width_right = 4
 border_color = Color(0.21063334, 0.21063334, 0.21063334, 1)
 anti_aliasing = false
 
-[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel")]
+[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("controlsRoot", "toolsPanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,179 +42,70 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_lj7te")
 script = ExtResource("1_1f3ys")
-grid = NodePath("PanelContainer/LeftMarginContainer/VBoxContainer/ScrollContainer/GridContainer")
-rect = NodePath("PanelContainer/TextureRect")
-rectDragControl = NodePath("PanelContainer/TextureRect/Control/Control")
-equipToolButton = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button")
-modifyToolButton = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button2")
-advancedToolButton = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button3")
-totalWeightLabel = NodePath("PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2/RichTextLabel")
+controlsRoot = NodePath("Panel")
+toolsPanel = NodePath("Panel/CenterLeft/ToolsPanel")
 
-[node name="PanelContainer" type="Panel" parent="." unique_id=980932831]
+[node name="Panel" type="Panel" parent="." unique_id=1043122632]
+layout_mode = 1
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_lj7te")
+
+[node name="CenterLeft" type="Control" parent="Panel" unique_id=1560580185]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+
+[node name="ToolsPanel" type="Panel" parent="Panel/CenterLeft" unique_id=103322304]
+layout_mode = 0
+offset_left = 62.0
+offset_top = -445.0
+offset_right = 517.0
+offset_bottom = -229.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/CenterLeft/ToolsPanel" unique_id=594869768]
+layout_mode = 0
+offset_right = 79.0
+offset_bottom = 54.0
+
+[node name="ReferencePanel" type="Panel" parent="Panel/CenterLeft/ToolsPanel/HBoxContainer" unique_id=1607929812]
+custom_minimum_size = Vector2(94, 64)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pbeot")
+
+[node name="Panel" type="Panel" parent="Panel/CenterLeft/ToolsPanel/HBoxContainer/ReferencePanel" unique_id=1244614751]
+custom_minimum_size = Vector2(90, 60)
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 77.0
+offset_bottom = 52.0
+
+[node name="TextureRect" type="TextureRect" parent="Panel/CenterLeft/ToolsPanel/HBoxContainer/ReferencePanel/Panel" unique_id=866340239]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_lj7te")
-
-[node name="TextureRect" type="TextureRect" parent="PanelContainer" unique_id=1475781477]
-layout_mode = 1
-offset_right = 1920.0
-offset_bottom = 1080.0
+texture = ExtResource("3_r4564")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Control" type="Control" parent="PanelContainer/TextureRect" unique_id=132801271]
+[node name="Button" type="Button" parent="Panel/CenterLeft/ToolsPanel" unique_id=70021151]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="Control" type="Control" parent="PanelContainer/TextureRect/Control" unique_id=90531422]
-custom_minimum_size = Vector2(800, 800)
-anchors_preset = 0
-offset_left = -526.0
-offset_top = -510.0
-offset_right = 970.0
-offset_bottom = 432.0
-
-[node name="BottomRightMarginContainerControls" type="MarginContainer" parent="PanelContainer" unique_id=91869201]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1516.0
-offset_top = -116.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls" unique_id=1427906525]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer" unique_id=456752679]
-custom_minimum_size = Vector2(600, 0)
-layout_mode = 2
-
-[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=58591883]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="Button" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=890875161]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Equip
-"
-
-[node name="Button2" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=821011465]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Modify
-"
-
-[node name="Button3" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=1935168610]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "View Adv."
-
-[node name="Button4" type="Button" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=381872662]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Scrap"
-
-[node name="PanelContainer2" type="HBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=1457938847]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2" unique_id=1045715072]
-custom_minimum_size = Vector2(200, 32)
-layout_mode = 2
-bbcode_enabled = true
-text = "[img]res://images/ui/icon-weight.png[/img]0 / 2"
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerControls/HBoxContainer" unique_id=1004177023]
-custom_minimum_size = Vector2(600, 0)
-layout_mode = 2
-
-[node name="BottomRightMarginContainerStats" type="MarginContainer" parent="PanelContainer" unique_id=627361572]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -521.0
-offset_top = -467.0
-offset_bottom = -116.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="VBoxContainerSimple" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerStats" unique_id=1088630960]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Panel" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=772792544]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerSimple/Panel" unique_id=353416458]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "gsdfgdfg"
-
-[node name="Panel2" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=784138032]
-layout_mode = 2
-
-[node name="VBoxContainerAdvanced" type="VBoxContainer" parent="PanelContainer/BottomRightMarginContainerStats" unique_id=1034604243]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Panel" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=15224974]
-layout_mode = 2
-
-[node name="Panel2" type="Panel" parent="PanelContainer/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=56471849]
-layout_mode = 2
-
-[node name="LeftMarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=949399126]
-layout_mode = 0
-offset_right = 414.0
-offset_bottom = 1080.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/LeftMarginContainer" unique_id=1000894806]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="PanelContainer" type="HBoxContainer" parent="PanelContainer/LeftMarginContainer/VBoxContainer" unique_id=1391001294]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="OptionButton" type="OptionButton" parent="PanelContainer/LeftMarginContainer/VBoxContainer/PanelContainer" unique_id=285939935]
-custom_minimum_size = Vector2(125, 30)
-layout_mode = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/LeftMarginContainer/VBoxContainer" unique_id=581436800]
-custom_minimum_size = Vector2(394, 0)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_j4e7k")
-
-[node name="GridContainer" type="GridContainer" parent="PanelContainer/LeftMarginContainer/VBoxContainer/ScrollContainer" unique_id=1075273565]
-layout_mode = 2
-columns = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dx04r")
+theme_override_styles/hover = SubResource("StyleBoxFlat_j4e7k")
 
 [node name="ViewBlockRight" type="Panel" parent="." unique_id=752174968]
 layout_mode = 0

@@ -84,6 +84,6 @@ public partial class MFResource : Resource
         public int ToolHashId { get; set; }
         public Node3D Tool { get; set; }
         public Vector3 SightPositionOffset { get; set; }
-        public Vector3 MuzzleFlarePosition { get; set; }
+        public Vector3 MuzzlePosition { get; set; }
     }
 }

@@ -1,0 +1,198 @@
+[gd_scene format=3 uid="uid://cvxwkijhr2fyd"]
+
+[ext_resource type="Script" uid="uid://bnjls7s41ytxt" path="res://scripts/ui/locker/LockerListMenu.cs" id="1_8cb7a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6eor5"]
+bg_color = Color(0.16575891, 0.17362446, 0.19090384, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xff2p"]
+bg_color = Color(0, 0, 0, 0.11764706)
+
+[node name="LockerListMenu" type="Control" unique_id=864099879 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "returnButton", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8cb7a")
+grid = NodePath("Panel/LeftMarginContainer/VBoxContainer/ScrollContainer/GridContainer")
+rect = NodePath("Panel/TextureRect")
+rectDragControl = NodePath("Panel/TextureRect/Control/Control")
+returnButton = NodePath("Panel/ReturnButton")
+equipToolButton = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button")
+modifyToolButton = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button2")
+advancedToolButton = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button3")
+totalWeightLabel = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2/RichTextLabel")
+
+[node name="Panel" type="Panel" parent="." unique_id=1279919527]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6eor5")
+
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=56547659]
+layout_mode = 1
+offset_right = 1920.0
+offset_bottom = 1080.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Control" type="Control" parent="Panel/TextureRect" unique_id=58372962]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="Panel/TextureRect/Control" unique_id=32290609]
+custom_minimum_size = Vector2(800, 800)
+anchors_preset = 0
+offset_left = -526.0
+offset_top = -510.0
+offset_right = 970.0
+offset_bottom = 432.0
+
+[node name="LeftMarginContainer" type="MarginContainer" parent="Panel" unique_id=1088500173]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 414.0
+offset_bottom = 1070.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/LeftMarginContainer" unique_id=919180584]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="PanelContainer" type="HBoxContainer" parent="Panel/LeftMarginContainer/VBoxContainer" unique_id=1684869855]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="OptionButton" type="OptionButton" parent="Panel/LeftMarginContainer/VBoxContainer/PanelContainer" unique_id=773903540]
+custom_minimum_size = Vector2(125, 30)
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/LeftMarginContainer/VBoxContainer" unique_id=675992638]
+custom_minimum_size = Vector2(394, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_xff2p")
+
+[node name="GridContainer" type="GridContainer" parent="Panel/LeftMarginContainer/VBoxContainer/ScrollContainer" unique_id=724785527]
+layout_mode = 2
+columns = 3
+
+[node name="BottomRightMarginContainerControls" type="MarginContainer" parent="Panel" unique_id=1361569088]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1506.0
+offset_top = -126.0
+offset_right = -790.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls" unique_id=1914028445]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/BottomRightMarginContainerControls/HBoxContainer" unique_id=242086016]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="PanelContainer" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=1460878735]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Button" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=744465179]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Equip
+"
+
+[node name="Button2" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=203049020]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Modify
+"
+
+[node name="Button3" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=2144908656]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "View Adv."
+
+[node name="Button4" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=1481480904]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Scrap"
+
+[node name="PanelContainer2" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=975428361]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2" unique_id=1759479080]
+custom_minimum_size = Vector2(200, 32)
+layout_mode = 2
+bbcode_enabled = true
+text = "[img]res://images/ui/icon-weight.png[/img]0 / 2"
+
+[node name="BottomRightMarginContainerStats" type="MarginContainer" parent="Panel" unique_id=1928899341]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -550.0
+offset_top = -370.0
+offset_right = -10.0
+offset_bottom = -9.999512
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="VBoxContainerSimple" type="VBoxContainer" parent="Panel/BottomRightMarginContainerStats" unique_id=1043287090]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Panel" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=185527768]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/VBoxContainerSimple/Panel" unique_id=410363790]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "COOL STATS:"
+
+[node name="Panel2" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=1326811160]
+layout_mode = 2
+
+[node name="VBoxContainerAdvanced" type="VBoxContainer" parent="Panel/BottomRightMarginContainerStats" unique_id=135998661]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Panel" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=1322578164]
+layout_mode = 2
+
+[node name="Panel2" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=1384845345]
+layout_mode = 2
+
+[node name="ReturnButton" type="Button" parent="Panel" unique_id=663384655]
+layout_mode = 0
+offset_left = 313.0
+offset_top = 8.0
+offset_right = 398.0
+offset_bottom = 39.0
+text = "G oback"

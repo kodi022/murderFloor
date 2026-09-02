@@ -97,26 +97,9 @@ public partial class Player : Pawn
         Rpc("ToolAddRpc", "0,a/Hw/,0.1.0,0,0,0,0,.00,");
 
         // ! NOT WORKING YET
-        List<int> notFound = [];
-        foreach (var equipped in SaveManager.CurrentSave.Equipped)
+        foreach (var equipped in SaveManager.CurrentSave.GetEquippedLoot())
         {
-            bool found = false;
-            foreach (var loot in SaveManager.CurrentSave.Loot)
-            {
-                if (loot.GetHashCode() == equipped)
-                {
-                    Rpc("ToolAddRpc", loot);
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) notFound.Add(equipped);
-        }
-
-        foreach (var e in notFound)
-        {
-            SaveManager.CurrentSave.Equipped.Remove(e);
+            Rpc("ToolAddRpc", equipped);
         }
 
         OptionsMenu.ShowReturnButton = true;

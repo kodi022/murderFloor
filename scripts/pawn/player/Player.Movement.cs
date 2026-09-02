@@ -7,6 +7,11 @@ public partial class Player : Pawn
 
     private Vector3 lastVel;
 
+    public void AddVelocity(Vector3 vel)
+    {
+        lastVel += vel;
+    }
+
     private void PhysicsProcessMovement()
     {
         var forward = Input.GetAxis("forward", "backward");
@@ -27,6 +32,7 @@ public partial class Player : Pawn
         {
             wishMove *= 0.52f;
         }
+
         // ! does not reduce from joystick
         // abs input
         // wishMove.X *= input.X

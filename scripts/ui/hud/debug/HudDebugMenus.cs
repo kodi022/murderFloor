@@ -14,8 +14,8 @@ public partial class HudDebugMenus : Control
         var root = tree.CreateItem();
         tree.HideRoot = true;
         tree.SetColumnTitle(0, "FullId");
-        tree.SetColumnTitle(1, "HashId");
-        tree.SetColumnTitle(2, "HashBase64Id");
+        tree.SetColumnTitle(1, "HashBase64Id");
+        tree.SetColumnTitle(2, "HashId");
         tree.SetColumnTitle(3, "IsRandomLoot");
 
         tree.ButtonClicked += (item, column, id, mouseButtonIndex) =>

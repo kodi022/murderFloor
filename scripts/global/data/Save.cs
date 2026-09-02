@@ -83,5 +83,38 @@ public static class SaveManager
         {
             return 200 + Mathf.Pow(Level + 1, 2.5f) - Level;
         }
+
+        public List<string> GetEquippedLoot()
+        {
+            List<string> equippedLoot = [];
+            List<int> notFound = [];
+            foreach (var val in Equipped)
+            {
+                bool found = false;
+                foreach (var loot in Loot)
+                {
+                    var lootState = MurderFloor.Loot.LootState.Deserialize(loot);
+                    if (lootState.GetHashCode() == val)
+                    {
+                        equippedLoot.Add(loot);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) notFound.Add(val);
+            }
+
+            if (notFound.Count > 0)
+            {
+                foreach (var l in notFound)
+                {
+                    Equipped.Remove(l);
+                }
+                SaveManager.Save(this);
+            }
+
+            return equippedLoot;
+        }
     }
 }

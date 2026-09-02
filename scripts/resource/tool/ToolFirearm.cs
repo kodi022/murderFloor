@@ -183,9 +183,13 @@ public partial class ToolFirearm : Tool
 
         Node3D FindNode(string name)
         {
-            var thing = (Node3D)builtToolData.Tool.FindChildren(name).FirstOrDefault(new Node3D());
-            if (!thing.IsInsideTree())
-                GD.PrintErr($"Warning: {toolResource.FullId} has no Node3D named \"{name}\"");
+            var path = "Armature/Skeleton3D/body/" + name;
+            var thing = builtToolData.Tool.GetNode<Node3D>(path);
+            if (thing is null)
+            {
+                GD.PrintErr($"Warning: {toolResource.FullId} has no attachment point at \"{path}\"");
+                return new Node3D();
+            }
 
             return thing;
         }
@@ -198,6 +202,7 @@ public partial class ToolFirearm : Tool
         var gadgetNode = FindNode("Point-Gadget");
 
         builtToolData.SightPositionOffset = new Vector3(-sightNode.Position.Z, -sightNode.Position.Y, 0);
+        builtToolData.MuzzlePosition = new Vector3(-muzzleNode.Position.X, muzzleNode.Position.Y, -muzzleNode.Position.Z);
 
         // ! bring back soon
         // foreach (var hashId in buildToolData.AttachmentHashIds)

@@ -55,6 +55,8 @@ public partial class LiveTool : Node
     private Vector3 viewmodelSceneSightPosition;
     private MFResource.BuiltToolData builtTool;
 
+    private GpuParticles3D muzzleFlash;
+
     public override void _Ready()
     {
         Player = Player.FindPlayer(PlayerId);
@@ -141,11 +143,13 @@ public partial class LiveTool : Node
                 newGun.Rotation = oldGunRot;
                 newGun.Reparent(viewmodelScene, false);
                 viewmodelSceneSightPosition = new Vector3(-oldGunPos.Z, -oldGunPos.Y, 0);
-            }
 
-            AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
-            AnimationPlayer.Play("idle");
-            GD.Print(string.Join(',', AnimationPlayer.GetAnimationList()));
+                var flash = GD.Load<PackedScene>("res://scenes/particle/gunflash.tscn");
+                var inst = flash.Instantiate<Node3D>();
+                inst.Position = builtTool.MuzzlePosition;
+                newGun.AddChild(inst);
+                muzzleFlash = inst.GetChild<GpuParticles3D>(0);
+            }
 
             posNode.AddChild(viewmodelScene);
         }
@@ -158,15 +162,33 @@ public partial class LiveTool : Node
 
         viewmodelSceneStartPos = viewmodelScene.Position;
 
-        // await equip animation
-        await Task.Delay(250);
+        AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
+        if (AnimationPlayer.HasAnimation("equip"))
+        {
+            await TaskAnimation("equip", 400);
+        }
+        else
+        {
+            Player.ViewModelRotationKick += new Vector3(-1.2f, 0, 0);
+            await Task.Delay(400);
+        }
+
+        AnimationPlayer.Play("idle");
+        GD.Print(string.Join(',', AnimationPlayer.GetAnimationList()));
         equipped = true;
     }
 
     public async Task Unequip()
     {
-        // await unequip animation
-        await Task.Delay(250);
+        if (AnimationPlayer.HasAnimation("unequip"))
+        {
+            await TaskAnimation("unequip", 400);
+        }
+        else
+        {
+            Player.ViewModelRotationKick += new Vector3(-1.2f, 0, 0);
+            await Task.Delay(400);
+        }
 
         viewmodelScene?.Free();
         viewmodelScene = null;
@@ -255,6 +277,7 @@ public partial class LiveTool : Node
             var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
             poly.PlayStream(firearm.FireSound, bus: "Effects");
 
+            muzzleFlash.Restart();
             // muzzle effect
 
             shotSemi = true;
@@ -271,15 +294,20 @@ public partial class LiveTool : Node
         if (CurrentMag <= 0) return;
         bolting = true;
 
+        if (AnimationPlayer.HasAnimation("bolt"))
+        {
+            await TaskAnimation("bolt", firearm.ManualFireDelayMs);
+        }
+        else
+        {
+            fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
+            await Task.Delay(firearm.ManualFireDelayMs - 200);
+            fi.Player.ViewModelPositionKick += new Vector3(0, 0, -0.05f);
+            await Task.Delay(200);
+        }
+
         var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
         poly.PlayStream(firearm.ManualFireSound, bus: "Effects");
-
-        fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
-        await Task.Delay(firearm.ManualFireDelayMs - 200);
-        //await boltanimation
-        fi.Player.ViewModelPositionKick += new Vector3(0, 0, -0.1f);
-
-        await Task.Delay(200);
 
         bolting = false;
         shotBolt = false;
@@ -293,14 +321,22 @@ public partial class LiveTool : Node
         if (CurrentReserve <= 0) return;
         Reloading = true;
 
-        fi.Player.ViewModelRotationKick += new Vector3(-1f, 0.5f, 0);
+        if (AnimationPlayer.HasAnimation("reload"))
+        {
+            await TaskAnimation("reload", firearm.ReloadDelayMs);
+        }
+        else
+        {
+            fi.Player.ViewModelRotationKick += new Vector3(-1f, 0.5f, 0);
+            await Task.Delay(firearm.ReloadDelayMs - 200);
+            fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
+            fi.Player.ViewModelRotationKick += new Vector3(0.2f, 0, 0);
+            await Task.Delay(200);
+        }
+
         var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
         poly.PlayStream(firearm.ReloadSound, bus: "Effects");
 
-        await Task.Delay(firearm.ReloadDelayMs);
-
-        fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
-        fi.Player.ViewModelRotationKick += new Vector3(0.2f, 0, 0);
         //await reloadanimation
 
         if (firearm.EndlessReserve)
@@ -335,5 +371,13 @@ public partial class LiveTool : Node
             StartPosition = Player.ViewGlobalPosition,
             ViewTransform = Player.ViewTransform
         };
+    }
+
+    private async Task TaskAnimation(string animation, int timeToTakeMs)
+    {
+        var length = (float)(AnimationPlayer.GetAnimation(animation).Length * 1000d);
+        var timeScale = timeToTakeMs / length;
+        AnimationPlayer.Play(animation, customSpeed: timeScale);
+        await ToSignal(AnimationPlayer, AnimationPlayer.SignalName.AnimationFinished);
     }
 }

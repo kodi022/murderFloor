@@ -49,16 +49,18 @@ public struct LootState
 
     private readonly void GenerateStats()
     {
-        var loot = GetLootRef(this);
+        var loot = GetLootRef();
         if (loot is null) return;
+
+        // need rarity and wear
 
         ModifiedStats.Add("Damage", 1.2f);
     }
 
-    public static MFResource GetLootRef(LootState self)
+    public readonly MFResource GetLootRef()
     {
-        var loot = ResourceManager.LootRegistry.GetResourceRef(self.ResourceHashId);
-        if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({self.HashId}) Maybe Item is not IsRandomLoot?");
+        var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
+        if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({HashId}) Maybe Item is not IsRandomLoot?");
         return loot;
     }
 
@@ -70,19 +72,19 @@ public struct LootState
         return ResourceManager.LootRegistry.GetResourceAtIndex(lootIndex).HashId;
     }
 
-    public static Node3D MakeLootNode(LootState self)
+    public readonly Node3D MakeLootNode()
     {
         var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<LiveLoot>();
         newLoot.Position = Vector3.Up * 0.1f;
-        newLoot.StateInfo = self;
+        newLoot.StateInfo = this;
         var importYaw = 0f;
         var rigidBody = newLoot.FindChildren("RigidBody3D").First();
-        var loot = ResourceManager.LootRegistry.GetResourceRef(self.ResourceHashId);
+        var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
         var meshScene = loot.MeshScene.Instantiate<Node3D>();
         meshScene.RotationDegrees = new Vector3(90, importYaw, 0);
         rigidBody.AddChild(meshScene);
 
-        var rarityInfo = new LootRarity(self);
+        var rarityInfo = new LootRarity(this);
         ((Sprite3D)rigidBody.GetChild(0)).Modulate = Tiers.TierList[rarityInfo.Tier].Color;
         ((Sprite3D)rigidBody.GetChild(1)).Modulate = Tiers.TierList[rarityInfo.Tier].Color;
         return newLoot;

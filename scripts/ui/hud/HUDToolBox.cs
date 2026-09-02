@@ -16,7 +16,11 @@ public partial class HUDToolBox : Panel
     public override async void _Ready()
     {
         NinePatchRect.Visible = Equipped;
-        TextureRect.Texture = await LiveTool.ToolResource.GenerateThumbnailImage(256, 128);
+
+        var texture = await LiveTool.ToolResource.GenerateThumbnailImage(256, 128);
+        if (!IsInstanceValid(TextureRect)) return;
+        TextureRect.Texture = texture;
+
         Label.Text = $"{LiveTool.CurrentMag} / {LiveTool.CurrentReserve}";
 
         if (Equipped)

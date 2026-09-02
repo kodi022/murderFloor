@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://c1cxy4unxuf7j"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gjbu8"]
+use_rotation_3d = true
+rotation_3d_min = Vector3(-180, 0, 0)
+rotation_3d_max = Vector3(180, 0, 0)
+initial_velocity_min = 0.099999994
+initial_velocity_max = 0.099999994
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gjbu8"]
+cull_mode = 2
+albedo_color = Color(1, 0.4275363, 0, 1)
+emission_enabled = true
+emission = Color(3.2616873, 1.7421938, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vvryi"]
+material = SubResource("StandardMaterial3D_gjbu8")
+flip_faces = true
+size = Vector2(0.1, 0.1)
+orientation = 0
+
+[node name="Gunflash" type="Node3D" unique_id=1170085179]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1541588461]
+emitting = false
+amount = 3
+lifetime = 0.01
+one_shot = true
+explosiveness = 1.0
+visibility_aabb = AABB(-0.1, -0.25, -0.25, 1, 0.5, 0.5)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_gjbu8")
+draw_pass_1 = SubResource("PlaneMesh_vvryi")

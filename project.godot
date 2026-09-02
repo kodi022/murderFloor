@@ -42,7 +42,6 @@ enabled=PackedStringArray("res://addons/MurderFloorTools/plugin.cfg", "res://add
 
 folder_colors={
 "res://addons/": "gray",
-"res://godot-outlines/": "gray",
 "res://scenes/": "blue",
 "res://scripts/": "gray"
 }
