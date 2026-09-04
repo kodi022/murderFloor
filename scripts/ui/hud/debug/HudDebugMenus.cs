@@ -9,7 +9,7 @@ public partial class HudDebugMenus : Control
 
     public override void _Ready()
     {
-        // * page 0
+        // * ResourceTree, page 0
         var tree = tabContainer.GetChild<Tree>(0);
         var root = tree.CreateItem();
         tree.HideRoot = true;
@@ -58,7 +58,7 @@ public partial class HudDebugMenus : Control
         AddChildrenToRoot("Mobs", ResourceManager.MobRegistry.GetAllResource(), true);
         AddChildrenToRoot("Maps", ResourceManager.MapRegistry.GetAllResource());
 
-        // * page 1
+        // * Base64Test, page 1
         var compPanel = tabContainer.GetChild<Panel>(1);
         var lineEdit1 = compPanel.GetChild<LineEdit>(0);
         lineEdit1.GetChild<Button>(0).Pressed += () =>
@@ -77,22 +77,32 @@ public partial class HudDebugMenus : Control
             lineEdit2.GetChild(2).GetChild<Label>(0).Text = uncomp.ToString();
         };
 
-        // * page 2
+        // * LootState, page 2
         var lsPanel = tabContainer.GetChild<Panel>(2);
+
         var lsCreatorPanel = lsPanel.GetChild<Panel>(0);
         lsCreatorPanel.GetChild<Button>(0).Pressed += () =>
         {
-            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = LootState.Serialize(new LootState(0, 0, 0, 0, false, false, 0));
+            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new LootState(0, 0, 0, 0, 0).Serialize();
         };
         lsCreatorPanel.GetChild<Button>(1).Pressed += () =>
         {
             var seed = ulong.Parse(lsCreatorPanel.GetChild<LineEdit>(2).Text);
             var level = lsCreatorPanel.GetChild<LineEdit>(3).Text.ToInt();
             var difficulty = lsCreatorPanel.GetChild<LineEdit>(4).Text.ToInt();
-            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = LootState.Serialize(new LootState(seed, level, (Game.DifficultyEnum)difficulty, 0, false, false, 0));
+            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new LootState(seed, level, (Game.DifficultyEnum)difficulty, 0, 0).Serialize();
         };
 
-        // * page 3
+        var lsEmptyPanel = lsPanel.GetChild<Panel>(1);
+        lsEmptyPanel.GetChild<Button>(0).Pressed += () =>
+        {
+            var resourceId = int.Parse(lsEmptyPanel.GetChild<LineEdit>(1).Text);
+            var lootstate = new LootState(0, 0, 0, 0, 0).Serialize().Split(',');
+            lootstate[1] = Compression.IntToAB64(resourceId);
+            ((LineEdit)lsEmptyPanel.GetChildren().Last()).Text = string.Join(',', lootstate);
+        };
+
+        // * LootGenerator, page 3
         var genPanel = tabContainer.GetChild<Panel>(3);
         genPanel.GetChild<Button>(2).Pressed += async () =>
         {

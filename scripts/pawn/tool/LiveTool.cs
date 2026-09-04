@@ -14,7 +14,9 @@ public partial class LiveTool : Node
     // reference to tool
     public Tool ToolResource { get; private set; }
 
-    public Loot.LootState LootState { get; set; }
+    public ToolConfig ToolConfig { get; set; }
+
+    public List<int> AttachmentHashes { get; set; }
 
     [Export]
     public int PrimaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
@@ -136,7 +138,7 @@ public partial class LiveTool : Node
                 var oldGunRot = oldGun.Rotation;
                 oldGun.Free();
 
-                builtTool = ToolResource.BuildToolScene(new MFResource.BuildToolData() { AttachmentHashIds = [] });
+                builtTool = ToolResource.BuildToolScene(ToolConfig);
                 var newGun = builtTool.Tool.GetChild<Node3D>(0);
                 newGun.Owner = null;
                 newGun.Position = oldGunPos;
@@ -169,7 +171,7 @@ public partial class LiveTool : Node
         }
         else
         {
-            Player.ViewModelRotationKick += new Vector3(-1.2f, 0, 0);
+            Player.ViewmodelRotationKick += new Vector3(-1.2f, 0, 0);
             await Task.Delay(400);
         }
 
@@ -186,7 +188,7 @@ public partial class LiveTool : Node
         }
         else
         {
-            Player.ViewModelRotationKick += new Vector3(-1.2f, 0, 0);
+            Player.ViewmodelRotationKick += new Vector3(-1.2f, 0, 0);
             await Task.Delay(400);
         }
 
@@ -300,9 +302,9 @@ public partial class LiveTool : Node
         }
         else
         {
-            fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
+            fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, 0.1f));
             await Task.Delay(firearm.ManualFireDelayMs - 200);
-            fi.Player.ViewModelPositionKick += new Vector3(0, 0, -0.05f);
+            fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, -0.05f));
             await Task.Delay(200);
         }
 
@@ -327,10 +329,10 @@ public partial class LiveTool : Node
         }
         else
         {
-            fi.Player.ViewModelRotationKick += new Vector3(-1f, 0.5f, 0);
+            fi.Player.ViewmodelRotationKick += new Vector3(-1f, 0.5f, 0);
             await Task.Delay(firearm.ReloadDelayMs - 200);
-            fi.Player.ViewModelPositionKick += new Vector3(0, 0, 0.1f);
-            fi.Player.ViewModelRotationKick += new Vector3(0.2f, 0, 0);
+            fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, 0.1f));
+            fi.Player.ViewmodelRotationKick += new Vector3(0.2f, 0, 0);
             await Task.Delay(200);
         }
 

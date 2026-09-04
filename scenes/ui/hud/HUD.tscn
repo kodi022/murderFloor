@@ -198,9 +198,13 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rnyu1")
 [node name="UseInfoLabel" type="Label" parent="Center" unique_id=566348696]
 layout_mode = 0
 offset_left = -128.0
-offset_top = 28.0
+offset_top = 50.0
 offset_right = 128.0
-offset_bottom = 52.0
+offset_bottom = 74.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "bnm"
 horizontal_alignment = 1
 
 [node name="Center-Top" type="Control" parent="." unique_id=1078783854]

@@ -67,7 +67,7 @@ public partial class LockerToolButton : Panel
         }
         else
         {
-            if (LootState.HasCustomData("0"))
+            if (LootState.HasCustomData("g"))
                 colorRect.Color = new Color(0.2f, 0.35f, 0.2f);
             else
                 colorRect.Color = new Color(0.12f, 0.12f, 0.12f);

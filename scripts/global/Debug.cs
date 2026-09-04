@@ -13,7 +13,7 @@ public static class Debug
             var wearCount = new Dictionary<Loot.Wears.WearEnum, int>();
             for (int i = 0; i < count; i++)
             {
-                var state = new Loot.LootState((ulong)Random.Shared.NextInt64(), level, difficulty, 0, false, false, 0);
+                var state = new Loot.LootState((ulong)Random.Shared.NextInt64(), level, difficulty, 0, 0);
                 var e = new Loot.LootRarity(state);
                 if (!tierCount.TryAdd(e.Tier, 1))
                     tierCount[e.Tier] += 1;

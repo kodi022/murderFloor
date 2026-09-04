@@ -12,12 +12,10 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
     private static readonly Dictionary<string, float> HitboxDamageMultipliers = new()
     {
-        ["Head"] = 1.5f,
-        ["Neck"] = 1.35f,
-        ["LowerArm"] = 0.9f,
-        ["Hand"] = 0.7f,
-        ["LowerLeg"] = 0.9f,
-        ["Foot"] = 0.7f,
+        ["Head"] = 1.4f,
+        ["Neck"] = 1.25f,
+        ["Hand"] = 0.8f,
+        ["Foot"] = 0.8f,
     };
 
     public override void FireBullet(FireInfo fi)
@@ -30,14 +28,14 @@ public partial class ToolFirearmHitscan : ToolFirearm
         var viewRotKick = new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
         if (fi.LiveTool.Aiming)
         {
-            fi.Player.ViewModelPositionKick += viewPosKick * 0.7f;
-            fi.Player.ViewModelRotationKick += viewRotKick * 0.7f;
-            fi.Player.CameraShakeScale = ScreenShakeAmount * 0.8f;
+            fi.Player.AddViewmodelPositionKick(viewPosKick * 0.5f, 6f);
+            fi.Player.ViewmodelRotationKick += viewRotKick * 0.7f;
+            fi.Player.CameraShakeScale = ScreenShakeAmount * 0.7f;
         }
         else
         {
-            fi.Player.ViewModelPositionKick += viewPosKick;
-            fi.Player.ViewModelRotationKick += viewRotKick;
+            fi.Player.AddViewmodelPositionKick(viewPosKick, 6f);
+            fi.Player.ViewmodelRotationKick += viewRotKick;
             fi.Player.CameraShakeScale = ScreenShakeAmount;
         }
 

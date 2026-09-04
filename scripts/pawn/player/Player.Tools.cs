@@ -25,49 +25,54 @@ public partial class Player : Pawn
 
     /// <summary> this should only be called using Rpc </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void ToolAddRpc(string lootState)
+    public void ToolAddRpc(string toolConfigSerialized)
     {
-        ToolAdd(lootState);
+        ToolAdd(toolConfigSerialized);
     }
 
     // should always be called through an Rpc
-    public void ToolAdd(string lootState)
+    public void ToolAdd(string toolConfigSerialized)
     {
-        var lootStateStruct = Loot.LootState.Deserialize(lootState);
-        var resource = ResourceManager.ToolRegistry.GetResourceRef(lootStateStruct.ResourceHashId);
+        var toolConfig = ToolConfig.Deserialize(toolConfigSerialized);
+        GD.Print(toolConfig.AttachmentLootStates.Count);
+        var resource = (Tool)toolConfig.LootState.GetLootRef();
+        resource ??= ResourceManager.ToolRegistry.GetResourceRef(toolConfig.LootState.ResourceHashId);
+
         if (ToolWeight + resource.CarryWeight > MaxWeight) return;
 
         var liveTool = GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate<LiveTool>();
         liveTool.SetMultiplayerAuthority(Id);
         liveTool.PlayerId = Id;
         liveTool.ToolFullId = resource.FullId;
-        liveTool.LootState = lootStateStruct;
-        ToolsNode.AddChild(liveTool);
-        liveTool.Owner = ToolsNode;
+        liveTool.ToolConfig = toolConfig;
         var list = GetToolListFromTool(liveTool.ToolFullId);
         liveTool.Name = $"{resource.FullId}_" + list.Count(t => t.ToolFullId == resource.FullId);
+
+        ToolsNode.AddChild(liveTool);
+        liveTool.Owner = ToolsNode;
         list.Add(liveTool);
+
         EmitSignal(SignalName.PlayerToolChange);
     }
 
     /// <summary> this should only be called using Rpc </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void ToolRemoveRpc(string lootState)
+    public void ToolRemoveRpc(string lootStateSerialized)
     {
-        ToolRemove(lootState);
+        ToolRemove(lootStateSerialized);
     }
 
     // should always be called through an Rpc
-    public async void ToolRemove(string lootState)
+    public async void ToolRemove(string lootStateSerialized)
     {
         var change = false;
-        var lootStateStruct = Loot.LootState.Deserialize(lootState);
+        var lootStateStruct = Loot.LootState.Deserialize(lootStateSerialized);
         foreach (var tool in ToolsNode.GetChildren())
         {
             if (tool is not LiveTool) continue;
 
             LiveTool liveTool = (LiveTool)tool;
-            if (liveTool.LootState == lootStateStruct)
+            if (liveTool.ToolConfig.LootState == lootStateStruct)
             {
                 var list = GetToolListFromTool(liveTool.ToolFullId);
                 foreach (var item in list)
@@ -181,14 +186,14 @@ public partial class Player : Pawn
 
         GD.Print($"ToolsSyncRpc ({Id} sync for {Self.Id})");
 
-        // needed for something i dont remember
         foreach (var tool in tools)
         {
             ToolRemove(tool);
         }
         foreach (var tool in tools)
         {
-            ToolAdd(tool);
+            // ! fix later
+            //ToolAdd(tool.confi);
         }
 
         await Task.Delay(100);
@@ -269,7 +274,7 @@ public partial class Player : Pawn
     {
         var tools = GetAllLiveTools();
 
-        var a = tools.FirstOrDefault(c => c.LootState == lootState, null);
+        var a = tools.FirstOrDefault(c => c.ToolConfig.LootState == lootState, null);
 
         if (a is not null) return true;
         else return false;

@@ -6,6 +6,7 @@ public partial class Player : Pawn
     public Vector3 NetworkedVelocity { get; set; } = Vector3.Zero;
 
     private Vector3 lastVel;
+    private bool grounded;
 
     public void AddVelocity(Vector3 vel)
     {
@@ -17,31 +18,44 @@ public partial class Player : Pawn
         var forward = Input.GetAxis("forward", "backward");
         var strafe = Input.GetAxis("left", "right");
         var input = new Vector3(strafe, 0f, forward);
-        var wishMove = input.Normalized();
+        var wishVel = input.Normalized();
 
         if (IsWalking())
         {
             if (IsAiming())
             {
-                if (wishMove.Z > 0f) wishMove.Z *= 0.75f;
-                wishMove.X *= 0.75f;
+                if (wishVel.Z > 0f) wishVel.Z *= 0.75f;
+                wishVel.X *= 0.75f;
             }
-            wishMove *= 0.33f;
+            wishVel *= 0.33f;
         }
         else
         {
-            wishMove *= 0.52f;
+            wishVel *= 0.52f;
         }
+
+        var result = Trace(Position, Position + Vector3.Down * 0.1f);
+
+        if (result.Hit && !grounded)
+        {
+            AddViewmodelPositionKick(new Vector3(0, 0.02f, 0));
+        }
+
+        grounded = result.Hit;
 
         // ! does not reduce from joystick
         // abs input
         // wishMove.X *= input.X
         // wishMove.Z *= input.Z
 
-        wishMove = wishMove.Rotated(Vector3.Up, ViewAngle.X);
-        if (Input.IsActionJustPressed("jump")) wishMove.Y = 14f;
+        wishVel = wishVel.Rotated(Vector3.Up, ViewAngle.X);
+        if (grounded && Input.IsActionJustPressed("jump"))
+        {
+            AddViewmodelPositionKick(new Vector3(0, -0.065f, 0), 0.7f);
+            wishVel.Y = 14f;
+        }
         lastVel *= new Vector3(0.86f, 0.95f, 0.86f);
-        lastVel += wishMove;
+        lastVel += wishVel;
 
         Gravity();
 
@@ -72,5 +86,22 @@ public partial class Player : Pawn
         if (SelectedTool is not null && SelectedTool.Aiming) return true;
 
         return false;
+    }
+
+    private struct TraceInfo
+    {
+        public bool Hit { get; set; }
+        public Godot.Collections.Dictionary Result { get; set; }
+        public float Fraction { get; set; } // i dont remember what this is
+        public bool StartedSolid { get; set; }
+    }
+
+    private TraceInfo Trace(Vector3 start, Vector3 end)
+    {
+        var query = PhysicsRayQueryParameters3D.Create(start, end);
+        var results = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        if (results.Count == 0) return new TraceInfo() { Hit = false };
+
+        return new TraceInfo() { Hit = true, Result = results, Fraction = 1f, StartedSolid = results["position"].AsVector3() == start };
     }
 }

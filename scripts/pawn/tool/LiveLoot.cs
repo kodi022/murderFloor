@@ -10,7 +10,7 @@ public partial class LiveLoot : Node3D
     {
         GetChild<Usable>(0).UseAction = () =>
         {
-            SaveManager.CurrentSave.Loot.Add(LootState.Serialize(StateInfo));
+            SaveManager.CurrentSave.Loot.Add(StateInfo.Serialize());
             Free();
         };
     }

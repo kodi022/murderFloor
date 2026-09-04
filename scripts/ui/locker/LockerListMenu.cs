@@ -40,7 +40,6 @@ public partial class LockerListMenu : Control
     private Attachment selectedAttachment;
     private LockerToolButton selectedAttachmentLockerToolButton;
     private LootState selectedAttachmentLootState;
-    private int selectedAttachmentSaveIndex;
 
     private SubViewport sceneViewport;
     private Node3D weaponSceneParent;
@@ -103,11 +102,8 @@ public partial class LockerListMenu : Control
         foreach (var child in grid.GetChildren()) child.Free();
 
         var lockerToolButton = GD.Load<PackedScene>("res://scenes/ui/locker/LockerToolButton.tscn");
-        foreach (var loot in SaveManager.CurrentSave.Loot)
+        foreach (var lootState in SaveManager.CurrentSave.GetAllLoot())
         {
-            if (string.IsNullOrEmpty(loot)) continue;
-
-            var lootState = LootState.Deserialize(loot);
             var lootResource = lootState.GetLootRef();
             if (lootResource.FullId == "base:fists") continue;
 
@@ -133,7 +129,6 @@ public partial class LockerListMenu : Control
                     selectedAttachment = att;
                     selectedAttachmentLootState = lootState;
                     selectedAttachmentLockerToolButton = newButton;
-                    selectedAttachmentSaveIndex = SaveManager.CurrentSave.Loot.IndexOf(loot);
                     SelectAttachment();
                 }
             };
@@ -189,7 +184,7 @@ public partial class LockerListMenu : Control
     {
         if (selectedAttachmentLootState.HasCustomData("g")) return;
         selectedAttachmentLootState.AddCustomData('g', Compression.IntToAB64(selectedToolLootState.GetHashCode()));
-        SaveManager.CurrentSave.Loot[selectedAttachmentSaveIndex] = LootState.Serialize(selectedAttachmentLootState);
+        SaveManager.CurrentSave.ReplaceLoot(selectedAttachmentLootState);
         selectedAttachmentLockerToolButton.CheckState(selectedAttachmentLootState);
         SaveManager.Save(SaveManager.CurrentSave);
     }
@@ -245,13 +240,15 @@ public partial class LockerListMenu : Control
         if (Player.Self.HasTool(selectedToolLootState))
         {
             SaveManager.CurrentSave.Equipped.Remove(lootStateHash);
-            Player.Self.Rpc("ToolRemoveRpc", LootState.Serialize(selectedToolLootState));
+            // ! FIX THIS
+            Player.Self.Rpc("ToolRemoveRpc", selectedToolLootState.Serialize());
         }
         else
         {
             if (!SaveManager.CurrentSave.Equipped.Contains(lootStateHash))
                 SaveManager.CurrentSave.Equipped.Add(lootStateHash);
-            Player.Self.Rpc("ToolAddRpc", LootState.Serialize(selectedToolLootState));
+            // ! FIX THIS
+            Player.Self.Rpc("ToolAddRpc", selectedToolLootState.Serialize());
         }
 
         playerEquippedSelectedTool = Player.Self.HasTool(selectedToolLootState);

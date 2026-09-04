@@ -174,7 +174,7 @@ public partial class ToolFirearm : Tool
         return imgTex;
     }
 
-    public override BuiltToolData BuildToolScene(BuildToolData buildToolData)
+    public override BuiltToolData BuildToolScene(ToolConfig toolConfig)
     {
         var builtToolData = new BuiltToolData() { ToolHashId = HashId };
 
@@ -204,25 +204,20 @@ public partial class ToolFirearm : Tool
         builtToolData.SightPositionOffset = new Vector3(-sightNode.Position.Z, -sightNode.Position.Y, 0);
         builtToolData.MuzzlePosition = new Vector3(-muzzleNode.Position.X, muzzleNode.Position.Y, -muzzleNode.Position.Z);
 
-        // ! bring back soon
-        // foreach (var hashId in buildToolData.AttachmentHashIds)
-        // {
-        //     var attachment = ResourceManager.AttachmentRegistry.GetResourceRef(hashId);
-        //     switch (attachment.AttachmentType)
-        //     {
-        //         case Attachment.AttachmentTypeEnum.Optic:
-        //             if (sightAttachmentNode.IsInsideTree())
-        //             {
-        //                 var opticModelScene = attachment.MeshScene.Instantiate<Node3D>();
-        //                 sightAttachmentNode.AddChild(opticModelScene);
-        //                 opticModelScene.RotationDegrees = new Vector3(0, attachment.MeshSceneImportYaw, 0);
-        //                 var attachSightNode = (Node3D)opticModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
-        //                 builtToolData.SightPosition = sightAttachmentNode.Position.Rotated(Vector3.Up, -builtToolData.Node3D.Rotation.Y);
-        //                 builtToolData.SightPosition += attachSightNode.Position.Rotated(Vector3.Up, -opticModelScene.Rotation.Y);
-        //             }
-        //             break;
-        //     }
-        // }
+        foreach (var attLootState in toolConfig.AttachmentLootStates)
+        {
+            var attachment = (Attachment)attLootState.GetLootRef();
+            switch (attachment.AttachmentType)
+            {
+                case Attachment.AttachmentTypeEnum.Optic:
+                    var opticModelScene = attachment.MeshScene.Instantiate<Node3D>();
+                    sightAttachmentNode.AddChild(opticModelScene);
+                    var attachSightNode = (Node3D)opticModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+                    builtToolData.SightPositionOffset = new Vector3(-sightAttachmentNode.Position.Z, -sightAttachmentNode.Position.Y, 0);
+                    builtToolData.SightPositionOffset += new Vector3(-attachSightNode.Position.Z, -attachSightNode.Position.Y, 0);
+                    break;
+            }
+        }
 
         return builtToolData;
     }

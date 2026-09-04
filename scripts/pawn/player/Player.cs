@@ -1,3 +1,5 @@
+using MurderFloor.Loot;
+
 namespace MurderFloor;
 
 public partial class Player : Pawn
@@ -13,9 +15,12 @@ public partial class Player : Pawn
 
     public float CameraShakeScale { get; set; }
     public Vector3 CameraRotationKick { get; set; }
-    public Vector3 ViewModelPositionKick { get; set; }
-    public Vector3 ViewModelRotationKick { get; set; }
-    private Vector3 viewModelAimSway;
+    public Vector3 ViewmodelRotationKick { get; set; }
+    private Vector3 viewmodelAimSway;
+
+    private Vector3 targetViewmodelPositionKick;
+    private Vector3 currentViewmodelPositionKick;
+    private float viewmodelPositionKicklerpScale;
 
     public Node3D WorldToolPosition { get; private set; }
 
@@ -94,12 +99,13 @@ public partial class Player : Pawn
             return;
         }
 
-        Rpc("ToolAddRpc", "0,a/Hw/,0.1.0,0,0,0,0,.00,");
+        var fistToolConfig = new ToolConfig(LootState.Deserialize("0,a/Hw/,0.1.0,0,0,0,0,"));
+        Rpc("ToolAddRpc", fistToolConfig.Serialize());
 
-        // ! NOT WORKING YET
         foreach (var equipped in SaveManager.CurrentSave.GetEquippedLoot())
         {
-            Rpc("ToolAddRpc", equipped);
+            var toolConfig = new ToolConfig(equipped, SaveManager.CurrentSave.GetAttachmentsOnTool(equipped));
+            Rpc("ToolAddRpc", toolConfig.Serialize());
         }
 
         OptionsMenu.ShowReturnButton = true;
@@ -163,8 +169,10 @@ public partial class Player : Pawn
     {
         var reduction = 1f - ((float)delta * 6);
         CameraRotationKick *= reduction;
-        ViewModelPositionKick *= reduction;
-        ViewModelRotationKick *= reduction;
+        targetViewmodelPositionKick *= reduction;
+        ViewmodelRotationKick *= reduction;
+
+        currentViewmodelPositionKick = currentViewmodelPositionKick.Lerp(targetViewmodelPositionKick, (float)delta * 20f * viewmodelPositionKicklerpScale);
 
         var shakeReduction = 1f - ((float)delta * 16);
         CameraShakeScale *= shakeReduction;
@@ -185,8 +193,6 @@ public partial class Player : Pawn
                 worldAnimationTree.Set("parameters/moving/scale", 1f);
                 worldAnimationTree.Set("parameters/timescale_walk/scale", vel);
             }
-            // Hold = SelectedTool?.ToolResource.HoldTypeAnimation ?? "";
-            // var holdtype = SelectedTool?.ToolResource.HoldTypeAnimation ?? "holdtype_idle";
 
             return;
         }
@@ -216,22 +222,22 @@ public partial class Player : Pawn
         if (SelectedTool?.Aiming ?? false)
         {
             ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.AimingViewmodelFieldOfViewScale);
-            viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.02f;
-            viewModelAimSway *= reduction;
-            viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.014f);
+            viewmodelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.02f;
+            viewmodelAimSway *= reduction;
+            viewmodelAimSway = viewmodelAimSway.Normalized() * Mathf.Min(viewmodelAimSway.Length(), 0.014f);
         }
         else
         {
             ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.ViewmodelFieldOfViewScale);
-            viewModelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
-            viewModelAimSway *= reduction;
-            viewModelAimSway = viewModelAimSway.Normalized() * Mathf.Min(viewModelAimSway.Length(), 0.06f);
+            viewmodelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
+            viewmodelAimSway *= reduction;
+            viewmodelAimSway = viewmodelAimSway.Normalized() * Mathf.Min(viewmodelAimSway.Length(), 0.06f);
         }
         lastViewAngle = ViewAngle;
 
         Camera.Rotation = CameraRotationKick;
-        ViewAimViewmodel.Position = ViewModelPositionKick + viewModelAimSway;
-        ViewAimViewmodel.Rotation = ViewModelRotationKick;
+        ViewAimViewmodel.Position = currentViewmodelPositionKick + viewmodelAimSway;
+        ViewAimViewmodel.Rotation = ViewmodelRotationKick;
         if (CameraShakeScale > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * CameraShakeScale;
         else Camera.Position = Vector3.Zero;
 
@@ -288,6 +294,12 @@ public partial class Player : Pawn
         }
 
         PhysicsProcessMovement();
+    }
+
+    public void AddViewmodelPositionKick(Vector3 amount, float lerpScale = 1f)
+    {
+        targetViewmodelPositionKick += amount;
+        viewmodelPositionKicklerpScale = lerpScale;
     }
 
     public void OpenUI(string uiScene)

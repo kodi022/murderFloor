@@ -1,3 +1,5 @@
+using MurderFloor.Loot;
+
 namespace MurderFloor;
 
 public static class SaveManager
@@ -36,7 +38,7 @@ public static class SaveManager
         var text = file.GetAsText();
         if (string.IsNullOrEmpty(text)) return new SaveData();
 
-        var save = System.Text.Json.JsonSerializer.Deserialize<SaveData>(file.GetAsText());
+        var save = System.Text.Json.JsonSerializer.Deserialize<SaveData>(file.GetAsText(), JsonOptions);
         GD.Print("Loaded save " + SaveIndex);
         return save;
     }
@@ -56,7 +58,7 @@ public static class SaveManager
     {
         using var file = FileAccess.Open(SaveIndexPath, FileAccess.ModeFlags.Read);
         if (file is null) return 0;
-        var index = System.Text.Json.JsonSerializer.Deserialize<int>(file.GetAsText());
+        var index = System.Text.Json.JsonSerializer.Deserialize<int>(file.GetAsText(), JsonOptions);
         return index;
     }
 
@@ -65,8 +67,10 @@ public static class SaveManager
         public int Level { get; set; } = 0;
         public float Xp { get; internal set; } = 0f;
         public double TotalXp { get; internal set; } = 0d;
-        public List<string> Loot { get; set; } = []; // LootStates
-        public List<int> Equipped { get; set; } = []; // hash ids of LootStates
+
+        // both should only be directly used inside this class
+        public List<string> Loot { get; set; } = []; // Serialized LootStates
+        public List<int> Equipped { get; set; } = []; // HashCodes of LootStates
 
         public void AddXp(float amount)
         {
@@ -84,9 +88,76 @@ public static class SaveManager
             return 200 + Mathf.Pow(Level + 1, 2.5f) - Level;
         }
 
-        public List<string> GetEquippedLoot()
+        /// <summary>Get loot by HashCode. Returns matched LootState or default value.</summary>
+        public LootState GetLoot(int hashCode)
         {
-            List<string> equippedLoot = [];
+            foreach (var val in Loot)
+            {
+                var lootState = LootState.Deserialize(val);
+                if (lootState.GetHashCode() == hashCode)
+                    return lootState;
+            }
+
+            return default;
+        }
+
+        /// <summary>Get loot by HashCode. Returns matched LootState or default value.</summary>
+        public List<LootState> GetAttachmentsOnTool(LootState toolLootState)
+        {
+            List<LootState> atts = [];
+            var hash = toolLootState.GetHashCode();
+            foreach (var val in Loot)
+            {
+                var lootState = LootState.Deserialize(val);
+                if (lootState.GetCustomData("g", out string id))
+                {
+                    if (hash == Compression.AB64ToInt(id))
+                        atts.Add(lootState);
+                }
+            }
+
+            return atts;
+        }
+
+        /// <summary>Useful for setting custom data. Returns false if not found.</summary>
+        public bool ReplaceLoot(LootState lootState)
+        {
+            foreach (var val in Loot)
+            {
+                var valLootState = LootState.Deserialize(val);
+                if (valLootState.GetHashCode() == lootState.GetHashCode())
+                {
+                    var index = Loot.IndexOf(val);
+                    Loot[index] = lootState.Serialize();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public List<LootState> GetAllLoot()
+        {
+            List<LootState> all = [];
+            foreach (var val in Loot) all.Add(LootState.Deserialize(val));
+            return all;
+        }
+
+        public List<LootState> GetAllLootOfType<T>() where T : MFResource
+        {
+            List<LootState> type = [];
+            foreach (var val in Loot)
+            {
+                var lootState = LootState.Deserialize(val);
+                if (lootState.GetLootRef() is T)
+                    type.Add(lootState);
+            }
+            return type;
+        }
+
+        public List<LootState> GetEquippedLoot()
+        {
+            List<LootState> equippedLoot = [];
             List<int> notFound = [];
             foreach (var val in Equipped)
             {
@@ -96,7 +167,7 @@ public static class SaveManager
                     var lootState = MurderFloor.Loot.LootState.Deserialize(loot);
                     if (lootState.GetHashCode() == val)
                     {
-                        equippedLoot.Add(loot);
+                        equippedLoot.Add(lootState);
                         found = true;
                         break;
                     }

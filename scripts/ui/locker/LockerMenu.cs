@@ -19,8 +19,7 @@ public partial class LockerMenu : ScreenScaleLimiter
         var bref = toolsPanel.GetChild(0).GetChild(0);
         foreach (var equip in SaveManager.CurrentSave.GetEquippedLoot())
         {
-            var lootState = LootState.Deserialize(equip);
-            var lootRef = lootState.GetLootRef();
+            var lootRef = equip.GetLootRef();
             if (lootRef.FullId == "base:fists") continue;
 
             var bref2 = bref.Duplicate();

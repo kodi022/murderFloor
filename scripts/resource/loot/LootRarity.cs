@@ -30,7 +30,6 @@ public struct LootRarity
         };
         var wearLevelOffset = ((int)lootState.Difficulty - 3) * 1.5f;
 
-        SuperScale = lootState.ChallengeScaling * 0.5f;
         SuperScale += lootState.OverScaling;
         // ! map affect Superscale
 

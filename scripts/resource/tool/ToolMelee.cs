@@ -79,7 +79,7 @@ public partial class ToolMelee : Tool
         return 1f;
     }
 
-    public override BuiltToolData BuildToolScene(BuildToolData buildToolData)
+    public override BuiltToolData BuildToolScene(ToolConfig toolConfig)
     {
         var builtToolData = new BuiltToolData() { ToolHashId = HashId };
 
@@ -97,16 +97,16 @@ public partial class ToolMelee : Tool
 
         var gadgetNode = FindNode("Point-Gadget");
 
-        foreach (var hashId in buildToolData.AttachmentHashIds)
-        {
-            var attachment = ResourceManager.AttachmentRegistry.GetResourceRef(hashId);
-            switch (attachment.AttachmentType)
-            {
-                case Attachment.AttachmentTypeEnum.Gadget:
+        // foreach (var hashId in toolConfig.AttachmentLootStates)
+        // {
+        //     var attachment = ResourceManager.AttachmentRegistry.GetResourceRef(hashId);
+        //     switch (attachment.AttachmentType)
+        //     {
+        //         case Attachment.AttachmentTypeEnum.Gadget:
 
-                    break;
-            }
-        }
+        //             break;
+        //     }
+        // }
 
         return builtToolData;
     }

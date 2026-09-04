@@ -10,11 +10,9 @@ namespace MurderFloor.Loot;
 
 public struct LootState
 {
-    private const string SerializationDelimiter = ",";
-    private const string CustomDataDelimiter = "_";
-    private const string CustomDataKVPDelimiter = "=";
-
-    public readonly int HashId => GetHashCode();
+    private const string Layer1Delimiter = ",";
+    private const string Layer2Delimiter = "_";
+    private const string Layer3Delimiter = "=";
 
     // the saved data of Loot
     public ulong Seed { get; private set; }
@@ -23,8 +21,7 @@ public struct LootState
     public int Level { get; private set; }
     public Game.DifficultyEnum Difficulty { get; private set; }
     public int MapHashId { get; private set; }
-    public int ChallengeScaling { get; private set; }
-    public float OverScaling { get; private set; }
+    public int OverScaling { get; private set; }
     private Dictionary<string, string> CustomData { get; set; }
 
     // generated values on creation
@@ -33,7 +30,7 @@ public struct LootState
     public LootState() { }
 
     /// <summary> Constructor only for newly generated loot </summary>
-    public LootState(ulong seed, int level, Game.DifficultyEnum difficulty, int mapHashId, bool c1, bool c2, float difficultyMaxer)
+    public LootState(ulong seed, int level, Game.DifficultyEnum difficulty, int mapHashId, float overscaling)
     {
         Seed = seed;
         ResourceHashId = GetLootHashId(Seed);
@@ -41,8 +38,7 @@ public struct LootState
         Level = level;
         Difficulty = difficulty;
         MapHashId = mapHashId;
-        ChallengeScaling = (c1 ? 1 : 0) + (c2 ? 2 : 0);
-        OverScaling = difficultyMaxer;
+        OverScaling = (int)(overscaling * 10);
         CustomData = [];
         GenerateStats();
     }
@@ -60,7 +56,7 @@ public struct LootState
     public readonly MFResource GetLootRef()
     {
         var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
-        if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({HashId}) Maybe Item is not IsRandomLoot?");
+        if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({ResourceHashId})");
         return loot;
     }
 
@@ -105,12 +101,12 @@ public struct LootState
         }
         if (!CustomDataArgIsValid(key))
         {
-            GD.PushError($"LootState.AddCustomData key cannot contain: \"{SerializationDelimiter}\" \"{CustomDataDelimiter}\" \"{CustomDataKVPDelimiter}\"");
+            GD.PushError($"LootState.AddCustomData key cannot contain: \"{Layer1Delimiter}\" \"{Layer2Delimiter}\" \"{Layer3Delimiter}\"");
             return;
         }
         if (!CustomDataArgIsValid(key))
         {
-            GD.PushError($"LootState.AddCustomData value cannot contain: \"{SerializationDelimiter}\" \"{CustomDataDelimiter}\" \"{CustomDataKVPDelimiter}\"");
+            GD.PushError($"LootState.AddCustomData value cannot contain: \"{Layer1Delimiter}\" \"{Layer2Delimiter}\" \"{Layer3Delimiter}\"");
             return;
         }
         if (key.Length < 2)
@@ -143,32 +139,32 @@ public struct LootState
     /// <summary>Removes data saved to LootState. Returns true if successfully removed.</summary>
     public readonly bool RemoveCustomData(string key)
     {
-        if (key.Contains(CustomDataDelimiter))
+        if (key.Contains(Layer2Delimiter))
         {
-            GD.PushError($"LootState.RemoveCustomData key cannot contain \"{CustomDataDelimiter}\"");
+            GD.PushError($"LootState.RemoveCustomData key cannot contain \"{Layer2Delimiter}\"");
             return false;
         }
 
         return CustomData.Remove(key);
     }
 
-    public static string Serialize(LootState self)
+    public override readonly string ToString() => Serialize();
+    public readonly string Serialize()
     {
-        var str = Compression.ULToAB64(self.Seed) + SerializationDelimiter;
-        str += Compression.IntToAB64(self.ResourceHashId) + SerializationDelimiter;
-        str += self.Version.ToString() + SerializationDelimiter;
-        str += self.Level + SerializationDelimiter;
-        str += (int)self.Difficulty + SerializationDelimiter;
-        str += Compression.IntToAB64(self.MapHashId) + SerializationDelimiter;
-        str += self.ChallengeScaling + SerializationDelimiter;
-        str += self.OverScaling.ToString(".00") + SerializationDelimiter;
-        str += SerializeCustomData(self.CustomData);
+        var str = Compression.ULToAB64(Seed) + Layer1Delimiter;
+        str += Compression.IntToAB64(ResourceHashId) + Layer1Delimiter;
+        str += Version.ToString() + Layer1Delimiter;
+        str += Level + Layer1Delimiter;
+        str += (int)Difficulty + Layer1Delimiter;
+        str += Compression.IntToAB64(MapHashId) + Layer1Delimiter;
+        str += OverScaling.ToString() + Layer1Delimiter;
+        str += SerializeCustomData(CustomData);
         return str;
     }
 
     public static LootState Deserialize(string state)
     {
-        var strs = state.Split(SerializationDelimiter);
+        var strs = state.Split(Layer1Delimiter);
         var ls = new LootState()
         {
             Seed = Compression.AB64ToUL(strs[0]),
@@ -177,9 +173,8 @@ public struct LootState
             Level = strs[3].ToInt(),
             Difficulty = (Game.DifficultyEnum)strs[4].ToInt(),
             MapHashId = Compression.AB64ToInt(strs[5]),
-            ChallengeScaling = strs[6].ToInt(),
-            OverScaling = strs[7].ToFloat(),
-            CustomData = DeserializeCustomData(strs[8]),
+            OverScaling = strs[6].ToInt(),
+            CustomData = DeserializeCustomData(strs[7]),
         };
         ls.GenerateStats();
         return ls;
@@ -190,7 +185,7 @@ public struct LootState
         var str = "";
         foreach (var kvp in customData)
         {
-            str += kvp.Key + CustomDataKVPDelimiter + kvp.Value + CustomDataDelimiter;
+            str += kvp.Key + Layer3Delimiter + kvp.Value + Layer2Delimiter;
         }
         return str;
     }
@@ -200,18 +195,19 @@ public struct LootState
         if (string.IsNullOrEmpty(customData)) return [];
 
         Dictionary<string, string> vals = [];
-        var kvps = customData.Split(CustomDataDelimiter);
-        // foreach (var kvp in kvps)
-        // {
-        //     var split = kvp.Split(CustomDataKVPDelimiter);
-        //     vals.Add(split[0], split[1]);
-        // }
+        var kvps = customData.Split(Layer2Delimiter);
+        foreach (var kvp in kvps)
+        {
+            var split = kvp.Split(Layer3Delimiter);
+            if (split.Length < 2) continue;
+            vals.Add(split[0], split[1]);
+        }
         return vals;
     }
 
     private static bool CustomDataArgIsValid(string arg)
     {
-        return !(arg.Contains(SerializationDelimiter) || arg.Contains(CustomDataDelimiter) || arg.Contains(CustomDataKVPDelimiter));
+        return !(arg.Contains(Layer1Delimiter) || arg.Contains(Layer2Delimiter) || arg.Contains(Layer3Delimiter));
     }
 
     public readonly override int GetHashCode() => GetStableHash();
@@ -221,18 +217,17 @@ public struct LootState
         {
             int hash = 13466917 + Seed.GetHashCode();
             hash = hash * 31 + ResourceHashId;
-            hash = hash * 31 + Level;
             hash = hash * 31 + Version.GetHashCode();
+            hash = hash * 31 + Level;
             hash = hash * 31 + (int)Difficulty;
             hash = hash * 31 + MapHashId;
-            hash = hash * 31 + ChallengeScaling;
             hash = hash * 31 + OverScaling.GetHashCode();
             return hash;
         }
     }
 
     // LootState
-    public readonly bool Equals(LootState other) => HashId == other.HashId;
+    public readonly bool Equals(LootState other) => GetHashCode() == other.GetHashCode();
     public readonly override bool Equals(object obj) => obj is LootState other && Equals(other);
     public static bool operator ==(LootState left, LootState right) => left.Equals(right);
     public static bool operator !=(LootState left, LootState right) => !left.Equals(right);

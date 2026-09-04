@@ -37,7 +37,7 @@ public partial class MFResource : Resource
     public virtual async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY) => Global.MissingTextureImage;
 
     /// <summary> Builds the tool itself with additional data. DOES NOT BUILD VIEWMODEL </summary>
-    public virtual BuiltToolData BuildToolScene(BuildToolData buildToolData) => new();
+    public virtual BuiltToolData BuildToolScene(ToolConfig toolConfig) => new();
 
     public static Aabb GetBounds(Node3D weaponScene)
     {
@@ -72,11 +72,6 @@ public partial class MFResource : Resource
                 mesh.MaterialOverride = GD.Load<Material>("res://materials/thumbnail.tres");
             }
         }
-    }
-
-    public struct BuildToolData
-    {
-        public int[] AttachmentHashIds { get; set; }
     }
 
     public struct BuiltToolData
