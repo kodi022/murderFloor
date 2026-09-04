@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0fnatrcaf2ic"
-path.bptc="res://.godot/imported/icon-weight.png-33621f5c36694c7cf2a2ed687a40e120.bptc.ctex"
+uid="uid://dnq3axceu2r20"
+path.bptc="res://.godot/imported/TablerHeartRateMonitor.png-b1bb916007f41c56d71034ff34337c3a.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/ui/icon-weight.png"
-dest_files=["res://.godot/imported/icon-weight.png-33621f5c36694c7cf2a2ed687a40e120.bptc.ctex"]
+source_file="res://images/ui/TablerHeartRateMonitor.png"
+dest_files=["res://.godot/imported/TablerHeartRateMonitor.png-b1bb916007f41c56d71034ff34337c3a.bptc.ctex"]
 
 [params]
 

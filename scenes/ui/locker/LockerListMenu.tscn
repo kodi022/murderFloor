@@ -1,29 +1,30 @@
 [gd_scene format=3 uid="uid://cvxwkijhr2fyd"]
 
 [ext_resource type="Script" uid="uid://bnjls7s41ytxt" path="res://scripts/ui/locker/LockerListMenu.cs" id="1_8cb7a"]
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_xff2p"]
+[ext_resource type="Texture2D" uid="uid://dq6cv60egwkq0" path="res://images/ui/ninepatch-minimal.png" id="3_ml1l3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6eor5"]
 bg_color = Color(0.16575891, 0.17362446, 0.19090384, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xff2p"]
-bg_color = Color(0, 0, 0, 0.11764706)
-
-[node name="LockerListMenu" type="Control" unique_id=864099879 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "returnButton", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel")]
+[node name="LockerListMenu" type="Control" unique_id=864099879 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "returnButton", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel", "toolStatsPanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_xff2p")
 script = ExtResource("1_8cb7a")
-grid = NodePath("Panel/LeftMarginContainer/VBoxContainer/ScrollContainer/GridContainer")
+grid = NodePath("Panel/LeftMarginContainer/VBoxContainer/Panel/GridContainer")
 rect = NodePath("Panel/TextureRect")
 rectDragControl = NodePath("Panel/TextureRect/Control/Control")
 returnButton = NodePath("Panel/ReturnButton")
-equipToolButton = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button")
-modifyToolButton = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button2")
-advancedToolButton = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer/Button3")
-totalWeightLabel = NodePath("Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2/RichTextLabel")
+equipToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button")
+modifyToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button2")
+advancedToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button3")
+totalWeightLabel = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer2/RichTextLabel")
+toolStatsPanel = NodePath("Panel/BottomRightMarginContainerStats/Panel")
 
 [node name="Panel" type="Panel" parent="." unique_id=1279919527]
 layout_mode = 0
@@ -62,10 +63,8 @@ offset_bottom = 432.0
 
 [node name="LeftMarginContainer" type="MarginContainer" parent="Panel" unique_id=1088500173]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 414.0
-offset_bottom = 1070.0
+offset_right = 420.0
+offset_bottom = 1080.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/LeftMarginContainer" unique_id=919180584]
 layout_mode = 2
@@ -79,14 +78,18 @@ theme_override_constants/separation = 2
 custom_minimum_size = Vector2(125, 30)
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/LeftMarginContainer/VBoxContainer" unique_id=675992638]
-custom_minimum_size = Vector2(394, 0)
+[node name="Panel" type="Panel" parent="Panel/LeftMarginContainer/VBoxContainer" unique_id=1426930837]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_xff2p")
 
-[node name="GridContainer" type="GridContainer" parent="Panel/LeftMarginContainer/VBoxContainer/ScrollContainer" unique_id=724785527]
-layout_mode = 2
+[node name="GridContainer" type="GridContainer" parent="Panel/LeftMarginContainer/VBoxContainer/Panel" unique_id=724785527]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 3.0
+offset_right = 398.0
+offset_bottom = 983.0
+size_flags_vertical = 3
 columns = 3
 
 [node name="BottomRightMarginContainerControls" type="MarginContainer" parent="Panel" unique_id=1361569088]
@@ -96,57 +99,70 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1506.0
-offset_top = -126.0
+offset_left = -1510.0
+offset_top = -120.0
 offset_right = -790.0
-offset_bottom = -10.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls" unique_id=1914028445]
+[node name="Panel" type="Panel" parent="Panel/BottomRightMarginContainerControls" unique_id=1843931709]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/BottomRightMarginContainerControls/HBoxContainer" unique_id=242086016]
-custom_minimum_size = Vector2(600, 0)
-layout_mode = 2
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerControls/Panel" unique_id=1046988675]
+texture_filter = 2
+layout_mode = 0
+offset_right = 700.0
+offset_bottom = 100.0
+texture = ExtResource("3_ml1l3")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
 
-[node name="PanelContainer" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=1460878735]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/BottomRightMarginContainerControls/Panel" unique_id=242086016]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 690.0
+offset_bottom = 90.0
+
+[node name="PanelContainer" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls/Panel/VBoxContainer" unique_id=1460878735]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="Button" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=744465179]
+[node name="Button" type="Button" parent="Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer" unique_id=744465179]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Equip
 "
 
-[node name="Button2" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=203049020]
+[node name="Button2" type="Button" parent="Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer" unique_id=203049020]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Modify
 "
 
-[node name="Button3" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=2144908656]
+[node name="Button3" type="Button" parent="Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer" unique_id=2144908656]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "View Adv."
 
-[node name="Button4" type="Button" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer" unique_id=1481480904]
+[node name="Button4" type="Button" parent="Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer" unique_id=1481480904]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Scrap"
 
-[node name="PanelContainer2" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer" unique_id=975428361]
+[node name="PanelContainer2" type="HBoxContainer" parent="Panel/BottomRightMarginContainerControls/Panel/VBoxContainer" unique_id=975428361]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel/BottomRightMarginContainerControls/HBoxContainer/VBoxContainer/PanelContainer2" unique_id=1759479080]
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer2" unique_id=1759479080]
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 bbcode_enabled = true
-text = "[img]res://images/ui/icon-weight.png[/img]0 / 2"
+text = "[img=32]res://images/ui/TablerWeight.png[/img]6 / 20"
 
 [node name="BottomRightMarginContainerStats" type="MarginContainer" parent="Panel" unique_id=1928899341]
 layout_mode = 1
@@ -155,39 +171,121 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -550.0
-offset_top = -370.0
-offset_right = -10.0
-offset_bottom = -9.999512
+offset_left = -540.0
+offset_top = -360.0
+offset_bottom = 0.00048828125
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="VBoxContainerSimple" type="VBoxContainer" parent="Panel/BottomRightMarginContainerStats" unique_id=1043287090]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Panel" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=185527768]
+[node name="Panel" type="Panel" parent="Panel/BottomRightMarginContainerStats" unique_id=185527768]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/VBoxContainerSimple/Panel" unique_id=410363790]
+[node name="NinePatchRect2" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1859671204]
+texture_filter = 2
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+offset_right = 520.0
+offset_bottom = 340.0
+texture = ExtResource("3_ml1l3")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=410363790]
+layout_mode = 0
+offset_right = 520.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 20
+text = "_coolgun_"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1609849874]
+layout_mode = 0
+offset_top = 34.0
+offset_right = 255.0
+offset_bottom = 58.0
+bbcode_enabled = true
+text = "[color=#AAAAAA]_tarnished_"
+autowrap_mode = 0
+tab_size = 0
+shortcut_keys_enabled = false
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=325479833]
+layout_mode = 0
+offset_left = 265.0
+offset_top = 34.0
+offset_right = 520.0
+offset_bottom = 58.0
+bbcode_enabled = true
+text = "[color=#AACAAA]_uncommon_"
+autowrap_mode = 0
+tab_size = 0
+shortcut_keys_enabled = false
+vertical_alignment = 1
+
+[node name="PanelSimple" type="Panel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1189076697]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 65.0
+offset_right = 510.0
+offset_bottom = 330.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/Panel/PanelSimple" unique_id=1423052811]
+texture_filter = 2
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 265.0
+texture = ExtResource("3_ml1l3")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel/PanelSimple" unique_id=2032936145]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 104.0
+offset_bottom = 28.0
 text = "COOL STATS:"
 
-[node name="Panel2" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerSimple" unique_id=1326811160]
-layout_mode = 2
+[node name="Label1" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel/PanelSimple" unique_id=123602544]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 28.0
+offset_right = 123.0
+offset_bottom = 51.0
+text = "COOL STATS:"
 
-[node name="VBoxContainerAdvanced" type="VBoxContainer" parent="Panel/BottomRightMarginContainerStats" unique_id=135998661]
+[node name="PanelAdvanced" type="Panel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1322578164]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 0
+layout_mode = 0
+offset_left = 10.0
+offset_top = 65.0
+offset_right = 510.0
+offset_bottom = 330.0
 
-[node name="Panel" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=1322578164]
-layout_mode = 2
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/Panel/PanelAdvanced" unique_id=1576658535]
+texture_filter = 2
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 265.0
+texture = ExtResource("3_ml1l3")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
 
-[node name="Panel2" type="Panel" parent="Panel/BottomRightMarginContainerStats/VBoxContainerAdvanced" unique_id=1384845345]
-layout_mode = 2
+[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel/PanelAdvanced" unique_id=348121466]
+layout_mode = 0
+offset_left = 103.0
+offset_top = 41.0
+offset_right = 269.0
+offset_bottom = 144.0
+text = "wip"
 
 [node name="ReturnButton" type="Button" parent="Panel" unique_id=663384655]
 layout_mode = 0

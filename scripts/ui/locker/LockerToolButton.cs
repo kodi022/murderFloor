@@ -34,7 +34,7 @@ public partial class LockerToolButton : Panel
 
         if (isTool)
         {
-            weightLabel.Text = $"[img]res://images/ui/icon-weight.png[/img]{((Tool)lootResource).CarryWeight}";
+            weightLabel.Text = $"[img=16]res://images/ui/TablerWeight.png[/img]{((Tool)lootResource).CarryWeight}";
         }
         else
         {
@@ -54,23 +54,35 @@ public partial class LockerToolButton : Panel
     {
         ninePatchRect.Modulate = Tiers.TierList[lootRarity.Tier].Color;
 
+        OffsetTransformScale = Vector2.One;
+        ZIndex = 0;
+        var defaultVal = 0.1764f;
+        colorRect.Color = new Color(defaultVal, defaultVal, defaultVal);
+
         if (isTool)
         {
-            if (LootState == lockerSelected && Player.Self.HasTool(LootState))
-                colorRect.Color = new Color(0.2f, 0.38f, 0.38f);
-            else if (LootState == lockerSelected)
-                colorRect.Color = new Color(0.2f, 0.35f, 0.2f);
-            else if (Player.Self.HasTool(LootState))
-                colorRect.Color = new Color(0.2f, 0.2f, 0.35f);
-            else
-                colorRect.Color = new Color(0.12f, 0.12f, 0.12f);
+            if (LootState == lockerSelected)
+            {
+                ZIndex = 1;
+                OffsetTransformScale = new Vector2(1.12f, 1.12f);
+            }
+
+            if (Player.Self.HasTool(LootState))
+                colorRect.Color = new Color(defaultVal, 0.25f, defaultVal);
         }
         else
         {
-            if (LootState.HasCustomData("g"))
-                colorRect.Color = new Color(0.2f, 0.35f, 0.2f);
-            else
-                colorRect.Color = new Color(0.12f, 0.12f, 0.12f);
+            if (LootState.GetCustomData("g", out string value))
+            {
+                if (Compression.AB64ToInt(value) == lockerSelected.GetHashCode())
+                {
+                    colorRect.Color = new Color(0.2f, 0.33f, 0.2f);
+                }
+                else
+                {
+                    colorRect.Color = new Color(0.2f, 0.2f, 0.33f);
+                }
+            }
         }
     }
 }

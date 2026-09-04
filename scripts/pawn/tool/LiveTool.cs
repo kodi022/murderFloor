@@ -302,9 +302,9 @@ public partial class LiveTool : Node
         }
         else
         {
-            fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, 0.1f));
+            fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, 0.1f), 2);
             await Task.Delay(firearm.ManualFireDelayMs - 200);
-            fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, -0.05f));
+            fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, -0.05f), 2);
             await Task.Delay(200);
         }
 

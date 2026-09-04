@@ -1,3 +1,5 @@
+using MurderFloor.Loot;
+
 namespace MurderFloor;
 
 public partial class Player : Pawn
@@ -57,22 +59,22 @@ public partial class Player : Pawn
 
     /// <summary> this should only be called using Rpc </summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void ToolRemoveRpc(string lootStateSerialized)
+    public void ToolRemoveRpc(string toolLootStateSerialized)
     {
-        ToolRemove(lootStateSerialized);
+        ToolRemove(toolLootStateSerialized);
     }
 
     // should always be called through an Rpc
-    public async void ToolRemove(string lootStateSerialized)
+    public async void ToolRemove(string toolLootStateSerialized)
     {
         var change = false;
-        var lootStateStruct = Loot.LootState.Deserialize(lootStateSerialized);
+        var lootState = LootState.Deserialize(toolLootStateSerialized);
         foreach (var tool in ToolsNode.GetChildren())
         {
             if (tool is not LiveTool) continue;
 
             LiveTool liveTool = (LiveTool)tool;
-            if (liveTool.ToolConfig.LootState == lootStateStruct)
+            if (liveTool.ToolConfig.LootState == lootState)
             {
                 var list = GetToolListFromTool(liveTool.ToolFullId);
                 foreach (var item in list)
@@ -171,7 +173,7 @@ public partial class Player : Pawn
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
-    public async void ToolsSyncRpc(Godot.Collections.Array<string> tools)
+    public async void ToolsSyncRpc(Godot.Collections.Array<string> toolConfigs)
     {
         var ready = 0;
         while (ready < AllPlayers.Count)
@@ -186,14 +188,14 @@ public partial class Player : Pawn
 
         GD.Print($"ToolsSyncRpc ({Id} sync for {Self.Id})");
 
-        foreach (var tool in tools)
+        foreach (var tool in toolConfigs)
         {
-            ToolRemove(tool);
+            var config = ToolConfig.Deserialize(tool);
+            ToolRemove(config.LootState.Serialize());
         }
-        foreach (var tool in tools)
+        foreach (var tool in toolConfigs)
         {
-            // ! fix later
-            //ToolAdd(tool.confi);
+            ToolAdd(tool);
         }
 
         await Task.Delay(100);
@@ -270,7 +272,7 @@ public partial class Player : Pawn
         return tools;
     }
 
-    public bool HasTool(Loot.LootState lootState)
+    public bool HasTool(LootState lootState)
     {
         var tools = GetAllLiveTools();
 

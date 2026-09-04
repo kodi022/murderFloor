@@ -120,9 +120,9 @@ public static class Wears
         {WearEnum.Spotless,     new WearInfo("base.loot.wear.spotless",     1.39f)},
         {WearEnum.Polished,     new WearInfo("base.loot.wear.polished",     1.44f)},
         {WearEnum.Shiny,        new WearInfo("base.loot.wear.shiny",        1.49f)},
-        {WearEnum.Mint,         new WearInfo("base.loot.wear.mint",         1.54f)},
-        {WearEnum.New,          new WearInfo("base.loot.wear.new",          1.60f)}, // increasing by 0.06
-        {WearEnum.Excellent,    new WearInfo("base.loot.wear.excellent",    1.66f)},
+        {WearEnum.Excellent,    new WearInfo("base.loot.wear.excellent",    1.54f)},
+        {WearEnum.Mint,         new WearInfo("base.loot.wear.mint",         1.60f)}, // increasing by 0.06
+        {WearEnum.New,          new WearInfo("base.loot.wear.new",          1.66f)},
         {WearEnum.Pristine,     new WearInfo("base.loot.wear.pristine",     1.72f)},
         {WearEnum.Flawless,     new WearInfo("base.loot.wear.flawless",     1.78f)},
         {WearEnum.Perfect,      new WearInfo("base.loot.wear.perfect",      1.84f)},

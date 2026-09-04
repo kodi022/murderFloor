@@ -162,10 +162,10 @@ public static class OptionsManager
 
         [OptionFloat("Graphics", 60f, 110f, 1f, "")]
         public float FieldOfView { get; set; } = 90;
-        [OptionFloat("Graphics", 0.5f, 1.2f, 0.01f, "")]
+        [OptionFloat("Graphics", 0.4f, 1.2f, 0.01f, "")]
         public float ViewmodelFieldOfViewScale { get; set; } = 0.8f;
-        [OptionFloat("Graphics", 0.3f, 1f, 0.01f, "")]
-        public float AimingViewmodelFieldOfViewScale { get; set; } = 0.6f;
+        [OptionFloat("Graphics", 0.2f, 1f, 0.01f, "")]
+        public float AimingViewmodelFieldOfViewScale { get; set; } = 0.4f;
         [OptionString("Graphics", ["FSR2.2", "FSR1.0", "None"], "")]
         public string Scaling { get; set; } = "None";
         [OptionFloat("Graphics", 25f, 200f, 5f, "Resource intensive and FSR not supported when above 100.")]
