@@ -214,8 +214,18 @@ public partial class LockerListMenu : Control
         var lootRef = selectedToolLootState.GetLootRef();
         var lootRarity = new LootRarity(selectedToolLootState);
         toolStatsPanel.GetChild<Label>(1).Text = lootRef.FullId;
-        toolStatsPanel.GetChild<RichTextLabel>(2).Text = $"[color={Wears.WearList[lootRarity.Wear]}]{lootRarity.Wear}";
-        toolStatsPanel.GetChild<RichTextLabel>(3).Text = $"[color={Tiers.TierList[lootRarity.Tier].Color.ToHtml()}]{lootRarity.Tier}";
+        toolStatsPanel.GetChild<RichTextLabel>(2).Text = $"[color={Wears.WearInfos[lootRarity.Wear]}]{lootRarity.Wear}";
+        toolStatsPanel.GetChild<RichTextLabel>(3).Text = $"[color={Tiers.TierInfos[lootRarity.Tier].Color.ToHtml()}]{lootRarity.Tier}";
+
+        var simplePanel = toolStatsPanel.GetChild<Panel>(4);
+
+        var str = "";
+        foreach (var stat in selectedToolLootState.ModifiedStats)
+        {
+            str += $"{stat.Key} {stat.Value:0.00}x" + "\n";
+        }
+
+        simplePanel.GetChild<Label>(2).Text = str;
 
         BuildToolViewport();
     }

@@ -54,10 +54,10 @@ public struct LootRarity
         AddTierChance(Tiers.TierEnum.Uncommon);
         AddTierChance(Tiers.TierEnum.Rare);
         AddTierChance(Tiers.TierEnum.Epic);
-        if (Level >= 50) AddTierChance(Tiers.TierEnum.Exotic);
-        if (Level >= 60) AddTierChance(Tiers.TierEnum.Mythical);
-        if (Level >= 70) AddTierChance(Tiers.TierEnum.Legendary);
-        if (Level >= 80) AddTierChance(Tiers.TierEnum.Opalescent);
+        if (Level >= 30) AddTierChance(Tiers.TierEnum.Exotic);
+        if (Level >= 40) AddTierChance(Tiers.TierEnum.Mythical);
+        if (Level >= 50) AddTierChance(Tiers.TierEnum.Legendary);
+        if (Level >= 70) AddTierChance(Tiers.TierEnum.Opalescent);
 
         var ticket = rng.RandfRange(0, maxTicket);
         foreach (var tier in tiers.Reverse())
@@ -70,7 +70,7 @@ public struct LootRarity
             ticket -= tier.Value;
         }
 
-        if (Tier == Tiers.TierEnum.Opalescent && Level >= 100)
+        if (Tier == Tiers.TierEnum.Opalescent && Level >= 90)
         {
             if (tierOffset > 1.2f)
             {

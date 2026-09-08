@@ -6,13 +6,15 @@ public partial class HUD : ScreenScaleLimiter
     private Panel roundStartPanel;
     [Export]
     private Panel roundTimerPanel;
+    [Export]
+    private Panel waveInfoPanel;
 
     [Export]
-    private Panel EmptyCrosshair;
+    private Panel emptyCrosshair;
     [Export]
-    private Panel GunCrosshair;
+    private Panel gunCrosshair;
     [Export]
-    private Panel ShotgunCrosshair;
+    private Panel shotgunCrosshair;
 
     [Export]
     private Panel healthBarPanel;
@@ -25,9 +27,16 @@ public partial class HUD : ScreenScaleLimiter
     [Export]
     private VBoxContainer weaponsContainer;
 
-    private int updateBarsFuncCount = 0;
-    private Vector2 lastHealthBarPos = Vector2.Zero;
-    private Vector2 lastArmorBarPos = Vector2.Zero;
+    private RichTextLabel waveInfoWave, waveInfoLeft;
+
+    private Panel healthBar, healthBarChange;
+    private float lastHealthMove;
+
+    private Panel armorBar, armorBarChange;
+    private float lastArmorMove;
+
+    private Panel weightBar, weightBarChange;
+
     private bool hookedGameEvents = false;
 
     private LiveTool selectedTool;
@@ -39,23 +48,28 @@ public partial class HUD : ScreenScaleLimiter
     {
         roundStartPanel.Visible = false;
         roundTimerPanel.Visible = false;
-        EmptyCrosshair.Visible = false;
-        GunCrosshair.Visible = false;
-        ShotgunCrosshair.Visible = false;
+        waveInfoPanel.Visible = false;
+        emptyCrosshair.Visible = false;
+        gunCrosshair.Visible = false;
+        shotgunCrosshair.Visible = false;
         Player.Self.PlayerOnDamage += HurtAndUpdateHealth;
         Player.Self.PlayerOnHeal += HealAndUpdateHealth;
         Player.Self.PlayerToolChange += GenerateToolLists;
 
-        static string ButtonName(string actionName)
-        {
-            var inputText = InputMap.ActionGetEvents(actionName)[0].AsText();
-            return inputText.Split(' ')[0]; // "Escape" or "W - Physical"
-        }
+        waveInfoWave = waveInfoPanel.GetChild<RichTextLabel>(1);
+        waveInfoLeft = waveInfoPanel.GetChild<RichTextLabel>(2);
 
-        weaponsContainer.GetChild(0).GetChild(0).GetChild<Label>(0).Text = ButtonName("selectprimary");
-        weaponsContainer.GetChild(1).GetChild(0).GetChild<Label>(0).Text = ButtonName("selectsecondary");
-        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = ButtonName("selectspecial");
-        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = ButtonName("selectmelee");
+        healthBar = healthBarPanel.GetChild<Panel>(2);
+        healthBarChange = healthBarPanel.GetChild<Panel>(1);
+        armorBar = armorBarPanel.GetChild<Panel>(2);
+        armorBarChange = armorBarPanel.GetChild<Panel>(1);
+        weightBar = weightBarPanel.GetChild<Panel>(2);
+        weightBarChange = weightBarPanel.GetChild<Panel>(1);
+
+        weaponsContainer.GetChild(0).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectprimary");
+        weaponsContainer.GetChild(1).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectsecondary");
+        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectspecial");
+        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectmelee");
 
         UpdateHealthAndArmor();
     }
@@ -73,11 +87,18 @@ public partial class HUD : ScreenScaleLimiter
 
         ProcessCrosshairs();
 
-        useInfoLabel.Text = Player.Self.UseInfoText;
+        if (Game.Current is not null && Game.Current.WaveMobsLeft > 0)
+        {
+            waveInfoPanel.Visible = true;
+            waveInfoWave.Text = $"Wave {Game.Current.Wave}/{Game.Current.MaxWave}";
+            waveInfoLeft.Text = $"{Game.Current.WaveMobsLeft} Left";
+        }
+        else
+        {
+            waveInfoPanel.Visible = false;
+        }
 
-        var weightMove = (float)Player.Self.ToolWeight / Player.Self.MaxWeight;
-        var newWeightBarPos = new Vector2(2 + (weightBarPanel.Size.X * weightMove) - weightBarPanel.Size.X, 2);
-        weightBarPanel.SetPosition(newWeightBarPos);
+        useInfoLabel.Text = Player.Self.UseInfoText;
 
         if (selectedTool != Player.Self.SelectedTool)
         {
@@ -88,6 +109,11 @@ public partial class HUD : ScreenScaleLimiter
 
     private async void GenerateToolLists()
     {
+        var weightMove = (float)Player.Self.ToolWeight / Player.Self.MaxWeight;
+        var newWeightBarPos = new Vector2(2 + (weightBar.Size.X * weightMove) - weightBar.Size.X, 2);
+        weightBar.SetPosition(newWeightBarPos);
+        weightBarChange.SetPosition(newWeightBarPos);
+
         async Task ListWeapons(int containerIndex, List<LiveTool> tools)
         {
             var container = weaponsContainer.GetChild(containerIndex);
@@ -188,10 +214,10 @@ public partial class HUD : ScreenScaleLimiter
 
         var lastCrosshair = activeCrosshairIndex switch
         {
-            0 => EmptyCrosshair,
-            1 => GunCrosshair,
-            2 => ShotgunCrosshair,
-            _ => EmptyCrosshair,
+            0 => emptyCrosshair,
+            1 => gunCrosshair,
+            2 => shotgunCrosshair,
+            _ => emptyCrosshair,
         };
         lastCrosshair.Visible = false;
         lastCrosshair.Modulate = new Color(1, 1, 1);
@@ -199,10 +225,10 @@ public partial class HUD : ScreenScaleLimiter
         activeCrosshairIndex = select;
         activeCrosshair = activeCrosshairIndex switch
         {
-            0 => EmptyCrosshair,
-            1 => GunCrosshair,
-            2 => ShotgunCrosshair,
-            _ => EmptyCrosshair,
+            0 => emptyCrosshair,
+            1 => gunCrosshair,
+            2 => shotgunCrosshair,
+            _ => emptyCrosshair,
         };
         activeCrosshair.Visible = true;
     }
@@ -214,10 +240,10 @@ public partial class HUD : ScreenScaleLimiter
         var localDirection = Player.Self.GlobalTransform.Basis.Inverse() * hitFrom;
         var uiDir = new Vector2(localDirection.X, localDirection.Z) * (di.Damage * 0.75f);
         var tween = CreateTween();
-        tween.TweenProperty(this, "modulate", new Color(1.5f, 0.5f, 0.5f), 0.1f).SetTrans(Tween.TransitionType.Linear);
-        tween.Parallel().TweenProperty(this, "offset_transform_position", uiDir, 0.1f).SetTrans(Tween.TransitionType.Expo);
-        tween.TweenProperty(this, "modulate", new Color(1f, 1f, 1f), 0.1f).SetTrans(Tween.TransitionType.Back);
-        tween.Parallel().TweenProperty(this, "offset_transform_position", Vector2.Zero, 0.1f).SetTrans(Tween.TransitionType.Back);
+        tween.TweenProperty(this, "modulate", new Color(1.5f, 0.5f, 0.5f), 0.06d).SetTrans(Tween.TransitionType.Linear);
+        tween.Parallel().TweenProperty(this, "offset_transform_position", uiDir, 0.06d).SetTrans(Tween.TransitionType.Linear);
+        tween.TweenProperty(this, "modulate", new Color(1f, 1f, 1f), 0.06d).SetTrans(Tween.TransitionType.Linear);
+        tween.Parallel().TweenProperty(this, "offset_transform_position", Vector2.Zero, 0.06d).SetTrans(Tween.TransitionType.Linear);
 
         UpdateHealthAndArmor();
     }
@@ -225,48 +251,35 @@ public partial class HUD : ScreenScaleLimiter
     private async void HealAndUpdateHealth(float amount)
     {
         var tween = CreateTween();
-        tween.TweenProperty(this, "modulate", new Color(0.5f, 1.5f, 0.5f), 0.12f).SetTrans(Tween.TransitionType.Sine);
-        tween.TweenProperty(this, "modulate", new Color(1f, 1f, 1f), 0.12f).SetTrans(Tween.TransitionType.Sine);
+        tween.TweenProperty(this, "modulate", new Color(0.5f, 1.5f, 0.5f), 0.1d).SetTrans(Tween.TransitionType.Sine);
+        tween.TweenProperty(this, "modulate", new Color(1f, 1f, 1f), 0.1d).SetTrans(Tween.TransitionType.Sine);
 
         UpdateHealthAndArmor();
     }
 
     private async void UpdateHealthAndArmor()
     {
-        updateBarsFuncCount++;
         var healthMove = Player.Self.Health / Player.Self.MaxHealth;
-        var newHealthBarPos = new Vector2(2 + (healthBarPanel.Size.X * healthMove) - healthBarPanel.Size.X, 2);
-
-        var armorMove = Player.Self.Armor / Player.Self.MaxArmor;
-        var newArmorBarPos = new Vector2(2 + (armorBarPanel.Size.X * armorMove) - armorBarPanel.Size.X, 2);
-
-        // ! use tween like in HUDToolBox or above
-        var deltas = 0d;
-        // smooth over 250 ms
-        while (deltas < 0.25d)
+        if (healthMove != lastHealthMove)
         {
-            var delta = GetProcessDeltaTime();
-            await Task.Delay((int)(delta * 1000d));
-
-            deltas += delta;
-
-            var currentHealthBarPos = lastHealthBarPos.Lerp(newHealthBarPos, (float)deltas * 4f);
-            var currentArmorBarPos = lastArmorBarPos.Lerp(newArmorBarPos, (float)deltas * 4f);
-            if (updateBarsFuncCount > 1)
-            {
-                lastHealthBarPos = currentHealthBarPos;
-                lastArmorBarPos = currentArmorBarPos;
-                updateBarsFuncCount--;
-                return;
-            }
-
-            healthBarPanel.SetPosition(currentHealthBarPos);
-            armorBarPanel.SetPosition(currentArmorBarPos);
+            lastHealthMove = healthMove;
+            var newHealthBarPos = new Vector2(2 + (healthBar.Size.X * healthMove) - healthBar.Size.X, 2);
+            var healthTween = healthBarPanel.CreateTween();
+            healthTween.TweenProperty(healthBar, "position", newHealthBarPos, 0.1d);
+            healthTween.TweenInterval(1d);
+            healthTween.TweenProperty(healthBarChange, "position", newHealthBarPos, 0.3d);
         }
 
-        updateBarsFuncCount--;
-        lastHealthBarPos = newHealthBarPos;
-        lastArmorBarPos = newArmorBarPos;
+        var armorMove = Player.Self.Armor / Player.Self.MaxArmor;
+        if (armorMove != lastArmorMove)
+        {
+            lastArmorMove = armorMove;
+            var newArmorBarPos = new Vector2(2 + (armorBar.Size.X * armorMove) - armorBar.Size.X, 2);
+            var armorTween = armorBarPanel.CreateTween();
+            armorTween.TweenProperty(armorBar, "position", newArmorBarPos, 0.1d);
+            armorTween.TweenInterval(1d);
+            armorTween.TweenProperty(armorBarChange, "position", newArmorBarPos, 0.3d);
+        }
     }
 
     private async void AnimateRoundTimer(int round)

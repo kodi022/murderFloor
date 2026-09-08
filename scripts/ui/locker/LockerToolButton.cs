@@ -52,7 +52,7 @@ public partial class LockerToolButton : Panel
 
     public void CheckState(LootState lockerSelected)
     {
-        ninePatchRect.Modulate = Tiers.TierList[lootRarity.Tier].Color;
+        ninePatchRect.Modulate = Tiers.TierInfos[lootRarity.Tier].Color;
 
         OffsetTransformScale = Vector2.One;
         ZIndex = 0;

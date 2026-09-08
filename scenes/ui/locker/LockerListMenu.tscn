@@ -24,7 +24,7 @@ equipToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxC
 modifyToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button2")
 advancedToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button3")
 totalWeightLabel = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer2/RichTextLabel")
-toolStatsPanel = NodePath("Panel/BottomRightMarginContainerStats/Panel")
+toolStatsPanel = NodePath("Panel/BottomRightMarginContainerStats/ToolStatsPanel")
 
 [node name="Panel" type="Panel" parent="." unique_id=1279919527]
 layout_mode = 0
@@ -177,10 +177,10 @@ offset_bottom = 0.00048828125
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Panel" type="Panel" parent="Panel/BottomRightMarginContainerStats" unique_id=185527768]
+[node name="ToolStatsPanel" type="Panel" parent="Panel/BottomRightMarginContainerStats" unique_id=185527768]
 layout_mode = 2
 
-[node name="NinePatchRect2" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1859671204]
+[node name="NinePatchRect2" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1859671204]
 texture_filter = 2
 layout_mode = 0
 offset_right = 520.0
@@ -191,7 +191,7 @@ patch_margin_top = 32
 patch_margin_right = 32
 patch_margin_bottom = 32
 
-[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=410363790]
+[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=410363790]
 layout_mode = 0
 offset_right = 520.0
 offset_bottom = 36.0
@@ -200,7 +200,7 @@ text = "_coolgun_"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1609849874]
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1609849874]
 layout_mode = 0
 offset_top = 34.0
 offset_right = 255.0
@@ -213,7 +213,7 @@ shortcut_keys_enabled = false
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=325479833]
+[node name="RichTextLabel2" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=325479833]
 layout_mode = 0
 offset_left = 265.0
 offset_top = 34.0
@@ -226,14 +226,14 @@ tab_size = 0
 shortcut_keys_enabled = false
 vertical_alignment = 1
 
-[node name="PanelSimple" type="Panel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1189076697]
+[node name="PanelSimple" type="Panel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1189076697]
 layout_mode = 0
 offset_left = 10.0
 offset_top = 65.0
 offset_right = 510.0
 offset_bottom = 330.0
 
-[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/Panel/PanelSimple" unique_id=1423052811]
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelSimple" unique_id=1423052811]
 texture_filter = 2
 layout_mode = 0
 offset_right = 500.0
@@ -244,7 +244,7 @@ patch_margin_top = 32
 patch_margin_right = 32
 patch_margin_bottom = 32
 
-[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel/PanelSimple" unique_id=2032936145]
+[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelSimple" unique_id=2032936145]
 layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
@@ -252,7 +252,7 @@ offset_right = 104.0
 offset_bottom = 28.0
 text = "COOL STATS:"
 
-[node name="Label1" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel/PanelSimple" unique_id=123602544]
+[node name="Label1" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelSimple" unique_id=123602544]
 layout_mode = 0
 offset_left = 24.0
 offset_top = 28.0
@@ -260,7 +260,7 @@ offset_right = 123.0
 offset_bottom = 51.0
 text = "COOL STATS:"
 
-[node name="PanelAdvanced" type="Panel" parent="Panel/BottomRightMarginContainerStats/Panel" unique_id=1322578164]
+[node name="PanelAdvanced" type="Panel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1322578164]
 visible = false
 layout_mode = 0
 offset_left = 10.0
@@ -268,7 +268,7 @@ offset_top = 65.0
 offset_right = 510.0
 offset_bottom = 330.0
 
-[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/Panel/PanelAdvanced" unique_id=1576658535]
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelAdvanced" unique_id=1576658535]
 texture_filter = 2
 layout_mode = 0
 offset_right = 500.0
@@ -279,7 +279,7 @@ patch_margin_top = 32
 patch_margin_right = 32
 patch_margin_bottom = 32
 
-[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/Panel/PanelAdvanced" unique_id=348121466]
+[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelAdvanced" unique_id=348121466]
 layout_mode = 0
 offset_left = 103.0
 offset_top = 41.0

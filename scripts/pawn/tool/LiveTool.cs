@@ -87,9 +87,9 @@ public partial class LiveTool : Node
         {
             var plrVel = Player.Velocity.LengthSquared();
             var movementPenalty = Vector2.One;
-            if (plrVel > 10f)
+            if (plrVel > 8f)
                 movementPenalty = firearm.FastWalkSpreadMult;
-            else if (plrVel > 2f)
+            else if (plrVel > 1f)
                 movementPenalty = firearm.SlowWalkSpreadMult;
 
             var aimBuff = Aiming ? firearm.AimSpreadMult : Vector2.One;

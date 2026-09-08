@@ -130,11 +130,6 @@ public partial class Player : Pawn
 
         if (@event is InputEventKey eventKey)
         {
-            if (eventKey.Keycode == Key.F2 && eventKey.Pressed)
-            {
-                NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
-            }
-
             if (eventKey.Keycode == Key.F3 && eventKey.Pressed && OS.HasFeature("editor"))
             {
                 if (!IsInstanceValid(debugUI))
@@ -147,8 +142,6 @@ public partial class Player : Pawn
                     debugUI.Free();
                     debugUI = null;
                 }
-
-                // Debug.DebugGenerateLoot();
             }
 
             if (eventKey.Keycode == Key.F4 && eventKey.Pressed && OS.HasFeature("editor"))
@@ -161,6 +154,11 @@ public partial class Player : Pawn
                 {
                     CloseUI();
                 }
+            }
+
+            if (eventKey.Keycode == Key.F5 && eventKey.Pressed)
+            {
+                NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
             }
         }
     }

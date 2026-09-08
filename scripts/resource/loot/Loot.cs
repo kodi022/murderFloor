@@ -9,54 +9,54 @@ public static class Tiers
     /// </summary>
     public enum TierEnum
     {
-        Common = 8,         // 0 - 50
-        Uncommon = 7,       // 0 - 100
-        Rare = 6,           // 0 - 100
-        Epic = 5,           // 0 - 100
-        Exotic = 4,         // 50 - 100
-        Mythical = 3,       // 60 - 100
-        Legendary = 2,      // 70 - 100
-        Opalescent = 1,     // 80 - 100
-        Transcendent = -1,  // only possible at level 100, 1/8 on ludicrous, 1/12 otherwise
-        Alien = -2,         // special items
-        Unknown = -3,       // special items
+        Alien = -2,     // special items
+        Unknown = -1,   // special items
+        Transcendent,   // 90 - 100, 1/8 on ludicrous, 1/12 otherwise
+        Opalescent,     // 70 - 100
+        Legendary,      // 50 - 100
+        Mythical,       // 40 - 100
+        Exotic,         // 30 - 100
+        Epic,           // 0 - 100
+        Rare,           // 0 - 100
+        Uncommon,       // 0 - 100
+        Common,         // 0 - 50
     }
 
-    public static Dictionary<TierEnum, TierInfo> TierList { get; private set; } = new()
+    public static Dictionary<TierEnum, TierInfo> TierInfos { get; private set; } = new()
     {
         {TierEnum.Common,
         new TierInfo("base.loot.tier.common",
-        Color.FromHtml("#aaaaaa5b"), 1.00f)},
+        Color.FromHtml("#aaaaaa5b"), 1.00f, 0, 0.080f)},
         {TierEnum.Uncommon,
         new TierInfo("base.loot.tier.uncommon",
-        Color.FromHtml("#acffb65c"), 1.03f)},
+        Color.FromHtml("#acffb65c"), 1.03f, 1, 0.088f)},
         {TierEnum.Rare,
         new TierInfo("base.loot.tier.rare",
-        Color.FromHtml("#acb3ff6f"), 1.06f)},
+        Color.FromHtml("#acb3ff6f"), 1.06f, 2, 0.098f)},
         {TierEnum.Epic,
         new TierInfo("base.loot.tier.epic",
-        Color.FromHtml("#cb82ff81"), 1.09f)},
+        Color.FromHtml("#cb82ff81"), 1.09f, 3, 0.110f)},
         {TierEnum.Exotic,
         new TierInfo("base.loot.tier.exotic",
-        Color.FromHtml("#f153ff"), 1.12f)},
+        Color.FromHtml("#f153ff92"), 1.12f, 4, 0.124f)},
         {TierEnum.Mythical,
         new TierInfo("base.loot.tier.mythical",
-        Color.FromHtml("#b1ff3da6"), 1.15f)},
+        Color.FromHtml("#b1ff3d97"), 1.15f, 5, 0.140f)},
         {TierEnum.Legendary,
         new TierInfo("base.loot.tier.legendary",
-        Color.FromHtml("#ff9500c6"), 1.18f)},
+        Color.FromHtml("#ff9500b8"), 1.18f, 6, 0.158f)},
         {TierEnum.Opalescent,
         new TierInfo("base.loot.tier.opalescent",
-        Color.FromHtml("#a2e2ff"), 1.21f)},
+        Color.FromHtml("#a2e2ffe0"), 1.21f, 7, 0.176f)},
         {TierEnum.Transcendent,
         new TierInfo("base.loot.tier.transcendent",
-        Color.FromHtml("#7300ff"), 1.25f)},
+        Color.FromHtml("#7300ffff"), 1.25f, 8, 0.196f)},
         {TierEnum.Alien,
         new TierInfo("base.loot.tier.alien",
-        Color.FromHtml("#006a35"), 1.10f)},
+        Color.FromHtml("#006a35ff"), 1.10f, 7, 0.176f)},
         {TierEnum.Unknown,
         new TierInfo("base.loot.tier.unknown",
-        Color.FromHtml("#766666"), 1.10f)},
+        Color.FromHtml("#766666ff"), 1.10f, 7, 0.176f)},
     };
 
     public struct TierInfo
@@ -64,15 +64,20 @@ public static class Tiers
         public string NameLocalizationKey { get; private set; }
         public Color Color { get; private set; }
         public float PowerScale { get; private set; }
+        public int TierValue { get; private set; }
+        public float StatChance { get; private set; }
+
         // ! abilities?
         // ! additional attachments?
         // ! special stats?
 
-        public TierInfo(string locKey, Color color, float powerScale)
+        public TierInfo(string locKey, Color color, float powerScale, int tierValue, float statChance)
         {
             NameLocalizationKey = locKey;
             Color = color;
             PowerScale = powerScale;
+            TierValue = tierValue;
+            StatChance = statChance;
         }
     }
 }
@@ -106,7 +111,7 @@ public static class Wears
         UltimatePP = 110,   // only possible at level 100
     }
 
-    public static Dictionary<WearEnum, WearInfo> WearList { get; private set; } = new()
+    public static Dictionary<WearEnum, WearInfo> WearInfos { get; private set; } = new()
     {
         {WearEnum.Broken,       new WearInfo("base.loot.wear.broken",       1.00f)}, // increasing by 0.04
         {WearEnum.Tarnished,    new WearInfo("base.loot.wear.tarnished",    1.04f)},

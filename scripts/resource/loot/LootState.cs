@@ -1,12 +1,32 @@
 namespace MurderFloor.Loot;
 
-////////////
+[Flags]
+public enum PossibleStats
+{
+    Damages,
+    FalloffRanges,
+    RPM,
+    PelletCount,
+    HoldingSpeed,
+    ReloadDelayMs,
+    MagSize,
+    MagsReserve,
+    InitialDegreeSpread,
+    MaxDegreeSpread,
+    SpreadRecoveryRate,
+    SpreadIncreasePerShot,
+    SlowWalkSpreadMult,
+    FastWalkSpreadMult,
+    AimSpreadMult,
+    AimShiftRangeVertical,
+    AimShiftRangeHorizontal,
+}
+
 /// LootState CustomData basegame mapping
 /// attachment:
 ///     g = Gun LootState HashId
 ///     r = reticle image uid
 ///     c = reticle color
-////////////
 
 public struct LootState
 {
@@ -25,7 +45,7 @@ public struct LootState
     private Dictionary<string, string> CustomData { get; set; }
 
     // generated values on creation
-    public Dictionary<string, float> ModifiedStats { get; private set; } = [];
+    public Dictionary<PossibleStats, float> ModifiedStats { get; private set; } = [];
 
     public LootState() { }
 
@@ -33,7 +53,7 @@ public struct LootState
     public LootState(ulong seed, int level, Game.DifficultyEnum difficulty, int mapHashId, float overscaling)
     {
         Seed = seed;
-        ResourceHashId = GetLootHashId(Seed);
+        ResourceHashId = GetLootHashId();
         Version = Global.GameVersion;
         Level = level;
         Difficulty = difficulty;
@@ -48,9 +68,22 @@ public struct LootState
         var loot = GetLootRef();
         if (loot is null) return;
 
-        // need rarity and wear
+        var rarity = new LootRarity(this);
+        var rng = new RandomNumberGenerator { Seed = Seed };
+        var tier = Tiers.TierInfos[rarity.Tier];
+        var wear = Wears.WearInfos[rarity.Wear];
 
-        ModifiedStats.Add("Damage", 1.2f);
+        if (loot is ToolFirearm firearm)
+        {
+            // cast speeds up iteration
+            foreach (var val in (PossibleStats[])Enum.GetValues(typeof(PossibleStats)))
+            {
+                if (rng.Randf() < tier.StatChance)
+                {
+                    ModifiedStats.Add(val, tier.PowerScale * wear.PowerScale);
+                }
+            }
+        }
     }
 
     public readonly MFResource GetLootRef()
@@ -60,9 +93,9 @@ public struct LootState
         return loot;
     }
 
-    private static int GetLootHashId(ulong seed)
+    private readonly int GetLootHashId()
     {
-        var rng = new RandomNumberGenerator { Seed = seed };
+        var rng = new RandomNumberGenerator { Seed = Seed };
         var lootCount = ResourceManager.LootRegistry.Count;
         var lootIndex = rng.RandiRange(0, lootCount - 1);
         return ResourceManager.LootRegistry.GetResourceAtIndex(lootIndex).HashId;
@@ -81,8 +114,8 @@ public struct LootState
         rigidBody.AddChild(meshScene);
 
         var rarityInfo = new LootRarity(this);
-        ((Sprite3D)rigidBody.GetChild(0)).Modulate = Tiers.TierList[rarityInfo.Tier].Color;
-        ((Sprite3D)rigidBody.GetChild(1)).Modulate = Tiers.TierList[rarityInfo.Tier].Color;
+        ((Sprite3D)rigidBody.GetChild(0)).Modulate = Tiers.TierInfos[rarityInfo.Tier].Color;
+        ((Sprite3D)rigidBody.GetChild(1)).Modulate = Tiers.TierInfos[rarityInfo.Tier].Color;
         return newLoot;
     }
 
@@ -104,7 +137,7 @@ public struct LootState
             GD.PushError($"LootState.AddCustomData key cannot contain: \"{Layer1Delimiter}\" \"{Layer2Delimiter}\" \"{Layer3Delimiter}\"");
             return;
         }
-        if (!CustomDataArgIsValid(key))
+        if (!CustomDataArgIsValid(value))
         {
             GD.PushError($"LootState.AddCustomData value cannot contain: \"{Layer1Delimiter}\" \"{Layer2Delimiter}\" \"{Layer3Delimiter}\"");
             return;
