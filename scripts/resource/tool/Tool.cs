@@ -22,9 +22,8 @@ public partial class Tool : MFResource
     {
         public Player Player { get; set; }
         public LiveTool LiveTool { get; set; }
-        public Vector3 StartPosition { get; set; }
         public Transform3D ViewTransform { get; set; }
-        public readonly Vector3 ViewForward => -ViewTransform.Basis.Z;
+        public readonly Vector3 ViewForward => -ViewTransform.Basis.Z.Normalized();
     }
 
     public virtual SlotEnum GetSlot() => SlotEnum.Special;

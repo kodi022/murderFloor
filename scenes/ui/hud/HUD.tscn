@@ -1,9 +1,13 @@
 [gd_scene format=3 uid="uid://cclji8rued6d6"]
 
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_atyv1"]
-[ext_resource type="Script" uid="uid://c4cq0x80sifad" path="res://scripts/ui/hud/HUD.cs" id="2_ro0l0"]
+[ext_resource type="Script" uid="uid://c4cq0x80sifad" path="res://scripts/ui/hud/Hud.cs" id="2_ro0l0"]
 [ext_resource type="Material" uid="uid://c6sqfkcxldlfw" path="res://materials/crosshairsmooth.tres" id="3_fnas4"]
 [ext_resource type="Texture2D" uid="uid://c85wq0g572wis" path="res://images/ui/ninepatch-greyscale.png" id="4_m80ar"]
+[ext_resource type="Texture2D" uid="uid://bdefktt7q3gwy" path="res://images/ui/TablerCheck.png" id="5_oyc05"]
+[ext_resource type="Texture2D" uid="uid://ch68wt50rihfc" path="res://images/ui/TablerShield.png" id="5_y0kfc"]
+[ext_resource type="Texture2D" uid="uid://dfhmy2ruudb12" path="res://images/ui/TablerHeart.png" id="6_r6bpu"]
+[ext_resource type="Texture2D" uid="uid://dcwx5u27ifwk8" path="res://images/ui/TablerSkull.png" id="6_w7tcg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ed8p"]
 bg_color = Color(1, 1, 1, 0.5882353)
@@ -80,11 +84,18 @@ border_color = Color(0.099795215, 0.12812139, 0.15802127, 1)
 corner_radius_top_right = 6
 corner_radius_bottom_left = 6
 corner_detail = 1
-anti_aliasing_size = 2.0
+anti_aliasing = false
+anti_aliasing_size = 1.437
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fnas4"]
 bg_color = Color(0.099795215, 0.12812139, 0.15802127, 1)
 anti_aliasing_size = 8.0
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_pbeot"]
+color = Color(0.099795215, 0.12812139, 0.15802127, 1)
+grow_begin = 0.0
+grow_end = 0.0
+thickness = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyc05"]
 bg_color = Color(0, 0, 0, 0.5882353)
@@ -97,7 +108,18 @@ bg_color = Color(0.2901961, 0.29204994, 0.56078434, 1)
 bg_color = Color(0.56199807, 0.29208088, 0.3257657, 1)
 anti_aliasing_size = 2.0
 
-[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "waveInfoPanel", "emptyCrosshair", "gunCrosshair", "shotgunCrosshair", "healthBarPanel", "armorBarPanel", "weightBarPanel", "useInfoLabel", "weaponsContainer")]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pbeot"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w7tcg"]
+bg_color = Color(0.2901961, 0.29204994, 0.56078434, 1)
+anti_aliasing_size = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pbeot"]
+bg_color = Color(0, 0, 0, 0.52156866)
+corner_radius_top_right = 6
+corner_detail = 1
+
+[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "waveInfoPanel", "emptyCrosshair", "gunCrosshair", "shotgunCrosshair", "healthBarPanel", "armorBarPanel", "weightBarPanel", "useInfoLabel", "weaponsContainer", "playerListVBox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -118,6 +140,7 @@ armorBarPanel = NodePath("Bottom - Right/Offset/ArmorPanel")
 weightBarPanel = NodePath("Bottom - Right/Offset/WeightPanel")
 useInfoLabel = NodePath("Center/UseInfoLabel")
 weaponsContainer = NodePath("Bottom - Right/Offset/VBoxContainer")
+playerListVBox = NodePath("Top - Left/Offset/PlayerListVBox")
 
 [node name="Center" type="Control" parent="." unique_id=1976695130]
 layout_mode = 1
@@ -418,11 +441,12 @@ offset_bottom = -44.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
 
 [node name="WeightBarBg" type="Panel" parent="Bottom - Right/Offset/WeightPanel" unique_id=1733524367]
-layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 198.0
-offset_bottom = 10.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wvlhp")
 
@@ -446,9 +470,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_jvmx1")
 
 [node name="Border" type="Panel" parent="Bottom - Right/Offset/WeightPanel" unique_id=1827636103]
 clip_contents = true
-layout_mode = 0
-offset_right = 200.0
-offset_bottom = 12.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
 
 [node name="Panel" type="Panel" parent="Bottom - Right/Offset/WeightPanel/Border" unique_id=131144472]
@@ -585,6 +612,24 @@ offset_right = 12.0
 offset_bottom = 8.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_fnas4")
 
+[node name="BorderCornerTop" type="Panel" parent="Bottom - Right/Offset/WeightPanel/Border" unique_id=838698170]
+layout_mode = 0
+offset_left = 193.0
+offset_top = 1.0
+offset_right = 203.0
+offset_bottom = 5.0
+rotation = 0.7853982
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="BorderCornerBottom" type="Panel" parent="Bottom - Right/Offset/WeightPanel/Border" unique_id=539837176]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 12.0
+offset_right = 17.0
+offset_bottom = 16.0
+rotation = -2.3561945
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
 [node name="ArmorPanel" type="Panel" parent="Bottom - Right/Offset" unique_id=422478128]
 clip_children = 1
 clip_contents = true
@@ -596,11 +641,12 @@ offset_bottom = -22.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
 
 [node name="BarChangeBg" type="Panel" parent="Bottom - Right/Offset/ArmorPanel" unique_id=954360693]
-layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 248.0
-offset_bottom = 18.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_oyc05")
 
@@ -624,10 +670,55 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ig75s")
 
 [node name="Border" type="Panel" parent="Bottom - Right/Offset/ArmorPanel" unique_id=1760721554]
 clip_contents = true
-layout_mode = 0
-offset_right = 250.0
-offset_bottom = 20.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="BorderCornerTop" type="Panel" parent="Bottom - Right/Offset/ArmorPanel/Border" unique_id=502720187]
+layout_mode = 0
+offset_left = 243.0
+offset_right = 253.0
+offset_bottom = 4.0
+rotation = 0.7853982
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="BorderCornerBottom" type="Panel" parent="Bottom - Right/Offset/ArmorPanel/Border" unique_id=535590919]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 20.0
+offset_right = 17.000027
+offset_bottom = 23.999998
+rotation = -2.3561945
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="TextureRect" type="TextureRect" parent="Bottom - Right/Offset/ArmorPanel" unique_id=1840037919]
+modulate = Color(0.099795215, 0.12812139, 0.15802127, 1)
+texture_filter = 4
+layout_mode = 0
+offset_left = 10.0
+offset_top = 3.0
+offset_right = 23.0
+offset_bottom = 16.0
+offset_transform_enabled = true
+offset_transform_position = Vector2(0.5, 0.5)
+texture = ExtResource("5_y0kfc")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="Bottom - Right/Offset/ArmorPanel/TextureRect" unique_id=343604386]
+texture_filter = 4
+layout_mode = 0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 14.0
+offset_bottom = 14.0
+texture = ExtResource("5_y0kfc")
+expand_mode = 5
+stretch_mode = 5
 
 [node name="HealthPanel" type="Panel" parent="Bottom - Right/Offset" unique_id=1130721444]
 clip_children = 1
@@ -639,11 +730,12 @@ offset_right = -75.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
 
 [node name="BarChangeBg" type="Panel" parent="Bottom - Right/Offset/HealthPanel" unique_id=321571149]
-layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 248.0
-offset_bottom = 18.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_oyc05")
 
@@ -667,10 +759,53 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_atyv1")
 
 [node name="Border" type="Panel" parent="Bottom - Right/Offset/HealthPanel" unique_id=1956631621]
 clip_contents = true
-layout_mode = 0
-offset_right = 250.0
-offset_bottom = 20.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="BorderCornerTop" type="Panel" parent="Bottom - Right/Offset/HealthPanel/Border" unique_id=1049266620]
+layout_mode = 0
+offset_left = 243.0
+offset_right = 253.0
+offset_bottom = 4.0
+rotation = 0.7853982
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="BorderCornerBottom" type="Panel" parent="Bottom - Right/Offset/HealthPanel/Border" unique_id=1503673777]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 20.0
+offset_right = 17.000027
+offset_bottom = 23.999998
+rotation = -2.3561945
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="TextureRect" type="TextureRect" parent="Bottom - Right/Offset/HealthPanel" unique_id=327876932]
+modulate = Color(0.099795215, 0.12812139, 0.15802127, 1)
+texture_filter = 4
+layout_mode = 0
+offset_left = 10.0
+offset_top = 3.0
+offset_right = 24.0
+offset_bottom = 17.0
+texture = ExtResource("6_r6bpu")
+expand_mode = 4
+stretch_mode = 4
+
+[node name="TextureRect2" type="TextureRect" parent="Bottom - Right/Offset/HealthPanel/TextureRect" unique_id=326720780]
+texture_filter = 4
+layout_mode = 0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 15.0
+offset_bottom = 15.0
+texture = ExtResource("6_r6bpu")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="Top - Left" type="Control" parent="." unique_id=1825259322]
 layout_mode = 1
@@ -720,3 +855,188 @@ text = "52 Left"
 scroll_active = false
 autowrap_mode = 0
 horizontal_alignment = 1
+
+[node name="PlayerListVBox" type="VBoxContainer" parent="Top - Left/Offset" unique_id=2030540582]
+layout_mode = 0
+offset_top = 80.0
+offset_right = 200.0
+offset_bottom = 168.0
+
+[node name="ReferencePlayerPanel" type="Panel" parent="Top - Left/Offset/PlayerListVBox" unique_id=501265628]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pbeot")
+
+[node name="Label" type="Label" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel" unique_id=729616605]
+layout_mode = 0
+offset_top = -1.0
+offset_right = 200.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 12
+text = "Player"
+
+[node name="ArmorPanel" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel" unique_id=1034637998]
+clip_children = 1
+clip_contents = true
+layout_mode = 0
+offset_top = 16.0
+offset_right = 120.0
+offset_bottom = 27.999989
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
+
+[node name="BarChangeBg" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/ArmorPanel" unique_id=81371445]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_oyc05")
+
+[node name="BarChange" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/ArmorPanel" unique_id=1023285543]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 118.0
+offset_bottom = 10.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_m80ar")
+
+[node name="Bar" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/ArmorPanel" unique_id=1618193885]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 118.0
+offset_bottom = 10.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_w7tcg")
+
+[node name="Border" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/ArmorPanel" unique_id=1311178673]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="BorderCornerTop" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/ArmorPanel/Border" unique_id=1817042968]
+layout_mode = 0
+offset_left = 113.0
+offset_right = 123.0
+offset_bottom = 3.9999995
+rotation = 0.7853982
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="BorderCornerBottom" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/ArmorPanel/Border" unique_id=1256708140]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 12.0
+offset_right = 17.000011
+offset_bottom = 16.0
+rotation = -2.3561945
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="HealthPanel" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel" unique_id=1998926633]
+clip_children = 1
+clip_contents = true
+layout_mode = 0
+offset_top = 30.0
+offset_right = 120.0
+offset_bottom = 41.99997
+theme_override_styles/panel = SubResource("StyleBoxFlat_6ll6g")
+
+[node name="BarChangeBg" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/HealthPanel" unique_id=1429264171]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_oyc05")
+
+[node name="BarChange" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/HealthPanel" unique_id=160750639]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -1.9999695
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_m80ar")
+
+[node name="Bar" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/HealthPanel" unique_id=2093937655]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -1.9999695
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_atyv1")
+
+[node name="Border" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/HealthPanel" unique_id=1598915630]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kw0id")
+
+[node name="BorderCornerTop" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/HealthPanel/Border" unique_id=162509548]
+layout_mode = 0
+offset_left = 113.0
+offset_right = 123.0
+offset_bottom = 3.9999995
+rotation = 0.7853982
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="BorderCornerBottom" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/HealthPanel/Border" unique_id=446220576]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 12.0
+offset_right = 17.000011
+offset_bottom = 16.0
+rotation = -2.3561945
+theme_override_styles/panel = SubResource("StyleBoxLine_pbeot")
+
+[node name="CheckIcon" type="TextureRect" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel" unique_id=1210101816]
+texture_filter = 4
+layout_mode = 0
+offset_left = 124.0
+offset_top = 14.0
+offset_right = 152.0
+offset_bottom = 42.0
+texture = ExtResource("5_oyc05")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="DeadIcon" type="Panel" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel" unique_id=1070805992]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 16.0
+offset_right = 28.000008
+offset_bottom = 42.000027
+theme_override_styles/panel = SubResource("StyleBoxFlat_pbeot")
+
+[node name="TextureRect2" type="TextureRect" parent="Top - Left/Offset/PlayerListVBox/ReferencePlayerPanel/DeadIcon" unique_id=1053425716]
+texture_filter = 4
+layout_mode = 0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 28.0
+offset_bottom = 28.0
+texture = ExtResource("6_w7tcg")
+expand_mode = 3
+stretch_mode = 4

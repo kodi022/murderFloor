@@ -6,12 +6,11 @@ public partial class Player : Pawn
 {
     public static List<Player> AllPlayers { get; private set; } = [];
     public static Player Self { get; private set; }
+    public static Player Viewing { get; set; }
 
     public int Id { get; private set; }
 
-    public Vector3 ViewPosition => viewAim.Position;
-    public Vector3 ViewGlobalPosition => viewAim.GlobalPosition;
-    public Transform3D ViewTransform => viewAim.GlobalTransform;
+    public Transform3D ViewGlobalTransform => viewModels.GlobalTransform;
 
     public float CameraShakeScale { get; set; }
     public Vector3 CameraRotationKick { get; set; }
@@ -37,7 +36,7 @@ public partial class Player : Pawn
 
     // * world
     [Export]
-    private Node3D worldModels;
+    private Node3D worldModels; // root of worldmodels
     [Export]
     private AnimationTree worldAnimationTree;
     private BoneAttachment3D worldHandBone;
@@ -45,11 +44,11 @@ public partial class Player : Pawn
 
     // * view
     [Export]
+    private Node3D viewModels; // root of viewmodels (+ aiming). camera is offset from this
+    [Export]
     public Node3D ViewAimViewmodel { get; private set; } // ViewModel attachment point
     [Export]
     public Camera3D Camera { get; private set; } // offsets from viewAim
-    [Export]
-    private Node3D viewAim; // real aim of view / weapons. camera is offset from this
     [Export]
     private RayCast3D cameraRaycast;
 
@@ -63,11 +62,28 @@ public partial class Player : Pawn
     private Vector2 mouseDelta;
 
     private Control openUI;
+    private Control deadUI;
     private Control debugUI;
 
     public string Hold = "";
 
     public static Player FindPlayer(int playerId) => AllPlayers.First(p => p.Id == playerId);
+
+    public static void ViewPlayer(Player player)
+    {
+        if (IsInstanceValid(Viewing))
+        {
+            Viewing.worldModels.Visible = true;
+            Viewing.viewModels.Visible = false;
+            Viewing.Camera.ClearCurrent(false);
+        }
+
+        Viewing = player;
+        Viewing.worldModels.Visible = false;
+        Viewing.viewModels.Visible = true;
+        _ = Viewing.SelectedTool?.EquipViewing();
+        Viewing.Camera.MakeCurrent();
+    }
 
     public override void _EnterTree()
     {
@@ -92,9 +108,7 @@ public partial class Player : Pawn
 
         if (!IsMultiplayerAuthority())
         {
-            foreach (var child in GetChildren()) if (child is Control) child.Free();
             cameraRaycast.Free();
-            Camera.Free();
             NetworkManager.Current.RpcId(Id, "ClientPlayerReady");
             return;
         }
@@ -108,13 +122,12 @@ public partial class Player : Pawn
             Rpc("ToolAddRpc", toolConfig.Serialize());
         }
 
-        OptionsMenu.ShowReturnButton = true;
         var opt = OptionsManager.Load();
         OptionsManager.Apply(opt);
+        OptionsMenu.ShowReturnButton = true;
 
         cameraRaycast.AddException(this);
-        Camera.Current = true;
-        worldModels.Free();
+        ViewPlayer(this);
     }
 
     public override void _Input(InputEvent @event)
@@ -130,11 +143,17 @@ public partial class Player : Pawn
 
         if (@event is InputEventKey eventKey)
         {
+            if (eventKey.Keycode == Key.F1 && eventKey.Pressed)
+            {
+                var index = (AllPlayers.IndexOf(Viewing) + 1) % AllPlayers.Count;
+                ViewPlayer(AllPlayers[index]);
+            }
+
             if (eventKey.Keycode == Key.F3 && eventKey.Pressed && OS.HasFeature("editor"))
             {
                 if (!IsInstanceValid(debugUI))
                 {
-                    debugUI = GD.Load<PackedScene>("res://scenes/ui/hud/debug/HUDDebug.tscn").Instantiate<Control>();
+                    debugUI = GD.Load<PackedScene>("res://scenes/ui/hud/debug/HudDebug.tscn").Instantiate<Control>();
                     AddChild(debugUI);
                 }
                 else
@@ -148,7 +167,7 @@ public partial class Player : Pawn
             {
                 if (!IsInstanceValid(openUI))
                 {
-                    OpenUI("res://scenes/ui/hud/debug/HUDDebugMenus.tscn");
+                    OpenUI("res://scenes/ui/hud/debug/HudDebugMenus.tscn");
                 }
                 else
                 {
@@ -159,6 +178,18 @@ public partial class Player : Pawn
             if (eventKey.Keycode == Key.F5 && eventKey.Pressed)
             {
                 NetworkManager.Current.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
+            }
+
+            if (eventKey.Keycode == Key.F7 && eventKey.Pressed)
+            {
+                var di = new DamageInfo()
+                {
+                    Damage = 25,
+                    DamageType = DamageInfo.DamageTypeEnum.Physical,
+                    AttackerId = Id,
+                    AttackerName = NetworkManager.Current._players[Id]["Name"],
+                };
+                Rpc("OnDamageRpc", di.ToVariant());
             }
         }
     }
@@ -177,7 +208,7 @@ public partial class Player : Pawn
 
         if (!IsMultiplayerAuthority())
         {
-            viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
+            viewModels.Rotation = new Vector3(ViewAngle.Y, 0, 0);
             Rotation = new Vector3(0, ViewAngle.X, 0);
 
             var vel = NetworkedVelocity.Length() * 0.4f;
@@ -214,7 +245,7 @@ public partial class Player : Pawn
         mouseDelta = Vector2.Zero;
 
         Rotation = new Vector3(0, ViewAngle.X, 0);
-        viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
+        viewModels.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
         Camera.Fov = OptionsManager.CurrentOptions.FieldOfView;
         if (SelectedTool?.Aiming ?? false)
@@ -239,8 +270,7 @@ public partial class Player : Pawn
         if (CameraShakeScale > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * CameraShakeScale;
         else Camera.Position = Vector3.Zero;
 
-
-        if (openUI is not null) return;
+        if (IsInputBlocked()) return;
 
         if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Tool.SlotEnum.Primary);
         if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Tool.SlotEnum.Secondary);
@@ -274,7 +304,7 @@ public partial class Player : Pawn
     {
         if (!IsMultiplayerAuthority()) return;
 
-        if (openUI is not null) return;
+        if (IsInputBlocked()) return;
 
         if (SelectedTool is not null)
         {
@@ -294,6 +324,34 @@ public partial class Player : Pawn
         PhysicsProcessMovement();
     }
 
+    public override void OnDeath(DamageInfo damageInfo)
+    {
+        base.OnDeath(damageInfo);
+
+        var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
+        var liveSk = worldModels.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
+        var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
+        var copyCount = Math.Min(liveSk.GetBoneCount(), ragSk.GetBoneCount());
+
+        ragdoll.GlobalTransform = GlobalTransform;
+        for (int i = 0; i < copyCount; i++)
+        {
+            var pos = liveSk.GetBonePosePosition(i);
+            var rot = liveSk.GetBonePoseRotation(i);
+            ragSk.SetBonePosePosition(i, pos);
+            ragSk.SetBonePoseRotation(i, rot);
+        }
+
+        var hitCollider = damageInfo.HitboxName;
+        // ragdoll has different colliders
+        if (hitCollider == "Head") hitCollider = "Neck";
+        if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
+        if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
+        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
+
+        Game.Current.AddChild(ragdoll);
+    }
+
     public void AddViewmodelPositionKick(Vector3 amount, float lerpScale = 1f)
     {
         targetViewmodelPositionKick += amount;
@@ -302,7 +360,7 @@ public partial class Player : Pawn
 
     public void OpenUI(string uiScene)
     {
-        if (openUI is not null) return;
+        if (IsInstanceValid(openUI)) return;
 
         var ui = GD.Load<PackedScene>(uiScene).Instantiate<Control>();
         openUI = ui;
@@ -317,6 +375,14 @@ public partial class Player : Pawn
         openUI.Free();
         openUI = null;
         mouseMode = Input.MouseModeEnum.Captured;
+    }
+
+    private bool IsInputBlocked()
+    {
+        if (IsInstanceValid(openUI)) return true;
+        if (IsInstanceValid(deadUI)) return true;
+
+        return false;
     }
 
     private void BuildWorldNodes()

@@ -49,7 +49,7 @@ public partial class NetworkManager : Node
         Multiplayer.ServerDisconnected += OnServerDisconnected;
     }
 
-    // i know this is not good, too bad
+    // i know this is not good, too bad. less global nodes
     public override void _Ready()
     {
         ResourceManager.Ready();
@@ -117,29 +117,13 @@ public partial class NetworkManager : Node
         GD.Print("OnPeerConnected " + id);
 
         RpcId(id, "SendInfoToPeer", _playerInfo);
+
         _players[id] = _playerInfo;
         var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
         player.Name = "plr_" + id.ToString();
         player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
-
-        //Player.Self.Rpc("ToolsResetRpc", Player.Self.GetAllTools());
-    }
-
-    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
-    // Clients get notified when other clients disconnect from the same server.
-    private void OnPeerDisconnected(long id)
-    {
-        GD.Print("OnPeerDisconnected " + id);
-        foreach (var p in Player.AllPlayers)
-        {
-            if (p.Id == id)
-            {
-                p.QueueFree();
-            }
-        }
-        _players.Remove(id);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
@@ -155,6 +139,22 @@ public partial class NetworkManager : Node
         player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
         GetTree().Root.AddChild(player);
+    }
+
+    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
+    // Clients get notified when other clients disconnect from the same server.
+    private void OnPeerDisconnected(long id)
+    {
+        GD.Print("OnPeerDisconnected " + id);
+        foreach (var p in Player.AllPlayers)
+        {
+            if (p.Id == id)
+            {
+                p.QueueFree();
+            }
+        }
+        _players.Remove(id);
+        EmitSignal(SignalName.PlayerDisconnected, id);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer fails to establish a connection to a server. 
@@ -174,13 +174,15 @@ public partial class NetworkManager : Node
         Multiplayer.MultiplayerPeer = null;
         _players.Clear();
         Rpc("LoadGame", "res://scenes/MainMenu.tscn");
+        EmitSignal(SignalName.ServerDisconnected);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-    private void SendInfoToPeer(Godot.Collections.Dictionary<string, string> newPlayerInfo)
+    private void SendInfoToPeer(Godot.Collections.Dictionary<string, string> playerInfo)
     {
-        int newPlayerId = Multiplayer.GetRemoteSenderId();
-        _players[newPlayerId] = newPlayerInfo;
+        int playerId = Multiplayer.GetRemoteSenderId();
+        _players[playerId] = playerInfo;
+        EmitSignal(SignalName.PlayerConnected, playerId, playerInfo);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
@@ -201,6 +203,6 @@ public partial class NetworkManager : Node
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     private void ClientPlayerReady()
     {
-        Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", Player.Self.GetAllTools());
+        Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", Player.Self.GetAllTools(1));
     }
 }

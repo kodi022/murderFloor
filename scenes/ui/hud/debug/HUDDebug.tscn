@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dxlfxyysllkol"]
 
-[ext_resource type="Script" uid="uid://fuliwgtcrgqa" path="res://scripts/ui/hud/debug/HUDDebug.cs" id="1_pg437"]
+[ext_resource type="Script" uid="uid://fuliwgtcrgqa" path="res://scripts/ui/hud/debug/HudDebug.cs" id="1_pg437"]
 
 [node name="HudDebug" type="Control" unique_id=2053498864]
 layout_mode = 3

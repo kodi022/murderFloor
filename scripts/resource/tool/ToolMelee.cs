@@ -24,7 +24,7 @@ public partial class ToolMelee : Tool
     public virtual void FireMelee(FireInfo fi)
     {
         var space = fi.Player.GetWorld3D().DirectSpaceState;
-        var query = PhysicsRayQueryParameters3D.Create(fi.StartPosition, fi.StartPosition + fi.ViewForward * MaxRange, 5);
+        var query = PhysicsRayQueryParameters3D.Create(fi.ViewTransform.Origin, fi.ViewTransform.Origin + fi.ViewForward * MaxRange, 5);
         var ray = space.IntersectRay(query);
         if (ray.ContainsKey("collider"))
         {
@@ -61,7 +61,7 @@ public partial class ToolMelee : Tool
                     WeaponId = HashId,
                     HitboxName = hitObjName,
                     HitPosition = (Vector3)ray["position"],
-                    HitDirection = (pos - fi.StartPosition).Normalized()
+                    HitDirection = (pos - fi.ViewTransform.Origin).Normalized()
                 };
                 pawn.Rpc("OnDamageRpc", di.ToVariant());
             }

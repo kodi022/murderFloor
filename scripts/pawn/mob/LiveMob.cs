@@ -16,6 +16,7 @@ public partial class LiveMob : Pawn
             ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
             worldModels.Visible = value;
             collisionShape3D.SetDeferred("disabled", !value);
+            Visible = value;
         }
     }
 
@@ -112,7 +113,7 @@ public partial class LiveMob : Pawn
         ragdoll.GlobalTransform = GlobalTransform;
         for (int i = 0; i < copyCount; i++)
         {
-            var pos = liveSk.GetBonePosePosition(i) * 6.12728f; // due to import scaling
+            var pos = liveSk.GetBonePosePosition(i);
             var rot = liveSk.GetBonePoseRotation(i);
             ragSk.SetBonePosePosition(i, pos);
             ragSk.SetBonePoseRotation(i, rot);

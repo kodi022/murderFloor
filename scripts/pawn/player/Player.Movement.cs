@@ -30,24 +30,21 @@ public partial class Player : Pawn
             wishVel *= 0.65f;
         }
 
+        wishVel.X *= MathF.Abs(strafe);
+        wishVel.Z *= MathF.Abs(forward);
+        wishVel = wishVel.Rotated(Vector3.Up, ViewAngle.X);
+
         var result = TraceShape(Position + Vector3.Down * 0.06f);
         if (result.Hit && !grounded)
         {
-            AddViewmodelPositionKick(new Vector3(0, 0.02f, 0), 0.5f);
+            AddViewmodelPositionKick(new Vector3(0, 0.03f, 0), 0.7f);
         }
 
         grounded = result.Hit;
-
-        // ! does not reduce from joystick
-        // abs input
-        // wishMove.X *= input.X
-        // wishMove.Z *= input.Z
-
-        wishVel = wishVel.Rotated(Vector3.Up, ViewAngle.X);
         if (grounded && Input.IsActionJustPressed("jump"))
         {
-            AddViewmodelPositionKick(new Vector3(0, -0.065f, 0), 0.65f);
-            wishVel.Y = 14f;
+            AddViewmodelPositionKick(new Vector3(0, -0.065f, 0), 0.7f);
+            wishVel.Y = 18f;
         }
 
         if (grounded)

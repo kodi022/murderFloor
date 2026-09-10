@@ -150,11 +150,6 @@ public partial class Game : Node
             TimerToNextWave();
             return;
         }
-
-        if (ActiveMobs < 8)
-        {
-            SpawnMobGroup();
-        }
     }
 
     private void ProcessLoot(DamageInfo damageInfo, int mobPoolId)

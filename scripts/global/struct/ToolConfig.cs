@@ -24,13 +24,12 @@ public struct ToolConfig
             obj.Atts.Add(att.ToString());
         }
 
-        return System.Text.Json.JsonSerializer.Serialize(obj, SaveManager.JsonOptions);
+        return System.Text.Json.JsonSerializer.Serialize(obj, Global.JsonOptions);
     }
 
     public static ToolConfig Deserialize(string toolConfigSerialized)
     {
-        var obj = System.Text.Json.JsonSerializer.Deserialize<Stringified>(toolConfigSerialized, SaveManager.JsonOptions);
-
+        var obj = System.Text.Json.JsonSerializer.Deserialize<Stringified>(toolConfigSerialized, Global.JsonOptions);
         var toolConfig = new ToolConfig { LootState = LootState.Deserialize(obj.State) };
         toolConfig.AttachmentLootStates ??= [];
 

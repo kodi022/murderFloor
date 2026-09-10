@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class HUDToolBox : Panel
+public partial class HudToolBox : Panel
 {
     [Export]
     public NinePatchRect NinePatchRect { get; private set; }

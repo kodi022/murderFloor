@@ -36,7 +36,6 @@ public partial class Player : Pawn
     public void ToolAdd(string toolConfigSerialized)
     {
         var toolConfig = ToolConfig.Deserialize(toolConfigSerialized);
-        GD.Print(toolConfig.AttachmentLootStates.Count);
         var resource = (Tool)toolConfig.LootState.GetLootRef();
         resource ??= ResourceManager.ToolRegistry.GetResourceRef(toolConfig.LootState.ResourceHashId);
 
@@ -47,6 +46,7 @@ public partial class Player : Pawn
         liveTool.PlayerId = Id;
         liveTool.ToolFullId = resource.FullId;
         liveTool.ToolConfig = toolConfig;
+
         var list = GetToolListFromTool(liveTool.ToolFullId);
         liveTool.Name = $"{resource.FullId}_" + list.Count(t => t.ToolFullId == resource.FullId);
 
@@ -258,13 +258,18 @@ public partial class Player : Pawn
         ToolEquipOwner();
     }
 
-    public Godot.Collections.Array<string> GetAllTools()
+    /// <summary>Gets all tools. arg 0 returns FullId. arg 1 returns serialized ToolConfig</summary>
+    public Godot.Collections.Array<string> GetAllTools(int returnType = 0)
     {
         Godot.Collections.Array<string> tools = [];
         void AddTools(List<LiveTool> liveTools)
         {
-            foreach (var tool in liveTools) tools.Add(tool.ToolFullId);
+            if (returnType == 1)
+                foreach (var tool in liveTools) tools.Add(tool.ToolConfig.Serialize());
+            else
+                foreach (var tool in liveTools) tools.Add(tool.ToolFullId);
         }
+
         AddTools(ToolsPrimary);
         AddTools(ToolsSecondary);
         AddTools(ToolsSpecial);

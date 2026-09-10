@@ -8,6 +8,8 @@ public partial class Pawn : CharacterBody3D
     public delegate void PlayerOnDamageEventHandler(DamageInfoVariant damageInfoVariant);
     [Signal]
     public delegate void PlayerOnDeathEventHandler(DamageInfoVariant damageInfoVariant);
+    [Signal]
+    public delegate void PlayerOnSpawnEventHandler(Vector3 position);
 
     [Signal]
     public delegate void MobOnDamageEventHandler(DamageInfoVariant damageInfoVariant);
@@ -71,6 +73,15 @@ public partial class Pawn : CharacterBody3D
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public virtual void OnHealRpc(DamageInfo damageInfo)
     {
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public virtual void OnSpawn(Vector3 pos)
+    {
+        if (Player.Self == this)
+        {
+            EmitSignal(SignalName.PlayerOnSpawn, pos);
+        }
     }
 
     public virtual void OnDeath(DamageInfo damageInfo)

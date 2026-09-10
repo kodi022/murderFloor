@@ -42,7 +42,7 @@ public struct LootState
     public Game.DifficultyEnum Difficulty { get; private set; }
     public int MapHashId { get; private set; }
     public int OverScaling { get; private set; }
-    private Dictionary<string, string> CustomData { get; set; }
+    private Dictionary<string, string> CustomData { get; set; } // needs to be property
 
     // generated values on creation
     public Dictionary<PossibleStats, float> ModifiedStats { get; private set; } = [];
@@ -88,6 +88,8 @@ public struct LootState
 
     public readonly MFResource GetLootRef()
     {
+        if (ResourceHashId == 184465471) return null; // fistd
+
         var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
         if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({ResourceHashId})");
         return loot;

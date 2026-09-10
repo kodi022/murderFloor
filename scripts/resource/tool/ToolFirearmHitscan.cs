@@ -56,64 +56,63 @@ public partial class ToolFirearmHitscan : ToolFirearm
             dir = dir.Rotated(fi.ViewTransform.Basis.X.Normalized(), angle.X * pitch);
 
             var space = fi.Player.GetWorld3D().DirectSpaceState;
-            var query = PhysicsRayQueryParameters3D.Create(fi.StartPosition, fi.StartPosition + dir * MaxRange, 5);
+            var query = PhysicsRayQueryParameters3D.Create(fi.ViewTransform.Origin, fi.ViewTransform.Origin + dir * MaxRange, 5);
             var ray = space.IntersectRay(query);
-            if (ray.ContainsKey("collider"))
+            if (!ray.ContainsKey("collider")) continue;
+
+            Debug.DebugDot((Vector3)ray["position"], color: new Color(0, 0, 0));
+
+            Pawn pawn = null;
+            var currentNode = (Node)(GodotObject)ray["collider"];
+            for (int j = 0; j < 5; j++)
             {
-                Debug.DebugDot((Vector3)ray["position"], color: new Color(0, 0, 0));
+                currentNode = currentNode.GetParent();
 
-                Pawn pawn = null;
-                var currentNode = (Node)(GodotObject)ray["collider"];
-                for (int j = 0; j < 5; j++)
+                if (currentNode is null) break;
+                if (currentNode is Pawn p)
                 {
-                    currentNode = currentNode.GetParent();
-
-                    if (currentNode is null) break;
-                    if (currentNode is Pawn p)
-                    {
-                        pawn = p;
-                        break;
-                    }
-                }
-
-                if (pawn is not null)
-                {
-                    var pos = (Vector3)ray["position"];
-                    var distanceSqr = pos.DistanceSquaredTo(fi.StartPosition);
-                    var nearSqr = FalloffRanges.X * FalloffRanges.X;
-                    var farSqr = FalloffRanges.Y * FalloffRanges.Y;
-                    var damage = Damages.X;
-
-                    if (distanceSqr > nearSqr)
-                    {
-                        if (distanceSqr > farSqr)
-                        {
-                            damage = Damages.Y;
-                        }
-                        else
-                        {
-                            var rangeFalloffNormalized = 1 - ((nearSqr - distanceSqr) / (nearSqr - farSqr));
-                            damage = Damages.Y + (Damages.X - Damages.Y) * rangeFalloffNormalized;
-                        }
-                    }
-
-                    var hitObjName = ((Node)(GodotObject)ray["collider"]).GetParent().Name.ToString();
-                    damage *= GetHitDamageMultiplier(hitObjName);
-
-                    var di = new DamageInfo()
-                    {
-                        Damage = damage,
-                        DamageType = DamageInfo.DamageTypeEnum.Physical,
-                        AttackerId = fi.Player.Id,
-                        AttackerName = NetworkManager.Current._players[fi.Player.Id]["Name"],
-                        WeaponId = HashId,
-                        HitboxName = hitObjName,
-                        HitPosition = (Vector3)ray["position"],
-                        HitDirection = (pos - fi.StartPosition).Normalized()
-                    };
-                    pawn.Rpc("OnDamageRpc", di.ToVariant());
+                    pawn = p;
+                    break;
                 }
             }
+
+            if (pawn is null) continue;
+
+            var pos = (Vector3)ray["position"];
+            var distanceSqr = pos.DistanceSquaredTo(fi.ViewTransform.Origin);
+            var nearSqr = FalloffRanges.X * FalloffRanges.X;
+            var farSqr = FalloffRanges.Y * FalloffRanges.Y;
+            var damage = Damages.X;
+
+            if (distanceSqr > nearSqr)
+            {
+                if (distanceSqr > farSqr)
+                {
+                    damage = Damages.Y;
+                }
+                else
+                {
+                    var rangeFalloffNormalized = 1 - ((nearSqr - distanceSqr) / (nearSqr - farSqr));
+                    damage = Damages.Y + (Damages.X - Damages.Y) * rangeFalloffNormalized;
+                }
+            }
+
+            var hitObjName = pawn.Name.ToString();
+            damage *= GetHitDamageMultiplier(hitObjName);
+
+            var di = new DamageInfo()
+            {
+                Damage = damage,
+                DamageType = DamageInfo.DamageTypeEnum.Physical,
+                AttackerId = fi.Player.Id,
+                AttackerName = NetworkManager.Current._players[fi.Player.Id]["Name"],
+                WeaponId = HashId,
+                HitboxName = hitObjName,
+                HitPosition = (Vector3)ray["position"],
+                HitDirection = (pos - fi.ViewTransform.Origin).Normalized()
+            };
+            GD.Print(hitObjName);
+            pawn.Rpc("OnDamageRpc", di.ToVariant());
         }
     }
 

@@ -52,6 +52,8 @@ public partial class LiveTool : Node
 
     private float currentAimingPositionLerp;
 
+    private Node3D worldScene;
+
     private Node3D viewmodelScene;
     private Vector3 viewmodelSceneStartPos;
     private Vector3 viewmodelSceneSightPosition;
@@ -120,13 +122,13 @@ public partial class LiveTool : Node
 
     public async Task Equip()
     {
-        var posNode = IsMultiplayerAuthority() ? Player.ViewAimViewmodel : Player.WorldToolPosition;
+        var posNode = Player.Viewing == Player ? Player.ViewAimViewmodel : Player.WorldToolPosition;
         foreach (var child in posNode.GetChildren())
         {
             child.Free();
         }
 
-        if (IsMultiplayerAuthority())
+        if (Player.Viewing == Player)
         {
             viewmodelScene = ToolResource.ViewmodelScene.Instantiate<Node3D>();
             viewmodelScene.RotationDegrees += new Vector3(0, 90, 0);
@@ -146,7 +148,7 @@ public partial class LiveTool : Node
                 newGun.Reparent(viewmodelScene, false);
                 viewmodelSceneSightPosition = new Vector3(-oldGunPos.Z, -oldGunPos.Y, 0);
 
-                var flash = GD.Load<PackedScene>("res://scenes/particle/gunflash.tscn");
+                var flash = GD.Load<PackedScene>("res://scenes/particle/GunFlash.tscn");
                 var inst = flash.Instantiate<Node3D>();
                 inst.Position = builtTool.MuzzlePosition;
                 newGun.AddChild(inst);
@@ -163,7 +165,6 @@ public partial class LiveTool : Node
         }
 
         viewmodelSceneStartPos = viewmodelScene.Position;
-
         AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
         if (AnimationPlayer.HasAnimation("equip"))
         {
@@ -177,6 +178,46 @@ public partial class LiveTool : Node
 
         AnimationPlayer.Play("idle");
         GD.Print(string.Join(',', AnimationPlayer.GetAnimationList()));
+        equipped = true;
+    }
+
+    public async Task EquipViewing()
+    {
+        var posNode = Player.ViewAimViewmodel;
+        foreach (var child in posNode.GetChildren())
+        {
+            child.Free();
+        }
+
+        viewmodelScene = ToolResource.ViewmodelScene.Instantiate<Node3D>();
+        viewmodelScene.RotationDegrees += new Vector3(0, 90, 0);
+
+        if (ToolResource.FullId != "base:fists")
+        {
+            var oldGun = (Node3D)viewmodelScene.FindChild("Armature*");
+            var oldGunPos = oldGun.Position;
+            var oldGunRot = oldGun.Rotation;
+            oldGun.Free();
+
+            builtTool = ToolResource.BuildToolScene(ToolConfig);
+            var newGun = builtTool.Tool.GetChild<Node3D>(0);
+            newGun.Owner = null;
+            newGun.Position = oldGunPos;
+            newGun.Rotation = oldGunRot;
+            newGun.Reparent(viewmodelScene, false);
+            viewmodelSceneSightPosition = new Vector3(-oldGunPos.Z, -oldGunPos.Y, 0);
+
+            var flash = GD.Load<PackedScene>("res://scenes/particle/GunFlash.tscn");
+            var inst = flash.Instantiate<Node3D>();
+            inst.Position = builtTool.MuzzlePosition;
+            newGun.AddChild(inst);
+            muzzleFlash = inst.GetChild<GpuParticles3D>(0);
+        }
+        viewmodelSceneStartPos = viewmodelScene.Position;
+
+        AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
+        posNode.AddChild(viewmodelScene);
+        AnimationPlayer.Play("idle");
         equipped = true;
     }
 
@@ -370,8 +411,7 @@ public partial class LiveTool : Node
         {
             Player = Player,
             LiveTool = this,
-            StartPosition = Player.ViewGlobalPosition,
-            ViewTransform = Player.ViewTransform
+            ViewTransform = Player.ViewGlobalTransform,
         };
     }
 

@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class HUD : ScreenScaleLimiter
+public partial class Hud : ScreenScaleLimiter
 {
     [Export]
     private Panel roundStartPanel;
@@ -26,6 +26,8 @@ public partial class HUD : ScreenScaleLimiter
     private Label useInfoLabel;
     [Export]
     private VBoxContainer weaponsContainer;
+    [Export]
+    private VBoxContainer playerListVBox;
 
     private RichTextLabel waveInfoWave, waveInfoLeft;
 
@@ -44,8 +46,20 @@ public partial class HUD : ScreenScaleLimiter
     private int activeCrosshairIndex = -1;
     private Panel activeCrosshair;
 
+    private Panel playerPanelRef;
+    private Dictionary<Player, PlayerPanel> playerList = [];
+    private int currentPlayerListIndex;
+    private class PlayerPanel
+    {
+        public float LastHp;
+        public float LastAr;
+        public Panel Panel;
+    }
+
     public override void _Ready()
     {
+        if (!IsMultiplayerAuthority()) { QueueFree(); return; } // HUD._Ready calls before Player._Ready
+
         roundStartPanel.Visible = false;
         roundTimerPanel.Visible = false;
         waveInfoPanel.Visible = false;
@@ -55,6 +69,8 @@ public partial class HUD : ScreenScaleLimiter
         Player.Self.PlayerOnDamage += HurtAndUpdateHealth;
         Player.Self.PlayerOnHeal += HealAndUpdateHealth;
         Player.Self.PlayerToolChange += GenerateToolLists;
+        NetworkManager.Current.PlayerConnected += OnPlayerConnected;
+        NetworkManager.Current.PlayerDisconnected += OnPlayerDisconnected;
 
         waveInfoWave = waveInfoPanel.GetChild<RichTextLabel>(1);
         waveInfoLeft = waveInfoPanel.GetChild<RichTextLabel>(2);
@@ -70,6 +86,10 @@ public partial class HUD : ScreenScaleLimiter
         weaponsContainer.GetChild(1).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectsecondary");
         weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectspecial");
         weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectmelee");
+
+        var p = playerListVBox.GetChild(0);
+        playerPanelRef = (Panel)p.Duplicate();
+        p.QueueFree();
 
         UpdateHealthAndArmor();
     }
@@ -97,6 +117,8 @@ public partial class HUD : ScreenScaleLimiter
         {
             waveInfoPanel.Visible = false;
         }
+
+        CheckNextPlayerOnList();
 
         useInfoLabel.Text = Player.Self.UseInfoText;
 
@@ -132,8 +154,8 @@ public partial class HUD : ScreenScaleLimiter
 
             foreach (var tool in tools)
             {
-                var scene = GD.Load<PackedScene>("res://scenes/ui/hud/HUDToolBox.tscn");
-                var hudToolBox = scene.Instantiate<HUDToolBox>();
+                var scene = GD.Load<PackedScene>("res://scenes/ui/hud/HudToolBox.tscn");
+                var hudToolBox = scene.Instantiate<HudToolBox>();
                 hudToolBox.LiveTool = tool;
                 hudToolBox.Equipped = tool == selectedTool;
                 container.AddChild(hudToolBox);
@@ -174,7 +196,7 @@ public partial class HUD : ScreenScaleLimiter
                 dir = dir.Rotated(Vector3.Right, Mathf.Abs(pitch));
 
                 // do a Camera.UnprojectPosition manually with localized values
-                // this is because Camera has something which creates incorrect values
+                // this is because camera has some engine thing which creates incorrect values
                 var viewportSize = GetViewportRect().Size;
                 var scale = 1080f / viewportSize.Y;
                 var screenCenter = new Vector2I(
@@ -231,6 +253,80 @@ public partial class HUD : ScreenScaleLimiter
             _ => emptyCrosshair,
         };
         activeCrosshair.Visible = true;
+    }
+
+    private void CheckNextPlayerOnList()
+    {
+        if (playerList.Count == 0) return;
+
+        currentPlayerListIndex = (currentPlayerListIndex + 1) % playerList.Count;
+        var kvp = playerList.ElementAt(currentPlayerListIndex);
+
+        kvp.Value.Panel.GetChild<Label>(0).Text = kvp.Key.Name;
+
+        var healthMove = kvp.Key.Health / kvp.Key.MaxHealth;
+        if (healthMove != kvp.Value.LastHp)
+        {
+            kvp.Value.LastHp = healthMove;
+            var hpBar = kvp.Value.Panel.GetChild(2).GetChild<Panel>(2);
+            var hpBarChange = kvp.Value.Panel.GetChild(2).GetChild<Panel>(1);
+            var newHealthBarPos = new Vector2(2 + (hpBar.Size.X * healthMove) - hpBar.Size.X, 2);
+            var healthTween = kvp.Value.Panel.CreateTween();
+            healthTween.TweenProperty(hpBar, "position", newHealthBarPos, 0.1d);
+            healthTween.TweenInterval(1d);
+            healthTween.TweenProperty(hpBarChange, "position", newHealthBarPos, 0.3d);
+        }
+
+        var armorMove = Player.Self.Armor / Player.Self.MaxArmor;
+        if (armorMove != kvp.Value.LastAr)
+        {
+            kvp.Value.LastAr = armorMove;
+            var armorBar = kvp.Value.Panel.GetChild(1).GetChild<Panel>(2);
+            var armorBarChange = kvp.Value.Panel.GetChild(1).GetChild<Panel>(1);
+            var newArmorBarPos = new Vector2(2 + (armorBar.Size.X * armorMove) - armorBar.Size.X, 2);
+            var armorTween = kvp.Value.Panel.CreateTween();
+            armorTween.TweenProperty(armorBar, "position", newArmorBarPos, 0.1d);
+            armorTween.TweenInterval(1d);
+            armorTween.TweenProperty(armorBarChange, "position", newArmorBarPos, 0.3d);
+        }
+
+        if (Game.Current is null)
+        {
+            kvp.Value.Panel.GetChild<TextureRect>(3).Visible = true;
+        }
+        else
+        {
+            kvp.Value.Panel.GetChild<TextureRect>(3).Visible = false;
+        }
+
+        if (kvp.Key.Health <= 0)
+        {
+            kvp.Value.Panel.GetChild<Panel>(4).Visible = true;
+            kvp.Value.Panel.GetChild<Panel>(2).Visible = false;
+            kvp.Value.Panel.GetChild<Panel>(1).Visible = false;
+        }
+        else
+        {
+            kvp.Value.Panel.GetChild<Panel>(4).Visible = false;
+            kvp.Value.Panel.GetChild<Panel>(2).Visible = true;
+            kvp.Value.Panel.GetChild<Panel>(1).Visible = true;
+        }
+    }
+
+    private void OnPlayerConnected(int peerId, Godot.Collections.Dictionary<string, string> _)
+    {
+        var panel = (Panel)playerPanelRef.Duplicate();
+        playerList.Add(Player.FindPlayer(peerId), new PlayerPanel() { Panel = panel });
+        playerListVBox.AddChild(panel);
+        GD.Print(playerList);
+        GD.Print(playerPanelRef);
+    }
+
+    private void OnPlayerDisconnected(int peerId)
+    {
+        var found = playerList.First(c => c.Key.Id == peerId);
+        found.Value.Panel.QueueFree();
+        playerList.Remove(found.Key);
     }
 
     private async void HurtAndUpdateHealth(DamageInfoVariant damageInfoVariant)

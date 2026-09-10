@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bx8ie07jnlc5k"]
 
-[ext_resource type="PackedScene" uid="uid://d0hvqk3om0og7" path="res://scenes/ui/mainmenu/MainMenuUI.tscn" id="1_0ykhv"]
+[ext_resource type="PackedScene" uid="uid://d0hvqk3om0og7" path="res://scenes/ui/mainmenu/MainMenu.tscn" id="1_0ykhv"]
 [ext_resource type="Material" uid="uid://jv460lcd3mx6" path="res://materials/debug/debugground.tres" id="3_l72w3"]
 
 [sub_resource type="Environment" id="Environment_0ykhv"]

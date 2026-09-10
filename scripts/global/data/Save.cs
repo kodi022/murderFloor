@@ -4,9 +4,6 @@ namespace MurderFloor;
 
 public static class SaveManager
 {
-    public static System.Text.Json.JsonSerializerOptions JsonOptions { get; private set; } = new()
-    { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-
     public static SaveData CurrentSave { get; private set; } = new SaveData();
     public static string SaveFolder => "user://saves";
     public static string SaveIndexPath => SaveFolder + "/saveindex.txt";
@@ -17,7 +14,7 @@ public static class SaveManager
     {
         if (!DirAccess.DirExistsAbsolute(SaveFolder)) DirAccess.MakeDirAbsolute("user://saves");
 
-        var json = System.Text.Json.JsonSerializer.Serialize(save, JsonOptions);
+        var json = System.Text.Json.JsonSerializer.Serialize(save, Global.JsonOptions);
         SaveSaveIndex();
 
         using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);
@@ -38,7 +35,7 @@ public static class SaveManager
         var text = file.GetAsText();
         if (string.IsNullOrEmpty(text)) return new SaveData();
 
-        var save = System.Text.Json.JsonSerializer.Deserialize<SaveData>(file.GetAsText(), JsonOptions);
+        var save = System.Text.Json.JsonSerializer.Deserialize<SaveData>(file.GetAsText(), Global.JsonOptions);
         GD.Print("Loaded save " + SaveIndex);
         return save;
     }
@@ -58,7 +55,7 @@ public static class SaveManager
     {
         using var file = FileAccess.Open(SaveIndexPath, FileAccess.ModeFlags.Read);
         if (file is null) return 0;
-        var index = System.Text.Json.JsonSerializer.Deserialize<int>(file.GetAsText(), JsonOptions);
+        var index = System.Text.Json.JsonSerializer.Deserialize<int>(file.GetAsText(), Global.JsonOptions);
         return index;
     }
 

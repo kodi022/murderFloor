@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://7iw4twbox4f7"]
 
 [ext_resource type="Script" uid="uid://cxa4injtgdy3b" path="res://scripts/pawn/player/Player.cs" id="1_klv6p"]
-[ext_resource type="PackedScene" uid="uid://cclji8rued6d6" path="res://scenes/ui/hud/HUD.tscn" id="2_lba76"]
+[ext_resource type="PackedScene" uid="uid://cclji8rued6d6" path="res://scenes/ui/hud/Hud.tscn" id="2_lba76"]
 [ext_resource type="PackedScene" uid="uid://nbh27dtdq18n" path="res://scenes/pawn/player/KincheePlayer.blend" id="3_eoey4"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v0dpb"]
@@ -118,7 +118,7 @@ properties/5/path = NodePath(".:NetworkedVelocity")
 properties/5/spawn = true
 properties/5/replication_mode = 2
 
-[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("ToolsNode", "AudioStreamPlayer3D", "CollisionShape3D", "worldModels", "worldAnimationTree", "ViewAimViewmodel", "Camera", "viewAim", "cameraRaycast")]
+[node name="Player" type="CharacterBody3D" unique_id=1326344894 node_paths=PackedStringArray("ToolsNode", "AudioStreamPlayer3D", "worldModels", "worldAnimationTree", "viewModels", "ViewAimViewmodel", "Camera", "cameraRaycast")]
 physics_interpolation_mode = 1
 collision_layer = 2
 collision_mask = 3
@@ -126,30 +126,29 @@ slide_on_ceiling = false
 script = ExtResource("1_klv6p")
 ToolsNode = NodePath("Tools")
 AudioStreamPlayer3D = NodePath("AudioStreamPlayer3D")
-CollisionShape3D = NodePath("CollisionShape3D")
 worldModels = NodePath("WorldModels")
 worldAnimationTree = NodePath("WorldModels/KincheePlayer/AnimationTree")
-ViewAimViewmodel = NodePath("ViewAim/Viewmodel")
-Camera = NodePath("ViewAim/Camera3D")
-viewAim = NodePath("ViewAim")
-cameraRaycast = NodePath("ViewAim/RayCast3D")
+viewModels = NodePath("ViewModels+aim")
+ViewAimViewmodel = NodePath("ViewModels+aim/Viewmodel")
+Camera = NodePath("ViewModels+aim/Camera3D")
+cameraRaycast = NodePath("ViewModels+aim/RayCast3D")
 
 [node name="Tools" type="Node" parent="." unique_id=764631333]
 
 [node name="Hud" parent="." unique_id=392130317 instance=ExtResource("2_lba76")]
 
-[node name="ViewAim" type="Node3D" parent="." unique_id=993364331]
+[node name="ViewModels+aim" type="Node3D" parent="." unique_id=993364331]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6229631, 0)
 
-[node name="Camera3D" type="Camera3D" parent="ViewAim" unique_id=1134409903]
+[node name="Camera3D" type="Camera3D" parent="ViewModels+aim" unique_id=1134409903]
 physics_interpolation_mode = 2
 fov = 90.0
 near = 0.02
 
-[node name="Viewmodel" type="Node3D" parent="ViewAim" unique_id=268001501]
+[node name="Viewmodel" type="Node3D" parent="ViewModels+aim" unique_id=268001501]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, -1.6229631, 0)
 
-[node name="RayCast3D" type="RayCast3D" parent="ViewAim" unique_id=470747985]
+[node name="RayCast3D" type="RayCast3D" parent="ViewModels+aim" unique_id=470747985]
 target_position = Vector3(0, 0, -2.4)
 collision_mask = 48
 hit_back_faces = false

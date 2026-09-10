@@ -1,6 +1,6 @@
 namespace MurderFloor;
 
-public partial class HUDDebug : Control
+public partial class HudDebug : Control
 {
     private readonly List<Label> labels = [];
 
