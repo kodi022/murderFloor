@@ -69,8 +69,8 @@ public partial class Hud : ScreenScaleLimiter
         Player.Self.PlayerOnDamage += HurtAndUpdateHealth;
         Player.Self.PlayerOnHeal += HealAndUpdateHealth;
         Player.Self.PlayerToolChange += GenerateToolLists;
-        NetworkManager.Current.PlayerConnected += OnPlayerConnected;
-        NetworkManager.Current.PlayerDisconnected += OnPlayerDisconnected;
+        NetworkManager.Singleton.PlayerConnected += OnPlayerConnected;
+        NetworkManager.Singleton.PlayerDisconnected += OnPlayerDisconnected;
 
         waveInfoWave = waveInfoPanel.GetChild<RichTextLabel>(1);
         waveInfoLeft = waveInfoPanel.GetChild<RichTextLabel>(2);
@@ -299,7 +299,7 @@ public partial class Hud : ScreenScaleLimiter
             kvp.Value.Panel.GetChild<TextureRect>(3).Visible = false;
         }
 
-        if (kvp.Key.Health <= 0)
+        if (kvp.Key.IsDead)
         {
             kvp.Value.Panel.GetChild<Panel>(4).Visible = true;
             kvp.Value.Panel.GetChild<Panel>(2).Visible = false;

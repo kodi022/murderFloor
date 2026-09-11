@@ -60,8 +60,8 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							NetworkManager.Current._playerInfo["Name"] = name;
-							var error = NetworkManager.Current.CreateServer();
+							NetworkManager.Singleton._playerInfo["Name"] = name;
+							var error = NetworkManager.Singleton.CreateServer();
 							if (error == Error.Ok)
 							{
 								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
@@ -74,8 +74,8 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							NetworkManager.Current._playerInfo["Name"] = name;
-							var error = NetworkManager.Current.JoinServer();
+							NetworkManager.Singleton._playerInfo["Name"] = name;
+							var error = NetworkManager.Singleton.JoinServer();
 							if (error == Error.Ok)
 							{
 								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");

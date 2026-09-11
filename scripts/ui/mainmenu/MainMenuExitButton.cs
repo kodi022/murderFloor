@@ -6,7 +6,7 @@ public partial class MainMenuExitButton : Button
     {
         ButtonUp += () =>
         {
-            NetworkManager.Current.CloseServer();
+            NetworkManager.Singleton.CloseServer();
             GetTree().Quit();
         };
     }

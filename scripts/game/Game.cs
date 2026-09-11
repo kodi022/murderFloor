@@ -23,7 +23,7 @@ public partial class Game : Node
         Wave,
     }
 
-    public static Game Current;
+    public static Game Current { get; private set; }
     public static List<LiveMob> MobPool { get; private set; } = [];
 
     [Signal]
@@ -86,7 +86,7 @@ public partial class Game : Node
 
     public override void _Ready()
     {
-        NetworkManager.Current.RpcId(1, "PlayerLoaded");
+        NetworkManager.Singleton.RpcId(1, "PlayerLoaded");
     }
 
     public override void _Process(double delta)
@@ -111,11 +111,10 @@ public partial class Game : Node
             }
         }
 
-        var root = GetTree().Root;
         mobPoolNode = new Node() { Name = "MobPool" };
-        root.AddChild(mobPoolNode);
+        Global.ClearOnLoad.AddChild(mobPoolNode);
         lootNode = new Node() { Name = "Loot" };
-        root.AddChild(lootNode);
+        Global.ClearOnLoad.AddChild(lootNode);
 
         var mobScene = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
         for (int i = 0; i < 200; i++)
@@ -228,9 +227,11 @@ public partial class Game : Node
             if (spawned >= groupSize) return;
 
             var allMob = ResourceManager.MobRegistry.GetAllResource();
-            var mob = allMob.ElementAt(rngSpawning.RandiRange(0, allMob.Count - 1));
+            var mobResource = allMob.ElementAt(rngSpawning.RandiRange(0, allMob.Count - 1));
 
-            MobPool[i].OnSpawn(spawns[spawned], mob.Value.FullId);
+            var mob = MobPool[i];
+            mob.MobResourceFullId = mobResource.Value.FullId;
+            mob.OnSpawn(spawns[spawned]);
             ActiveMobs++;
             spawned++;
         }

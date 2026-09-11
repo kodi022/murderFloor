@@ -215,6 +215,7 @@ public partial class ToolFirearm : Tool
                     var attachSightNode = (Node3D)opticModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
                     builtToolData.SightPositionOffset = new Vector3(-sightAttachmentNode.Position.Z, -sightAttachmentNode.Position.Y, 0);
                     builtToolData.SightPositionOffset += new Vector3(-attachSightNode.Position.Z, -attachSightNode.Position.Y, 0);
+                    builtToolData.OpticZoom = ((AttachmentOptic)attachment).OpticZoom;
                     break;
             }
         }

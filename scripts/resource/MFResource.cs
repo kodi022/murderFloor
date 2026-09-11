@@ -80,5 +80,6 @@ public partial class MFResource : Resource
         public Node3D Tool { get; set; }
         public Vector3 SightPositionOffset { get; set; }
         public Vector3 MuzzlePosition { get; set; }
+        public float OpticZoom { get; set; }
     }
 }

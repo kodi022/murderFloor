@@ -40,14 +40,14 @@ public partial class Menu : Control
 
     private void ExitButton()
     {
-        NetworkManager.Current.CloseServer();
+        NetworkManager.Singleton.CloseServer();
         GetTree().ChangeSceneToFile("res://scenes/MainMenu.tscn");
         foreach (var player in Player.AllPlayers) player.QueueFree();
     }
 
     private void ExitDesktopButton()
     {
-        NetworkManager.Current.CloseServer();
+        NetworkManager.Singleton.CloseServer();
         GetTree().Quit();
     }
 }

@@ -22,21 +22,21 @@ public partial class ToolFirearmHitscan : ToolFirearm
     {
         Rng.Randomize();
 
-        fi.Player.CameraRotationKick += new Vector3(CameraRotationKick.X, 0, CameraRotationKick.Y);
+        fi.Player.AddCameraRotationKick(new Vector3(CameraRotationKick.X, 0, CameraRotationKick.Y));
 
         var viewPosKick = new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
         var viewRotKick = new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
         if (fi.LiveTool.Aiming)
         {
             fi.Player.AddViewmodelPositionKick(viewPosKick * 0.5f, 6f);
-            fi.Player.ViewmodelRotationKick += viewRotKick * 0.7f;
-            fi.Player.CameraShakeScale = ScreenShakeAmount * 0.7f;
+            fi.Player.AddViewmodelRotationKick(viewRotKick * 0.7f);
+            fi.Player.AddCameraShake(ScreenShakeAmount * 0.7f);
         }
         else
         {
             fi.Player.AddViewmodelPositionKick(viewPosKick, 6f);
-            fi.Player.ViewmodelRotationKick += viewRotKick;
-            fi.Player.CameraShakeScale = ScreenShakeAmount;
+            fi.Player.AddViewmodelRotationKick(viewRotKick);
+            fi.Player.AddCameraShake(ScreenShakeAmount);
         }
 
         fi.Player.ViewAngle += new Vector2(
@@ -105,7 +105,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 Damage = damage,
                 DamageType = DamageInfo.DamageTypeEnum.Physical,
                 AttackerId = fi.Player.Id,
-                AttackerName = NetworkManager.Current._players[fi.Player.Id]["Name"],
+                AttackerName = NetworkManager.Singleton._players[fi.Player.Id]["Name"],
                 WeaponId = HashId,
                 HitboxName = hitObjName,
                 HitPosition = (Vector3)ray["position"],

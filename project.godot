@@ -21,6 +21,7 @@ buses/default_bus_layout="uid://bqbtrfk6k4wm8"
 
 [autoload]
 
+Global="*uid://bqju8kisknkcq"
 NetworkManager="*uid://cs5qysldxqm75"
 
 [display]

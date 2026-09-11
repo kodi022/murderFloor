@@ -22,7 +22,7 @@ public partial class MainMenuOnline : Panel
 		joinButton.ButtonDown += () =>
 		{
 			ParseText();
-			var error = NetworkManager.Current.JoinServer();
+			var error = NetworkManager.Singleton.JoinServer();
 			if (error == Error.Ok)
 			{
 				GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
@@ -32,7 +32,7 @@ public partial class MainMenuOnline : Panel
 		hostButton.ButtonDown += () =>
 		{
 			ParseText();
-			var error = NetworkManager.Current.CreateServer();
+			var error = NetworkManager.Singleton.CreateServer();
 			if (error == Error.Ok)
 			{
 				GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
@@ -48,9 +48,9 @@ public partial class MainMenuOnline : Panel
 			else return line.Text.Trim();
 		}
 
-		NetworkManager.Current.ServerIP = PickText(IPline);
-		NetworkManager.Current.Port = PickText(portLine).ToInt();
-		NetworkManager.Current._playerInfo["Name"] = PickText(nameLine);
-		NetworkManager.Current._playerInfo["Coolness"] = PickText(coolLine);
+		NetworkManager.Singleton.ServerIP = PickText(IPline);
+		NetworkManager.Singleton.Port = PickText(portLine).ToInt();
+		NetworkManager.Singleton._playerInfo["Name"] = PickText(nameLine);
+		NetworkManager.Singleton._playerInfo["Coolness"] = PickText(coolLine);
 	}
 }

@@ -66,7 +66,7 @@ public partial class LiveMob : Pawn
 
     private void CheckNavigationTarget(ulong ticksMs)
     {
-        if (targetPawn is null || targetPawn.Health <= 0)
+        if (targetPawn is null || targetPawn.IsDead)
         {
             ChangeNavigationTarget();
         }

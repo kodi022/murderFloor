@@ -71,7 +71,7 @@ public partial class MapSelect : Control
 
             // ! if everybody is ready
 
-            NetworkManager.Current.Rpc("LoadGame", selectedMap.MeshScene.ResourcePath);
+            NetworkManager.Singleton.Rpc("LoadGame", selectedMap.MeshScene.ResourcePath);
         };
 
         foreach (var map in ResourceManager.MapRegistry.GetAllResource())

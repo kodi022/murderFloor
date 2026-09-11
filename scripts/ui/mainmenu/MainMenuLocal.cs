@@ -10,10 +10,10 @@ public partial class MainMenuLocal : Panel
     {
         startButton.ButtonDown += () =>
         {
-            NetworkManager.Current.ServerIP = default;
-            NetworkManager.Current.Port = default;
-            NetworkManager.Current.CreateServer(true);
-            NetworkManager.Current.LoadGame("res://scenes/map/lobby/Lobby.tscn");
+            NetworkManager.Singleton.ServerIP = default;
+            NetworkManager.Singleton.Port = default;
+            NetworkManager.Singleton.CreateServer(true);
+            NetworkManager.Singleton.LoadGame("res://scenes/map/lobby/Lobby.tscn");
         };
     }
 }

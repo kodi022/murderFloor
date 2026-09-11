@@ -25,10 +25,14 @@ public partial class Pawn : CharacterBody3D
     [Export]
     public float Armor { get; set; } = 0;
 
+    public bool IsDead => Health <= 0;
+
     /// <summary>this should only be called using Rpc</summary>
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     public virtual void OnDamageRpc(DamageInfoVariant damageInfoVariant)
     {
+        if (IsDead) return;
+
         var damageInfo = DamageInfo.FromVariant(damageInfoVariant);
         var damage = damageInfo.Damage;
 
@@ -46,7 +50,7 @@ public partial class Pawn : CharacterBody3D
             }
         }
 
-        if (damage > Health)
+        if (damage >= Health)
         {
             Health = 0;
             OnDeath(damageInfo);

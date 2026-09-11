@@ -2,8 +2,6 @@ namespace MurderFloor;
 
 public partial class LiveTool : Node
 {
-    private const string ALAccessKey = "t/";
-
     [Export]
     public int PlayerId { get; set; }
     // reference to player
@@ -19,11 +17,11 @@ public partial class LiveTool : Node
     public List<int> AttachmentHashes { get; set; }
 
     [Export]
-    public int PrimaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
+    public int PrimaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is just released
     [Export]
-    public int SecondaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
+    public int SecondaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is just released
     [Export]
-    public int ReloadInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is justReleased
+    public int ReloadInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is just released
 
     public AnimationPlayer AnimationPlayer { get; private set; }
 
@@ -49,6 +47,7 @@ public partial class LiveTool : Node
     private bool shotBolt = false;
 
     public bool Aiming { get; private set; } = false;
+    public float OpticZoom => builtTool.OpticZoom == 0f ? 1.1f : builtTool.OpticZoom;
 
     private float currentAimingPositionLerp;
 
@@ -172,7 +171,7 @@ public partial class LiveTool : Node
         }
         else
         {
-            Player.ViewmodelRotationKick += new Vector3(-1.2f, 0, 0);
+            Player.AddViewmodelRotationKick(new Vector3(-1.2f, 0, 0));
             await Task.Delay(400);
         }
 
@@ -229,10 +228,17 @@ public partial class LiveTool : Node
         }
         else
         {
-            Player.ViewmodelRotationKick += new Vector3(-1.2f, 0, 0);
+            Player.AddViewmodelRotationKick(new Vector3(-1.2f, 0, 0));
             await Task.Delay(400);
         }
 
+        viewmodelScene?.Free();
+        viewmodelScene = null;
+        equipped = false;
+    }
+
+    public async Task UnequipViewing()
+    {
         viewmodelScene?.Free();
         viewmodelScene = null;
         equipped = false;
@@ -370,10 +376,10 @@ public partial class LiveTool : Node
         }
         else
         {
-            fi.Player.ViewmodelRotationKick += new Vector3(-1f, 0.5f, 0);
+            fi.Player.AddViewmodelRotationKick(new Vector3(-1f, 0.5f, 0));
             await Task.Delay(firearm.ReloadDelayMs - 200);
             fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, 0.1f));
-            fi.Player.ViewmodelRotationKick += new Vector3(0.2f, 0, 0);
+            fi.Player.AddViewmodelRotationKick(new Vector3(0.2f, 0, 0));
             await Task.Delay(200);
         }
 

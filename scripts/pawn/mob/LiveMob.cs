@@ -4,7 +4,8 @@ public partial class LiveMob : Pawn
 {
     public const float MinimumDistanceToTarget = 1.2f;
 
-    public Mob MobResource { get; set; }
+    public string MobResourceFullId { get; set; }
+    public Mob MobResource { get; private set; }
 
     [Export]
     public bool Active
@@ -50,19 +51,6 @@ public partial class LiveMob : Pawn
         navigationAgent3D.LinkReached += OnLinkReached;
     }
 
-    public void OnSpawn(Vector3 location, string mobFullId)
-    {
-        MobResource = ResourceManager.MobRegistry.GetResourceRef(mobFullId);
-        MaxHealth = MobResource.MaxHealth;
-        Health = MaxHealth;
-        Armor = MobResource.Armor;
-        Scale = Vector3.One * MobResource.Scale;
-        GlobalPosition = location;
-        startPosHash = Hashing.StableHash(location);
-        Active = true;
-        ChangeNavigationTarget();
-    }
-
     // 100 ticks per second
     public override void _PhysicsProcess(double delta)
     {
@@ -97,6 +85,21 @@ public partial class LiveMob : Pawn
         }
     }
 
+    public override void OnSpawn(Vector3 pos)
+    {
+        base.OnSpawn(pos);
+
+        MobResource = ResourceManager.MobRegistry.GetResourceRef(MobResourceFullId);
+        MaxHealth = MobResource.MaxHealth;
+        Health = MaxHealth;
+        Armor = MobResource.Armor;
+        Scale = Vector3.One * MobResource.Scale;
+        GlobalPosition = pos;
+        startPosHash = Hashing.StableHash(pos);
+        Active = true;
+        ChangeNavigationTarget();
+    }
+
     public override void OnDeath(DamageInfo damageInfo)
     {
         if (!Active) return;
@@ -126,6 +129,6 @@ public partial class LiveMob : Pawn
         if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
         ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
 
-        Game.Current.AddChild(ragdoll);
+        Global.ClearOnLoad.AddChild(ragdoll);
     }
 }

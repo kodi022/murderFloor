@@ -3,7 +3,7 @@ namespace MurderFloor;
 // https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html
 public partial class NetworkManager : Node
 {
-    public static NetworkManager Current;
+    public static NetworkManager Singleton { get; private set; }
 
     private const int DefaultPort = 7000;
     private const string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
@@ -41,18 +41,14 @@ public partial class NetworkManager : Node
 
     public override void _EnterTree()
     {
-        Current = this;
+        if (IsInstanceValid(Singleton)) return;
+        Singleton = this;
+
         Multiplayer.PeerConnected += OnPeerConnected;
         Multiplayer.PeerDisconnected += OnPeerDisconnected;
         Multiplayer.ConnectedToServer += OnConnectedToServer;
         Multiplayer.ConnectionFailed += OnConnectionFailed;
         Multiplayer.ServerDisconnected += OnServerDisconnected;
-    }
-
-    // i know this is not good, too bad. less global nodes
-    public override void _Ready()
-    {
-        ResourceManager.Ready();
     }
 
     public Error JoinServer()
@@ -105,6 +101,7 @@ public partial class NetworkManager : Node
     public void LoadGame(string gameScenePath)
     {
         _playersLoaded = 0;
+        //foreach (var child in Global.ClearOnLoad.GetChildren()) child.QueueFree();
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 
@@ -123,7 +120,7 @@ public partial class NetworkManager : Node
         player.Name = "plr_" + id.ToString();
         player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
-        GetTree().Root.AddChild(player);
+        Global.ClearOnLoad.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
@@ -138,7 +135,7 @@ public partial class NetworkManager : Node
         player.Name = "plr_" + id.ToString();
         player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
-        GetTree().Root.AddChild(player);
+        Global.ClearOnLoad.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
