@@ -1,13 +1,13 @@
-namespace MurderFloor;
+namespace Shooter.Global;
 
 // https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html
 public partial class NetworkManager : Node
 {
-    public static NetworkManager Singleton { get; private set; }
-
     private const int DefaultPort = 7000;
     private const string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
     private const int MaxConnections = 4;
+
+    public static NetworkManager Singleton { get; private set; }
 
     public string ServerIP { get; set; } = default;
     public int Port { get; set; } = default;
@@ -101,7 +101,7 @@ public partial class NetworkManager : Node
     public void LoadGame(string gameScenePath)
     {
         _playersLoaded = 0;
-        //foreach (var child in Global.ClearOnLoad.GetChildren()) child.QueueFree();
+        //GameManager.Clear_ClearOnLoad();
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 
@@ -120,7 +120,7 @@ public partial class NetworkManager : Node
         player.Name = "plr_" + id.ToString();
         player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
-        Global.ClearOnLoad.AddChild(player);
+        GameManager.ClearOnLoad.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
@@ -135,7 +135,7 @@ public partial class NetworkManager : Node
         player.Name = "plr_" + id.ToString();
         player.Position = new Vector3(0, 0.3f, 0);
         player.SetMultiplayerAuthority((int)id);
-        Global.ClearOnLoad.AddChild(player);
+        GameManager.ClearOnLoad.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
@@ -143,7 +143,7 @@ public partial class NetworkManager : Node
     private void OnPeerDisconnected(long id)
     {
         GD.Print("OnPeerDisconnected " + id);
-        foreach (var p in Player.AllPlayers)
+        foreach (var p in Game.Player.AllPlayers)
         {
             if (p.Id == id)
             {
@@ -191,7 +191,7 @@ public partial class NetworkManager : Node
             if (_playersLoaded == _players.Count)
             {
                 await Task.Delay(2000);
-                Game.Current?.Rpc("StartGame");
+                Game.Game.Current?.Rpc("StartGame");
                 _playersLoaded = 0;
             }
         }
@@ -200,6 +200,6 @@ public partial class NetworkManager : Node
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     private void ClientPlayerReady()
     {
-        Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", Player.Self.GetAllTools(1));
+        Game.Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", Game.Player.Self.GetAllTools(1));
     }
 }

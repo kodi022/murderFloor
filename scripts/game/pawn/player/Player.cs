@@ -1,6 +1,4 @@
-using MurderFloor.Loot;
-
-namespace MurderFloor;
+namespace Shooter.Game;
 
 public partial class Player : Pawn
 {
@@ -17,7 +15,7 @@ public partial class Player : Pawn
     [Export]
     public AudioStreamPlayer3D AudioStreamPlayer3D { get; private set; }
     [Export]
-    public Hud Hud { get; private set; }
+    public Ui.Hud Hud { get; private set; }
 
     [Export]
     public Vector2 ViewAngle { get; set; } = Vector2.Zero;
@@ -93,11 +91,11 @@ public partial class Player : Pawn
         if (!IsMultiplayerAuthority())
         {
             cameraRaycast.Free();
-            NetworkManager.Singleton.RpcId(Id, "ClientPlayerReady");
+            Global.NetworkManager.Singleton.RpcId(Id, "ClientPlayerReady");
             return;
         }
 
-        var fistToolConfig = new ToolConfig(LootState.Deserialize("0,a/Hw/,0.1.0,0,0,0,0,"));
+        var fistToolConfig = new ToolConfig(Resource.Loot.LootState.Deserialize("0,a/Hw/,0.1.0,0,0,0,0,"));
         Rpc("ToolAddRpc", fistToolConfig.Serialize());
 
         foreach (var equipped in SaveManager.CurrentSave.GetEquippedLoot())
@@ -108,7 +106,7 @@ public partial class Player : Pawn
 
         var opt = OptionsManager.Load();
         OptionsManager.Apply(opt);
-        OptionsMenu.ShowReturnButton = true;
+        Ui.OptionsMenu.ShowReturnButton = true;
 
         cameraRaycast.AddException(this);
         ViewPlayer(this);
@@ -161,7 +159,7 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F5 && eventKey.Pressed)
             {
-                NetworkManager.Singleton.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
+                Global.NetworkManager.Singleton.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
             }
 
             if (eventKey.Keycode == Key.F7 && eventKey.Pressed)
@@ -171,7 +169,7 @@ public partial class Player : Pawn
                     Damage = 25,
                     DamageType = DamageInfo.DamageTypeEnum.Physical,
                     AttackerId = Id,
-                    AttackerName = NetworkManager.Singleton._players[Id]["Name"],
+                    AttackerName = Global.NetworkManager.Singleton._players[Id]["Name"],
                     HitboxName = "Neck"
                 };
                 Rpc("OnDamageRpc", di.ToVariant());
@@ -262,10 +260,10 @@ public partial class Player : Pawn
         Rotation = new Vector3(0, ViewAngle.X, 0);
         viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
-        if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Tool.SlotEnum.Primary);
-        if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Tool.SlotEnum.Secondary);
-        if (Input.IsActionJustPressed("selectspecial")) SelectToolBySlot(Tool.SlotEnum.Special);
-        if (Input.IsActionJustPressed("selectmelee")) SelectToolBySlot(Tool.SlotEnum.Melee);
+        if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Resource.Tool.SlotEnum.Primary);
+        if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Resource.Tool.SlotEnum.Secondary);
+        if (Input.IsActionJustPressed("selectspecial")) SelectToolBySlot(Resource.Tool.SlotEnum.Special);
+        if (Input.IsActionJustPressed("selectmelee")) SelectToolBySlot(Resource.Tool.SlotEnum.Melee);
 
         if (cameraRaycast.GetCollider() is Node3D node)
         {
@@ -343,15 +341,20 @@ public partial class Player : Pawn
         {
             var control = GD.Load<PackedScene>("res://scenes/pawn/outercontroller/OuterControllerDead.tscn");
             var inst = control.Instantiate();
-            Global.ClearOnLoad.AddChild(inst);
+            Global.GameManager.ClearOnLoad.AddChild(inst);
             outerController = (OuterController)inst;
             ViewPlayer(this);
         }
 
         var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
+        var hitCollider = damageInfo.HitboxName;
+        if (hitCollider == "Head") hitCollider = "Neck";
+        if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
+        if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
+        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
+
         var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
         var copyCount = Math.Min(WorldSkeleton.GetBoneCount(), ragSk.GetBoneCount());
-
         ragdoll.GlobalTransform = GlobalTransform;
         for (int i = 0; i < copyCount; i++)
         {
@@ -361,13 +364,7 @@ public partial class Player : Pawn
             ragSk.SetBonePoseRotation(i, rot);
         }
 
-        var hitCollider = damageInfo.HitboxName;
-        // ragdoll has different colliders
-        if (hitCollider == "Head") hitCollider = "Neck";
-        if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
-        if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
-        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
-        Global.ClearOnLoad.AddChild(ragdoll);
+        Global.GameManager.ClearOnLoad.AddChild(ragdoll);
     }
 
     public void AddCameraShake(float amount)

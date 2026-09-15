@@ -1,6 +1,6 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
-public partial class LiveMob : Pawn
+public partial class Mob : Pawn
 {
     private Vector3 velocityNoGravity;
 
@@ -98,7 +98,7 @@ public partial class LiveMob : Pawn
 
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
 
-        var hash = Hashing.StableHash(targetPos) + startPosHash;
+        var hash = Utils.Hashing.StableHash(targetPos) + startPosHash;
         var rand = new Vector3(hash % 13 / 13f, hash % 10 / 10f, hash % 7 / 7f);
         var distSqr = targetPos.DistanceSquaredTo(targetPawn.Position);
         targetPos += rand * distSqr * 0.05f;
@@ -159,14 +159,14 @@ public partial class LiveMob : Pawn
             verticalActionMovementCurve.AddPoint(exitPos, @in: exitIn);
 
             int pointDotSize = 6, handleDotSize = 4;
-            Color pointColor = new Color(1, 1, 0), handleColor = new Color(0, 1, 0);
-            Debug.DebugDot(entryPos, pointDotSize, pointColor);
-            Debug.DebugDot(entryPos + entryOut, handleDotSize, handleColor);
-            Debug.DebugDot(jumpApexPos + centerIn, handleDotSize, handleColor);
-            Debug.DebugDot(jumpApexPos, pointDotSize, pointColor);
-            Debug.DebugDot(jumpApexPos + centerOut, handleDotSize, handleColor);
-            Debug.DebugDot(exitPos + exitIn, handleDotSize, handleColor);
-            Debug.DebugDot(exitPos, pointDotSize, pointColor);
+            Color pointColor = new(1, 1, 0), handleColor = new(0, 1, 0);
+            Debug.Rendering.Point(entryPos, pointDotSize, pointColor);
+            Debug.Rendering.Point(entryPos + entryOut, handleDotSize, handleColor);
+            Debug.Rendering.Point(jumpApexPos + centerIn, handleDotSize, handleColor);
+            Debug.Rendering.Point(jumpApexPos, pointDotSize, pointColor);
+            Debug.Rendering.Point(jumpApexPos + centerOut, handleDotSize, handleColor);
+            Debug.Rendering.Point(exitPos + exitIn, handleDotSize, handleColor);
+            Debug.Rendering.Point(exitPos, pointDotSize, pointColor);
         }
 
         // drop
@@ -180,7 +180,7 @@ public partial class LiveMob : Pawn
 
             for (int i = 0; i < 10; i++)
             {
-                Debug.DebugDot(verticalActionMovementCurve.Samplef(i / 10f), msToDelete: 1000);
+                Debug.Rendering.Point(verticalActionMovementCurve.Samplef(i / 10f), msToDelete: 1000);
             }
         }
     }

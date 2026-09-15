@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
 public partial class MainMenuLocal : Panel
 {
@@ -10,10 +10,10 @@ public partial class MainMenuLocal : Panel
     {
         startButton.ButtonDown += () =>
         {
-            NetworkManager.Singleton.ServerIP = default;
-            NetworkManager.Singleton.Port = default;
-            NetworkManager.Singleton.CreateServer(true);
-            NetworkManager.Singleton.LoadGame("res://scenes/map/lobby/Lobby.tscn");
+            Global.NetworkManager.Singleton.ServerIP = default;
+            Global.NetworkManager.Singleton.Port = default;
+            Global.NetworkManager.Singleton.CreateServer(true);
+            Global.NetworkManager.Singleton.LoadGame("res://scenes/map/lobby/Lobby.tscn");
         };
     }
 }

@@ -1,6 +1,6 @@
 global using DamageInfoVariant = Godot.Collections.Dictionary<string, Godot.Variant>;
 
-namespace MurderFloor;
+namespace Shooter;
 
 public struct DamageInfo
 {

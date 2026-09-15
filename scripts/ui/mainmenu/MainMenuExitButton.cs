@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
 public partial class MainMenuExitButton : Button
 {
@@ -6,7 +6,7 @@ public partial class MainMenuExitButton : Button
     {
         ButtonUp += () =>
         {
-            NetworkManager.Singleton.CloseServer();
+            Global.NetworkManager.Singleton.CloseServer();
             GetTree().Quit();
         };
     }

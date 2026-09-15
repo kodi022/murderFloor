@@ -1,8 +1,6 @@
 #if TOOLS
 
-using Godot;
-using MurderFloor;
-using System;
+using Shooter.Game;
 
 public partial class MobSpawnAreaGizmo : EditorNode3DGizmoPlugin
 {

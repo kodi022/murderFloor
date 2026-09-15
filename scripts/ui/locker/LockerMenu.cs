@@ -1,6 +1,4 @@
-namespace MurderFloor;
-
-using Loot;
+namespace Shooter.Ui;
 
 public partial class LockerMenu : ScreenScaleLimiter
 {

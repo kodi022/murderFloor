@@ -1,4 +1,4 @@
-namespace MurderFloor.Loot;
+namespace Shooter.Resource.Loot;
 
 /// <summary>
 /// The rarity info of Loot, built from LootState
@@ -20,12 +20,12 @@ public struct LootRarity
 
         var tierOffset = lootState.Difficulty switch
         {
-            Game.DifficultyEnum.Easy => -2.0f,
-            Game.DifficultyEnum.Medium => -1.4f,
-            Game.DifficultyEnum.Challenging => -0.7f,
-            Game.DifficultyEnum.Hard => 0f,
-            Game.DifficultyEnum.Extreme => 0.8f,
-            Game.DifficultyEnum.Ludicrous => 1.7f,
+            Game.Game.DifficultyEnum.Easy => -2.0f,
+            Game.Game.DifficultyEnum.Medium => -1.4f,
+            Game.Game.DifficultyEnum.Challenging => -0.7f,
+            Game.Game.DifficultyEnum.Hard => 0f,
+            Game.Game.DifficultyEnum.Extreme => 0.8f,
+            Game.Game.DifficultyEnum.Ludicrous => 1.7f,
             _ => -2.0f,
         };
         var wearLevelOffset = ((int)lootState.Difficulty - 3) * 1.5f;

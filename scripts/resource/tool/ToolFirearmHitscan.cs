@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Resource;
 
 [GlobalClass]
 public partial class ToolFirearmHitscan : ToolFirearm
@@ -26,7 +26,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
         var viewPosKick = new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
         var viewRotKick = new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
-        if (fi.LiveTool.Aiming)
+        if (fi.Tool.Aiming)
         {
             fi.Player.AddViewmodelPositionKick(viewPosKick * 0.5f, 6f);
             fi.Player.AddViewmodelRotationKick(viewRotKick * 0.7f);
@@ -46,8 +46,8 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
         for (int i = 0; i < PelletCount; i++)
         {
-            float yaw = Mathf.DegToRad(Rng.RandfRange(-fi.LiveTool.CurrentSpread.X, fi.LiveTool.CurrentSpread.X));
-            float pitch = Mathf.DegToRad(Rng.RandfRange(-fi.LiveTool.CurrentSpread.Y, fi.LiveTool.CurrentSpread.Y));
+            float yaw = Mathf.DegToRad(Rng.RandfRange(-fi.Tool.CurrentSpread.X, fi.Tool.CurrentSpread.X));
+            float pitch = Mathf.DegToRad(Rng.RandfRange(-fi.Tool.CurrentSpread.Y, fi.Tool.CurrentSpread.Y));
 
             // normalize then scale back down to make circular
             Vector3 angle = new Vector3(Mathf.Abs(pitch), Mathf.Abs(yaw), 0).Normalized();
@@ -60,16 +60,16 @@ public partial class ToolFirearmHitscan : ToolFirearm
             var ray = space.IntersectRay(query);
             if (!ray.ContainsKey("collider")) continue;
 
-            Debug.DebugDot((Vector3)ray["position"], color: new Color(0, 0, 0));
+            Debug.Rendering.Point((Vector3)ray["position"], color: new Color(0, 0, 0));
 
-            Pawn pawn = null;
+            Game.Pawn pawn = null;
             var currentNode = (Node)(GodotObject)ray["collider"];
             for (int j = 0; j < 5; j++)
             {
                 currentNode = currentNode.GetParent();
 
                 if (currentNode is null) break;
-                if (currentNode is Pawn p)
+                if (currentNode is Game.Pawn p)
                 {
                     pawn = p;
                     break;
@@ -97,7 +97,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 }
             }
 
-            var hitObjName = pawn.Name.ToString();
+            var hitObjName = ((Node)(GodotObject)ray["collider"]).GetParent().Name;
             damage *= GetHitDamageMultiplier(hitObjName);
 
             var di = new DamageInfo()
@@ -105,13 +105,13 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 Damage = damage,
                 DamageType = DamageInfo.DamageTypeEnum.Physical,
                 AttackerId = fi.Player.Id,
-                AttackerName = NetworkManager.Singleton._players[fi.Player.Id]["Name"],
+                AttackerName = Global.NetworkManager.Singleton._players[fi.Player.Id]["Name"],
                 WeaponId = HashId,
                 HitboxName = hitObjName,
                 HitPosition = (Vector3)ray["position"],
                 HitDirection = (pos - fi.ViewTransform.Origin).Normalized()
             };
-            GD.Print(hitObjName);
+
             pawn.Rpc("OnDamageRpc", di.ToVariant());
         }
     }

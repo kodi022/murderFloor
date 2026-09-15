@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
 public partial class ScreenScaleLimiter : Control
 {

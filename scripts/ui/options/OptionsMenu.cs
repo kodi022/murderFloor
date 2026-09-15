@@ -1,6 +1,6 @@
-using System.Reflection;
+namespace Shooter.Ui;
 
-namespace MurderFloor;
+using System.Reflection;
 
 public partial class OptionsMenu : Control
 {

@@ -1,11 +1,11 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
 public partial class OuterControllerDead : OuterController
 {
     [Export]
     private Camera3D camera3D;
     [Export]
-    private HudDead hudDead;
+    private Ui.HudDead hudDead;
 
     private Player target => hudDead.Target;
 

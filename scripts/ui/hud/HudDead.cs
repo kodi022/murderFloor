@@ -1,4 +1,6 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
+
+using Game;
 
 public partial class HudDead : Control
 {
@@ -20,7 +22,7 @@ public partial class HudDead : Control
 
     public override void _Process(double delta)
     {
-        viewingLabel.Text = NetworkManager.Singleton._players[Target.Id]["Name"];
+        viewingLabel.Text = Global.NetworkManager.Singleton._players[Target.Id]["Name"];
     }
 
     private void LastViewingPressed()

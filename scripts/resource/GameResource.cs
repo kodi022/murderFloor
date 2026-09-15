@@ -1,6 +1,6 @@
-namespace MurderFloor;
+namespace Shooter.Resource;
 
-public partial class MFResource : Resource
+public partial class GameResource : Godot.Resource
 {
     private protected static Dictionary<string, ImageTexture> generatedThumbnails = [];
 
@@ -31,10 +31,10 @@ public partial class MFResource : Resource
     public void BuildIds()
     {
         FullId = $"{PackageId}:{ResourceId}";
-        HashId = Hashing.StableHash(FullId);
+        HashId = Utils.Hashing.StableHash(FullId);
     }
 
-    public virtual async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY) => Global.MissingTextureImage;
+    public virtual async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY) => Utils.Defaults.MissingTextureImage;
 
     /// <summary>Builds the tool itself via ToolConfig. DOES NOT BUILD VIEWMODEL</summary>
     public virtual BuiltToolData BuildToolScene(ToolConfig toolConfig) => new();

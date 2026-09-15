@@ -1,27 +1,24 @@
-using MurderFloor.Loot;
-
-namespace MurderFloor;
+namespace Shooter.Game;
 
 public partial class Player : Pawn
 {
     [Signal]
     public delegate void PlayerToolChangeEventHandler();
 
-    public List<LiveTool> ToolsPrimary { get; private set; } = [];
-    public List<LiveTool> ToolsSecondary { get; private set; } = [];
-    public List<LiveTool> ToolsSpecial { get; private set; } = [];
-    public List<LiveTool> ToolsMelee { get; private set; } = [];
+    public List<Tool> ToolsPrimary { get; private set; } = [];
+    public List<Tool> ToolsSecondary { get; private set; } = [];
+    public List<Tool> ToolsSpecial { get; private set; } = [];
+    public List<Tool> ToolsMelee { get; private set; } = [];
 
-    public Tool.SlotEnum SelectedSlot { get; private set; } = Tool.SlotEnum.Primary;
+    // reference from tool list
+    public Tool SelectedTool = null;
+    public Resource.Tool.SlotEnum SelectedSlot { get; private set; } = Resource.Tool.SlotEnum.Primary;
     public int SelectedToolIndex { get; private set; } = 0;
 
     public int ToolCount => ToolsPrimary.Count + ToolsSecondary.Count + ToolsSpecial.Count + ToolsMelee.Count;
 
     public int MaxWeight { get; set; } = 20;
     public int ToolWeight => GetToolsWeight();
-
-    // reference from tool list
-    public LiveTool SelectedTool = null;
 
     public bool SwappingWeapon { get; private set; }
 
@@ -36,23 +33,23 @@ public partial class Player : Pawn
     public void ToolAdd(string toolConfigSerialized)
     {
         var toolConfig = ToolConfig.Deserialize(toolConfigSerialized);
-        var resource = (Tool)toolConfig.LootState.GetLootRef();
+        var resource = (Resource.Tool)toolConfig.LootState.GetLootRef();
         resource ??= ResourceManager.ToolRegistry.GetResourceRef(toolConfig.LootState.ResourceHashId);
 
         if (ToolWeight + resource.CarryWeight > MaxWeight) return;
 
-        var liveTool = GD.Load<PackedScene>("res://scenes/tool/LiveTool.tscn").Instantiate<LiveTool>();
-        liveTool.SetMultiplayerAuthority(Id);
-        liveTool.PlayerId = Id;
-        liveTool.ToolFullId = resource.FullId;
-        liveTool.ToolConfig = toolConfig;
+        var tool = GD.Load<PackedScene>("res://scenes/tool/Tool.tscn").Instantiate<Tool>();
+        tool.SetMultiplayerAuthority(Id);
+        tool.PlayerId = Id;
+        tool.ToolFullId = resource.FullId;
+        tool.ToolConfig = toolConfig;
 
-        var list = GetToolListFromTool(liveTool.ToolFullId);
-        liveTool.Name = $"{resource.FullId}_" + list.Count(t => t.ToolFullId == resource.FullId);
+        var list = GetToolListFromTool(tool.ToolFullId);
+        tool.Name = $"{resource.FullId}_" + list.Count(t => t.ToolFullId == resource.FullId);
 
-        ToolsNode.AddChild(liveTool);
-        liveTool.Owner = ToolsNode;
-        list.Add(liveTool);
+        ToolsNode.AddChild(tool);
+        tool.Owner = ToolsNode;
+        list.Add(tool);
 
         EmitSignal(SignalName.PlayerToolChange);
     }
@@ -68,15 +65,15 @@ public partial class Player : Pawn
     public async void ToolRemove(string toolLootStateSerialized)
     {
         var change = false;
-        var lootState = LootState.Deserialize(toolLootStateSerialized);
+        var lootState = Resource.Loot.LootState.Deserialize(toolLootStateSerialized);
         foreach (var tool in ToolsNode.GetChildren())
         {
-            if (tool is not LiveTool) continue;
+            if (tool is not Tool) continue;
 
-            LiveTool liveTool = (LiveTool)tool;
-            if (liveTool.ToolConfig.LootState == lootState)
+            var currentTool = (Tool)tool;
+            if (currentTool.ToolConfig.LootState == lootState)
             {
-                var list = GetToolListFromTool(liveTool.ToolFullId);
+                var list = GetToolListFromTool(currentTool.ToolFullId);
                 foreach (var item in list)
                 {
                     if (item == tool)
@@ -125,7 +122,7 @@ public partial class Player : Pawn
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
     private async void ToolEquipRpc(int slot, int index)
     {
-        SelectedSlot = (Tool.SlotEnum)slot;
+        SelectedSlot = (Resource.Tool.SlotEnum)slot;
         SelectedToolIndex = index;
 
         try
@@ -144,10 +141,10 @@ public partial class Player : Pawn
         SwappingWeapon = true;
         if (SelectedTool is not null) await SelectedTool.Unequip();
 
-        List<LiveTool> list = GetToolListFromSlot(SelectedSlot);
+        List<Tool> list = GetToolListFromSlot(SelectedSlot);
         if (list.Count == 0)
         {
-            SelectedSlot = Tool.SlotEnum.Melee;
+            SelectedSlot = Resource.Tool.SlotEnum.Melee;
             list = GetToolListFromSlot(SelectedSlot);
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
@@ -157,7 +154,7 @@ public partial class Player : Pawn
         }
         if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex])
         {
-            SelectedSlot = Tool.SlotEnum.Melee;
+            SelectedSlot = Resource.Tool.SlotEnum.Melee;
             list = GetToolListFromSlot(SelectedSlot);
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
@@ -207,7 +204,7 @@ public partial class Player : Pawn
     {
         GD.Print($"ToolsSyncCallbackRpc ({Self.Id})");
 
-        foreach (var tool in GetAllLiveTools())
+        foreach (var tool in GetAllTools())
         {
             var sync = (MultiplayerSynchronizer)tool.GetChild(0);
             foreach (var plr in AllPlayers)
@@ -225,20 +222,20 @@ public partial class Player : Pawn
 
         if (SelectedToolIndex + delta < 0)
         {
-            SelectedSlot = (Tool.SlotEnum)(((int)SelectedSlot + 4 - 1) % 4);
+            SelectedSlot = (Resource.Tool.SlotEnum)(((int)SelectedSlot + 4 - 1) % 4);
             SelectedToolIndex = GetToolListFromSlot(SelectedSlot).Count - 1;
         }
 
         if (SelectedToolIndex + delta >= GetToolListFromSlot(SelectedSlot).Count)
         {
-            SelectedSlot = (Tool.SlotEnum)(((int)SelectedSlot + 1) % 4);
+            SelectedSlot = (Resource.Tool.SlotEnum)(((int)SelectedSlot + 1) % 4);
             SelectedToolIndex = 0;
         }
 
         ToolEquipOwner();
     }
 
-    public void SelectToolBySlot(Tool.SlotEnum slot)
+    public void SelectToolBySlot(Resource.Tool.SlotEnum slot)
     {
         if (SwappingWeapon) return;
 
@@ -261,25 +258,25 @@ public partial class Player : Pawn
     /// <summary>Gets all tools. arg 0 returns FullId. arg 1 returns serialized ToolConfig</summary>
     public Godot.Collections.Array<string> GetAllTools(int returnType = 0)
     {
-        Godot.Collections.Array<string> tools = [];
-        void AddTools(List<LiveTool> liveTools)
+        Godot.Collections.Array<string> allTools = [];
+        void AddTools(List<Tool> tools)
         {
             if (returnType == 1)
-                foreach (var tool in liveTools) tools.Add(tool.ToolConfig.Serialize());
+                foreach (var tool in tools) allTools.Add(tool.ToolConfig.Serialize());
             else
-                foreach (var tool in liveTools) tools.Add(tool.ToolFullId);
+                foreach (var tool in tools) allTools.Add(tool.ToolFullId);
         }
 
         AddTools(ToolsPrimary);
         AddTools(ToolsSecondary);
         AddTools(ToolsSpecial);
         AddTools(ToolsMelee);
-        return tools;
+        return allTools;
     }
 
-    public bool HasTool(LootState lootState)
+    public bool HasTool(Resource.Loot.LootState lootState)
     {
-        var tools = GetAllLiveTools();
+        var tools = GetAllTools();
 
         var a = tools.FirstOrDefault(c => c.ToolConfig.LootState == lootState, null);
 
@@ -287,24 +284,24 @@ public partial class Player : Pawn
         else return false;
     }
 
-    public List<LiveTool> GetAllLiveTools()
+    public List<Tool> GetAllTools()
     {
-        List<LiveTool> tools = [];
-        void AddTools(List<LiveTool> liveTools)
+        List<Tool> allTools = [];
+        void AddTools(List<Tool> tools)
         {
-            foreach (var tool in liveTools) tools.Add(tool);
+            foreach (var tool in tools) allTools.Add(tool);
         }
         AddTools(ToolsPrimary);
         AddTools(ToolsSecondary);
         AddTools(ToolsSpecial);
         AddTools(ToolsMelee);
-        return tools;
+        return allTools;
     }
 
     private int GetToolsWeight()
     {
         var weight = 0;
-        foreach (var tool in GetAllLiveTools())
+        foreach (var tool in GetAllTools())
         {
             weight += tool.ToolResource.CarryWeight;
         }
@@ -312,26 +309,26 @@ public partial class Player : Pawn
         return weight;
     }
 
-    private List<LiveTool> GetToolListFromTool(string toolId)
+    private List<Tool> GetToolListFromTool(string toolId)
     {
         return ResourceManager.ToolRegistry.GetResourceRef(toolId).GetSlot() switch
         {
-            Tool.SlotEnum.Primary => ToolsPrimary,
-            Tool.SlotEnum.Secondary => ToolsSecondary,
-            Tool.SlotEnum.Special => ToolsSpecial,
-            Tool.SlotEnum.Melee => ToolsMelee,
+            Resource.Tool.SlotEnum.Primary => ToolsPrimary,
+            Resource.Tool.SlotEnum.Secondary => ToolsSecondary,
+            Resource.Tool.SlotEnum.Special => ToolsSpecial,
+            Resource.Tool.SlotEnum.Melee => ToolsMelee,
             _ => ToolsPrimary,
         };
     }
 
-    private List<LiveTool> GetToolListFromSlot(Tool.SlotEnum slot)
+    private List<Tool> GetToolListFromSlot(Resource.Tool.SlotEnum slot)
     {
         return slot switch
         {
-            Tool.SlotEnum.Primary => ToolsPrimary,
-            Tool.SlotEnum.Secondary => ToolsSecondary,
-            Tool.SlotEnum.Special => ToolsSpecial,
-            Tool.SlotEnum.Melee => ToolsMelee,
+            Resource.Tool.SlotEnum.Primary => ToolsPrimary,
+            Resource.Tool.SlotEnum.Secondary => ToolsSecondary,
+            Resource.Tool.SlotEnum.Special => ToolsSpecial,
+            Resource.Tool.SlotEnum.Melee => ToolsMelee,
             _ => ToolsPrimary,
         };
     }

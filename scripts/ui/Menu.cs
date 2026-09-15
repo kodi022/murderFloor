@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
 public partial class Menu : Control
 {
@@ -40,14 +40,14 @@ public partial class Menu : Control
 
     private void ExitButton()
     {
-        NetworkManager.Singleton.CloseServer();
+        Global.NetworkManager.Singleton.CloseServer();
         GetTree().ChangeSceneToFile("res://scenes/MainMenu.tscn");
-        foreach (var player in Player.AllPlayers) player.QueueFree();
+        foreach (var player in Game.Player.AllPlayers) player.QueueFree();
     }
 
     private void ExitDesktopButton()
     {
-        NetworkManager.Singleton.CloseServer();
+        Global.NetworkManager.Singleton.CloseServer();
         GetTree().Quit();
     }
 }

@@ -1,4 +1,4 @@
-namespace MurderFloor.Loot;
+namespace Shooter.Resource.Loot;
 
 [Flags]
 public enum PossibleStats
@@ -39,7 +39,7 @@ public struct LootState
     public int ResourceHashId { get; private set; }
     public Version Version { get; private set; }
     public int Level { get; private set; }
-    public Game.DifficultyEnum Difficulty { get; private set; }
+    public Game.Game.DifficultyEnum Difficulty { get; private set; }
     public int MapHashId { get; private set; }
     public int OverScaling { get; private set; }
     private Dictionary<string, string> CustomData { get; set; } // needs to be property
@@ -50,11 +50,11 @@ public struct LootState
     public LootState() { }
 
     /// <summary> Constructor only for newly generated loot </summary>
-    public LootState(ulong seed, int level, Game.DifficultyEnum difficulty, int mapHashId, float overscaling)
+    public LootState(ulong seed, int level, Game.Game.DifficultyEnum difficulty, int mapHashId, float overscaling)
     {
         Seed = seed;
         ResourceHashId = GetLootHashId();
-        Version = Global.GameVersion;
+        Version = Global.GameManager.GameVersion;
         Level = level;
         Difficulty = difficulty;
         MapHashId = mapHashId;
@@ -86,7 +86,7 @@ public struct LootState
         }
     }
 
-    public readonly MFResource GetLootRef()
+    public readonly GameResource GetLootRef()
     {
         if (ResourceHashId == 184465471) return null; // fistd
 
@@ -105,7 +105,7 @@ public struct LootState
 
     public readonly Node3D MakeLootNode()
     {
-        var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<LiveLoot>();
+        var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<Game.Loot>();
         newLoot.Position = Vector3.Up * 0.1f;
         newLoot.StateInfo = this;
         var importYaw = 0f;
@@ -156,7 +156,7 @@ public struct LootState
     /// <summary> internal function reserved for base game. base64 single character only. </summary>
     internal readonly void AddCustomData(char key, string value)
     {
-        if (!Compression.ArithmeticBase64.Contains(key))
+        if (!Utils.Compression.ArithmeticBase64.Contains(key))
         {
             GD.PushError("LootState.AddCustomData does not contain char key");
             return;
@@ -186,12 +186,12 @@ public struct LootState
     public override readonly string ToString() => Serialize();
     public readonly string Serialize()
     {
-        var str = Compression.ULToAB64(Seed) + Layer1Delimiter;
-        str += Compression.IntToAB64(ResourceHashId) + Layer1Delimiter;
+        var str = Utils.Compression.ULToAB64(Seed) + Layer1Delimiter;
+        str += Utils.Compression.IntToAB64(ResourceHashId) + Layer1Delimiter;
         str += Version.ToString() + Layer1Delimiter;
         str += Level + Layer1Delimiter;
         str += (int)Difficulty + Layer1Delimiter;
-        str += Compression.IntToAB64(MapHashId) + Layer1Delimiter;
+        str += Utils.Compression.IntToAB64(MapHashId) + Layer1Delimiter;
         str += OverScaling.ToString() + Layer1Delimiter;
         str += SerializeCustomData(CustomData);
         return str;
@@ -202,12 +202,12 @@ public struct LootState
         var strs = state.Split(Layer1Delimiter);
         var ls = new LootState()
         {
-            Seed = Compression.AB64ToUL(strs[0]),
-            ResourceHashId = Compression.AB64ToInt(strs[1]),
+            Seed = Utils.Compression.AB64ToUL(strs[0]),
+            ResourceHashId = Utils.Compression.AB64ToInt(strs[1]),
             Version = Version.FromString(strs[2]),
             Level = strs[3].ToInt(),
-            Difficulty = (Game.DifficultyEnum)strs[4].ToInt(),
-            MapHashId = Compression.AB64ToInt(strs[5]),
+            Difficulty = (Game.Game.DifficultyEnum)strs[4].ToInt(),
+            MapHashId = Utils.Compression.AB64ToInt(strs[5]),
             OverScaling = strs[6].ToInt(),
             CustomData = DeserializeCustomData(strs[7]),
         };

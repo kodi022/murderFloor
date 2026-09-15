@@ -1,7 +1,7 @@
-namespace MurderFloor;
+namespace Shooter.Resource;
 
 [GlobalClass]
-public partial class Mob : MFResource
+public partial class Mob : GameResource
 {
     [Export]
     public float MaxHealth { get; private set; } = 100f;

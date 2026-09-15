@@ -1,4 +1,4 @@
-namespace MurderFloor.Loot;
+namespace Shooter.Resource.Loot;
 
 public static class Tiers
 {

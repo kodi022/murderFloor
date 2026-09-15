@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
 // - terminology help
 // Game is multiple Waves
@@ -24,7 +24,8 @@ public partial class Game : Node
     }
 
     public static Game Current { get; private set; }
-    public static List<LiveMob> MobPool { get; private set; } = [];
+
+    public static List<Mob> MobPool { get; private set; } = [];
 
     [Signal]
     public delegate void GameWaveStartEventHandler(int round);
@@ -86,7 +87,7 @@ public partial class Game : Node
 
     public override void _Ready()
     {
-        NetworkManager.Singleton.RpcId(1, "PlayerLoaded");
+        Global.NetworkManager.Singleton.RpcId(1, "PlayerLoaded");
     }
 
     public override void _Process(double delta)
@@ -112,14 +113,14 @@ public partial class Game : Node
         }
 
         mobPoolNode = new Node() { Name = "MobPool" };
-        Global.ClearOnLoad.AddChild(mobPoolNode);
+        Global.GameManager.ClearOnLoad.AddChild(mobPoolNode);
         lootNode = new Node() { Name = "Loot" };
-        Global.ClearOnLoad.AddChild(lootNode);
+        Global.GameManager.ClearOnLoad.AddChild(lootNode);
 
         var mobScene = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
         for (int i = 0; i < 200; i++)
         {
-            var mob = mobScene.Instantiate<LiveMob>();
+            var mob = mobScene.Instantiate<Mob>();
             mob.Name = "mob_" + i;
             mob.MobPoolId = i;
             mob.MobProcessOffset = MobPool.Count % 20;
@@ -157,13 +158,13 @@ public partial class Game : Node
         if (rngLoot.Randf() > 0.9f)
         {
             // ! level = map difficulty * difficulty + challenge or something
-            var lootState = new Loot.LootState(GameSeed + rngLoot.Randi(), 0, DifficultyEnum.Hard, 0, 0);
+            var lootState = new Resource.Loot.LootState(GameSeed + rngLoot.Randi(), 0, DifficultyEnum.Hard, 0, 0);
             var lootNode3d = lootState.MakeLootNode();
             lootNode.AddChild(lootNode3d);
             lootNode3d.GlobalPosition = damageInfo.HitPosition;
             ((RigidBody3D)lootNode3d.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
 
-            var loot = new Loot.LootRarity(lootState);
+            var loot = new Resource.Loot.LootRarity(lootState);
             GD.Print($"{loot.Tier} ({(int)loot.Tier}),  {loot.Wear} ({(int)loot.Wear})");
         }
     }

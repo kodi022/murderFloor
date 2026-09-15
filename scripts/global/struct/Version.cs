@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter;
 
 public struct Version
 {

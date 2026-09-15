@@ -1,4 +1,6 @@
-namespace MurderFloor;
+namespace Shooter;
+
+using Resource;
 
 public static class ResourceManager
 {
@@ -23,7 +25,7 @@ public static class ResourceManager
 		//foreach (var file in Direct)
 	}
 
-	public class ResourceRegistry<T> where T : MFResource
+	public class ResourceRegistry<T> where T : GameResource
 	{
 		private readonly Dictionary<int, T> registry = [];
 
@@ -93,7 +95,7 @@ public static class ResourceManager
 				return null;
 			}
 
-			return GetResourceRef(Hashing.StableHash(fullId));
+			return GetResourceRef(Utils.Hashing.StableHash(fullId));
 		}
 
 		public Dictionary<int, T> GetAllResource()
@@ -104,27 +106,16 @@ public static class ResourceManager
 
 	public class LootResourceRegistry
 	{
-		private readonly List<MFResource> registry = [];
+		private readonly List<GameResource> registry = [];
 
 		public int Count => registry.Count;
 
-		public void Add(MFResource value)
+		public void Add(GameResource value)
 		{
 			registry.Add(value);
 		}
 
-		// public Dictionary<string, MFResource> GetAllResourceUnderVersion(Global.Version version)
-		// {
-		// 	var newDict = new Dictionary<string, MFResource>();
-		// 	foreach (var res in registry)
-		// 	{
-		// 		var resVer = Global.Version.FromString(res.Key);
-		// 		if (!version.IsGreaterThan(resVer)) newDict.Add(res.Key, res.Value);
-		// 	}
-		// 	return newDict;
-		// }
-
-		public MFResource GetResourceAtIndex(int index)
+		public GameResource GetResourceAtIndex(int index)
 		{
 			if (index < 0 || index >= Count)
 			{
@@ -138,7 +129,7 @@ public static class ResourceManager
 		/// <summary>
 		/// Gets resource by reference or null if fail. Does not warn because in rare cases a Tool will be used that is not Loot
 		/// </summary>
-		public MFResource GetResourceRef(int hashId)
+		public GameResource GetResourceRef(int hashId)
 		{
 			return registry.FirstOrDefault(c => c.HashId == hashId, null);
 		}
@@ -146,7 +137,7 @@ public static class ResourceManager
 		/// <summary>
 		/// Gets resource by reference or null if fail
 		/// </summary>
-		public MFResource GetResourceRef(string fullId)
+		public GameResource GetResourceRef(string fullId)
 		{
 			if (string.IsNullOrEmpty(fullId))
 			{
@@ -154,10 +145,10 @@ public static class ResourceManager
 				return null;
 			}
 
-			return GetResourceRef(Hashing.StableHash(fullId));
+			return GetResourceRef(Utils.Hashing.StableHash(fullId));
 		}
 
-		public List<MFResource> GetAllResource()
+		public List<GameResource> GetAllResource()
 		{
 			return registry;
 		}

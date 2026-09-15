@@ -1,6 +1,6 @@
-namespace MurderFloor;
+namespace Shooter.Debug;
 
-public partial class DebugBulletDecal : MeshInstance3D
+public partial class PointMesh : MeshInstance3D
 {
     public ulong MsToDelete { get; set; } = 5000ul;
 

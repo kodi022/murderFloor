@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui.Debug;
 
 public partial class HudDebug : Control
 {
@@ -15,14 +15,14 @@ public partial class HudDebug : Control
     // 16 labels, 0 - 15
     public override void _Process(double delta)
     {
-        if (Game.Current is null)
+        if (Game.Game.Current is null)
         {
             labels[0].Text = $"game state:null";
             return;
         }
-        labels[0].Text = $"game state:{Game.Current.GameState}";
-        labels[1].Text = $"game maxwave:{Game.Current.MaxWave} wave:{Game.Current.Wave}";
-        labels[2].Text = $"game wavemobleft:{Game.Current.WaveMobsLeft}";
-        labels[3].Text = $"game mobmax:{Game.Current.MaxActiveMobs} mobactive:{Game.Current.ActiveMobs}";
+        labels[0].Text = $"game state:{Game.Game.Current.GameState}";
+        labels[1].Text = $"game maxwave:{Game.Game.Current.MaxWave} wave:{Game.Game.Current.Wave}";
+        labels[2].Text = $"game wavemobleft:{Game.Game.Current.WaveMobsLeft}";
+        labels[3].Text = $"game mobmax:{Game.Game.Current.MaxActiveMobs} mobactive:{Game.Game.Current.ActiveMobs}";
     }
 }

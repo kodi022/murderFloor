@@ -1,4 +1,6 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
+
+using Game;
 
 public partial class Hud : ScreenScaleLimiter
 {
@@ -41,7 +43,7 @@ public partial class Hud : ScreenScaleLimiter
 
     private bool hookedGameEvents = false;
 
-    private LiveTool selectedTool;
+    private Tool selectedTool;
 
     private int activeCrosshairIndex = -1;
     private Panel activeCrosshair;
@@ -69,8 +71,8 @@ public partial class Hud : ScreenScaleLimiter
         Player.Self.PlayerOnDamage += HurtAndUpdateHealth;
         Player.Self.PlayerOnHeal += HealAndUpdateHealth;
         Player.Self.PlayerToolChange += GenerateToolLists;
-        NetworkManager.Singleton.PlayerConnected += OnPlayerConnected;
-        NetworkManager.Singleton.PlayerDisconnected += OnPlayerDisconnected;
+        Global.NetworkManager.Singleton.PlayerConnected += OnPlayerConnected;
+        Global.NetworkManager.Singleton.PlayerDisconnected += OnPlayerDisconnected;
 
         waveInfoWave = waveInfoPanel.GetChild<RichTextLabel>(1);
         waveInfoLeft = waveInfoPanel.GetChild<RichTextLabel>(2);
@@ -82,10 +84,10 @@ public partial class Hud : ScreenScaleLimiter
         weightBar = weightBarPanel.GetChild<Panel>(2);
         weightBarChange = weightBarPanel.GetChild<Panel>(1);
 
-        weaponsContainer.GetChild(0).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectprimary");
-        weaponsContainer.GetChild(1).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectsecondary");
-        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectspecial");
-        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Global.ButtonName("selectmelee");
+        weaponsContainer.GetChild(0).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectprimary");
+        weaponsContainer.GetChild(1).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectsecondary");
+        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectspecial");
+        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectmelee");
 
         var p = playerListVBox.GetChild(0);
         playerPanelRef = (Panel)p.Duplicate();
@@ -136,7 +138,7 @@ public partial class Hud : ScreenScaleLimiter
         weightBar.SetPosition(newWeightBarPos);
         weightBarChange.SetPosition(newWeightBarPos);
 
-        async Task ListWeapons(int containerIndex, List<LiveTool> tools)
+        async Task ListWeapons(int containerIndex, List<Tool> tools)
         {
             var container = weaponsContainer.GetChild(containerIndex);
 
@@ -156,7 +158,7 @@ public partial class Hud : ScreenScaleLimiter
             {
                 var scene = GD.Load<PackedScene>("res://scenes/ui/hud/HudToolBox.tscn");
                 var hudToolBox = scene.Instantiate<HudToolBox>();
-                hudToolBox.LiveTool = tool;
+                hudToolBox.Tool = tool;
                 hudToolBox.Equipped = tool == selectedTool;
                 container.AddChild(hudToolBox);
             }
@@ -177,14 +179,14 @@ public partial class Hud : ScreenScaleLimiter
         }
 
         var selectedTool = Player.Self.SelectedTool;
-        if (selectedTool is null || selectedTool.ToolResource is ToolMelee)
+        if (selectedTool is null || selectedTool.ToolResource is Resource.ToolMelee)
         {
             ChangeCrosshair(0);
             DefaultSize();
             return;
         }
 
-        if (selectedTool.ToolResource is ToolFirearm firearm)
+        if (selectedTool.ToolResource is Resource.ToolFirearm firearm)
         {
             if (OptionsManager.CurrentOptions.ScalingCrosshair)
             {
@@ -223,7 +225,7 @@ public partial class Hud : ScreenScaleLimiter
             else
                 activeCrosshair.Modulate = new Color(1, 1, 1, OptionsManager.CurrentOptions.CrosshairOpacity);
 
-            if (firearm.FirearmType == ToolFirearm.FirearmTypeEnum.Shotgun)
+            if (firearm.FirearmType == Resource.ToolFirearm.FirearmTypeEnum.Shotgun)
                 ChangeCrosshair(2);
             else
                 ChangeCrosshair(1);

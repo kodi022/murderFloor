@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
 public partial class MainMenuOnline : Panel
 {
@@ -22,7 +22,7 @@ public partial class MainMenuOnline : Panel
 		joinButton.ButtonDown += () =>
 		{
 			ParseText();
-			var error = NetworkManager.Singleton.JoinServer();
+			var error = Global.NetworkManager.Singleton.JoinServer();
 			if (error == Error.Ok)
 			{
 				GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
@@ -32,7 +32,7 @@ public partial class MainMenuOnline : Panel
 		hostButton.ButtonDown += () =>
 		{
 			ParseText();
-			var error = NetworkManager.Singleton.CreateServer();
+			var error = Global.NetworkManager.Singleton.CreateServer();
 			if (error == Error.Ok)
 			{
 				GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
@@ -48,9 +48,9 @@ public partial class MainMenuOnline : Panel
 			else return line.Text.Trim();
 		}
 
-		NetworkManager.Singleton.ServerIP = PickText(IPline);
-		NetworkManager.Singleton.Port = PickText(portLine).ToInt();
-		NetworkManager.Singleton._playerInfo["Name"] = PickText(nameLine);
-		NetworkManager.Singleton._playerInfo["Coolness"] = PickText(coolLine);
+		Global.NetworkManager.Singleton.ServerIP = PickText(IPline);
+		Global.NetworkManager.Singleton.Port = PickText(portLine).ToInt();
+		Global.NetworkManager.Singleton._playerInfo["Name"] = PickText(nameLine);
+		Global.NetworkManager.Singleton._playerInfo["Coolness"] = PickText(coolLine);
 	}
 }

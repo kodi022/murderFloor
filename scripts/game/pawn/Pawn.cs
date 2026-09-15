@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
 public partial class Pawn : CharacterBody3D
 {
@@ -63,7 +63,7 @@ public partial class Pawn : CharacterBody3D
         // sounds
 
         bool attackerIsSelf = damageInfo.AttackerId == Player.Self.Id;
-        if (attackerIsSelf && this is LiveMob)
+        if (attackerIsSelf && this is Mob)
         {
             EmitSignal(SignalName.MobOnDamage, damageInfo.ToVariant());
         }
@@ -90,7 +90,7 @@ public partial class Pawn : CharacterBody3D
 
     public virtual void OnDeath(DamageInfo damageInfo)
     {
-        if (this is LiveMob)
+        if (this is Mob)
         {
             EmitSignal(SignalName.MobOnDeath, damageInfo.ToVariant());
         }

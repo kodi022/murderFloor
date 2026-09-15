@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
 public partial class Ragdoll : Node3D
 {
@@ -21,6 +21,12 @@ public partial class Ragdoll : Node3D
         if (hitBone is not null)
         {
             var hit = (PhysicalBone3D)boneSimulator.FindChild("Physical Bone " + hitBone);
+            if (hit is null)
+            {
+                GD.PushWarning($"Ragdoll._Ready: Could not find Bone of name \"Physical Bone {hitBone}\"");
+                return;
+            }
+
             hit.LinearVelocity = hitDir * (hitForce / hit.Mass);
         }
     }

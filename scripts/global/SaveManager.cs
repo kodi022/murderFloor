@@ -1,6 +1,6 @@
-using MurderFloor.Loot;
+namespace Shooter;
 
-namespace MurderFloor;
+using Resource.Loot;
 
 public static class SaveManager
 {
@@ -14,7 +14,7 @@ public static class SaveManager
     {
         if (!DirAccess.DirExistsAbsolute(SaveFolder)) DirAccess.MakeDirAbsolute("user://saves");
 
-        var json = System.Text.Json.JsonSerializer.Serialize(save, Global.JsonOptions);
+        var json = System.Text.Json.JsonSerializer.Serialize(save, Utils.Defaults.JsonOptions);
         SaveSaveIndex();
 
         using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);
@@ -35,7 +35,7 @@ public static class SaveManager
         var text = file.GetAsText();
         if (string.IsNullOrEmpty(text)) return new SaveData();
 
-        var save = System.Text.Json.JsonSerializer.Deserialize<SaveData>(file.GetAsText(), Global.JsonOptions);
+        var save = System.Text.Json.JsonSerializer.Deserialize<SaveData>(file.GetAsText(), Utils.Defaults.JsonOptions);
         GD.Print("Loaded save " + SaveIndex);
         return save;
     }
@@ -55,7 +55,7 @@ public static class SaveManager
     {
         using var file = FileAccess.Open(SaveIndexPath, FileAccess.ModeFlags.Read);
         if (file is null) return 0;
-        var index = System.Text.Json.JsonSerializer.Deserialize<int>(file.GetAsText(), Global.JsonOptions);
+        var index = System.Text.Json.JsonSerializer.Deserialize<int>(file.GetAsText(), Utils.Defaults.JsonOptions);
         return index;
     }
 
@@ -108,7 +108,7 @@ public static class SaveManager
                 var lootState = LootState.Deserialize(val);
                 if (lootState.GetCustomData("g", out string id))
                 {
-                    if (hash == Compression.AB64ToInt(id))
+                    if (hash == Utils.Compression.AB64ToInt(id))
                         atts.Add(lootState);
                 }
             }
@@ -140,7 +140,7 @@ public static class SaveManager
             return all;
         }
 
-        public List<LootState> GetAllLootOfType<T>() where T : MFResource
+        public List<LootState> GetAllLootOfType<T>() where T : Resource.GameResource
         {
             List<LootState> type = [];
             foreach (var val in Loot)
@@ -161,7 +161,7 @@ public static class SaveManager
                 bool found = false;
                 foreach (var loot in Loot)
                 {
-                    var lootState = MurderFloor.Loot.LootState.Deserialize(loot);
+                    var lootState = LootState.Deserialize(loot);
                     if (lootState.GetHashCode() == val)
                     {
                         equippedLoot.Add(lootState);

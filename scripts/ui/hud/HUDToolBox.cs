@@ -1,4 +1,6 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
+
+using Game;
 
 public partial class HudToolBox : Panel
 {
@@ -9,7 +11,7 @@ public partial class HudToolBox : Panel
     [Export]
     public Label Label { get; private set; }
 
-    public LiveTool LiveTool { get; set; }
+    public Tool Tool { get; set; }
 
     public bool Equipped { get; set; } = true;
 
@@ -17,11 +19,11 @@ public partial class HudToolBox : Panel
     {
         NinePatchRect.Visible = Equipped;
 
-        var texture = await LiveTool.ToolResource.GenerateThumbnailImage(256, 128);
+        var texture = await Tool.ToolResource.GenerateThumbnailImage(256, 128);
         if (!IsInstanceValid(TextureRect)) return;
         TextureRect.Texture = texture;
 
-        Label.Text = $"{LiveTool.CurrentMag} / {LiveTool.CurrentReserve}";
+        Label.Text = $"{Tool.CurrentMag} / {Tool.CurrentReserve}";
 
         if (Equipped)
         {
@@ -36,6 +38,6 @@ public partial class HudToolBox : Panel
         NinePatchRect.Visible = Equipped;
         if (!Equipped) return;
 
-        Label.Text = $"{LiveTool.CurrentMag} / {LiveTool.CurrentReserve}";
+        Label.Text = $"{Tool.CurrentMag} / {Tool.CurrentReserve}";
     }
 }

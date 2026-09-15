@@ -1,6 +1,6 @@
-namespace MurderFloor;
+namespace Shooter;
 
-using Loot;
+using Resource.Loot;
 
 public struct ToolConfig
 {
@@ -24,12 +24,12 @@ public struct ToolConfig
             obj.Atts.Add(att.ToString());
         }
 
-        return System.Text.Json.JsonSerializer.Serialize(obj, Global.JsonOptions);
+        return System.Text.Json.JsonSerializer.Serialize(obj, Utils.Defaults.JsonOptions);
     }
 
     public static ToolConfig Deserialize(string toolConfigSerialized)
     {
-        var obj = System.Text.Json.JsonSerializer.Deserialize<Stringified>(toolConfigSerialized, Global.JsonOptions);
+        var obj = System.Text.Json.JsonSerializer.Deserialize<Stringified>(toolConfigSerialized, Utils.Defaults.JsonOptions);
         var toolConfig = new ToolConfig { LootState = LootState.Deserialize(obj.State) };
         toolConfig.AttachmentLootStates ??= [];
 

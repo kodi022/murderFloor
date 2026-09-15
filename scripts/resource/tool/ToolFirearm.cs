@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Resource;
 
 [GlobalClass]
 public partial class ToolFirearm : Tool
@@ -134,7 +134,7 @@ public partial class ToolFirearm : Tool
 
     public override async Task<ImageTexture> GenerateThumbnailImage(int resX, int resY)
     {
-        if (MeshScene is null) return Global.MissingTextureImage;
+        if (MeshScene is null) return Utils.Defaults.MissingTextureImage;
 
         string GetDictKey(int resX, int resY) { return $"{HashId}-{resX}-{resY}"; }
         if (generatedThumbnails.TryGetValue(GetDictKey(resX, resY), out ImageTexture val))

@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Utils;
 
 public static class Hashing
 {

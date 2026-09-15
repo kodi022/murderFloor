@@ -1,11 +1,11 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
-public partial class LiveMob : Pawn
+public partial class Mob : Pawn
 {
     public const float MinimumDistanceToTarget = 1.2f;
 
     public string MobResourceFullId { get; set; }
-    public Mob MobResource { get; private set; }
+    public Resource.Mob MobResource { get; private set; }
 
     [Export]
     public bool Active
@@ -95,7 +95,7 @@ public partial class LiveMob : Pawn
         Armor = MobResource.Armor;
         Scale = Vector3.One * MobResource.Scale;
         GlobalPosition = pos;
-        startPosHash = Hashing.StableHash(pos);
+        startPosHash = Utils.Hashing.StableHash(pos);
         Active = true;
         ChangeNavigationTarget();
     }
@@ -109,10 +109,15 @@ public partial class LiveMob : Pawn
         Game.Current.MobDeath(damageInfo, MobPoolId);
 
         var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
+        var hitCollider = damageInfo.HitboxName;
+        if (hitCollider == "Head") hitCollider = "Neck";
+        if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
+        if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
+        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
+
         var liveSk = worldModels.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
         var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
         var copyCount = Math.Min(liveSk.GetBoneCount(), ragSk.GetBoneCount());
-
         ragdoll.GlobalTransform = GlobalTransform;
         for (int i = 0; i < copyCount; i++)
         {
@@ -122,13 +127,6 @@ public partial class LiveMob : Pawn
             ragSk.SetBonePoseRotation(i, rot);
         }
 
-        var hitCollider = damageInfo.HitboxName;
-        // ragdoll has different colliders
-        if (hitCollider == "Head") hitCollider = "Neck";
-        if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
-        if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
-        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
-
-        Global.ClearOnLoad.AddChild(ragdoll);
+        Global.GameManager.ClearOnLoad.AddChild(ragdoll);
     }
 }

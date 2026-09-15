@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
 public partial class Usable : Node3D
 {

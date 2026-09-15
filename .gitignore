@@ -9,11 +9,12 @@
 *.blend1
 *.blend2
 
-# C# Dev Kit cache
-*.lscache
-
 # Project nogit folder
 .nogit/
 
-# weird file that terrain3d keeps adding/removing
+# Editor files
+.vscode/
+*.lscache
+
+# odd file that Terrain3D keeps adding/removing
 addons/terrain_3d/bin/~libterrain.windows.debug.x86_64.dll

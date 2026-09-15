@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
 public partial class MainMenu : ScreenScaleLimiter
 {
@@ -60,8 +60,8 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							NetworkManager.Singleton._playerInfo["Name"] = name;
-							var error = NetworkManager.Singleton.CreateServer();
+							Global.NetworkManager.Singleton._playerInfo["Name"] = name;
+							var error = Global.NetworkManager.Singleton.CreateServer();
 							if (error == Error.Ok)
 							{
 								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
@@ -74,8 +74,8 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							NetworkManager.Singleton._playerInfo["Name"] = name;
-							var error = NetworkManager.Singleton.JoinServer();
+							Global.NetworkManager.Singleton._playerInfo["Name"] = name;
+							var error = Global.NetworkManager.Singleton.JoinServer();
 							if (error == Error.Ok)
 							{
 								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");

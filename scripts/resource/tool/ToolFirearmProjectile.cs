@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Resource;
 
 [GlobalClass]
 public partial class ToolFirearmProjectile : ToolFirearm

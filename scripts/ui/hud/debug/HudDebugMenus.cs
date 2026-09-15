@@ -1,6 +1,7 @@
-using MurderFloor.Loot;
+namespace Shooter.Ui.Debug;
 
-namespace MurderFloor;
+using Shooter.Resource;
+using Shooter.Utils;
 
 public partial class HudDebugMenus : Control
 {
@@ -24,7 +25,7 @@ public partial class HudDebugMenus : Control
             {
                 case "Tools":
                     if (column == 0)
-                        Player.Self.Rpc("ToolAddRpc", $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
+                        Game.Player.Self.Rpc("ToolAddRpc", $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
                     else if (column == 2)
                     {
                         DisplayServer.ClipboardSet(item.GetText(2));
@@ -36,7 +37,7 @@ public partial class HudDebugMenus : Control
             }
         };
 
-        void AddChildrenToRoot<T>(string itemName, Dictionary<int, T> resources, bool hasFunction = false) where T : MFResource
+        void AddChildrenToRoot<T>(string itemName, Dictionary<int, T> resources, bool hasFunction = false) where T : GameResource
         {
             var newItem = root.CreateChild();
             newItem.SetText(0, itemName);
@@ -45,10 +46,10 @@ public partial class HudDebugMenus : Control
             {
                 var child = newItem.CreateChild();
                 child.SetText(0, item.Value.FullId);
-                if (hasFunction) child.AddButton(0, Global.MissingTexture);
+                if (hasFunction) child.AddButton(0, Defaults.MissingTexture);
                 child.SetText(1, Compression.IntToAB64(item.Value.HashId));
                 child.SetText(2, item.Value.HashId.ToString());
-                child.AddButton(2, Global.MissingTexture);
+                child.AddButton(2, Defaults.MissingTexture);
                 child.SetText(3, item.Value.IsRandomLoot.ToString());
             }
         }
@@ -83,21 +84,21 @@ public partial class HudDebugMenus : Control
         var lsCreatorPanel = lsPanel.GetChild<Panel>(0);
         lsCreatorPanel.GetChild<Button>(0).Pressed += () =>
         {
-            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new LootState(0, 0, 0, 0, 0).Serialize();
+            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new Resource.Loot.LootState(0, 0, 0, 0, 0).Serialize();
         };
         lsCreatorPanel.GetChild<Button>(1).Pressed += () =>
         {
             var seed = ulong.Parse(lsCreatorPanel.GetChild<LineEdit>(2).Text);
             var level = lsCreatorPanel.GetChild<LineEdit>(3).Text.ToInt();
             var difficulty = lsCreatorPanel.GetChild<LineEdit>(4).Text.ToInt();
-            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new LootState(seed, level, (Game.DifficultyEnum)difficulty, 0, 0).Serialize();
+            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new Resource.Loot.LootState(seed, level, (Game.Game.DifficultyEnum)difficulty, 0, 0).Serialize();
         };
 
         var lsEmptyPanel = lsPanel.GetChild<Panel>(1);
         lsEmptyPanel.GetChild<Button>(0).Pressed += () =>
         {
             var resourceId = int.Parse(lsEmptyPanel.GetChild<LineEdit>(1).Text);
-            var lootstate = new LootState(0, 0, 0, 0, 0).Serialize().Split(',');
+            var lootstate = new Resource.Loot.LootState(0, 0, 0, 0, 0).Serialize().Split(',');
             lootstate[1] = Compression.IntToAB64(resourceId);
             ((LineEdit)lsEmptyPanel.GetChildren().Last()).Text = string.Join(',', lootstate);
         };
@@ -110,7 +111,7 @@ public partial class HudDebugMenus : Control
             var level = genPanel.GetChild<LineEdit>(1).Text.ToInt();
 
             var outputLine = genPanel.GetChild<TextEdit>(3);
-            var generationTask = Debug.DebugGenerateLoot(amount, level);
+            var generationTask = Shooter.Debug.Rendering.DebugGenerateLoot(amount, level);
 
             outputLine.Text = "running";
             var tick = 0;

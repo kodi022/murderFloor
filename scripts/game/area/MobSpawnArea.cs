@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
 [Tool]
 public partial class MobSpawnArea : Node3D
@@ -26,7 +26,7 @@ public partial class MobSpawnArea : Node3D
 
             if (aabb.HasPoint(pos))
             {
-                if (OS.HasFeature("editor")) Debug.DebugDot(GlobalPosition + pos, 4, msToDelete: 5000);
+                if (OS.HasFeature("editor")) Debug.Rendering.Point(GlobalPosition + pos, 4, msToDelete: 5000);
                 vectors.Add(GlobalPosition + pos);
             }
 

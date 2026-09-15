@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Resource;
 
 [GlobalClass]
 public partial class AttachmentOptic : Attachment

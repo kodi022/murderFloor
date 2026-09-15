@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
 public partial class MapSelect : Control
 {
@@ -45,12 +45,12 @@ public partial class MapSelect : Control
     [Export]
     CheckButton selectionPanelC2;
 
-    private Map selectedMap;
+    private Resource.Map selectedMap;
     private DifficultyConfig difficultyConfig;
 
     private List<Button> buttons = [];
     private List<Tween> buttonTweens;
-    private Map viewedMap;
+    private Resource.Map viewedMap;
 
     public override void _Ready()
     {
@@ -70,8 +70,7 @@ public partial class MapSelect : Control
             if (selectedMap is null) return;
 
             // ! if everybody is ready
-
-            NetworkManager.Singleton.Rpc("LoadGame", selectedMap.MeshScene.ResourcePath);
+            Global.NetworkManager.Singleton.Rpc("LoadGame", selectedMap.MeshScene.ResourcePath);
         };
 
         foreach (var map in ResourceManager.MapRegistry.GetAllResource())
@@ -120,7 +119,7 @@ public partial class MapSelect : Control
 
         selectionPanelDifficultySlider.ValueChanged += (a) =>
         {
-            selectionPanelDifficultySliderValue.Text = ((Game.DifficultyEnum)a).ToString();
+            selectionPanelDifficultySliderValue.Text = ((Game.Game.DifficultyEnum)a).ToString();
         };
 
         selectionPanelOverscalingSlider.ValueChanged += (a) =>
@@ -160,7 +159,7 @@ public partial class MapSelect : Control
             selectedMap = viewedMap;
             difficultyConfig = new DifficultyConfig()
             {
-                Difficulty = (Game.DifficultyEnum)(int)selectionPanelDifficultySlider.Value,
+                Difficulty = (Game.Game.DifficultyEnum)(int)selectionPanelDifficultySlider.Value,
                 Overscaling = (float)selectionPanelOverscalingSlider.Value,
                 C1 = selectionPanelC1.ToggleMode,
                 C2 = selectionPanelC2.ToggleMode,

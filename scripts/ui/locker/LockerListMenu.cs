@@ -1,9 +1,10 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
-using Loot;
+using Resource;
+using Resource.Loot;
 
 // ! rework to support other types
-public partial class LockerListMenu : Control
+public partial class ListMenu : Control
 {
     public bool LMShowModifyButton { get; set; }
     public bool LMShowAdvancedButton { get; set; }
@@ -101,10 +102,10 @@ public partial class LockerListMenu : Control
     private void PressedEquipButton()
     {
         var lootStateHash = selectedToolLootState.GetHashCode();
-        if (Player.Self.HasTool(selectedToolLootState))
+        if (Game.Player.Self.HasTool(selectedToolLootState))
         {
             SaveManager.CurrentSave.Equipped.Remove(lootStateHash);
-            Player.Self.Rpc("ToolRemoveRpc", selectedToolLootState.Serialize());
+            Game.Player.Self.Rpc("ToolRemoveRpc", selectedToolLootState.Serialize());
         }
         else
         {
@@ -113,10 +114,10 @@ public partial class LockerListMenu : Control
 
             var attachments = SaveManager.CurrentSave.GetAttachmentsOnTool(selectedToolLootState);
             var toolConfig = new ToolConfig(selectedToolLootState, attachments);
-            Player.Self.Rpc("ToolAddRpc", toolConfig.Serialize());
+            Game.Player.Self.Rpc("ToolAddRpc", toolConfig.Serialize());
         }
 
-        isSelectedToolEquipped = Player.Self.HasTool(selectedToolLootState);
+        isSelectedToolEquipped = Game.Player.Self.HasTool(selectedToolLootState);
         selectedToolLockerToolButton.CheckState(selectedToolLootState);
         SaveManager.Save(SaveManager.CurrentSave);
         SelectTool();
@@ -196,19 +197,19 @@ public partial class LockerListMenu : Control
 
     private void SelectTool()
     {
-        isSelectedToolEquipped = Player.Self.HasTool(selectedToolLootState);
+        isSelectedToolEquipped = Game.Player.Self.HasTool(selectedToolLootState);
         selectedToolLockerToolButton.CheckState(selectedToolLootState);
 
         var strIcon = "[img=32]res://images/ui/TablerWeight.png[/img]";
-        if (Player.Self.HasTool(selectedToolLootState))
+        if (Game.Player.Self.HasTool(selectedToolLootState))
         {
-            totalWeightLabel.Text = strIcon + $"{Player.Self.ToolWeight} / {Player.Self.MaxWeight} (-{selectedTool.CarryWeight})";
+            totalWeightLabel.Text = strIcon + $"{Game.Player.Self.ToolWeight} / {Game.Player.Self.MaxWeight} (-{selectedTool.CarryWeight})";
             equipToolButton.Disabled = false;
         }
         else
         {
-            totalWeightLabel.Text = strIcon + $"{Player.Self.ToolWeight} / {Player.Self.MaxWeight} (+{selectedTool.CarryWeight})";
-            equipToolButton.Disabled = Player.Self.ToolWeight + selectedTool.CarryWeight > Player.Self.MaxWeight;
+            totalWeightLabel.Text = strIcon + $"{Game.Player.Self.ToolWeight} / {Game.Player.Self.MaxWeight} (+{selectedTool.CarryWeight})";
+            equipToolButton.Disabled = Game.Player.Self.ToolWeight + selectedTool.CarryWeight > Game.Player.Self.MaxWeight;
         }
 
         var lootRef = selectedToolLootState.GetLootRef();
@@ -240,7 +241,7 @@ public partial class LockerListMenu : Control
         }
         else
         {
-            selectedAttachmentLootState.AddCustomData('g', Compression.IntToAB64(selectedToolLootState.GetHashCode()));
+            selectedAttachmentLootState.AddCustomData('g', Utils.Compression.IntToAB64(selectedToolLootState.GetHashCode()));
             SaveManager.CurrentSave.ReplaceLoot(selectedAttachmentLootState);
             selectedAttachmentLockerToolButton.CheckState(selectedToolLootState);
         }
@@ -280,7 +281,7 @@ public partial class LockerListMenu : Control
             sceneViewport.AddChild(camera);
             rect.Texture = sceneViewport.GetTexture();
 
-            var bounds = MFResource.GetBounds(weaponScene);
+            var bounds = GameResource.GetBounds(weaponScene);
             var modelCenter = (bounds.End + bounds.Position) / 2;
             weaponScene.GlobalPosition = -modelCenter;
         }
@@ -292,7 +293,7 @@ public partial class LockerListMenu : Control
             weaponScene = selectedTool.BuildToolScene(t).Tool;
             weaponSceneParent.AddChild(weaponScene);
 
-            var bounds = MFResource.GetBounds(weaponScene);
+            var bounds = GameResource.GetBounds(weaponScene);
             var modelCenter = (bounds.End + bounds.Position) / 2;
             weaponScene.GlobalPosition = -modelCenter;
         }

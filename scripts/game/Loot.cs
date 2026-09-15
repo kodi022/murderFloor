@@ -1,10 +1,8 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
-using Loot;
-
-public partial class LiveLoot : Node3D
+public partial class Loot : Node3D
 {
-    public LootState StateInfo { get; set; }
+    public Resource.Loot.LootState StateInfo { get; set; }
 
     public override void _Ready()
     {

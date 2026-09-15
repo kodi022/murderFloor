@@ -1,6 +1,6 @@
-namespace MurderFloor;
+namespace Shooter.Ui;
 
-using Loot;
+using Resource.Loot;
 
 public partial class LockerToolButton : Panel
 {
@@ -27,14 +27,14 @@ public partial class LockerToolButton : Panel
     {
         var lootResource = ResourceManager.LootRegistry.GetResourceRef(LootState.ResourceHashId);
         lootRarity = new LootRarity(LootState);
-        isTool = lootResource is Tool;
+        isTool = lootResource is Resource.Tool;
 
         levelLabel.Text = lootRarity.Level.ToString();
         rect.Texture = await lootResource.GenerateThumbnailImage(256, 128);
 
         if (isTool)
         {
-            weightLabel.Text = $"[img=16]res://images/ui/TablerWeight.png[/img]{((Tool)lootResource).CarryWeight}";
+            weightLabel.Text = $"[img=16]res://images/ui/TablerWeight.png[/img]{((Resource.Tool)lootResource).CarryWeight}";
         }
         else
         {
@@ -67,14 +67,14 @@ public partial class LockerToolButton : Panel
                 OffsetTransformScale = new Vector2(1.12f, 1.12f);
             }
 
-            if (Player.Self.HasTool(LootState))
+            if (Game.Player.Self.HasTool(LootState))
                 colorRect.Color = new Color(defaultVal, 0.25f, defaultVal);
         }
         else
         {
             if (LootState.GetCustomData("g", out string value))
             {
-                if (Compression.AB64ToInt(value) == lockerSelected.GetHashCode())
+                if (Utils.Compression.AB64ToInt(value) == lockerSelected.GetHashCode())
                 {
                     colorRect.Color = new Color(0.2f, 0.33f, 0.2f);
                 }

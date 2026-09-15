@@ -1,8 +1,8 @@
-namespace MurderFloor;
+namespace Shooter;
 
 public struct DifficultyConfig
 {
-    public Game.DifficultyEnum Difficulty;
+    public Game.Game.DifficultyEnum Difficulty;
     public float Overscaling;
     public bool C1;
     public bool C2;
@@ -50,7 +50,7 @@ public struct DifficultyConfig
     {
         var diff = new DifficultyConfig();
         var strs = difficultyConfig.Split(',');
-        diff.Difficulty = (Game.DifficultyEnum)strs[0].ToInt();
+        diff.Difficulty = (Game.Game.DifficultyEnum)strs[0].ToInt();
         diff.Overscaling = strs[1].ToFloat();
         diff.C1 = strs[2] == "1";
         diff.C2 = strs[3] == "1";

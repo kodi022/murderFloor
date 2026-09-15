@@ -1,6 +1,8 @@
-namespace MurderFloor;
+namespace Shooter.Game;
 
-public partial class LiveTool : Node
+using Resource;
+
+public partial class Tool : Node
 {
     private const string ToolAnimLibraryKey = "a";
 
@@ -12,7 +14,7 @@ public partial class LiveTool : Node
     [Export]
     public string ToolFullId { get; set; }
     // reference to tool
-    public Tool ToolResource { get; private set; }
+    public Resource.Tool ToolResource { get; private set; }
 
     public ToolConfig ToolConfig { get; set; }
 
@@ -53,7 +55,7 @@ public partial class LiveTool : Node
 
     private float currentAimingPositionLerp;
 
-    private MFResource.BuiltToolData builtTool;
+    private GameResource.BuiltToolData builtTool;
 
     private Node3D viewmodelScene;
     private Vector3 viewmodelSceneStartPos;
@@ -288,7 +290,7 @@ public partial class LiveTool : Node
         }
     }
 
-    private void FirePrimaryFirearm(ToolFirearm firearm, Tool.FireInfo fi)
+    private void FirePrimaryFirearm(ToolFirearm firearm, Resource.Tool.FireInfo fi)
     {
         if (bolting) return;
         if (Reloading) return;
@@ -326,7 +328,7 @@ public partial class LiveTool : Node
         }
     }
 
-    private async void BoltFirearm(ToolFirearm firearm, Tool.FireInfo fi)
+    private async void BoltFirearm(ToolFirearm firearm, Resource.Tool.FireInfo fi)
     {
         if (bolting) return;
         if (Reloading) return;
@@ -352,7 +354,7 @@ public partial class LiveTool : Node
         shotBolt = false;
     }
 
-    private async void ReloadFirearm(ToolFirearm firearm, Tool.FireInfo fi)
+    private async void ReloadFirearm(ToolFirearm firearm, Resource.Tool.FireInfo fi)
     {
         if (bolting) return;
         if (Reloading) return;
@@ -401,12 +403,12 @@ public partial class LiveTool : Node
         shotBolt = false;
     }
 
-    private Tool.FireInfo CreateFireInfo()
+    private Resource.Tool.FireInfo CreateFireInfo()
     {
-        return new Tool.FireInfo()
+        return new Resource.Tool.FireInfo()
         {
             Player = Player,
-            LiveTool = this,
+            Tool = this,
             ViewTransform = Player.ViewGlobalTransform,
         };
     }

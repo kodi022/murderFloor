@@ -1,4 +1,4 @@
-namespace MurderFloor;
+namespace Shooter.Resource;
 
 [GlobalClass]
 public partial class ToolMelee : Tool
@@ -28,16 +28,16 @@ public partial class ToolMelee : Tool
         var ray = space.IntersectRay(query);
         if (ray.ContainsKey("collider"))
         {
-            Debug.DebugDot((Vector3)ray["position"], color: new Color(0, 0, 0));
+            Debug.Rendering.Point((Vector3)ray["position"], color: new Color(0, 0, 0));
 
-            Pawn pawn = null;
+            Game.Pawn pawn = null;
             var currentNode = (Node)(GodotObject)ray["collider"];
             for (int j = 0; j < 5; j++)
             {
                 currentNode = currentNode.GetParent();
 
                 if (currentNode is null) break;
-                if (currentNode is Pawn p)
+                if (currentNode is Game.Pawn p)
                 {
                     pawn = p;
                     break;
@@ -57,7 +57,7 @@ public partial class ToolMelee : Tool
                     Damage = damage,
                     DamageType = DamageInfo.DamageTypeEnum.Physical,
                     AttackerId = fi.Player.Id,
-                    AttackerName = NetworkManager.Singleton._players[fi.Player.Id]["Name"],
+                    AttackerName = Global.NetworkManager.Singleton._players[fi.Player.Id]["Name"],
                     WeaponId = HashId,
                     HitboxName = hitObjName,
                     HitPosition = (Vector3)ray["position"],
