@@ -4,13 +4,14 @@ public partial class OuterControllerDead : OuterController
 {
     [Export]
     private Camera3D camera3D;
+    [Export]
+    private HudDead hudDead;
 
-    private Player target;
+    private Player target => hudDead.Target;
 
     public override void _Ready()
     {
-        Position = Player.Self.Position;
-        camera3D.MakeCurrent();
+        ViewPlayer(Player.Self);
     }
 
     public override void _ExitTree()
@@ -33,5 +34,9 @@ public partial class OuterControllerDead : OuterController
         }
     }
 
-    public void ViewPlayer(Player player) => target = player;
+    public void ViewPlayer(Player player)
+    {
+        camera3D.MakeCurrent();
+        hudDead.Target = player;
+    }
 }

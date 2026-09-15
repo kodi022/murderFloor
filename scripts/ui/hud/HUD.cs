@@ -313,13 +313,14 @@ public partial class Hud : ScreenScaleLimiter
         }
     }
 
-    private void OnPlayerConnected(int peerId, Godot.Collections.Dictionary<string, string> _)
+    private async void OnPlayerConnected(int peerId, Godot.Collections.Dictionary<string, string> _)
     {
+        // OnPlayerConnected gets called for self before Hud _Ready is called
+        if (!IsInstanceValid(this)) await Task.Delay(500);
+
         var panel = (Panel)playerPanelRef.Duplicate();
         playerList.Add(Player.FindPlayer(peerId), new PlayerPanel() { Panel = panel });
         playerListVBox.AddChild(panel);
-        GD.Print(playerList);
-        GD.Print(playerPanelRef);
     }
 
     private void OnPlayerDisconnected(int peerId)

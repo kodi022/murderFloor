@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_1xsic"]
 [ext_resource type="Texture2D" uid="uid://dq6cv60egwkq0" path="res://images/ui/ninepatch-minimal.png" id="2_gfdn4"]
+[ext_resource type="Script" uid="uid://bk6quyns4u0o7" path="res://scripts/ui/hud/HudDead.cs" id="2_q5k3x"]
 [ext_resource type="Texture2D" uid="uid://cp5x33kc70y3o" path="res://images/ui/TablerArrowBadgeLeft.png" id="3_r6t73"]
 [ext_resource type="Texture2D" uid="uid://uob5hscvrejh" path="res://images/ui/TablerArrowBadgeRight.png" id="4_lox01"]
 
@@ -18,7 +19,7 @@ border_width_bottom = 2
 border_color = Color(0.22378641, 0.22378641, 0.22378641, 1)
 corner_detail = 1
 
-[node name="HudDead" type="Control" unique_id=529438079]
+[node name="HudDead" type="Control" unique_id=529438079 node_paths=PackedStringArray("viewingLabel", "lastViewingButton", "nextViewingButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,6 +27,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_1xsic")
+script = ExtResource("2_q5k3x")
+viewingLabel = NodePath("Panel/Label")
+lastViewingButton = NodePath("Panel/Button")
+nextViewingButton = NodePath("Panel/Button2")
 
 [node name="Panel" type="Panel" parent="." unique_id=1559680878]
 layout_mode = 1

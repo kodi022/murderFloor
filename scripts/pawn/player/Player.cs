@@ -10,9 +10,7 @@ public partial class Player : Pawn
 
     public int Id { get; private set; }
 
-    public Transform3D ViewGlobalTransform => viewModels.GlobalTransform;
-
-    public Node3D WorldToolPosition { get; private set; }
+    public Transform3D ViewGlobalTransform => Viewmodel.GlobalTransform;
 
     [Export]
     public Node ToolsNode { get; private set; } // this is the synced node tool inventory
@@ -27,22 +25,26 @@ public partial class Player : Pawn
 
     // * world
     [Export]
-    private Node3D worldModels; // root of worldmodels
+    public Node3D WorldModels { get; private set; } // root of worldmodels
     [Export]
-    private AnimationTree worldAnimationTree;
-    private BoneAttachment3D worldHandBone;
+    public AnimationTree WorldAnimationTree { get; private set; }
+    [Export]
+    public Skeleton3D WorldSkeleton { get; private set; }
 
     // * view
     [Export]
-    private Node3D viewModels; // root of viewmodels (+ aiming). camera is offset from this
+    private Node3D viewAim; // root of viewmodels (+ aiming). camera is offset from this
     [Export]
-    public Node3D ViewAimViewmodel { get; private set; } // ViewModel attachment point
+    public Node3D Viewmodel { get; private set; } // ViewModel attachment point
     [Export]
     public Camera3D Camera { get; private set; } // offsets from viewAim
     [Export]
     private RayCast3D cameraRaycast;
 
     // * other
+    [Export]
+    private CollisionShape3D collisionShape3D;
+
     public string UseInfoText { get; private set; } = "";
 
     private Input.MouseModeEnum mouseMode = Input.MouseModeEnum.Captured;
@@ -87,18 +89,6 @@ public partial class Player : Pawn
     {
         Id = GetMultiplayerAuthority();
         AudioStreamPlayer3D.Play();
-
-        // build world nodes
-        var worldBody = (Node3D)worldModels.GetChild(0);
-        var skeleton = (Skeleton3D)worldBody.GetChild(0).GetChild(0);
-        worldHandBone = new BoneAttachment3D();
-        skeleton.AddChild(worldHandBone);
-        worldHandBone.BoneName = "Hand.R";
-        WorldToolPosition = (Node3D)worldModels.GetChild(1);
-        WorldToolPosition.GetParent().RemoveChild(WorldToolPosition);
-        WorldToolPosition.Owner = null;
-        worldHandBone.AddChild(WorldToolPosition);
-        WorldToolPosition.Owner = worldHandBone;
 
         if (!IsMultiplayerAuthority())
         {
@@ -203,19 +193,19 @@ public partial class Player : Pawn
 
         if (!IsMultiplayerAuthority())
         {
-            viewModels.Rotation = new Vector3(ViewAngle.Y, 0, 0);
             Rotation = new Vector3(0, ViewAngle.X, 0);
+            viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
             var vel = NetworkedVelocity.Length() * 0.4f;
             if (vel < 0.1f)
             {
-                worldAnimationTree.Set("parameters/moving/scale", 0f);
-                worldAnimationTree.Set("parameters/timescale_walk/scale", 0f);
+                WorldAnimationTree.Set("parameters/moving/scale", 0f);
+                WorldAnimationTree.Set("parameters/timescale_walk/scale", 0f);
             }
             else
             {
-                worldAnimationTree.Set("parameters/moving/scale", 1f);
-                worldAnimationTree.Set("parameters/timescale_walk/scale", vel);
+                WorldAnimationTree.Set("parameters/moving/scale", 1f);
+                WorldAnimationTree.Set("parameters/timescale_walk/scale", vel);
             }
 
             return;
@@ -238,7 +228,7 @@ public partial class Player : Pawn
 
         if (SelectedTool?.Aiming ?? false)
         {
-            ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.AimingViewmodelFieldOfViewScale);
+            Viewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.AimingViewmodelFieldOfViewScale);
             viewmodelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.02f;
             viewmodelAimSway *= reduction;
             viewmodelAimSway = viewmodelAimSway.Normalized() * Mathf.Min(viewmodelAimSway.Length(), 0.014f);
@@ -246,7 +236,7 @@ public partial class Player : Pawn
         }
         else
         {
-            ViewAimViewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.ViewmodelFieldOfViewScale);
+            Viewmodel.Scale = new Vector3(1, 1, OptionsManager.CurrentOptions.ViewmodelFieldOfViewScale);
             viewmodelAimSway += new Vector3(ViewAngle.X - lastViewAngle.X, lastViewAngle.Y - ViewAngle.Y, 0) * 0.04f;
             viewmodelAimSway *= reduction;
             viewmodelAimSway = viewmodelAimSway.Normalized() * Mathf.Min(viewmodelAimSway.Length(), 0.06f);
@@ -258,8 +248,8 @@ public partial class Player : Pawn
         Camera.Fov = cameraFovCurrent;
 
         Camera.Rotation = cameraRotationKick;
-        ViewAimViewmodel.Position = viewmodelPositionKickCurrent + viewmodelAimSway;
-        ViewAimViewmodel.Rotation = viewmodelRotationKick;
+        Viewmodel.Position = viewmodelPositionKickCurrent + viewmodelAimSway;
+        Viewmodel.Rotation = viewmodelRotationKick;
         if (cameraShake > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * cameraShake;
         else Camera.Position = Vector3.Zero;
 
@@ -270,7 +260,7 @@ public partial class Player : Pawn
         mouseDelta = Vector2.Zero;
 
         Rotation = new Vector3(0, ViewAngle.X, 0);
-        viewModels.Rotation = new Vector3(ViewAngle.Y, 0, 0);
+        viewAim.Rotation = new Vector3(ViewAngle.Y, 0, 0);
 
         if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Tool.SlotEnum.Primary);
         if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Tool.SlotEnum.Secondary);
@@ -324,11 +314,32 @@ public partial class Player : Pawn
         PhysicsProcessMovement();
     }
 
+    public override void OnSpawn(Vector3 pos)
+    {
+        base.OnSpawn(pos);
+
+        Position = pos;
+        collisionShape3D.SetDeferred("disabled", false);
+        WorldModels.Visible = true;
+
+        if (IsMultiplayerAuthority())
+        {
+            outerController.Free();
+            ViewPlayer(Self);
+        }
+    }
+
     public override void OnDeath(DamageInfo damageInfo)
     {
         base.OnDeath(damageInfo);
 
-        if (Self == this)
+        WorldModels.Visible = false;
+        viewAim.Visible = false;
+        SelectedTool?.Unequip(true);
+        SelectedTool = null;
+        collisionShape3D.SetDeferred("disabled", true);
+
+        if (IsMultiplayerAuthority())
         {
             var control = GD.Load<PackedScene>("res://scenes/pawn/outercontroller/OuterControllerDead.tscn");
             var inst = control.Instantiate();
@@ -338,15 +349,14 @@ public partial class Player : Pawn
         }
 
         var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
-        var liveSk = worldModels.GetNode<Skeleton3D>("KincheePlayer/Player/Skeleton3D");
         var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
-        var copyCount = Math.Min(liveSk.GetBoneCount(), ragSk.GetBoneCount());
+        var copyCount = Math.Min(WorldSkeleton.GetBoneCount(), ragSk.GetBoneCount());
 
         ragdoll.GlobalTransform = GlobalTransform;
         for (int i = 0; i < copyCount; i++)
         {
-            var pos = liveSk.GetBonePosePosition(i);
-            var rot = liveSk.GetBonePoseRotation(i);
+            var pos = WorldSkeleton.GetBonePosePosition(i);
+            var rot = WorldSkeleton.GetBonePoseRotation(i);
             ragSk.SetBonePosePosition(i, pos);
             ragSk.SetBonePoseRotation(i, rot);
         }
@@ -357,7 +367,6 @@ public partial class Player : Pawn
         if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
         if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
         ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
-
         Global.ClearOnLoad.AddChild(ragdoll);
     }
 
@@ -413,45 +422,46 @@ public partial class Player : Pawn
     /// <summary>Local only. Should not be run on non-owned players</summary>
     public void ViewPlayer(Player player)
     {
-        if (this != Self) return;
+        // do not run if this isnt ran on ourselves
+        if (!IsMultiplayerAuthority()) return;
 
+        // if we are not dead, do not allow viewing others
         if (!IsDead)
         {
-            if (IsInstanceValid(Viewing) && Viewing != this)
+            // if we were viewing other before ourselves
+            if (IsInstanceValid(Viewing) && !Viewing.IsDead && Viewing != this)
             {
-                Viewing.worldModels.Visible = true;
-                Viewing.viewModels.Visible = false;
-                _ = Viewing.SelectedTool?.UnequipViewing();
+                Viewing.WorldModels.Visible = true;
+                Viewing.viewAim.Visible = false;
+                Viewing.SelectedTool?.Unequip(true);
             }
 
             Viewing = this;
-            Viewing.worldModels.Visible = false;
-            Viewing.viewModels.Visible = true;
-            _ = Viewing.SelectedTool?.EquipViewing();
+            Viewing.WorldModels.Visible = false;
+            Viewing.viewAim.Visible = true;
+            Viewing.SelectedTool?.Equip(true);
             Viewing.Camera.MakeCurrent();
             return;
         }
 
-        if (IsInstanceValid(Viewing))
+        // if previous viewing is valid and not dead
+        if (IsInstanceValid(Viewing) && !Viewing.IsDead)
         {
-            Viewing.worldModels.Visible = true;
-            Viewing.viewModels.Visible = false;
-            _ = Viewing.SelectedTool?.UnequipViewing();
+            Viewing.WorldModels.Visible = true;
+            Viewing.viewAim.Visible = false;
+            Viewing.SelectedTool?.Unequip(true);
         }
 
+        // set new viewing
         Viewing = player;
-        Camera.ClearCurrent(false);
         if (outerController is OuterControllerDead ocd) ocd.ViewPlayer(player);
+        // if dead, no render changes
         if (!Viewing.IsDead)
         {
-            Viewing.worldModels.Visible = false;
-            Viewing.viewModels.Visible = true;
-            _ = Viewing.SelectedTool?.EquipViewing();
-        }
-        else
-        {
-            Viewing.worldModels.Visible = false;
-            Viewing.viewModels.Visible = false;
+            GD.Print("viewing success");
+            Viewing.WorldModels.Visible = false;
+            Viewing.viewAim.Visible = true;
+            Viewing.SelectedTool?.Equip(true);
         }
     }
 }

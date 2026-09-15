@@ -3,9 +3,10 @@
 [ext_resource type="Script" uid="uid://cd88sdeijyufw" path="res://scripts/pawn/player/OuterController/OuterControllerDead.cs" id="1_plmh6"]
 [ext_resource type="PackedScene" uid="uid://dyy12jxf82dcn" path="res://scenes/ui/hud/HudDead.tscn" id="2_owdap"]
 
-[node name="PlayerDead" type="Node3D" unique_id=97278799 node_paths=PackedStringArray("camera3D")]
+[node name="PlayerDead" type="Node3D" unique_id=97278799 node_paths=PackedStringArray("camera3D", "hudDead")]
 script = ExtResource("1_plmh6")
 camera3D = NodePath("Camera3D")
+hudDead = NodePath("HudDead")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1568491155]
 physics_interpolation_mode = 2
