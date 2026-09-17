@@ -46,6 +46,8 @@ public static class OptionsManager
         };
         DisplayServer.WindowSetMode(displayMode);
 
+        AudioServer.SetBusVolumeLinear(AudioServer.GetBusIndex("Master"), options.MasterVolume);
+
         if (Engine.GetMainLoop() is SceneTree tree)
         {
             var viewport = tree.Root.GetWindow();
@@ -74,8 +76,6 @@ public static class OptionsManager
                 "FXAA" => Viewport.ScreenSpaceAAEnum.Fxaa,
                 _ => Viewport.ScreenSpaceAAEnum.Disabled
             };
-
-            //viewport.UseTaa = options.TAA;
 
             foreach (Node child in tree.Root.GetChildren())
             {
@@ -174,17 +174,18 @@ public static class OptionsManager
         public float ScalingSharpness { get; set; } = 0.8f;
         [OptionString("Graphics", ["MSAA8x", "MSAA4x", "MSAA2x", "SMAA", "FXAA", "Off"], "Not Recommended with FSR2.2 enabled. MSAA can be resource intensive.")]
         public string AntiAliasing { get; set; } = "FXAA";
-        // [OptionBool("Graphics", "Ignored when FSR2.2 is enabled.")]
-        // public bool TAA { get; set; } = false;
         [OptionString("Graphics", ["Ultra", "High", "Medium", "Low", "Off"], "")]
         public string SDFGI { get; set; } = "High";
         [OptionString("Graphics", ["16x", "8x", "4x", "2x", "Off"], "")]
         public string AntisotropicFiltering { get; set; } = "8x";
 
+        [OptionFloat("Sound", 0f, 1f, 0.05f, "")]
+        public float MasterVolume { get; set; } = 0.5f;
+
         [OptionFloat("Gameplay", 0f, 1f, 0.05f, "")]
         public float CrosshairOpacity { get; set; } = 0.8f;
         [OptionFloat("Gameplay", 0f, 1f, 0.05f, "")]
-        public float AimCrosshairOpacity { get; set; } = 0.2f;
+        public float AimCrosshairOpacity { get; set; } = 0.1f;
         [OptionBool("Gameplay", "")]
         public bool ScalingCrosshair { get; set; } = true;
 
@@ -212,9 +213,10 @@ public static class OptionsManager
             ScalingRenderScale = other.ScalingRenderScale;
             ScalingSharpness = other.ScalingSharpness;
             AntiAliasing = other.AntiAliasing;
-            // TAA = other.TAA;
             SDFGI = other.SDFGI;
             AntisotropicFiltering = other.AntisotropicFiltering;
+
+            MasterVolume = other.MasterVolume;
 
             CrosshairOpacity = other.CrosshairOpacity;
             AimCrosshairOpacity = other.AimCrosshairOpacity;

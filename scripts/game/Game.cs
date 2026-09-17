@@ -60,6 +60,9 @@ public partial class Game : Node
     [Export]
     public int ActiveMobs { get; private set; } = 0;
 
+    [Export]
+    public Area3D ExitArea { get; private set; }
+
     private ulong lastGroupTime = 0ul;
 
     public ulong LastWaveEndTime { get; private set; } = 0ul;
@@ -88,6 +91,8 @@ public partial class Game : Node
     public override void _Ready()
     {
         Global.NetworkManager.Singleton.RpcId(1, "PlayerLoaded");
+        ExitArea.BodyEntered += OnBodyEntered;
+        ExitArea.BodyExited += OnBodyExited;
     }
 
     public override void _Process(double delta)
@@ -236,5 +241,16 @@ public partial class Game : Node
             ActiveMobs++;
             spawned++;
         }
+    }
+
+    public void OnBodyEntered(Node3D body)
+    {
+        if (body is not Player player) return;
+        GD.Print(body);
+    }
+
+    public void OnBodyExited(Node3D body)
+    {
+        if (body is not Player player) return;
     }
 }

@@ -194,8 +194,9 @@ size = Vector2(512, 512)
 [node name="Barnyard" type="Node3D" unique_id=30355578]
 metadata/_edit_lock_ = true
 
-[node name="Game" type="Node3D" parent="." unique_id=160069724]
+[node name="Game" type="Node" parent="." unique_id=1276688028 node_paths=PackedStringArray("ExitArea")]
 script = ExtResource("1_0h0p1")
+ExitArea = NodePath("Exit")
 metadata/_edit_lock_ = true
 
 [node name="MobSpawnArea" type="Node3D" parent="Game" unique_id=28401381]
@@ -235,11 +236,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.384898, 1.5920193, -7.19916
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.680946, 1.5920193, -8.264836)
 
 [node name="Exit" type="Area3D" parent="Game" unique_id=553587133]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20230484, 0.9090812, 0.9936731)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.92886, 1.4098495, 0.9936731)
+collision_layer = 0
+collision_mask = 2
+input_ray_pickable = false
 monitorable = false
+gravity_point = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Game/Exit" unique_id=686959379]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.936775, 0.5061934, -0.55820847)
 shape = SubResource("BoxShape3D_7puk8")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=192583391]

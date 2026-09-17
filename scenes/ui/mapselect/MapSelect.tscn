@@ -30,7 +30,7 @@ texture = ExtResource("4_x53mc")
 expand_margin_bottom = 230.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iy75m"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(1, 1, 0, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
@@ -47,7 +47,7 @@ shadow_offset = Vector2(2, 2)
 anti_aliasing_size = 0.75
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hggcq"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0.61837727, 0.5914434, 0.14651796, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
@@ -69,7 +69,7 @@ shadow_offset = Vector2(2, 2)
 anti_aliasing_size = 0.75
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x53mc"]
-bg_color = Color(1, 0.89459085, 0.89459085, 1)
+bg_color = Color(0.7198166, 0.8156727, 0, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
@@ -90,7 +90,7 @@ shadow_offset = Vector2(2, 2)
 anti_aliasing_size = 0.75
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hln10"]
-bg_color = Color(0.51, 0.14279999, 0.14279999, 0.89411765)
+bg_color = Color(0.56576514, 0.13968237, 0, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -120,7 +120,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_left = 5
 corner_detail = 1
 
-[node name="MapSelect" type="Control" unique_id=834133945 node_paths=PackedStringArray("locationRichTextLabel", "difficultyRichTextLabel", "overscalingRichTextLabel", "gorpRichTextLabel", "morpRichTextLabel", "mapTextureRect", "referenceMapButton", "backgroundPanel", "startMapButton", "selectionPanel", "selectionPanelReturnButton", "selectionPanelSelectButton", "selectionPanelMapName", "selectionPanelDifficultySlider", "selectionPanelDifficultySliderValue", "selectionPanelOverscalingSlider", "selectionPanelOverscalingSliderValue", "selectionPanelC1", "selectionPanelC2")]
+[node name="MapSelect" type="Control" unique_id=834133945 node_paths=PackedStringArray("locationRichTextLabel", "difficultyRichTextLabel", "overscalingRichTextLabel", "gorpRichTextLabel", "morpRichTextLabel", "mapTextureRect", "referenceMapButton", "backgroundPanel", "selectionPanel", "selectionPanelReturnButton", "selectionPanelSelectButton", "selectionPanelMapName", "selectionPanelDifficultySlider", "selectionPanelDifficultySliderValue", "selectionPanelOverscalingSlider", "selectionPanelOverscalingSliderValue", "selectionPanelC1", "selectionPanelC2")]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -139,7 +139,6 @@ morpRichTextLabel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer/
 mapTextureRect = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/TextureRect")
 referenceMapButton = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/TextureRect/ReferenceButton")
 backgroundPanel = NodePath("Background")
-startMapButton = NodePath("Panel/Button")
 selectionPanel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel")
 selectionPanelReturnButton = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel/Button")
 selectionPanelSelectButton = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel/Button2")
@@ -637,10 +636,11 @@ justification_flags = 0
 
 [node name="CheckButton" type="CheckButton" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel/HSlider2" unique_id=1647145298]
 layout_mode = 0
-offset_left = 443.0
-offset_top = 2.2249756
-offset_right = 475.0
-offset_bottom = 18.224976
+offset_left = 441.0
+offset_top = -5.7750244
+offset_right = 474.0
+offset_bottom = 26.224976
+flat = true
 
 [node name="HSeparator" type="HSeparator" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel" unique_id=721555605]
 layout_mode = 0
@@ -649,7 +649,7 @@ offset_top = 646.0
 offset_right = 450.0
 offset_bottom = 650.0
 
-[node name="CheckButton" type="CheckButton" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel" unique_id=812506830]
+[node name="CheckButton" type="CheckBox" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel" unique_id=568895266]
 layout_mode = 0
 offset_left = 495.0
 offset_top = 574.0
@@ -657,8 +657,9 @@ offset_right = 675.0
 offset_bottom = 617.0
 theme_override_font_sizes/font_size = 22
 text = "C1"
+flat = true
 
-[node name="CheckButton2" type="CheckButton" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel" unique_id=469762480]
+[node name="CheckButton2" type="CheckBox" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel" unique_id=1696460163]
 layout_mode = 0
 offset_left = 495.0
 offset_top = 627.0
@@ -666,12 +667,4 @@ offset_right = 675.0
 offset_bottom = 670.0
 theme_override_font_sizes/font_size = 22
 text = "C2"
-
-[node name="Button" type="Button" parent="Panel" unique_id=22506764]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 888.0
-offset_right = 435.0
-offset_bottom = 964.0
-theme_override_font_sizes/font_size = 20
-text = "Start Map"
+flat = true

@@ -61,10 +61,10 @@ public struct DifficultyConfig
     public readonly string Serialize()
     {
         var str = "";
-        str += Difficulty + ',';
-        str += Overscaling.ToString(".00") + ',';
-        str += (C1 ? '1' : '0') + ',';
-        str += (C2 ? '1' : '0') + ',';
+        str += (int)Difficulty + ",";
+        str += Overscaling.ToString(".00") + ",";
+        str += (C1 ? "1" : "0") + ",";
+        str += (C2 ? "1" : "0") + ",";
         str += MapDifficultyScale.ToString(".00");
         return str;
     }

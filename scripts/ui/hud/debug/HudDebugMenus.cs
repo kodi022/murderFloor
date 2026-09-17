@@ -3,7 +3,7 @@ namespace Shooter.Ui.Debug;
 using Shooter.Resource;
 using Shooter.Utils;
 
-public partial class HudDebugMenus : Control
+public partial class HudDebugMenus : OpenUi
 {
     [Export]
     private TabContainer tabContainer;

@@ -1,84 +1,108 @@
 namespace Shooter.Ui;
 
-public partial class MapSelect : Control
+public partial class MapSelect : OpenUi
 {
+    public static bool MapSelected { get; private set; } = false;
+    public static Resource.Map SelectedMapNetworked { get; private set; }
+    public static DifficultyConfig DifficultyConfigNetworked { get; private set; }
+    public static Vector2 SelectedButtonLocation { get; private set; }
+
     [Export]
     public bool OnScreen { get; set; } = true;
 
-    [Export]
-    RichTextLabel locationRichTextLabel;
-    [Export]
-    RichTextLabel difficultyRichTextLabel;
-    [Export]
-    RichTextLabel overscalingRichTextLabel;
-    [Export]
-    RichTextLabel gorpRichTextLabel;
-    [Export]
-    RichTextLabel morpRichTextLabel;
-    [Export]
-    TextureRect mapTextureRect;
-    [Export]
-    Button referenceMapButton;
-    [Export]
-    Panel backgroundPanel;
-    [Export]
-    Button startMapButton;
+    private static MapSelect worldMapSelect;
 
     [Export]
-    Panel selectionPanel;
+    private RichTextLabel locationRichTextLabel;
     [Export]
-    Button selectionPanelReturnButton;
+    private RichTextLabel difficultyRichTextLabel;
     [Export]
-    Button selectionPanelSelectButton;
+    private RichTextLabel overscalingRichTextLabel;
     [Export]
-    RichTextLabel selectionPanelMapName;
+    private RichTextLabel gorpRichTextLabel;
     [Export]
-    HSlider selectionPanelDifficultySlider;
+    private RichTextLabel morpRichTextLabel;
     [Export]
-    RichTextLabel selectionPanelDifficultySliderValue;
+    private TextureRect mapTextureRect;
     [Export]
-    HSlider selectionPanelOverscalingSlider;
+    private Button referenceMapButton;
     [Export]
-    RichTextLabel selectionPanelOverscalingSliderValue;
-    [Export]
-    CheckButton selectionPanelC1;
-    [Export]
-    CheckButton selectionPanelC2;
+    private Panel backgroundPanel;
 
-    private Resource.Map selectedMap;
-    private DifficultyConfig difficultyConfig;
+    [Export]
+    private Panel selectionPanel;
+    [Export]
+    private Button selectionPanelReturnButton;
+    [Export]
+    private Button selectionPanelSelectButton;
+    [Export]
+    private RichTextLabel selectionPanelMapName;
+    [Export]
+    private HSlider selectionPanelDifficultySlider;
+    [Export]
+    private RichTextLabel selectionPanelDifficultySliderValue;
+    [Export]
+    private HSlider selectionPanelOverscalingSlider;
+    [Export]
+    private RichTextLabel selectionPanelOverscalingSliderValue;
+    [Export]
+    private CheckBox selectionPanelC1;
+    [Export]
+    private CheckBox selectionPanelC2;
 
     private List<Button> buttons = [];
     private List<Tween> buttonTweens;
+
     private Resource.Map viewedMap;
+    private Vector2 buttonLocation;
+    private bool c1 = false;
+    private bool c2 = false;
+
+    private StyleBox referenceNormalStyle;
+    private Button worldButton;
+    private Tween worldButtonTween;
 
     public override void _Ready()
     {
         selectionPanel.Visible = false;
-        var styleBoxNormal = (StyleBoxFlat)referenceMapButton.GetThemeStylebox("normal").Duplicate();
+        referenceNormalStyle = (StyleBoxFlat)referenceMapButton.GetThemeStylebox("normal").Duplicate();
         var styleBoxPressed = (StyleBoxFlat)referenceMapButton.GetThemeStylebox("pressed").Duplicate();
         var styleBoxHovered = (StyleBoxFlat)referenceMapButton.GetThemeStylebox("hover").Duplicate();
         var styleBoxDisabled = (StyleBoxFlat)referenceMapButton.GetThemeStylebox("disabled").Duplicate();
         referenceMapButton.Free();
 
-        if (!OnScreen) return;
+        if (!OnScreen)
+        {
+            worldMapSelect = this;
+            return;
+        }
+
+        if (MapSelected) UpdateMapInfo(this);
+
+        Modulate = new Color(0, 0, 0);
+        Scale = new Vector2(0.8f, 0.8f);
+        var tween = CreateTween();
+        tween
+            .TweenProperty(this, "modulate", new Color(1, 1, 1), 0.4f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+        tween
+            .Parallel()
+            .TweenProperty(this, "scale", Vector2.One, 0.4f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
 
         backgroundPanel.Visible = true;
 
-        startMapButton.Pressed += () =>
-        {
-            if (selectedMap is null) return;
-
-            // ! if everybody is ready
-            Global.NetworkManager.Singleton.Rpc("LoadGame", selectedMap.MeshScene.ResourcePath);
-        };
+        selectionPanelC1.Toggled += (a) => { c1 = a; };
+        selectionPanelC2.Toggled += (a) => { c2 = a; };
 
         foreach (var map in ResourceManager.MapRegistry.GetAllResource())
         {
             var btn = new Button
             {
                 OffsetTransformEnabled = true,
-                CustomMinimumSize = new Vector2(80, 80),
+                Size = new Vector2(80, 80),
                 Position = mapTextureRect.Size * map.Value.MapLocation - new Vector2(40, 40),
             };
 
@@ -92,6 +116,7 @@ public partial class MapSelect : Control
 
                 viewedMap = map.Value;
                 selectionPanelMapName.Text = viewedMap.FullId;
+                buttonLocation = mapTextureRect.Size * map.Value.MapLocation - new Vector2(40, 40);
 
                 var targetPos = -(mapTextureRect.Size * map.Value.MapLocation - new Vector2(40, 40)) * 2;
                 targetPos += new Vector2(100, 200);
@@ -109,7 +134,7 @@ public partial class MapSelect : Control
                 }));
             };
 
-            btn.AddThemeStyleboxOverride("normal", styleBoxNormal);
+            btn.AddThemeStyleboxOverride("normal", referenceNormalStyle);
             btn.AddThemeStyleboxOverride("pressed", styleBoxPressed);
             btn.AddThemeStyleboxOverride("hover", styleBoxHovered);
             btn.AddThemeStyleboxOverride("disabled", styleBoxDisabled);
@@ -156,24 +181,39 @@ public partial class MapSelect : Control
 
         selectionPanelSelectButton.Pressed += () =>
         {
-            selectedMap = viewedMap;
-            difficultyConfig = new DifficultyConfig()
+            var diffConfig = new DifficultyConfig()
             {
                 Difficulty = (Game.Game.DifficultyEnum)(int)selectionPanelDifficultySlider.Value,
                 Overscaling = (float)selectionPanelOverscalingSlider.Value,
-                C1 = selectionPanelC1.ToggleMode,
-                C2 = selectionPanelC2.ToggleMode,
-                MapDifficultyScale = selectedMap.MapDifficultyScale,
+                C1 = c1,
+                C2 = c2,
+                MapDifficultyScale = viewedMap.MapDifficultyScale,
             };
 
-            locationRichTextLabel.Text = selectedMap.FullId;
-            difficultyRichTextLabel.Text = difficultyConfig.Difficulty.ToString();
-            overscalingRichTextLabel.Text = difficultyConfig.Overscaling.ToString("0.00");
+            SelectedMapNetworked = viewedMap;
+            DifficultyConfigNetworked = diffConfig;
+            UpdateMapInfo(this);
+            worldMapSelect.Rpc("MapInfoRpc", viewedMap.FullId, diffConfig.Serialize(), buttonLocation);
         };
 
         var arr = new Tween[buttons.Count];
         Array.Fill(arr, null);
         buttonTweens = [.. arr];
+    }
+
+    public override void Close()
+    {
+        var tween = CreateTween();
+        tween
+            .TweenProperty(this, "modulate", new Color(0, 0, 0), 0.4f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.In);
+        tween
+            .Parallel()
+            .TweenProperty(this, "scale", new Vector2(0.8f, 0.8f), 0.4f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.In);
+        tween.TweenCallback(Callable.From(Free));
     }
 
     public override void _Input(InputEvent @event)
@@ -196,7 +236,43 @@ public partial class MapSelect : Control
 
     public override void _Process(double delta)
     {
-        if (!OnScreen) return;
+        if (!OnScreen)
+        {
+            if (SelectedButtonLocation != Vector2.Zero)
+            {
+                if (worldButton is null)
+                {
+                    worldButton = new Button { OffsetTransformEnabled = true, Size = new Vector2(120, 120) };
+                    mapTextureRect.AddChild(worldButton);
+                    worldButton.AddThemeStyleboxOverride("normal", referenceNormalStyle);
+                }
+
+                if (worldButtonTween is null || !worldButtonTween.IsRunning())
+                {
+                    worldButtonTween = worldButton.CreateTween();
+                    worldButtonTween
+                        .TweenProperty(worldButton, "offset_transform_scale", new Vector2(1.2f, 1.2f), 0.4f)
+                        .SetTrans(Tween.TransitionType.Sine);
+                    worldButtonTween
+                        .Parallel()
+                        .TweenProperty(worldButton, "offset_transform_position", new Vector2(0, -4f), 0.4f)
+                        .SetTrans(Tween.TransitionType.Sine);
+                    worldButtonTween
+                        .TweenProperty(worldButton, "offset_transform_scale", Vector2.One, 0.4f)
+                        .SetTrans(Tween.TransitionType.Sine);
+                    worldButtonTween
+                        .Parallel()
+                        .TweenProperty(worldButton, "offset_transform_position", Vector2.Zero, 0.4f)
+                        .SetTrans(Tween.TransitionType.Sine);
+                    worldButtonTween.TweenInterval(0.4f);
+                }
+
+                worldButton.Position = SelectedButtonLocation;
+            }
+
+            return;
+        }
+
         for (int i = 0; i < buttonTweens.Count; i++)
         {
             var oldTween = buttonTweens[i];
@@ -204,13 +280,41 @@ public partial class MapSelect : Control
             if (btn.Disabled || oldTween is null || !oldTween.IsRunning())
             {
                 var tween = btn.CreateTween();
-                tween.TweenProperty(btn, "offset_transform_scale", new Vector2(1.1f, 1.1f), 0.4f).SetTrans(Tween.TransitionType.Sine);
-                tween.Parallel().TweenProperty(btn, "offset_transform_position", new Vector2(0, -2f), 0.4f).SetTrans(Tween.TransitionType.Sine);
-                tween.TweenProperty(btn, "offset_transform_scale", Vector2.One, 0.4f).SetTrans(Tween.TransitionType.Sine);
-                tween.Parallel().TweenProperty(btn, "offset_transform_position", Vector2.Zero, 0.4f).SetTrans(Tween.TransitionType.Sine);
+                tween
+                    .TweenProperty(btn, "offset_transform_scale", new Vector2(1.1f, 1.1f), 0.4f)
+                    .SetTrans(Tween.TransitionType.Sine);
+                tween
+                    .Parallel()
+                    .TweenProperty(btn, "offset_transform_position", new Vector2(0, -2f), 0.4f)
+                    .SetTrans(Tween.TransitionType.Sine);
+                tween
+                    .TweenProperty(btn, "offset_transform_scale", Vector2.One, 0.4f)
+                    .SetTrans(Tween.TransitionType.Sine);
+                tween
+                    .Parallel()
+                    .TweenProperty(btn, "offset_transform_position", Vector2.Zero, 0.4f)
+                    .SetTrans(Tween.TransitionType.Sine);
                 tween.TweenInterval(0.6f);
                 buttonTweens[i] = tween;
             }
         }
+    }
+
+    // do not make static, godot does not support static Rpcs
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void MapInfoRpc(string mapFullId, string difficultyConfig, Vector2 buttonLocation)
+    {
+        SelectedMapNetworked = ResourceManager.MapRegistry.GetResourceRef(mapFullId);
+        DifficultyConfigNetworked = DifficultyConfig.Deserialize(difficultyConfig);
+        SelectedButtonLocation = buttonLocation;
+        MapSelected = true;
+        UpdateMapInfo(worldMapSelect);
+    }
+
+    private static void UpdateMapInfo(MapSelect mapSelect)
+    {
+        mapSelect.locationRichTextLabel.Text = SelectedMapNetworked.FullId;
+        mapSelect.difficultyRichTextLabel.Text = DifficultyConfigNetworked.Difficulty.ToString();
+        mapSelect.overscalingRichTextLabel.Text = DifficultyConfigNetworked.Overscaling.ToString("0.00");
     }
 }

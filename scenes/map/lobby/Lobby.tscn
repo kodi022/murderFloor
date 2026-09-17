@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bkl3ebr30q7u6"]
 
-[ext_resource type="Material" uid="uid://bed5evbe4kar" path="res://materials/surface/concrete/concrete008/Concrete008.tres" id="1_4ryty"]
+[ext_resource type="Script" uid="uid://bvgmjr3o8sajk" path="res://scripts/game/GameLobby.cs" id="1_wt7li"]
 [ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="2_ras1x"]
 [ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_Color.png" id="3_cacm0"]
 [ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
@@ -14,6 +14,9 @@
 [ext_resource type="PackedScene" uid="uid://bysve08qsh4kt" path="res://models/prop/street/newsbox/newsbox.blend" id="12_2mlpq"]
 [ext_resource type="PackedScene" uid="uid://q2xs38ym4gvf" path="res://models/structure/tunneltileset/tunnelstraight.blend" id="13_2u80r"]
 [ext_resource type="PackedScene" uid="uid://d86jfkuss0wx" path="res://scenes/ui/mapselect/MapSelect.tscn" id="14_wt7li"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0sitp"]
+size = Vector3(3.0613708, 2.7662354, 6.182312)
 
 [sub_resource type="Environment" id="Environment_k7gih"]
 background_mode = 1
@@ -150,6 +153,33 @@ size = Vector3(5.505, 3.411, 0.06)
 
 [node name="Lobby" type="Node3D" unique_id=1921642241]
 
+[node name="GameLobby" type="Node" parent="." unique_id=1440190689 node_paths=PackedStringArray("ExitArea")]
+script = ExtResource("1_wt7li")
+ExitArea = NodePath("Exit")
+
+[node name="PlayerSpawn" type="Node3D" parent="GameLobby" unique_id=463555260]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1319332, 0.36840916, 0.9395418)
+
+[node name="PlayerSpawn2" type="Node3D" parent="GameLobby" unique_id=463905891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7751503, 0.36840916, 0.9395418)
+
+[node name="PlayerSpawn3" type="Node3D" parent="GameLobby" unique_id=890757680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4855442, 0.36840916, -0.32290936)
+
+[node name="PlayerSpawn4" type="Node3D" parent="GameLobby" unique_id=1055865574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.7815924, 0.36840916, -1.3885775)
+
+[node name="Exit" type="Area3D" parent="GameLobby" unique_id=1138112267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.341164, 1.8014964, -1.433429)
+collision_layer = 0
+collision_mask = 2
+input_ray_pickable = false
+monitorable = false
+gravity_point = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GameLobby/Exit" unique_id=434427814]
+shape = SubResource("BoxShape3D_0sitp")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1851156556]
 transform = Transform3D(0.73122287, -0.5771171, 0.36366072, -0.022016406, 0.51287365, 0.8581818, -0.6817833, -0.6355286, 0.36231884, 0, 14.932693, 0)
 light_color = Color(0.73422515, 0.31225622, 0.220022, 1)
@@ -162,39 +192,54 @@ environment = SubResource("Environment_k7gih")
 layer = -1
 follow_viewport_enabled = true
 
-[node name="CSGbuilding" type="CSGBox3D" parent="." unique_id=1300285792]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.256, -0.189, -1.639)
-material_override = ExtResource("1_4ryty")
+[node name="CSGbuilding" type="Node3D" parent="." unique_id=1680456521]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32318854, 0.08774294, -1.6503763)
+
+[node name="CSGfloors" type="CSGBox3D" parent="CSGbuilding" unique_id=861044340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.752199, 0.12897561, -5.7540674)
 use_collision = true
-size = Vector3(21.777893, 0.56396484, 12.311798)
+size = Vector3(24, 0.218, 24)
+material = ExtResource("7_t5wx4")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGbuilding" unique_id=1901628277]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.039000005, 2.5, -6.0988464)
-material_override = ExtResource("1_4ryty")
-size = Vector3(21.954346, 4.5448, 0.5112915)
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGbuilding/CSGfloors" unique_id=1953279959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 0)
+size = Vector3(24, 0.218, 24)
+material = ExtResource("7_t5wx4")
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="CSGbuilding" unique_id=148755747]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117, 2.5, 6.1416893)
-size = Vector3(21.954346, 4.5448, 0.63742065)
+[node name="WallBase" type="Node3D" parent="CSGbuilding" unique_id=127372308]
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="CSGbuilding" unique_id=2016795496]
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGbuilding/WallBase" unique_id=1901628277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.591066, 2.5, -6.0988464)
+use_collision = true
+size = Vector3(29.214478, 4.5448, 0.5112915)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGbuilding/WallBase" unique_id=148755747]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.530705, 2.5, 6.1416893)
+use_collision = true
+size = Vector3(29.249756, 4.5448, 0.63742065)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGbuilding/WallBase" unique_id=2016795496]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.925265, 2.5, 0.04777813)
+use_collision = true
 size = Vector3(0.58306885, 4.5448, 12.77367)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="CSGbuilding" unique_id=41249336]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.890735, 2.5, 0.042434692)
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGbuilding/WallBase" unique_id=41249336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.907543, 2.5, 0.042434692)
+use_collision = true
 size = Vector3(0.6396179, 4.5448, 12.79162)
 
-[node name="CSGBox3D6" type="CSGBox3D" parent="CSGbuilding" unique_id=348717698]
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGbuilding/WallBase" unique_id=348717698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.788, 2.5, 1.989891)
+use_collision = true
 size = Vector3(0.32824707, 4.5448, 8.022938)
 
-[node name="CSGBox3D5" type="CSGBox3D" parent="CSGbuilding" unique_id=2146482933]
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGbuilding/WallBase" unique_id=2146482933]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7875767, 2.5, -5.126313)
+use_collision = true
 size = Vector3(0.32824707, 4.5448, 1.9736099)
 
 [node name="CSGlocker2" type="CSGBox3D" parent="." unique_id=909743433]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27784348, 0.222, 3.6792264)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27784348, 0.46831346, 3.6792264)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker2" unique_id=1532815372]
@@ -221,7 +266,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
 
 [node name="CSGlocker" type="CSGBox3D" parent="." unique_id=1938995103]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3217783, 0.222, 3.6823568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3217783, 0.46831346, 3.6823568)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker" unique_id=194450191]
@@ -248,7 +293,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
 
 [node name="CSGlocker3" type="CSGBox3D" parent="." unique_id=1340802104]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4437947, 0.222, 3.6792264)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4437947, 0.46831346, 3.6792264)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker3" unique_id=686624336]
@@ -275,7 +320,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.040405273, 0)
 shape = SubResource("BoxShape3D_cdhm0")
 
 [node name="CSGlocker4" type="CSGBox3D" parent="." unique_id=1649108258]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.844173, 0.222, 3.6823568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.844173, 0.46831346, 3.6823568)
 size = Vector3(1.4848633, 0.3230957, 0.8)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="CSGlocker4" unique_id=1438211805]

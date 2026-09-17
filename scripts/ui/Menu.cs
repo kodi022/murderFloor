@@ -1,6 +1,6 @@
 namespace Shooter.Ui;
 
-public partial class Menu : Control
+public partial class Menu : OpenUi
 {
     [Export]
     private Button button0;
@@ -21,6 +21,23 @@ public partial class Menu : Control
         buttonOption.Pressed += OptionButton;
         buttonExit.Pressed += ExitButton;
         buttonExitDesktop.Pressed += ExitDesktopButton;
+
+        Scale = new Vector2(0.8f, 0.8f);
+        var tween = CreateTween();
+        tween
+            .TweenProperty(this, "scale", Vector2.One, 0.4f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+    }
+
+    public override void Close()
+    {
+        var tween = CreateTween();
+        tween
+            .TweenProperty(this, "scale", new Vector2(0.8f, 0.8f), 0.4f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.In);
+        tween.TweenCallback(Callable.From(Free));
     }
 
     public override void _Process(double delta)

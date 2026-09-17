@@ -1,6 +1,6 @@
 namespace Shooter.Ui;
 
-public partial class ScreenScaleLimiter : Control
+public partial class ScreenScaleLimiter : OpenUi
 {
     private readonly Vector2 _baseSize = new(1920, 1080);
     private Vector2 viewportSize;

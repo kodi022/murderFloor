@@ -258,7 +258,7 @@ offset_left = 24.0
 offset_top = 28.0
 offset_right = 123.0
 offset_bottom = 51.0
-text = "COOL STATS:"
+text = "the stats in question"
 
 [node name="PanelAdvanced" type="Panel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1322578164]
 visible = false

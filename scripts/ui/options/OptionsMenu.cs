@@ -157,7 +157,7 @@ public partial class OptionsMenu : Control
             if (prop.GetCustomAttribute(type) is OptionsManager.OptionBoolAttribute boolAtt)
             {
                 label.Text = prop.Name;
-                var checkbox = new CheckButton() { CustomMinimumSize = new Vector2(100, 0) };
+                var checkbox = new CheckBox() { CustomMinimumSize = new Vector2(100, 0), Flat = true };
                 hbox.AddChild(checkbox);
 
                 var spacer = new Control() { CustomMinimumSize = new Vector2(60, 0) };

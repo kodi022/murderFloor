@@ -62,8 +62,8 @@ public partial class Player : Pawn
     private Vector2 mouseDelta;
 
     private OuterController outerController;
-    private Control openUI;
-    private Control debugUI;
+    private Ui.OpenUi openUi;
+    private Control debugUi;
 
     public static Player FindPlayer(int playerId) => AllPlayers.First(p => p.Id == playerId);
 
@@ -133,21 +133,21 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F3 && eventKey.Pressed && OS.HasFeature("editor"))
             {
-                if (!IsInstanceValid(debugUI))
+                if (!IsInstanceValid(debugUi))
                 {
-                    debugUI = GD.Load<PackedScene>("res://scenes/ui/hud/debug/HudDebug.tscn").Instantiate<Control>();
-                    AddChild(debugUI);
+                    debugUi = GD.Load<PackedScene>("res://scenes/ui/hud/debug/HudDebug.tscn").Instantiate<Control>();
+                    AddChild(debugUi);
                 }
                 else
                 {
-                    debugUI.Free();
-                    debugUI = null;
+                    debugUi.Free();
+                    debugUi = null;
                 }
             }
 
             if (eventKey.Keycode == Key.F4 && eventKey.Pressed && OS.HasFeature("editor"))
             {
-                if (!IsInstanceValid(openUI))
+                if (!IsInstanceValid(openUi))
                 {
                     OpenUI("res://scenes/ui/hud/debug/HudDebugMenus.tscn");
                 }
@@ -214,7 +214,7 @@ public partial class Player : Pawn
 
         if (Input.IsActionJustPressed("exit"))
         {
-            if (!IsInstanceValid(openUI))
+            if (!IsInstanceValid(openUi))
             {
                 OpenUI("res://scenes/ui/Menu.tscn");
             }
@@ -390,26 +390,26 @@ public partial class Player : Pawn
 
     public void OpenUI(string uiScene)
     {
-        if (IsInstanceValid(openUI)) return;
+        if (IsInstanceValid(openUi)) return;
 
-        var ui = GD.Load<PackedScene>(uiScene).Instantiate<Control>();
-        openUI = ui;
+        var ui = GD.Load<PackedScene>(uiScene).Instantiate<Ui.OpenUi>();
+        openUi = ui;
         AddChild(ui);
         mouseMode = Input.MouseModeEnum.Visible;
     }
 
     public void CloseUI()
     {
-        if (openUI is null) return;
+        if (openUi is null) return;
 
-        openUI.Free();
-        openUI = null;
+        openUi.Close();
+        openUi = null;
         mouseMode = Input.MouseModeEnum.Captured;
     }
 
     private bool IsInputBlocked()
     {
-        if (IsInstanceValid(openUI)) return true;
+        if (IsInstanceValid(openUi)) return true;
         if (IsDead) return true;
         if (IsInstanceValid(outerController)) return true;
 
