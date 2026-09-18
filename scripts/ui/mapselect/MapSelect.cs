@@ -3,7 +3,7 @@ namespace Shooter.Ui;
 public partial class MapSelect : OpenUi
 {
     public static bool MapSelected { get; private set; } = false;
-    public static Resource.Map SelectedMapNetworked { get; private set; }
+    public static Resource.Map SelectedMapNetworked { get; private set; } = null;
     public static DifficultyConfig DifficultyConfigNetworked { get; private set; }
     public static Vector2 SelectedButtonLocation { get; private set; }
 
@@ -193,7 +193,7 @@ public partial class MapSelect : OpenUi
             SelectedMapNetworked = viewedMap;
             DifficultyConfigNetworked = diffConfig;
             UpdateMapInfo(this);
-            worldMapSelect.Rpc("MapInfoRpc", viewedMap.FullId, diffConfig.Serialize(), buttonLocation);
+            worldMapSelect.Rpc(MethodName.MapInfoRpc, viewedMap.FullId, diffConfig.Serialize(), buttonLocation);
         };
 
         var arr = new Tween[buttons.Count];

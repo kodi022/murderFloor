@@ -1,5 +1,3 @@
-global using DamageInfoVariant = Godot.Collections.Dictionary<string, Godot.Variant>;
-
 namespace Shooter;
 
 public struct DamageInfo
@@ -22,9 +20,9 @@ public struct DamageInfo
     public Vector3 HitPosition { get; set; }
     public Vector3 HitDirection { get; set; }
 
-    public readonly DamageInfoVariant ToVariant()
+    public readonly Godot.Collections.Dictionary<string, Variant> ToVariant()
     {
-        return new DamageInfoVariant
+        return new Godot.Collections.Dictionary<string, Variant>
         {
             { nameof(AttackerId), AttackerId },
             { nameof(AttackerName), AttackerName },
@@ -38,7 +36,7 @@ public struct DamageInfo
         };
     }
 
-    public static DamageInfo FromVariant(DamageInfoVariant variant)
+    public static DamageInfo FromVariant(Godot.Collections.Dictionary<string, Variant> variant)
     {
         return new DamageInfo()
         {

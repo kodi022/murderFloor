@@ -1,7 +1,7 @@
 namespace Shooter.Ui.Debug;
 
-using Shooter.Resource;
-using Shooter.Utils;
+using Resource;
+using Utils;
 
 public partial class HudDebugMenus : OpenUi
 {
@@ -25,7 +25,7 @@ public partial class HudDebugMenus : OpenUi
             {
                 case "Tools":
                     if (column == 0)
-                        Game.Player.Self.Rpc("ToolAddRpc", $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
+                        Game.Player.Self.Rpc(Game.Player.MethodName.ToolAddRpc, $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
                     else if (column == 2)
                     {
                         DisplayServer.ClipboardSet(item.GetText(2));

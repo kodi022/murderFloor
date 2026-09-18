@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ch68wt50rihfc" path="res://images/ui/TablerShield.png" id="5_y0kfc"]
 [ext_resource type="Texture2D" uid="uid://dfhmy2ruudb12" path="res://images/ui/TablerHeart.png" id="6_r6bpu"]
 [ext_resource type="Texture2D" uid="uid://dcwx5u27ifwk8" path="res://images/ui/TablerSkull.png" id="6_w7tcg"]
+[ext_resource type="Script" uid="uid://dkxywskss3pgi" path="res://scripts/ui/hud/HudPlayerNames.cs" id="9_w5a85"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ed8p"]
 bg_color = Color(1, 1, 1, 0.5882353)
@@ -119,7 +120,7 @@ bg_color = Color(0, 0, 0, 0.52156866)
 corner_radius_top_right = 6
 corner_detail = 1
 
-[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("roundStartPanel", "roundTimerPanel", "waveInfoPanel", "emptyCrosshair", "gunCrosshair", "shotgunCrosshair", "healthBarPanel", "armorBarPanel", "weightBarPanel", "useInfoLabel", "weaponsContainer", "playerListVBox")]
+[node name="Hud" type="Control" unique_id=2038292796 node_paths=PackedStringArray("lobbyTimerPanel", "roundStartPanel", "roundTimerPanel", "waveInfoPanel", "emptyCrosshair", "gunCrosshair", "shotgunCrosshair", "healthBarPanel", "armorBarPanel", "weightBarPanel", "useInfoLabel", "weaponsContainer", "playerListVBox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -129,6 +130,7 @@ grow_vertical = 2
 offset_transform_enabled = true
 theme = ExtResource("1_atyv1")
 script = ExtResource("2_ro0l0")
+lobbyTimerPanel = NodePath("Center-Top/Offset/LobbyTimerPanel")
 roundStartPanel = NodePath("Center-Top/Offset/RoundStartPanel")
 roundTimerPanel = NodePath("Center-Top/Offset/RoundTimerPanel")
 waveInfoPanel = NodePath("Top - Left/Offset/WaveInfoPanel")
@@ -330,6 +332,37 @@ theme_override_font_sizes/font_size = 41
 text = "1"
 horizontal_alignment = 1
 vertical_alignment = 2
+
+[node name="LobbyTimerPanel" type="Panel" parent="Center-Top/Offset" unique_id=2138365049]
+layout_mode = 0
+offset_left = -60.0
+offset_top = 60.0
+offset_right = 60.0
+offset_bottom = 100.000046
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Center-Top/Offset/LobbyTimerPanel" unique_id=673251346]
+texture_filter = 2
+layout_mode = 0
+offset_right = 120.0
+offset_bottom = 40.0
+texture = ExtResource("4_m80ar")
+draw_center = false
+patch_margin_left = 9
+patch_margin_top = 9
+patch_margin_right = 9
+patch_margin_bottom = 9
+
+[node name="Label" type="Label" parent="Center-Top/Offset/LobbyTimerPanel" unique_id=374894416]
+layout_mode = 0
+offset_top = -3.0
+offset_right = 120.0
+offset_bottom = 44.0
+theme_override_constants/line_spacing = 0
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Bottom - Right" type="Control" parent="." unique_id=724265092]
 layout_mode = 1
@@ -1040,3 +1073,32 @@ offset_bottom = 28.0
 texture = ExtResource("6_w7tcg")
 expand_mode = 3
 stretch_mode = 4
+
+[node name="FullRect" type="Control" parent="." unique_id=1616681828]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerNames" type="Control" parent="FullRect" unique_id=280781780 node_paths=PackedStringArray("refLabel")]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("9_w5a85")
+refLabel = NodePath("Label")
+
+[node name="Label" type="Label" parent="FullRect/PlayerNames" unique_id=1230454423]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 20.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.18039216)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Kodi022"
+horizontal_alignment = 1
+vertical_alignment = 1

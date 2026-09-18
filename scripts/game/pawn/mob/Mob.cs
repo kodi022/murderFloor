@@ -81,7 +81,7 @@ public partial class Mob : Pawn
                 HitPosition = Vector3.Zero,
                 HitDirection = (Position - targetPawn.Position).Normalized()
             };
-            targetPawn.Rpc("OnDamageRpc", di.ToVariant());
+            targetPawn.Rpc(Pawn.MethodName.OnDamageRpc, di.ToVariant());
         }
     }
 

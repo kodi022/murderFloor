@@ -90,7 +90,8 @@ public partial class Game : Node
 
     public override void _Ready()
     {
-        Global.NetworkManager.Singleton.RpcId(1, "PlayerLoaded");
+        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc);
+        DifficultyConfig = Ui.MapSelect.DifficultyConfigNetworked;
         ExitArea.BodyEntered += OnBodyEntered;
         ExitArea.BodyExited += OnBodyExited;
     }
@@ -107,13 +108,13 @@ public partial class Game : Node
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void StartGame()
+    public void StartGameRpc()
     {
         foreach (var child in GetChildren())
         {
-            if (child is MobSpawnArea mob)
+            if (child is MobSpawnArea a)
             {
-                spawnAreas.Add(mob);
+                spawnAreas.Add(a);
             }
         }
 

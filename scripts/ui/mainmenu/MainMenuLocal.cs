@@ -13,7 +13,7 @@ public partial class MainMenuLocal : Panel
             Global.NetworkManager.Singleton.ServerIP = default;
             Global.NetworkManager.Singleton.Port = default;
             Global.NetworkManager.Singleton.CreateServer(true);
-            Global.NetworkManager.Singleton.LoadGame("res://scenes/map/lobby/Lobby.tscn");
+            Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
         };
     }
 }

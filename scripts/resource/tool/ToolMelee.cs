@@ -63,7 +63,7 @@ public partial class ToolMelee : Tool
                     HitPosition = (Vector3)ray["position"],
                     HitDirection = (pos - fi.ViewTransform.Origin).Normalized()
                 };
-                pawn.Rpc("OnDamageRpc", di.ToVariant());
+                pawn.Rpc(Game.Pawn.MethodName.OnDamageRpc, di.ToVariant());
             }
         }
     }

@@ -5,16 +5,16 @@ public partial class Pawn : CharacterBody3D
     [Signal]
     public delegate void PlayerOnHealEventHandler(float amount);
     [Signal]
-    public delegate void PlayerOnDamageEventHandler(DamageInfoVariant damageInfoVariant);
+    public delegate void PlayerOnDamageEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfoVariant);
     [Signal]
-    public delegate void PlayerOnDeathEventHandler(DamageInfoVariant damageInfoVariant);
+    public delegate void PlayerOnDeathEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfoVariant);
     [Signal]
     public delegate void PlayerOnSpawnEventHandler(Vector3 position);
 
     [Signal]
-    public delegate void MobOnDamageEventHandler(DamageInfoVariant damageInfoVariant);
+    public delegate void MobOnDamageEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfoVariant);
     [Signal]
-    public delegate void MobOnDeathEventHandler(DamageInfoVariant damageInfoVariant);
+    public delegate void MobOnDeathEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfoVariant);
 
     [Export]
     public float MaxHealth { get; set; } = 100;
@@ -29,7 +29,7 @@ public partial class Pawn : CharacterBody3D
 
     /// <summary>this should only be called using Rpc</summary>
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    public virtual void OnDamageRpc(DamageInfoVariant damageInfoVariant)
+    public virtual void OnDamageRpc(Godot.Collections.Dictionary<string, Variant> damageInfoVariant)
     {
         if (IsDead) return;
 
@@ -80,6 +80,11 @@ public partial class Pawn : CharacterBody3D
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+    public void SpawnRpc(Vector3 pos)
+    {
+        OnSpawn(pos);
+    }
+
     public virtual void OnSpawn(Vector3 pos)
     {
         if (Player.Self == this)

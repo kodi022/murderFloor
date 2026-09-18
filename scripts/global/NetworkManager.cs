@@ -33,8 +33,8 @@ public partial class NetworkManager : Node
     // entered in a UI scene.
     public Godot.Collections.Dictionary<string, string> _playerInfo = new()
     {
-        { "Name", "Survivor" },
-        { "Coolness", "1" },
+        { "name", "Convict" },
+        { "coolness", "1" },
     };
 
     private int _playersLoaded = 0;
@@ -96,9 +96,9 @@ public partial class NetworkManager : Node
     }
 
     // When the server decides to start the game from a UI scene,
-    // do Rpc(Lobby.MethodName.LoadGame, filePath);
+    // do Rpc(Lobby.MethodName.LoadGameRpc, filePath);
     [Rpc(CallLocal = true)]
-    public void LoadGame(string gameScenePath)
+    public void LoadGameRpc(string gameScenePath)
     {
         _playersLoaded = 0;
         //GameManager.Clear_ClearOnLoad();
@@ -113,7 +113,7 @@ public partial class NetworkManager : Node
     {
         GD.Print("OnPeerConnected " + id);
 
-        RpcId(id, "SendInfoToPeer", _playerInfo);
+        RpcId(id, MethodName.SendInfoToPeerRpc, _playerInfo);
 
         _players[id] = _playerInfo;
         var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
@@ -160,7 +160,7 @@ public partial class NetworkManager : Node
     {
         GD.Print("OnConnectionFailed");
         Multiplayer.MultiplayerPeer = null;
-        Rpc("LoadGame", "res://scenes/MainMenu.tscn");
+        Rpc(MethodName.LoadGameRpc, "res://scenes/MainMenu.tscn");
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from server. 
@@ -170,12 +170,12 @@ public partial class NetworkManager : Node
         GD.Print("OnServerDisconnected");
         Multiplayer.MultiplayerPeer = null;
         _players.Clear();
-        Rpc("LoadGame", "res://scenes/MainMenu.tscn");
+        Rpc(MethodName.LoadGameRpc, "res://scenes/MainMenu.tscn");
         EmitSignal(SignalName.ServerDisconnected);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-    private void SendInfoToPeer(Godot.Collections.Dictionary<string, string> playerInfo)
+    private void SendInfoToPeerRpc(Godot.Collections.Dictionary<string, string> playerInfo)
     {
         int playerId = Multiplayer.GetRemoteSenderId();
         _players[playerId] = playerInfo;
@@ -183,7 +183,7 @@ public partial class NetworkManager : Node
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    private async void PlayerLoaded()
+    private async void PlayerLoadedRpc()
     {
         if (Multiplayer.IsServer())
         {
@@ -191,15 +191,15 @@ public partial class NetworkManager : Node
             if (_playersLoaded == _players.Count)
             {
                 await Task.Delay(2000);
-                Game.Game.Current?.Rpc("StartGame");
+                Game.Game.Current?.Rpc(Game.Game.MethodName.StartGameRpc);
                 _playersLoaded = 0;
             }
         }
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    private void ClientPlayerReady()
+    private void ClientPlayerReadyRpc()
     {
-        Game.Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), "ToolsSyncRpc", Game.Player.Self.GetAllTools(1));
+        Game.Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), Game.Player.MethodName.ToolsSyncRpc, Game.Player.Self.GetAllTools(1));
     }
 }

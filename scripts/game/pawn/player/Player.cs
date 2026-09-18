@@ -91,17 +91,17 @@ public partial class Player : Pawn
         if (!IsMultiplayerAuthority())
         {
             cameraRaycast.Free();
-            Global.NetworkManager.Singleton.RpcId(Id, "ClientPlayerReady");
+            Global.NetworkManager.Singleton.RpcId(Id, Global.NetworkManager.MethodName.ClientPlayerReadyRpc);
             return;
         }
 
         var fistToolConfig = new ToolConfig(Resource.Loot.LootState.Deserialize("0,a/Hw/,0.1.0,0,0,0,0,"));
-        Rpc("ToolAddRpc", fistToolConfig.Serialize());
+        Rpc(MethodName.ToolAddRpc, fistToolConfig.Serialize());
 
         foreach (var equipped in SaveManager.CurrentSave.GetEquippedLoot())
         {
             var toolConfig = new ToolConfig(equipped, SaveManager.CurrentSave.GetAttachmentsOnTool(equipped));
-            Rpc("ToolAddRpc", toolConfig.Serialize());
+            Rpc(MethodName.ToolAddRpc, toolConfig.Serialize());
         }
 
         var opt = OptionsManager.Load();
@@ -159,7 +159,7 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F5 && eventKey.Pressed)
             {
-                Global.NetworkManager.Singleton.Rpc("LoadGame", "res://scenes/map/barnyard/barnyard.tscn");
+                Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, "res://scenes/map/barnyard/barnyard.tscn");
             }
 
             if (eventKey.Keycode == Key.F7 && eventKey.Pressed)
@@ -172,7 +172,7 @@ public partial class Player : Pawn
                     AttackerName = Global.NetworkManager.Singleton._players[Id]["Name"],
                     HitboxName = "Neck"
                 };
-                Rpc("OnDamageRpc", di.ToVariant());
+                Rpc(Pawn.MethodName.OnDamageRpc, di.ToVariant());
             }
         }
     }

@@ -105,7 +105,7 @@ public partial class LockerListMenu : Control
         if (Game.Player.Self.HasTool(selectedToolLootState))
         {
             SaveManager.CurrentSave.Equipped.Remove(lootStateHash);
-            Game.Player.Self.Rpc("ToolRemoveRpc", selectedToolLootState.Serialize());
+            Game.Player.Self.Rpc(Game.Player.MethodName.ToolRemoveRpc, selectedToolLootState.Serialize());
         }
         else
         {
@@ -114,7 +114,7 @@ public partial class LockerListMenu : Control
 
             var attachments = SaveManager.CurrentSave.GetAttachmentsOnTool(selectedToolLootState);
             var toolConfig = new ToolConfig(selectedToolLootState, attachments);
-            Game.Player.Self.Rpc("ToolAddRpc", toolConfig.Serialize());
+            Game.Player.Self.Rpc(Game.Player.MethodName.ToolAddRpc, toolConfig.Serialize());
         }
 
         isSelectedToolEquipped = Game.Player.Self.HasTool(selectedToolLootState);

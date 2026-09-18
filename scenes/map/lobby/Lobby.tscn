@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://d86jfkuss0wx" path="res://scenes/ui/mapselect/MapSelect.tscn" id="14_wt7li"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0sitp"]
-size = Vector3(3.0613708, 2.7662354, 6.182312)
+size = Vector3(3.9231415, 2.7662354, 6.182312)
 
 [sub_resource type="Environment" id="Environment_k7gih"]
 background_mode = 1
@@ -178,6 +178,7 @@ monitorable = false
 gravity_point = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GameLobby/Exit" unique_id=434427814]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.43088531, 0, 0)
 shape = SubResource("BoxShape3D_0sitp")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1851156556]
@@ -205,6 +206,10 @@ material = ExtResource("7_t5wx4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 0)
 size = Vector3(24, 0.218, 24)
 material = ExtResource("7_t5wx4")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGbuilding/CSGfloors" unique_id=542670694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.189304, -0.35840344, 5.9818773)
+size = Vector3(4.272339, 1, 6.562622)
 
 [node name="WallBase" type="Node3D" parent="CSGbuilding" unique_id=127372308]
 

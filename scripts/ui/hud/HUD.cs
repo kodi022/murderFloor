@@ -5,6 +5,9 @@ using Game;
 public partial class Hud : ScreenScaleLimiter
 {
     [Export]
+    private Panel lobbyTimerPanel;
+
+    [Export]
     private Panel roundStartPanel;
     [Export]
     private Panel roundTimerPanel;
@@ -53,26 +56,27 @@ public partial class Hud : ScreenScaleLimiter
     private int currentPlayerListIndex;
     private class PlayerPanel
     {
+        public Panel Panel;
         public float LastHp;
         public float LastAr;
-        public Panel Panel;
     }
 
     public override void _Ready()
     {
         if (!IsMultiplayerAuthority()) { QueueFree(); return; } // HUD._Ready calls before Player._Ready
 
+        Player.Self.PlayerOnDamage += HurtAndUpdateHealth;
+        Player.Self.PlayerOnHeal += HealAndUpdateHealth;
+        Player.Self.PlayerToolChange += GenerateToolLists;
+        Global.NetworkManager.Singleton.PlayerConnected += OnPlayerConnected;
+        Global.NetworkManager.Singleton.PlayerDisconnected += OnPlayerDisconnected;
+        lobbyTimerPanel.Visible = false;
         roundStartPanel.Visible = false;
         roundTimerPanel.Visible = false;
         waveInfoPanel.Visible = false;
         emptyCrosshair.Visible = false;
         gunCrosshair.Visible = false;
         shotgunCrosshair.Visible = false;
-        Player.Self.PlayerOnDamage += HurtAndUpdateHealth;
-        Player.Self.PlayerOnHeal += HealAndUpdateHealth;
-        Player.Self.PlayerToolChange += GenerateToolLists;
-        Global.NetworkManager.Singleton.PlayerConnected += OnPlayerConnected;
-        Global.NetworkManager.Singleton.PlayerDisconnected += OnPlayerDisconnected;
 
         waveInfoWave = waveInfoPanel.GetChild<RichTextLabel>(1);
         waveInfoLeft = waveInfoPanel.GetChild<RichTextLabel>(2);
@@ -109,19 +113,6 @@ public partial class Hud : ScreenScaleLimiter
 
         ProcessCrosshairs();
 
-        if (Game.Current is not null && Game.Current.WaveMobsLeft > 0)
-        {
-            waveInfoPanel.Visible = true;
-            waveInfoWave.Text = $"Wave {Game.Current.Wave}/{Game.Current.MaxWave}";
-            waveInfoLeft.Text = $"{Game.Current.WaveMobsLeft} Left";
-        }
-        else
-        {
-            waveInfoPanel.Visible = false;
-        }
-
-        CheckNextPlayerOnList();
-
         useInfoLabel.Text = Player.Self.UseInfoText;
 
         if (selectedTool != Player.Self.SelectedTool)
@@ -129,45 +120,49 @@ public partial class Hud : ScreenScaleLimiter
             selectedTool = Player.Self.SelectedTool;
             GenerateToolLists();
         }
-    }
 
-    private async void GenerateToolLists()
-    {
-        var weightMove = (float)Player.Self.ToolWeight / Player.Self.MaxWeight;
-        var newWeightBarPos = new Vector2(2 + (weightBar.Size.X * weightMove) - weightBar.Size.X, 2);
-        weightBar.SetPosition(newWeightBarPos);
-        weightBarChange.SetPosition(newWeightBarPos);
-
-        async Task ListWeapons(int containerIndex, List<Tool> tools)
+        if (Game.Current is not null)
         {
-            var container = weaponsContainer.GetChild(containerIndex);
-
-            bool skippedFirst = false;
-            foreach (var child in container.GetChildren())
-            {
-                if (!skippedFirst)
-                {
-                    skippedFirst = true;
-                    continue;
-                }
-
-                child.Free();
-            }
-
-            foreach (var tool in tools)
-            {
-                var scene = GD.Load<PackedScene>("res://scenes/ui/hud/HudToolBox.tscn");
-                var hudToolBox = scene.Instantiate<HudToolBox>();
-                hudToolBox.Tool = tool;
-                hudToolBox.Equipped = tool == selectedTool;
-                container.AddChild(hudToolBox);
-            }
+            ProcessGame();
+        }
+        else
+        {
+            waveInfoPanel.Visible = false;
         }
 
-        await ListWeapons(0, Player.Self.ToolsPrimary);
-        await ListWeapons(1, Player.Self.ToolsSecondary);
-        await ListWeapons(2, Player.Self.ToolsSpecial);
-        await ListWeapons(3, Player.Self.ToolsMelee);
+        if (GameLobby.Current is not null)
+        {
+            ProcessGameLobby();
+        }
+        else
+        {
+            lobbyTimerPanel.Visible = false;
+        }
+
+        CheckNextPlayerOnList();
+    }
+
+    private void ProcessGame()
+    {
+        waveInfoPanel.Visible = true;
+        waveInfoWave.Text = $"Wave {Game.Current.Wave}/{Game.Current.MaxWave}";
+        waveInfoLeft.Text = $"{Game.Current.WaveMobsLeft} Left";
+    }
+
+    private void ProcessGameLobby()
+    {
+        if (GameLobby.Current.ExitTimer != 999f)
+        {
+            lobbyTimerPanel.Visible = true;
+            if (GameLobby.Current.ExitTimer > 0)
+                lobbyTimerPanel.GetChild<Label>(1).Text = $"{GameLobby.Current.ExitTimer:0.0}";
+            else
+                lobbyTimerPanel.GetChild<Label>(1).Text = $"Starting";
+        }
+        else
+        {
+            lobbyTimerPanel.Visible = false;
+        }
     }
 
     private void ProcessCrosshairs()
@@ -232,6 +227,45 @@ public partial class Hud : ScreenScaleLimiter
         }
     }
 
+    private async void GenerateToolLists()
+    {
+        var weightMove = (float)Player.Self.ToolWeight / Player.Self.MaxWeight;
+        var newWeightBarPos = new Vector2(2 + (weightBar.Size.X * weightMove) - weightBar.Size.X, 2);
+        weightBar.SetPosition(newWeightBarPos);
+        weightBarChange.SetPosition(newWeightBarPos);
+
+        async Task ListWeapons(int containerIndex, List<Tool> tools)
+        {
+            var container = weaponsContainer.GetChild(containerIndex);
+
+            bool skippedFirst = false;
+            foreach (var child in container.GetChildren())
+            {
+                if (!skippedFirst)
+                {
+                    skippedFirst = true;
+                    continue;
+                }
+
+                child.Free();
+            }
+
+            foreach (var tool in tools)
+            {
+                var scene = GD.Load<PackedScene>("res://scenes/ui/hud/HudToolBox.tscn");
+                var hudToolBox = scene.Instantiate<HudToolBox>();
+                hudToolBox.Tool = tool;
+                hudToolBox.Equipped = tool == selectedTool;
+                container.AddChild(hudToolBox);
+            }
+        }
+
+        await ListWeapons(0, Player.Self.ToolsPrimary);
+        await ListWeapons(1, Player.Self.ToolsSecondary);
+        await ListWeapons(2, Player.Self.ToolsSpecial);
+        await ListWeapons(3, Player.Self.ToolsMelee);
+    }
+
     private void ChangeCrosshair(int select)
     {
         if (activeCrosshairIndex == select) return;
@@ -264,8 +298,6 @@ public partial class Hud : ScreenScaleLimiter
         currentPlayerListIndex = (currentPlayerListIndex + 1) % playerList.Count;
         var kvp = playerList.ElementAt(currentPlayerListIndex);
 
-        kvp.Value.Panel.GetChild<Label>(0).Text = kvp.Key.Name;
-
         var healthMove = kvp.Key.Health / kvp.Key.MaxHealth;
         if (healthMove != kvp.Value.LastHp)
         {
@@ -274,7 +306,7 @@ public partial class Hud : ScreenScaleLimiter
             var hpBarChange = kvp.Value.Panel.GetChild(2).GetChild<Panel>(1);
             var newHealthBarPos = new Vector2(2 + (hpBar.Size.X * healthMove) - hpBar.Size.X, 2);
             var healthTween = kvp.Value.Panel.CreateTween();
-            healthTween.TweenProperty(hpBar, "position", newHealthBarPos, 0.1d);
+            healthTween.TweenProperty(hpBar, "position", newHealthBarPos, 0.01d);
             healthTween.TweenInterval(1d);
             healthTween.TweenProperty(hpBarChange, "position", newHealthBarPos, 0.3d);
         }
@@ -287,14 +319,17 @@ public partial class Hud : ScreenScaleLimiter
             var armorBarChange = kvp.Value.Panel.GetChild(1).GetChild<Panel>(1);
             var newArmorBarPos = new Vector2(2 + (armorBar.Size.X * armorMove) - armorBar.Size.X, 2);
             var armorTween = kvp.Value.Panel.CreateTween();
-            armorTween.TweenProperty(armorBar, "position", newArmorBarPos, 0.1d);
-            armorTween.TweenInterval(1d);
+            armorTween.TweenProperty(armorBar, "position", newArmorBarPos, 0.01d);
+            armorTween.TweenInterval(1f);
             armorTween.TweenProperty(armorBarChange, "position", newArmorBarPos, 0.3d);
         }
 
-        if (Game.Current is null)
+        if (GameLobby.Current is not null)
         {
-            kvp.Value.Panel.GetChild<TextureRect>(3).Visible = true;
+            var ready = kvp.Value.Panel.GetChild<TextureRect>(3);
+            ready.Visible = true;
+            if (GameLobby.Current.ExitPlayers.Contains(kvp.Key)) ready.Modulate = new Color(2f, 2f, 2f);
+            else ready.Modulate = new Color(0.5f, 0.5f, 0.5f, 0.5f);
         }
         else
         {
@@ -315,12 +350,13 @@ public partial class Hud : ScreenScaleLimiter
         }
     }
 
-    private async void OnPlayerConnected(int peerId, Godot.Collections.Dictionary<string, string> _)
+    private async void OnPlayerConnected(int peerId, Godot.Collections.Dictionary<string, string> info)
     {
         // OnPlayerConnected gets called for self before Hud _Ready is called
         if (!IsInstanceValid(this)) await Task.Delay(500);
 
         var panel = (Panel)playerPanelRef.Duplicate();
+        panel.GetChild<Label>(0).Text = info["name"];
         playerList.Add(Player.FindPlayer(peerId), new PlayerPanel() { Panel = panel });
         playerListVBox.AddChild(panel);
     }
@@ -332,7 +368,7 @@ public partial class Hud : ScreenScaleLimiter
         playerList.Remove(found.Key);
     }
 
-    private async void HurtAndUpdateHealth(DamageInfoVariant damageInfoVariant)
+    private async void HurtAndUpdateHealth(Godot.Collections.Dictionary<string, Variant> damageInfoVariant)
     {
         var di = DamageInfo.FromVariant(damageInfoVariant);
         var hitFrom = -new Vector3(di.HitDirection.X, 0, di.HitDirection.Z);
@@ -364,7 +400,7 @@ public partial class Hud : ScreenScaleLimiter
             lastHealthMove = healthMove;
             var newHealthBarPos = new Vector2(2 + (healthBar.Size.X * healthMove) - healthBar.Size.X, 2);
             var healthTween = healthBarPanel.CreateTween();
-            healthTween.TweenProperty(healthBar, "position", newHealthBarPos, 0.1d);
+            healthTween.TweenProperty(healthBar, "position", newHealthBarPos, 0.01d);
             healthTween.TweenInterval(1d);
             healthTween.TweenProperty(healthBarChange, "position", newHealthBarPos, 0.3d);
         }
@@ -375,7 +411,7 @@ public partial class Hud : ScreenScaleLimiter
             lastArmorMove = armorMove;
             var newArmorBarPos = new Vector2(2 + (armorBar.Size.X * armorMove) - armorBar.Size.X, 2);
             var armorTween = armorBarPanel.CreateTween();
-            armorTween.TweenProperty(armorBar, "position", newArmorBarPos, 0.1d);
+            armorTween.TweenProperty(armorBar, "position", newArmorBarPos, 0.01d);
             armorTween.TweenInterval(1d);
             armorTween.TweenProperty(armorBarChange, "position", newArmorBarPos, 0.3d);
         }

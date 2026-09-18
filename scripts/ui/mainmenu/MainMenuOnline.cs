@@ -50,7 +50,7 @@ public partial class MainMenuOnline : Panel
 
 		Global.NetworkManager.Singleton.ServerIP = PickText(IPline);
 		Global.NetworkManager.Singleton.Port = PickText(portLine).ToInt();
-		Global.NetworkManager.Singleton._playerInfo["Name"] = PickText(nameLine);
-		Global.NetworkManager.Singleton._playerInfo["Coolness"] = PickText(coolLine);
+		Global.NetworkManager.Singleton._playerInfo["name"] = PickText(nameLine);
+		Global.NetworkManager.Singleton._playerInfo["coolness"] = PickText(coolLine);
 	}
 }

@@ -60,7 +60,7 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							Global.NetworkManager.Singleton._playerInfo["Name"] = name;
+							Global.NetworkManager.Singleton._playerInfo["name"] = name;
 							var error = Global.NetworkManager.Singleton.CreateServer();
 							if (error == Error.Ok)
 							{
@@ -74,7 +74,7 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							Global.NetworkManager.Singleton._playerInfo["Name"] = name;
+							Global.NetworkManager.Singleton._playerInfo["name"] = name;
 							var error = Global.NetworkManager.Singleton.JoinServer();
 							if (error == Error.Ok)
 							{

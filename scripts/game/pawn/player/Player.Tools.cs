@@ -105,7 +105,7 @@ public partial class Player : Pawn
         if (!IsMultiplayerAuthority()) return;
         if (SwappingWeapon) return;
 
-        if (IsMultiplayerAuthority()) Rpc("ToolEquipRpc", (int)SelectedSlot, SelectedToolIndex);
+        if (IsMultiplayerAuthority()) Rpc(MethodName.ToolEquipRpc, (int)SelectedSlot, SelectedToolIndex);
 
         try
         {
@@ -196,7 +196,7 @@ public partial class Player : Pawn
         }
 
         await Task.Delay(100);
-        RpcId(Id, "ToolsSyncCallbackRpc");
+        RpcId(Id, MethodName.ToolsSyncCallbackRpc);
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false)]

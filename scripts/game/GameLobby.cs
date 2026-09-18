@@ -12,6 +12,10 @@ public partial class GameLobby : Node
     [Export]
     public Area3D ExitArea { get; private set; }
 
+    public List<Player> ExitPlayers { get; private set; } = [];
+    public double ExitTimer { get; private set; } = 999f;
+    private bool startedLoading = false;
+
     public override void _EnterTree()
     {
         Current = this;
@@ -23,19 +27,45 @@ public partial class GameLobby : Node
         ExitArea.BodyExited += OnBodyExited;
     }
 
+    public override void _Process(double delta)
+    {
+        if (ExitTimer == 999f) return;
+        ExitTimer -= delta;
+
+
+        if (ExitTimer <= 0f && !startedLoading)
+        {
+            startedLoading = true;
+            if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
+                Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, Ui.MapSelect.SelectedMapNetworked.MeshScene.ResourcePath);
+        }
+    }
+
     public void OnBodyEntered(Node3D body)
     {
         if (body is not Player player) return;
 
-        GD.Print(player);
-        //if (selectedMap is null) return;
+        if (Ui.MapSelect.SelectedMapNetworked is null) return;
 
-        // ! if everybody is ready
-        //Global.NetworkManager.Singleton.Rpc("LoadGame", selectedMap.MeshScene.ResourcePath);
+        ExitPlayers.Add(player);
+
+        if (ExitPlayers.Count == Player.AllPlayers.Count)
+            ExitTimer = Mathf.Min(ExitTimer, 10f);
+        else if (ExitPlayers.Count == 1)
+            ExitTimer = Mathf.Min(ExitTimer, 60f);
+        else if (ExitPlayers.Count == 2)
+            ExitTimer = Mathf.Min(ExitTimer, 30f);
+        else if (ExitPlayers.Count > 2)
+            ExitTimer = Mathf.Min(ExitTimer, 20f);
     }
 
     public void OnBodyExited(Node3D body)
     {
         if (body is not Player player) return;
+
+        ExitPlayers.Remove(player);
+
+        if (ExitPlayers.Count == 0)
+            ExitTimer = 999f;
     }
 }
