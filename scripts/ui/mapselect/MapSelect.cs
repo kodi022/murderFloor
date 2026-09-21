@@ -2,10 +2,11 @@ namespace Shooter.Ui;
 
 public partial class MapSelect : OpenUi
 {
-    public static bool MapSelected { get; private set; } = false;
     public static Resource.Map SelectedMapNetworked { get; private set; } = null;
     public static DifficultyConfig DifficultyConfigNetworked { get; private set; }
+    public static ulong SelectedSeedNetworked { get; private set; }
     public static Vector2 SelectedButtonLocation { get; private set; }
+    public static bool MapSelected { get; private set; } = false;
 
     [Export]
     public bool OnScreen { get; set; } = true;
@@ -193,7 +194,7 @@ public partial class MapSelect : OpenUi
             SelectedMapNetworked = viewedMap;
             DifficultyConfigNetworked = diffConfig;
             UpdateMapInfo(this);
-            worldMapSelect.Rpc(MethodName.MapInfoRpc, viewedMap.FullId, diffConfig.Serialize(), buttonLocation);
+            worldMapSelect.Rpc(MethodName.MapInfoRpc, viewedMap.FullId, diffConfig.Serialize(), (ulong)Random.Shared.NextInt64(), buttonLocation);
         };
 
         var arr = new Tween[buttons.Count];
@@ -302,11 +303,12 @@ public partial class MapSelect : OpenUi
 
     // do not make static, godot does not support static Rpcs
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    public void MapInfoRpc(string mapFullId, string difficultyConfig, Vector2 buttonLocation)
+    public void MapInfoRpc(string mapFullId, string difficultyConfig, ulong seed, Vector2 buttonLocation)
     {
         SelectedMapNetworked = ResourceManager.MapRegistry.GetResourceRef(mapFullId);
         DifficultyConfigNetworked = DifficultyConfig.Deserialize(difficultyConfig);
         SelectedButtonLocation = buttonLocation;
+        SelectedSeedNetworked = seed;
         MapSelected = true;
         UpdateMapInfo(worldMapSelect);
     }

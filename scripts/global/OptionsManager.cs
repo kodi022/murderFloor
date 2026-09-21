@@ -189,7 +189,6 @@ public static class OptionsManager
         [OptionBool("Gameplay", "")]
         public bool ScalingCrosshair { get; set; } = true;
 
-
         public Options()
         {
         }

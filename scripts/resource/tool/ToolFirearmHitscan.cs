@@ -105,13 +105,12 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 Damage = damage,
                 DamageType = DamageInfo.DamageTypeEnum.Physical,
                 AttackerId = fi.Player.Id,
-                AttackerName = Global.NetworkManager.Singleton._players[fi.Player.Id]["Name"],
+                AttackerName = Global.NetworkManager.Singleton._players[fi.Player.Id]["name"],
                 WeaponId = HashId,
                 HitboxName = hitObjName,
-                HitPosition = (Vector3)ray["position"],
+                HitPosition = pos,
                 HitDirection = (pos - fi.ViewTransform.Origin).Normalized()
             };
-
             pawn.Rpc(Game.Pawn.MethodName.OnDamageRpc, di.ToVariant());
         }
     }

@@ -67,13 +67,14 @@ public partial class Game : Node
 
     public ulong LastWaveEndTime { get; private set; } = 0ul;
 
-    private List<MobSpawnArea> spawnAreas = [];
+    private readonly List<MobSpawnArea> spawnAreas = [];
     private int lastSpawnAreaIndex = -1;
     private RandomNumberGenerator rngSpawning = new();
     private RandomNumberGenerator rngLoot = new();
 
     private Node mobPoolNode;
     private Node lootNode;
+    private readonly List<Resource.Loot.LootState> unpickedLoot = [];
 
     public override void _EnterTree()
     {
@@ -160,18 +161,22 @@ public partial class Game : Node
 
     private void ProcessLoot(DamageInfo damageInfo, int mobPoolId)
     {
-        // ! dont drop loot until end of round or end of game?
-        if (rngLoot.Randf() > 0.9f)
+        if (rngLoot.Randf() > 0.95f)
         {
-            // ! level = map difficulty * difficulty + challenge or something
-            var lootState = new Resource.Loot.LootState(GameSeed + rngLoot.Randi(), 0, DifficultyEnum.Hard, 0, 0);
+            // mapdifficulty > 1.33 on Ludicrous allows for easy 100s
+            var map = Ui.MapSelect.SelectedMapNetworked;
+            var levelFloat = (int)DifficultyConfig.Difficulty * 15f * map.MapDifficultyScale * rngLoot.Randfn(1, 0.05f);
+            var level = (int)Mathf.Clamp(levelFloat, 0, 100);
+            var challengeBitmask = (DifficultyConfig.C1 ? 1 : 0) + (DifficultyConfig.C2 ? 2 : 0); // next would be ? 4 : 0
+            var lootState = new Resource.Loot.LootState(GameSeed + rngLoot.Randi(), map.HashId, level, DifficultyConfig.Difficulty, challengeBitmask, DifficultyConfig.Overscaling);
+
             var lootNode3d = lootState.MakeLootNode();
             lootNode.AddChild(lootNode3d);
             lootNode3d.GlobalPosition = damageInfo.HitPosition;
             ((RigidBody3D)lootNode3d.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
 
-            var loot = new Resource.Loot.LootRarity(lootState);
-            GD.Print($"{loot.Tier} ({(int)loot.Tier}),  {loot.Wear} ({(int)loot.Wear})");
+            unpickedLoot.Add(lootState);
+            lootNode3d.OnUse += () => { unpickedLoot.Remove(lootState); };
         }
     }
 
@@ -195,15 +200,16 @@ public partial class Game : Node
         SpawnMobGroup();
     }
 
-    public void EndGame()
+    public async void EndGame()
     {
         GameState = StateEnum.Stopped;
 
         SaveManager.CurrentSave.AddXp(100f * (int)DifficultyConfig.Difficulty);
         SaveManager.Save(SaveManager.CurrentSave);
 
-        foreach (var mob in MobPool)
-            mob?.Free();
+        // allow final processing on final mob death before deletion
+        await Task.Delay(100);
+        foreach (var mob in MobPool) mob?.Free();
 
         MobPool.Clear();
         Wave = 0;

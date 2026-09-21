@@ -32,7 +32,6 @@ public partial class GameLobby : Node
         if (ExitTimer == 999f) return;
         ExitTimer -= delta;
 
-
         if (ExitTimer <= 0f && !startedLoading)
         {
             startedLoading = true;
@@ -50,7 +49,7 @@ public partial class GameLobby : Node
         ExitPlayers.Add(player);
 
         if (ExitPlayers.Count == Player.AllPlayers.Count)
-            ExitTimer = Mathf.Min(ExitTimer, 10f);
+            ExitTimer = Mathf.Min(ExitTimer, 5f);
         else if (ExitPlayers.Count == 1)
             ExitTimer = Mathf.Min(ExitTimer, 60f);
         else if (ExitPlayers.Count == 2)

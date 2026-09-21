@@ -26,46 +26,44 @@ public partial class ToolMelee : Tool
         var space = fi.Player.GetWorld3D().DirectSpaceState;
         var query = PhysicsRayQueryParameters3D.Create(fi.ViewTransform.Origin, fi.ViewTransform.Origin + fi.ViewForward * MaxRange, 5);
         var ray = space.IntersectRay(query);
-        if (ray.ContainsKey("collider"))
+        if (!ray.ContainsKey("collider")) return;
+
+        Debug.Rendering.Point((Vector3)ray["position"], color: new Color(0, 0, 0));
+
+        Game.Pawn pawn = null;
+        var currentNode = (Node)(GodotObject)ray["collider"];
+        for (int j = 0; j < 5; j++)
         {
-            Debug.Rendering.Point((Vector3)ray["position"], color: new Color(0, 0, 0));
+            currentNode = currentNode.GetParent();
 
-            Game.Pawn pawn = null;
-            var currentNode = (Node)(GodotObject)ray["collider"];
-            for (int j = 0; j < 5; j++)
+            if (currentNode is null) break;
+            if (currentNode is Game.Pawn p)
             {
-                currentNode = currentNode.GetParent();
-
-                if (currentNode is null) break;
-                if (currentNode is Game.Pawn p)
-                {
-                    pawn = p;
-                    break;
-                }
-            }
-
-            if (pawn is not null)
-            {
-                var pos = (Vector3)ray["position"];
-                var damage = Damage;
-
-                var hitObjName = ((Node)(GodotObject)ray["collider"]).GetParent().Name.ToString();
-                damage *= GetHitDamageMultiplier(hitObjName);
-
-                var di = new DamageInfo()
-                {
-                    Damage = damage,
-                    DamageType = DamageInfo.DamageTypeEnum.Physical,
-                    AttackerId = fi.Player.Id,
-                    AttackerName = Global.NetworkManager.Singleton._players[fi.Player.Id]["Name"],
-                    WeaponId = HashId,
-                    HitboxName = hitObjName,
-                    HitPosition = (Vector3)ray["position"],
-                    HitDirection = (pos - fi.ViewTransform.Origin).Normalized()
-                };
-                pawn.Rpc(Game.Pawn.MethodName.OnDamageRpc, di.ToVariant());
+                pawn = p;
+                break;
             }
         }
+
+        if (pawn is null) return;
+
+        var pos = (Vector3)ray["position"];
+        var damage = Damage;
+
+        var hitObjName = ((Node)(GodotObject)ray["collider"]).GetParent().Name;
+        damage *= GetHitDamageMultiplier(hitObjName);
+
+        var di = new DamageInfo()
+        {
+            Damage = damage,
+            DamageType = DamageInfo.DamageTypeEnum.Physical,
+            AttackerId = fi.Player.Id,
+            AttackerName = Global.NetworkManager.Singleton._players[fi.Player.Id]["name"],
+            WeaponId = HashId,
+            HitboxName = hitObjName,
+            HitPosition = pos,
+            HitDirection = (pos - fi.ViewTransform.Origin).Normalized()
+        };
+        pawn.Rpc(Game.Pawn.MethodName.OnDamageRpc, di.ToVariant());
     }
 
     private static float GetHitDamageMultiplier(string colliderName)

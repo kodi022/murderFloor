@@ -36,12 +36,15 @@ public struct LootState
 
     // the saved data of Loot
     public ulong Seed { get; private set; }
+    public int MapHashId { get; private set; }
     public int ResourceHashId { get; private set; }
     public Version Version { get; private set; }
     public int Level { get; private set; }
     public Game.Game.DifficultyEnum Difficulty { get; private set; }
-    public int MapHashId { get; private set; }
+    public int ChallengeBitmask { get; private set; }
     public int OverScaling { get; private set; }
+
+    // custom set data
     private Dictionary<string, string> CustomData { get; set; } // needs to be property
 
     // generated values on creation
@@ -50,15 +53,16 @@ public struct LootState
     public LootState() { }
 
     /// <summary> Constructor only for newly generated loot </summary>
-    public LootState(ulong seed, int level, Game.Game.DifficultyEnum difficulty, int mapHashId, float overscaling)
+    public LootState(ulong seed, int mapHashId, int level, Game.Game.DifficultyEnum difficulty, int challengeBitmask, float overscaling)
     {
         Seed = seed;
         ResourceHashId = GetLootHashId();
+        MapHashId = mapHashId;
         Version = Global.GameManager.GameVersion;
         Level = level;
         Difficulty = difficulty;
-        MapHashId = mapHashId;
-        OverScaling = (int)(overscaling * 10);
+        ChallengeBitmask = challengeBitmask;
+        OverScaling = (int)(overscaling * 100f);
         CustomData = [];
         GenerateStats();
     }
@@ -88,7 +92,7 @@ public struct LootState
 
     public readonly GameResource GetLootRef()
     {
-        if (ResourceHashId == 184465471) return null; // fistd
+        if (ResourceHashId == 184465471) return null; // fists
 
         var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
         if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({ResourceHashId})");
@@ -103,7 +107,7 @@ public struct LootState
         return ResourceManager.LootRegistry.GetResourceAtIndex(lootIndex).HashId;
     }
 
-    public readonly Node3D MakeLootNode()
+    public readonly Game.Loot MakeLootNode()
     {
         var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<Game.Loot>();
         newLoot.Position = Vector3.Up * 0.1f;
@@ -188,11 +192,12 @@ public struct LootState
     {
         var str = Utils.Compression.ULToAB64(Seed) + Layer1Delimiter;
         str += Utils.Compression.IntToAB64(ResourceHashId) + Layer1Delimiter;
+        str += Utils.Compression.IntToAB64(MapHashId) + Layer1Delimiter;
         str += Version.ToString() + Layer1Delimiter;
         str += Level + Layer1Delimiter;
         str += (int)Difficulty + Layer1Delimiter;
-        str += Utils.Compression.IntToAB64(MapHashId) + Layer1Delimiter;
-        str += OverScaling.ToString() + Layer1Delimiter;
+        str += Utils.Compression.IntToAB64(ChallengeBitmask) + Layer1Delimiter;
+        str += Utils.Compression.IntToAB64(OverScaling) + Layer1Delimiter;
         str += SerializeCustomData(CustomData);
         return str;
     }
@@ -204,12 +209,13 @@ public struct LootState
         {
             Seed = Utils.Compression.AB64ToUL(strs[0]),
             ResourceHashId = Utils.Compression.AB64ToInt(strs[1]),
-            Version = Version.FromString(strs[2]),
-            Level = strs[3].ToInt(),
-            Difficulty = (Game.Game.DifficultyEnum)strs[4].ToInt(),
-            MapHashId = Utils.Compression.AB64ToInt(strs[5]),
-            OverScaling = strs[6].ToInt(),
-            CustomData = DeserializeCustomData(strs[7]),
+            MapHashId = Utils.Compression.AB64ToInt(strs[2]),
+            Version = Version.FromString(strs[3]),
+            Level = strs[4].ToInt(),
+            Difficulty = (Game.Game.DifficultyEnum)strs[5].ToInt(),
+            ChallengeBitmask = Utils.Compression.AB64ToInt(strs[6]),
+            OverScaling = Utils.Compression.AB64ToInt(strs[7]),
+            CustomData = DeserializeCustomData(strs[8]),
         };
         ls.GenerateStats();
         return ls;
@@ -252,11 +258,12 @@ public struct LootState
         {
             int hash = 13466917 + Seed.GetHashCode();
             hash = hash * 31 + ResourceHashId;
+            hash = hash * 31 + MapHashId;
             hash = hash * 31 + Version.GetHashCode();
             hash = hash * 31 + Level;
             hash = hash * 31 + (int)Difficulty;
-            hash = hash * 31 + MapHashId;
-            hash = hash * 31 + OverScaling.GetHashCode();
+            hash = hash * 31 + ChallengeBitmask;
+            hash = hash * 31 + OverScaling;
             return hash;
         }
     }

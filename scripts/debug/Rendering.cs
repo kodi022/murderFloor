@@ -38,7 +38,7 @@ public static class Rendering
             var wearCount = new Dictionary<Resource.Loot.Wears.WearEnum, int>();
             for (int i = 0; i < count; i++)
             {
-                var state = new Resource.Loot.LootState((ulong)Random.Shared.NextInt64(), level, difficulty, 0, 0);
+                var state = new Resource.Loot.LootState((ulong)Random.Shared.NextInt64(), 0, level, difficulty, 0, 0);
                 var e = new Resource.Loot.LootRarity(state);
                 if (!tierCount.TryAdd(e.Tier, 1))
                     tierCount[e.Tier] += 1;

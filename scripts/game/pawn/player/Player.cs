@@ -95,7 +95,7 @@ public partial class Player : Pawn
             return;
         }
 
-        var fistToolConfig = new ToolConfig(Resource.Loot.LootState.Deserialize("0,a/Hw/,0.1.0,0,0,0,0,"));
+        var fistToolConfig = new ToolConfig(Resource.Loot.LootState.Deserialize("0,a/Hw/,0,0.1.0,0,0,0,0,"));
         Rpc(MethodName.ToolAddRpc, fistToolConfig.Serialize());
 
         foreach (var equipped in SaveManager.CurrentSave.GetEquippedLoot())

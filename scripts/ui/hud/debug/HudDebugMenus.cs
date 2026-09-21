@@ -25,11 +25,19 @@ public partial class HudDebugMenus : OpenUi
             {
                 case "Tools":
                     if (column == 0)
-                        Game.Player.Self.Rpc(Game.Player.MethodName.ToolAddRpc, $"0,{Compression.IntToAB64(item.GetText(1).ToInt())},0.1.0,0,0,0,0,.00,");
+                    {
+                        var toolConfig = new ToolConfig(Resource.Loot.LootState.Deserialize($"0,{item.GetText(1)},0,0.1.0,0,0,0,0,"));
+                        Game.Player.Self.Rpc(Game.Player.MethodName.ToolAddRpc, toolConfig.Serialize());
+                    }
+                    else if (column == 1)
+                    {
+                        DisplayServer.ClipboardSet(item.GetText(1));
+                        GD.Print($"Copied {item.GetText(1)} to clipboard");
+                    }
                     else if (column == 2)
                     {
                         DisplayServer.ClipboardSet(item.GetText(2));
-                        GD.Print("Copied to clipboard");
+                        GD.Print($"Copied {item.GetText(2)} to clipboard");
                     }
                     break;
                 default:
@@ -46,10 +54,11 @@ public partial class HudDebugMenus : OpenUi
             {
                 var child = newItem.CreateChild();
                 child.SetText(0, item.Value.FullId);
-                if (hasFunction) child.AddButton(0, Defaults.MissingTexture);
+                if (hasFunction) child.AddButton(0, GD.Load<Texture2D>("res://images/ui/TablerPlus24.png"));
                 child.SetText(1, Compression.IntToAB64(item.Value.HashId));
+                child.AddButton(1, GD.Load<Texture2D>("res://images/ui/TablerClipboard24.png"));
                 child.SetText(2, item.Value.HashId.ToString());
-                child.AddButton(2, Defaults.MissingTexture);
+                child.AddButton(2, GD.Load<Texture2D>("res://images/ui/TablerClipboard24.png"));
                 child.SetText(3, item.Value.IsRandomLoot.ToString());
             }
         }
@@ -84,21 +93,21 @@ public partial class HudDebugMenus : OpenUi
         var lsCreatorPanel = lsPanel.GetChild<Panel>(0);
         lsCreatorPanel.GetChild<Button>(0).Pressed += () =>
         {
-            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new Resource.Loot.LootState(0, 0, 0, 0, 0).Serialize();
+            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new Resource.Loot.LootState(0, 0, 0, 0, 0, 0).Serialize();
         };
         lsCreatorPanel.GetChild<Button>(1).Pressed += () =>
         {
             var seed = ulong.Parse(lsCreatorPanel.GetChild<LineEdit>(2).Text);
             var level = lsCreatorPanel.GetChild<LineEdit>(3).Text.ToInt();
             var difficulty = lsCreatorPanel.GetChild<LineEdit>(4).Text.ToInt();
-            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new Resource.Loot.LootState(seed, level, (Game.Game.DifficultyEnum)difficulty, 0, 0).Serialize();
+            ((LineEdit)lsCreatorPanel.GetChildren().Last()).Text = new Resource.Loot.LootState(seed, level, 0, (Game.Game.DifficultyEnum)difficulty, 0, 0).Serialize();
         };
 
         var lsEmptyPanel = lsPanel.GetChild<Panel>(1);
         lsEmptyPanel.GetChild<Button>(0).Pressed += () =>
         {
             var resourceId = int.Parse(lsEmptyPanel.GetChild<LineEdit>(1).Text);
-            var lootstate = new Resource.Loot.LootState(0, 0, 0, 0, 0).Serialize().Split(',');
+            var lootstate = new Resource.Loot.LootState(0, 0, 0, 0, 0, 0).Serialize().Split(',');
             lootstate[1] = Compression.IntToAB64(resourceId);
             ((LineEdit)lsEmptyPanel.GetChildren().Last()).Text = string.Join(',', lootstate);
         };
