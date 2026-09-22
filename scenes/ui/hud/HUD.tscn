@@ -156,17 +156,19 @@ grow_vertical = 2
 
 [node name="PlayerNames" type="Control" parent="FullRect" unique_id=280781780 node_paths=PackedStringArray("refLabel")]
 anchors_preset = 0
-offset_left = 250.0
+offset_left = 500.0
 offset_top = 100.0
-offset_right = 250.0
+offset_right = 500.0
 offset_bottom = 100.0
 script = ExtResource("9_w5a85")
 refLabel = NodePath("Label")
 
 [node name="Label" type="Label" parent="FullRect/PlayerNames" unique_id=1230454423]
 layout_mode = 0
-offset_right = 500.0
-offset_bottom = 20.0
+offset_left = -250.0
+offset_top = -10.0
+offset_right = 250.0
+offset_bottom = 10.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.18039216)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
@@ -179,17 +181,18 @@ vertical_alignment = 1
 
 [node name="ExitPanel" type="Control" parent="FullRect" unique_id=1269217809]
 anchors_preset = 0
-offset_left = 250.0
+offset_left = 500.0
 offset_top = 200.0
-offset_right = 250.0
+offset_right = 500.0
 offset_bottom = 200.0
 offset_transform_enabled = true
 script = ExtResource("4_n6bbh")
 
 [node name="Label" type="Label" parent="FullRect/ExitPanel" unique_id=1491471959]
 layout_mode = 0
-offset_right = 500.0
-offset_bottom = 20.0
+offset_left = -250.0
+offset_top = -20.0
+offset_right = 250.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.18039216)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
@@ -203,10 +206,10 @@ vertical_alignment = 1
 [node name="TextureRect" type="TextureRect" parent="FullRect/ExitPanel" unique_id=387387195]
 texture_filter = 4
 layout_mode = 0
-offset_left = 236.0
-offset_top = 12.0
-offset_right = 264.0
-offset_bottom = 40.0
+offset_left = -14.0
+offset_top = -8.0
+offset_right = 14.0
+offset_bottom = 20.0
 texture = ExtResource("4_aylpw")
 expand_mode = 4
 stretch_mode = 5

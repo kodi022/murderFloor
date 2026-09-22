@@ -23,7 +23,7 @@ public partial class Tool : GameResource
         public Game.Player Player { get; set; }
         public Game.Tool Tool { get; set; }
         public Transform3D ViewTransform { get; set; }
-        public readonly Vector3 ViewForward => -ViewTransform.Basis.Z.Normalized();
+        public readonly Vector3 ViewForward => -ViewTransform.Basis.Z;
     }
 
     public virtual SlotEnum GetSlot() => SlotEnum.Special;

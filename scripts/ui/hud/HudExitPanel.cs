@@ -20,10 +20,19 @@ public partial class HudExitPanel : Control
             {
                 Visible = true;
                 var shape = Game.Current.ExitArea.GetChild<CollisionShape3D>(0);
-                var unproject = Player.Self.Camera.UnprojectPosition(shape.Position + Vector3.Up * 2f);
-                Position = unproject + new Vector2(-250f, 0f);
+                var margin = new Vector2(20, 20);
+                var viewportSize = GetViewportRect().Size;
+                if (Player.Self.Camera.IsPositionInFrustum(shape.GlobalPosition))
+                {
+                    var unproject = Player.Self.Camera.UnprojectPosition(shape.GlobalPosition);
+                    Position = unproject.Clamp(margin, viewportSize - margin);
+                }
+                else
+                {
+                    // ! do later
+                    Visible = false;
+                }
             }
-
             return;
         }
 
@@ -32,11 +41,21 @@ public partial class HudExitPanel : Control
             if (MapSelect.SelectedMapNetworked is not null)
             {
                 Visible = true;
+                label.Text = "Start";
                 var shape = GameLobby.Current.ExitArea.GetChild<CollisionShape3D>(0);
-                var unproject = Player.Self.Camera.UnprojectPosition(shape.Position + Vector3.Up * 2f);
-                Position = unproject + new Vector2(-250f, 0f);
+                var margin = new Vector2(20, 20);
+                var viewportSize = GetViewportRect().Size;
+                if (Player.Self.Camera.IsPositionInFrustum(shape.GlobalPosition))
+                {
+                    var unproject = Player.Self.Camera.UnprojectPosition(shape.GlobalPosition);
+                    Position = unproject.Clamp(margin, viewportSize - margin);
+                }
+                else
+                {
+                    // ! do later
+                    Visible = false;
+                }
             }
-
             return;
         }
     }
