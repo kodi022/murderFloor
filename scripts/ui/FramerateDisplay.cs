@@ -7,6 +7,6 @@ public partial class FramerateDisplay : Control
 
     public override void _Process(double delta)
     {
-        label.Text = $"{Engine.GetFramesPerSecond():#}[img=24]res://images/ui/TablerHeartRateMonitor.png[/img]";
+        label.Text = $"{Engine.GetFramesPerSecond():#}[img=24]res://images/ui/icon/TablerHeartRateMonitor.png[/img]";
     }
 }

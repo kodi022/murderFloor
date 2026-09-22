@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://basv0rv4m687t"
-path.bptc="res://.godot/imported/TablerPlus.png-1a4459a65221501c80bdbdf4bde43ea6.bptc.ctex"
+uid="uid://calfq051vope3"
+path.bptc="res://.godot/imported/ninepatch.png-f8047578b6016805ea23df9302170173.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/ui/TablerPlus.png"
-dest_files=["res://.godot/imported/TablerPlus.png-1a4459a65221501c80bdbdf4bde43ea6.bptc.ctex"]
+source_file="res://images/ui/ninepatch/ninepatch.png"
+dest_files=["res://.godot/imported/ninepatch.png-f8047578b6016805ea23df9302170173.bptc.ctex"]
 
 [params]
 

@@ -3,17 +3,11 @@
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_hgtbq"]
 [ext_resource type="Texture2D" uid="uid://0xemm4wqbecs" path="res://images/ui/mapselect/Cheia 2026-08-26-16-50.png" id="2_0enw4"]
 [ext_resource type="Script" uid="uid://ilseasxtvywo" path="res://scripts/ui/mapselect/MapSelect.cs" id="2_0ibht"]
-[ext_resource type="Texture2D" uid="uid://calfq051vope3" path="res://images/ui/ninepatch.png" id="2_o5y65"]
+[ext_resource type="Texture2D" uid="uid://calfq051vope3" path="res://images/ui/ninepatch/ninepatch.png" id="2_o5y65"]
 [ext_resource type="Texture2D" uid="uid://dbbpp8flo6dx8" path="res://materials/surface/ground/ground099/Ground099_1K-PNG_Color.png" id="4_x53mc"]
 [ext_resource type="Texture2D" uid="uid://466q7o6xk72a" path="res://images/missing.png" id="6_hggcq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1mj4"]
-bg_color = Color(0.1755, 0.23062503, 0.27, 0.6666667)
-corner_radius_top_right = 10
-corner_radius_bottom_left = 10
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_op56x"]
 bg_color = Color(0.1755, 0.23062503, 0.27, 0.6666667)
 corner_radius_top_right = 10
 corner_radius_bottom_left = 10
@@ -138,7 +132,7 @@ gorpRichTextLabel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer/
 morpRichTextLabel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer/RichTextLabel10")
 mapTextureRect = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/TextureRect")
 referenceMapButton = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/TextureRect/ReferenceButton")
-backgroundPanel = NodePath("Background")
+backgroundPanel = NodePath("Bg2")
 selectionPanel = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel")
 selectionPanelReturnButton = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel/Button")
 selectionPanelSelectButton = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel/Button2")
@@ -150,7 +144,7 @@ selectionPanelOverscalingSliderValue = NodePath("Panel/MarginContainer/HBoxConta
 selectionPanelC1 = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel/CheckButton")
 selectionPanelC2 = NodePath("Panel/MarginContainer/HBoxContainer/VBoxContainer2/MapBackground/SelectionPanel/CheckButton2")
 
-[node name="Background" type="Panel" parent="." unique_id=987648953]
+[node name="Bg2" type="Panel" parent="." unique_id=987648953]
 visible = false
 layout_mode = 0
 offset_left = -800.0
@@ -158,24 +152,6 @@ offset_top = -500.0
 offset_right = 800.0
 offset_bottom = 500.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_q1mj4")
-
-[node name="Panel" type="Panel" parent="Background" unique_id=1359049915]
-layout_mode = 0
-offset_right = 1600.0
-offset_bottom = 1000.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_op56x")
-
-[node name="Panel" type="Panel" parent="Background/Panel" unique_id=340975575]
-layout_mode = 0
-offset_right = 1600.0
-offset_bottom = 1000.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_op56x")
-
-[node name="Panel" type="Panel" parent="Background/Panel/Panel" unique_id=529368294]
-layout_mode = 0
-offset_right = 1600.0
-offset_bottom = 1000.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_op56x")
 
 [node name="Panel" type="Panel" parent="." unique_id=1113182951]
 layout_mode = 0

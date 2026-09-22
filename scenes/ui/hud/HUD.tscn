@@ -3,11 +3,13 @@
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_atyv1"]
 [ext_resource type="Script" uid="uid://c4cq0x80sifad" path="res://scripts/ui/hud/Hud.cs" id="2_ro0l0"]
 [ext_resource type="Material" uid="uid://c6sqfkcxldlfw" path="res://materials/crosshairsmooth.tres" id="3_fnas4"]
-[ext_resource type="Texture2D" uid="uid://c85wq0g572wis" path="res://images/ui/ninepatch-greyscale.png" id="4_m80ar"]
-[ext_resource type="Texture2D" uid="uid://bdefktt7q3gwy" path="res://images/ui/TablerCheck.png" id="5_oyc05"]
-[ext_resource type="Texture2D" uid="uid://ch68wt50rihfc" path="res://images/ui/TablerShield.png" id="5_y0kfc"]
-[ext_resource type="Texture2D" uid="uid://dfhmy2ruudb12" path="res://images/ui/TablerHeart.png" id="6_r6bpu"]
-[ext_resource type="Texture2D" uid="uid://dcwx5u27ifwk8" path="res://images/ui/TablerSkull.png" id="6_w7tcg"]
+[ext_resource type="Texture2D" uid="uid://qd8m0k6wdfmr" path="res://images/ui/icon/TablerArrowBadgeDown.png" id="4_aylpw"]
+[ext_resource type="Texture2D" uid="uid://c85wq0g572wis" path="res://images/ui/ninepatch/ninepatch-greyscale.png" id="4_m80ar"]
+[ext_resource type="Script" uid="uid://genal4y8pdyw" path="res://scripts/ui/hud/HudExitPanel.cs" id="4_n6bbh"]
+[ext_resource type="Texture2D" uid="uid://bdefktt7q3gwy" path="res://images/ui/icon/TablerCheck.png" id="5_oyc05"]
+[ext_resource type="Texture2D" uid="uid://ch68wt50rihfc" path="res://images/ui/icon/TablerShield.png" id="5_y0kfc"]
+[ext_resource type="Texture2D" uid="uid://dfhmy2ruudb12" path="res://images/ui/icon/TablerHeart.png" id="6_r6bpu"]
+[ext_resource type="Texture2D" uid="uid://dcwx5u27ifwk8" path="res://images/ui/icon/TablerSkull.png" id="6_w7tcg"]
 [ext_resource type="Script" uid="uid://dkxywskss3pgi" path="res://scripts/ui/hud/HudPlayerNames.cs" id="9_w5a85"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ed8p"]
@@ -143,6 +145,71 @@ weightBarPanel = NodePath("Bottom - Right/Offset/WeightPanel")
 useInfoLabel = NodePath("Center/UseInfoLabel")
 weaponsContainer = NodePath("Bottom - Right/Offset/VBoxContainer")
 playerListVBox = NodePath("Top - Left/Offset/PlayerListVBox")
+
+[node name="FullRect" type="Control" parent="." unique_id=1616681828]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerNames" type="Control" parent="FullRect" unique_id=280781780 node_paths=PackedStringArray("refLabel")]
+anchors_preset = 0
+offset_left = 250.0
+offset_top = 100.0
+offset_right = 250.0
+offset_bottom = 100.0
+script = ExtResource("9_w5a85")
+refLabel = NodePath("Label")
+
+[node name="Label" type="Label" parent="FullRect/PlayerNames" unique_id=1230454423]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 20.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.18039216)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Kodi022"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExitPanel" type="Control" parent="FullRect" unique_id=1269217809]
+anchors_preset = 0
+offset_left = 250.0
+offset_top = 200.0
+offset_right = 250.0
+offset_bottom = 200.0
+offset_transform_enabled = true
+script = ExtResource("4_n6bbh")
+
+[node name="Label" type="Label" parent="FullRect/ExitPanel" unique_id=1491471959]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 20.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.18039216)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Exit"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="FullRect/ExitPanel" unique_id=387387195]
+texture_filter = 4
+layout_mode = 0
+offset_left = 236.0
+offset_top = 12.0
+offset_right = 264.0
+offset_bottom = 40.0
+texture = ExtResource("4_aylpw")
+expand_mode = 4
+stretch_mode = 5
 
 [node name="Center" type="Control" parent="." unique_id=1976695130]
 layout_mode = 1
@@ -1073,32 +1140,3 @@ offset_bottom = 28.0
 texture = ExtResource("6_w7tcg")
 expand_mode = 3
 stretch_mode = 4
-
-[node name="FullRect" type="Control" parent="." unique_id=1616681828]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PlayerNames" type="Control" parent="FullRect" unique_id=280781780 node_paths=PackedStringArray("refLabel")]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("9_w5a85")
-refLabel = NodePath("Label")
-
-[node name="Label" type="Label" parent="FullRect/PlayerNames" unique_id=1230454423]
-layout_mode = 0
-offset_right = 500.0
-offset_bottom = 20.0
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.18039216)
-theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 1
-theme_override_constants/outline_size = 2
-theme_override_constants/shadow_outline_size = 3
-theme_override_font_sizes/font_size = 12
-text = "Kodi022"
-horizontal_alignment = 1
-vertical_alignment = 1

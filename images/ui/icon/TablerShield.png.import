@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfhmy2ruudb12"
-path.bptc="res://.godot/imported/TablerHeart.png-b0da93ebcb17a5c388aa54771b439f4d.bptc.ctex"
+uid="uid://ch68wt50rihfc"
+path.bptc="res://.godot/imported/TablerShield.png-68f935ee0fcb48bdf54c1cc9db7ceb4e.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/ui/TablerHeart.png"
-dest_files=["res://.godot/imported/TablerHeart.png-b0da93ebcb17a5c388aa54771b439f4d.bptc.ctex"]
+source_file="res://images/ui/icon/TablerShield.png"
+dest_files=["res://.godot/imported/TablerShield.png-68f935ee0fcb48bdf54c1cc9db7ceb4e.bptc.ctex"]
 
 [params]
 

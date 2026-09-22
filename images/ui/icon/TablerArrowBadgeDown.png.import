@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c85wq0g572wis"
-path.bptc="res://.godot/imported/ninepatch-greyscale.png-9743763ac2678257e0ee0ef625529a07.bptc.ctex"
+uid="uid://qd8m0k6wdfmr"
+path.bptc="res://.godot/imported/TablerArrowBadgeDown.png-e6d590bb32279c0c62e6fb9141f509c4.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/ui/ninepatch-greyscale.png"
-dest_files=["res://.godot/imported/ninepatch-greyscale.png-9743763ac2678257e0ee0ef625529a07.bptc.ctex"]
+source_file="res://images/ui/icon/TablerArrowBadgeDown.png"
+dest_files=["res://.godot/imported/TablerArrowBadgeDown.png-e6d590bb32279c0c62e6fb9141f509c4.bptc.ctex"]
 
 [params]
 

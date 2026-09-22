@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdefktt7q3gwy"
-path.bptc="res://.godot/imported/TablerCheck.png-8ef17297b9d6133b780b4a8d4325be30.bptc.ctex"
+uid="uid://dw4fcmh2jbpeu"
+path.bptc="res://.godot/imported/TablerClipboard24.png-c43311a2aa60738c62b03b9f7410a091.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/ui/TablerCheck.png"
-dest_files=["res://.godot/imported/TablerCheck.png-8ef17297b9d6133b780b4a8d4325be30.bptc.ctex"]
+source_file="res://images/ui/icon/TablerClipboard24.png"
+dest_files=["res://.godot/imported/TablerClipboard24.png-c43311a2aa60738c62b03b9f7410a091.bptc.ctex"]
 
 [params]
 

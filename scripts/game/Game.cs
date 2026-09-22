@@ -18,9 +18,10 @@ public partial class Game : Node
     }
     public enum StateEnum
     {
-        Stopped,
+        Prepare,
         Break,
         Wave,
+        Ended,
     }
 
     public static Game Current { get; private set; }
@@ -37,7 +38,7 @@ public partial class Game : Node
     public delegate void GameStartEventHandler();
 
     [Export]
-    public StateEnum GameState { get; private set; } = StateEnum.Stopped;
+    public StateEnum GameState { get; private set; } = StateEnum.Prepare;
     [Export]
     public ulong GameSeed { get; private set; } = 12345678;
 
@@ -202,7 +203,7 @@ public partial class Game : Node
 
     public async void EndGame()
     {
-        GameState = StateEnum.Stopped;
+        GameState = StateEnum.Ended;
 
         SaveManager.CurrentSave.AddXp(100f * (int)DifficultyConfig.Difficulty);
         SaveManager.Save(SaveManager.CurrentSave);

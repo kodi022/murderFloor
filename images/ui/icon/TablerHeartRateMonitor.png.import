@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dd00hklw8qrce"
-path.bptc="res://.godot/imported/TablerMapPinFilled.png-c8976c8c94496fe4c68a652e7cfd018f.bptc.ctex"
+uid="uid://dnq3axceu2r20"
+path.bptc="res://.godot/imported/TablerHeartRateMonitor.png-2e90816bb3d24637755ae780f7e0f12d.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/ui/TablerMapPinFilled.png"
-dest_files=["res://.godot/imported/TablerMapPinFilled.png-c8976c8c94496fe4c68a652e7cfd018f.bptc.ctex"]
+source_file="res://images/ui/icon/TablerHeartRateMonitor.png"
+dest_files=["res://.godot/imported/TablerHeartRateMonitor.png-2e90816bb3d24637755ae780f7e0f12d.bptc.ctex"]
 
 [params]
 

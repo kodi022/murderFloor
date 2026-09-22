@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uob5hscvrejh"
-path.bptc="res://.godot/imported/TablerArrowBadgeRight.png-8d5492cf28d46a61a3cad1ac3fa998f3.bptc.ctex"
+uid="uid://basv0rv4m687t"
+path.bptc="res://.godot/imported/TablerPlus.png-1974a5f19d37ea388a4300ca538f8428.bptc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://images/ui/TablerArrowBadgeRight.png"
-dest_files=["res://.godot/imported/TablerArrowBadgeRight.png-8d5492cf28d46a61a3cad1ac3fa998f3.bptc.ctex"]
+source_file="res://images/ui/icon/TablerPlus.png"
+dest_files=["res://.godot/imported/TablerPlus.png-1974a5f19d37ea388a4300ca538f8428.bptc.ctex"]
 
 [params]
 

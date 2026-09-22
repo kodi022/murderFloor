@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dwpw5xdaqbgnu"]
 
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_tr6as"]
-[ext_resource type="Texture2D" uid="uid://calfq051vope3" path="res://images/ui/ninepatch.png" id="2_5pu3v"]
+[ext_resource type="Texture2D" uid="uid://calfq051vope3" path="res://images/ui/ninepatch/ninepatch.png" id="2_5pu3v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kenah"]
 bg_color = Color(0.105409205, 0.105409205, 0.105409205, 0.6666667)
@@ -9,6 +9,12 @@ border_width_bottom = 2
 corner_radius_top_right = 5
 corner_radius_bottom_left = 5
 corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pbeot"]
+bg_color = Color(0, 0, 0, 0.39215687)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dx04r"]
+bg_color = Color(1, 0.8002131, 0, 1)
 
 [node name="HudDebrief" type="Control" unique_id=1772070635]
 layout_mode = 3
@@ -19,24 +25,26 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_tr6as")
 
-[node name="Control" type="Control" parent="." unique_id=47828811]
+[node name="Panel" type="Panel" parent="." unique_id=26157025]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Panel" type="Panel" parent="Control" unique_id=26157025]
-layout_mode = 0
 offset_left = -500.0
 offset_top = -400.0
 offset_right = 500.0
 offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="NinePatchRect" type="NinePatchRect" parent="Control/Panel" unique_id=1282587090]
+[node name="Bg2" type="Panel" parent="Panel" unique_id=1736311042]
+layout_mode = 0
+offset_right = 1000.0
+offset_bottom = 800.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel" unique_id=1282587090]
 texture_filter = 2
 layout_mode = 0
 offset_right = 1000.0
@@ -47,7 +55,7 @@ patch_margin_top = 9
 patch_margin_right = 9
 patch_margin_bottom = 9
 
-[node name="Panel" type="Panel" parent="Control/Panel" unique_id=147121285]
+[node name="Panel" type="Panel" parent="Panel" unique_id=147121285]
 layout_mode = 0
 offset_left = 7.0
 offset_top = 7.0
@@ -55,11 +63,49 @@ offset_right = 993.0
 offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_kenah")
 
-[node name="Label" type="Label" parent="Control/Panel/Panel" unique_id=884918120]
+[node name="Label" type="Label" parent="Panel/Panel" unique_id=884918120]
 layout_mode = 0
 offset_right = 986.0
 offset_bottom = 33.0
 theme_override_font_sizes/font_size = 22
-text = "Infestation Survived"
+text = "Infestation Cleared"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Panel2" type="Panel" parent="Panel" unique_id=1295404646]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 50.0
+offset_right = 565.0
+offset_bottom = 130.0
+
+[node name="Label" type="Label" parent="Panel/Panel2" unique_id=1233139812]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 81.0
+offset_bottom = 33.0
+text = "Exp +100"
+
+[node name="Panel" type="Panel" parent="Panel/Panel2" unique_id=1337895338]
+clip_contents = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = 45.0
+offset_right = 540.0
+offset_bottom = 65.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pbeot")
+
+[node name="Panel" type="Panel" parent="Panel/Panel2/Panel" unique_id=1710642134]
+layout_mode = 0
+offset_left = -427.0
+offset_right = 103.0
+offset_bottom = 20.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dx04r")
+
+[node name="Panel3" type="Panel" parent="Panel" unique_id=229100188]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 440.0
+offset_right = 990.0
+offset_bottom = 751.0
