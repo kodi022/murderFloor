@@ -9,22 +9,24 @@ public partial class HudExitPanel : Control
     public override void _Ready()
     {
         label = GetChild<Label>(0);
-        Visible = false;
     }
 
     public override void _Process(double delta)
     {
+        Visible = false;
+
         if (Game.Current is not null)
         {
             if (Game.Current.GameState == Game.StateEnum.Ended)
             {
                 Visible = true;
+                label.Text = "Exit";
                 var shape = Game.Current.ExitArea.GetChild<CollisionShape3D>(0);
                 var margin = new Vector2(20, 20);
                 var viewportSize = GetViewportRect().Size;
-                if (Player.Self.Camera.IsPositionInFrustum(shape.GlobalPosition))
+                if (Player.Self.Camera.IsPositionInFrustum(shape.GlobalPosition + Vector3.Up))
                 {
-                    var unproject = Player.Self.Camera.UnprojectPosition(shape.GlobalPosition);
+                    var unproject = Player.Self.Camera.UnprojectPosition(shape.GlobalPosition + Vector3.Up);
                     Position = unproject.Clamp(margin, viewportSize - margin);
                 }
                 else
@@ -45,9 +47,9 @@ public partial class HudExitPanel : Control
                 var shape = GameLobby.Current.ExitArea.GetChild<CollisionShape3D>(0);
                 var margin = new Vector2(20, 20);
                 var viewportSize = GetViewportRect().Size;
-                if (Player.Self.Camera.IsPositionInFrustum(shape.GlobalPosition))
+                if (Player.Self.Camera.IsPositionInFrustum(shape.GlobalPosition + Vector3.Up))
                 {
-                    var unproject = Player.Self.Camera.UnprojectPosition(shape.GlobalPosition);
+                    var unproject = Player.Self.Camera.UnprojectPosition(shape.GlobalPosition + Vector3.Up);
                     Position = unproject.Clamp(margin, viewportSize - margin);
                 }
                 else

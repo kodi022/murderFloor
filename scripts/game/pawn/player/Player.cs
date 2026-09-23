@@ -51,6 +51,9 @@ public partial class Player : Pawn
     private float cameraFovCurrent;
 
     private float cameraShake;
+    private Vector3 cameraPositionKickTarget;
+    private Vector3 cameraPositionKickCurrent;
+    private float cameraPositionKicklerpScale;
     private Vector3 cameraRotationKick;
 
     private Vector3 viewmodelPositionKickTarget;
@@ -180,11 +183,15 @@ public partial class Player : Pawn
     public override void _Process(double delta)
     {
         var reduction = 1f - ((float)delta * 6);
+
+        cameraPositionKickTarget *= reduction;
+        cameraPositionKickCurrent = cameraPositionKickCurrent.Lerp(cameraPositionKickTarget, (float)delta * 20f * viewmodelPositionKicklerpScale);
         cameraRotationKick *= reduction;
+
         viewmodelPositionKickTarget *= reduction;
+        viewmodelPositionKickCurrent = viewmodelPositionKickCurrent.Lerp(viewmodelPositionKickTarget, (float)delta * 20f * viewmodelPositionKicklerpScale);
         viewmodelRotationKick *= reduction;
 
-        viewmodelPositionKickCurrent = viewmodelPositionKickCurrent.Lerp(viewmodelPositionKickTarget, (float)delta * 20f * viewmodelPositionKicklerpScale);
 
         var shakeReduction = 1f - ((float)delta * 15);
         cameraShake *= shakeReduction;
@@ -245,11 +252,15 @@ public partial class Player : Pawn
         cameraFovCurrent = float.Lerp(cameraFovCurrent, cameraFovTarget, (float)delta * 10f);
         Camera.Fov = cameraFovCurrent;
 
+        Camera.Position = cameraPositionKickCurrent.Rotated(Vector3.Right, -viewAim.Rotation.X);
+        if (cameraShake > 0.001f)
+            Camera.Position += new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * cameraShake;
+
         Camera.Rotation = cameraRotationKick;
+
         Viewmodel.Position = viewmodelPositionKickCurrent + viewmodelAimSway;
         Viewmodel.Rotation = viewmodelRotationKick;
-        if (cameraShake > 0.001f) Camera.Position = new Vector3(0, Random.Shared.NextSingle(), Random.Shared.NextSingle()) * cameraShake;
-        else Camera.Position = Vector3.Zero;
+
 
         if (IsInputBlocked()) return;
 
@@ -370,6 +381,12 @@ public partial class Player : Pawn
     public void AddCameraShake(float amount)
     {
         cameraShake += amount;
+    }
+
+    public void AddCameraPositionKick(Vector3 amount, float lerpScale = 1f)
+    {
+        cameraPositionKickTarget += amount;
+        cameraPositionKicklerpScale = lerpScale;
     }
 
     public void AddCameraRotationKick(Vector3 rotationAmount)

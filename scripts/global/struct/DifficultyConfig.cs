@@ -18,24 +18,23 @@ public struct DifficultyConfig
 
     public readonly int GetWaveAmount(int wave)
     {
-        var amount = 25;
-        var waveScale = (float)(Difficulty + 1) * 0.5f;
-        amount += (int)(wave * waveScale);
+        var amount = 30;
+        amount += (int)(wave * (((int)Difficulty + 2) * 0.5f) * 5f);
         return amount;
     }
 
     public readonly int GetGroupSize(int wave)
     {
-        var size = 5;
+        var size = 3;
         size += (int)Difficulty + wave;
         return size;
     }
 
     public readonly ulong GetTimeBetweenGroups(int wave)
     {
-        var ms = 10000ul;
-        ms -= (ulong)wave * 400ul;
-        ms -= (ulong)Difficulty * 600ul;
+        var ms = 5000ul;
+        ms -= (ulong)wave * 250ul;
+        ms -= (ulong)Difficulty * 400ul;
         return ms;
     }
 

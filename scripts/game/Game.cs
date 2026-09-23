@@ -75,6 +75,8 @@ public partial class Game : Node
 
     private Node mobPoolNode;
     private Node lootNode;
+
+    private readonly List<Resource.Loot.LootState> allLoot = [];
     private readonly List<Resource.Loot.LootState> unpickedLoot = [];
 
     public override void _EnterTree()
@@ -162,7 +164,7 @@ public partial class Game : Node
 
     private void ProcessLoot(DamageInfo damageInfo, int mobPoolId)
     {
-        if (rngLoot.Randf() > 0.95f)
+        if (rngLoot.Randf() > 0.96f)
         {
             // mapdifficulty > 1.33 on Ludicrous allows for easy 100s
             var map = Ui.MapSelect.SelectedMapNetworked;
@@ -176,6 +178,7 @@ public partial class Game : Node
             lootNode3d.GlobalPosition = damageInfo.HitPosition;
             ((RigidBody3D)lootNode3d.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
 
+            allLoot.Add(lootState);
             unpickedLoot.Add(lootState);
             lootNode3d.OnUse += () => { unpickedLoot.Remove(lootState); };
         }
@@ -205,8 +208,10 @@ public partial class Game : Node
     {
         GameState = StateEnum.Ended;
 
-        SaveManager.CurrentSave.AddXp(100f * (int)DifficultyConfig.Difficulty);
-        SaveManager.Save(SaveManager.CurrentSave);
+        Ui.HudDebrief.EarnedXp = 100f * ((int)DifficultyConfig.Difficulty + 1) * DifficultyConfig.MapDifficultyScale;
+        Ui.HudDebrief.AllEarnedLoot = allLoot;
+        Ui.HudDebrief.UnpickedEarnedLoot = unpickedLoot;
+        Player.Self.OpenUI("res://scenes/ui/hud/HudDebrief.tscn");
 
         // allow final processing on final mob death before deletion
         await Task.Delay(100);

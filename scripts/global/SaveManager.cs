@@ -80,9 +80,12 @@ public static class SaveManager
             }
         }
 
-        public float XpToNextLevel()
+        public float XpToNextLevel(int level = -1)
         {
-            return 200 + Mathf.Pow(Level + 1, 2.5f) - Level;
+            if (level == -1)
+                return 200 + Mathf.Pow(Level + 1, 2.5f) - Level;
+            else
+                return 200 + Mathf.Pow(level + 1, 2.5f) - level;
         }
 
         /// <summary>Get loot by HashCode. Returns matched LootState or default value.</summary>

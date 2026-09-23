@@ -37,13 +37,15 @@ public partial class Player : Pawn
         var result = TraceShape(Position + Vector3.Down * 0.06f);
         if (result.Hit && !grounded)
         {
-            AddViewmodelPositionKick(new Vector3(0, 0.03f, 0), 0.7f);
+            AddCameraPositionKick(new Vector3(0, -0.05f, 0), 0.9f);
+            AddViewmodelPositionKick(new Vector3(0, -0.02f, 0), 0.9f);
         }
 
         grounded = result.Hit;
         if (grounded && Input.IsActionJustPressed("jump"))
         {
-            AddViewmodelPositionKick(new Vector3(0, -0.065f, 0), 0.7f);
+            AddCameraPositionKick(new Vector3(0, 0.02f, 0), 0.6f);
+            AddViewmodelPositionKick(new Vector3(0, -0.05f, 0), 0.6f);
             wishVel.Y = 18f;
         }
 

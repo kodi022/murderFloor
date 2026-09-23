@@ -29,8 +29,8 @@ public partial class OuterControllerDead : OuterController
         }
         else
         {
-            camera3D.Position = new Vector3(1f, 1.5f, 1f);
-            camera3D.LookAt(Player.Self.Position + Vector3.Up * 0.8f);
+            camera3D.Position = target.GlobalPosition + new Vector3(1f, 1.5f, 1f);
+            camera3D.LookAt(target.GlobalPosition + Vector3.Up * 0.5f);
         }
     }
 
