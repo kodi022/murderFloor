@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://bysve08qsh4kt" path="res://models/prop/street/newsbox/newsbox.blend" id="12_2mlpq"]
 [ext_resource type="PackedScene" uid="uid://q2xs38ym4gvf" path="res://models/structure/tunneltileset/tunnelstraight.blend" id="13_2u80r"]
 [ext_resource type="PackedScene" uid="uid://d86jfkuss0wx" path="res://scenes/ui/mapselect/MapSelect.tscn" id="14_wt7li"]
+[ext_resource type="Texture2D" uid="uid://b3vxakkpxu068" path="res://images/decal/bulletdecal.png" id="15_v3qr3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0sitp"]
 size = Vector3(3.9231415, 2.7662354, 6.182312)
@@ -473,3 +474,8 @@ size_2d_override = Vector2i(1600, 1000)
 
 [node name="MapSelect" parent="SubViewport" unique_id=834133945 instance=ExtResource("14_wt7li")]
 OnScreen = false
+
+[node name="Decal" type="Decal" parent="." unique_id=944611291]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.104084656, -19.967602)
+size = Vector3(0.25, 0.1, 0.25)
+texture_albedo = ExtResource("15_v3qr3")

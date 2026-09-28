@@ -80,7 +80,6 @@ public partial class HudDebrief : OpenUi
             xpNext = SaveManager.CurrentSave.XpToNextLevel(SaveManager.CurrentSave.Level + i);
             if (xp >= xpNext)
             {
-                GD.Print("ae");
                 var diff = (-bar.Position.X / bar.Size.X) - MathF.Min(i * 0.1f, 0.5f);
                 tween
                     .TweenProperty(bar, "position", new Vector2(0, 0), diff * 4)
@@ -92,7 +91,6 @@ public partial class HudDebrief : OpenUi
             }
             else
             {
-                GD.Print("aeb");
                 var diff = -bar.Position.X / bar.Size.X;
                 tween
                     .TweenProperty(bar, "position", new Vector2(-(1 - (xp / xpNext)) * bar.Size.X, 0), diff)

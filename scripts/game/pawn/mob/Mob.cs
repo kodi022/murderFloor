@@ -89,12 +89,18 @@ public partial class Mob : Pawn
     {
         base.OnSpawn(pos);
 
+        foreach (var body in FindChildren("StaticBody3D"))
+        {
+            body.SetMeta("decal", "res://images/decal/bodyblooddecal1.png");
+        }
+
+        GlobalPosition = pos;
+        ResetPhysicsInterpolation();
         MobResource = ResourceManager.MobRegistry.GetResourceRef(MobResourceFullId);
         MaxHealth = MobResource.MaxHealth;
         Health = MaxHealth;
         Armor = MobResource.Armor;
         Scale = Vector3.One * MobResource.Scale;
-        GlobalPosition = pos;
         startPosHash = Utils.Hashing.StableHash(pos);
         Active = true;
         ChangeNavigationTarget();
@@ -113,7 +119,19 @@ public partial class Mob : Pawn
         if (hitCollider == "Head") hitCollider = "Neck";
         if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
         if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
-        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force);
+
+        GD.Print(GetChild(0).GetChild(0).FindChildren("*").Count);
+        foreach (var decal in FindChildren("Decal_*"))
+        {
+            var decalPos = ((Decal)decal).Position;
+            var parentName = decal.GetParent().Name;
+            GD.Print(parentName);
+            var ragdollParentBone = FindChild($"Physical Bone {parentName}");
+            decal.Reparent(ragdollParentBone);
+            ((Decal)decal).Position = decalPos;
+        }
+
+        ((Ragdoll)ragdoll).SetHit(hitCollider, damageInfo.HitDirection, damageInfo.Force * 100f);
 
         var liveSk = worldModels.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");
         var ragSk = ragdoll.GetNode<Skeleton3D>("KincheePlayerMob/Armature/Skeleton3D");

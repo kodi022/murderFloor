@@ -23,6 +23,7 @@ public partial class GameLobby : Node
 
     public override void _Ready()
     {
+        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
         ExitArea.BodyEntered += OnBodyEntered;
         ExitArea.BodyExited += OnBodyExited;
     }
@@ -38,6 +39,12 @@ public partial class GameLobby : Node
             if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
                 Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, Ui.MapSelect.SelectedMapNetworked.MeshScene.ResourcePath);
         }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void AllLoadedRpc()
+    {
+        Global.DecalManager.Ready();
     }
 
     public void OnBodyEntered(Node3D body)

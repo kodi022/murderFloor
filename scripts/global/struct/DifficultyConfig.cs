@@ -18,7 +18,7 @@ public struct DifficultyConfig
 
     public readonly int GetWaveAmount(int wave)
     {
-        var amount = 30;
+        var amount = 20;
         amount += (int)(wave * (((int)Difficulty + 2) * 0.5f) * 5f);
         return amount;
     }
@@ -34,7 +34,6 @@ public struct DifficultyConfig
     {
         var ms = 5000ul;
         ms -= (ulong)wave * 250ul;
-        ms -= (ulong)Difficulty * 400ul;
         return ms;
     }
 

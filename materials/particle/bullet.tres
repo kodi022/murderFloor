@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b1to0e6brlraq"]
+
+[ext_resource type="Texture2D" uid="uid://cwnj74iyo7hx0" path="res://images/bullet.png" id="1_0mvgu"]
+
+[resource]
+transparency = 4
+cull_mode = 2
+albedo_texture = ExtResource("1_0mvgu")
+emission_enabled = true
+emission_energy_multiplier = 4.0
+emission_texture = ExtResource("1_0mvgu")
+texture_filter = 0
+texture_repeat = false

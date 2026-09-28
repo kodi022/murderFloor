@@ -99,7 +99,7 @@ public partial class Mob : Pawn
         var targetPos = navigationAgent3D.GetNextPathPosition(); // required every physics frame
 
         var hash = Utils.Hashing.StableHash(targetPos) + startPosHash;
-        var rand = new Vector3(hash % 13 / 13f, hash % 10 / 10f, hash % 7 / 7f);
+        var rand = new Vector3(hash % 17 / 17f, hash % 13 / 13f, hash % 11 / 11f);
         var distSqr = targetPos.DistanceSquaredTo(targetPawn.Position);
         targetPos += rand * distSqr * 0.05f;
 

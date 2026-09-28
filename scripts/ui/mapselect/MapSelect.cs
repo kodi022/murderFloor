@@ -6,12 +6,12 @@ public partial class MapSelect : OpenUi
     public static DifficultyConfig DifficultyConfigNetworked { get; private set; }
     public static ulong SelectedSeedNetworked { get; private set; }
     public static Vector2 SelectedButtonLocation { get; private set; }
+
+    public static MapSelect WorldMapSelect { get; private set; }
     public static bool MapSelected { get; private set; } = false;
 
     [Export]
     public bool OnScreen { get; set; } = true;
-
-    private static MapSelect worldMapSelect;
 
     [Export]
     private RichTextLabel locationRichTextLabel;
@@ -74,7 +74,7 @@ public partial class MapSelect : OpenUi
 
         if (!OnScreen)
         {
-            worldMapSelect = this;
+            WorldMapSelect = this;
             return;
         }
 
@@ -194,7 +194,7 @@ public partial class MapSelect : OpenUi
             SelectedMapNetworked = viewedMap;
             DifficultyConfigNetworked = diffConfig;
             UpdateMapInfo(this);
-            worldMapSelect.Rpc(MethodName.MapInfoRpc, viewedMap.FullId, diffConfig.Serialize(), (ulong)Random.Shared.NextInt64(), buttonLocation);
+            WorldMapSelect.Rpc(MethodName.MapInfoRpc, viewedMap.FullId, diffConfig.Serialize(), (ulong)Random.Shared.NextInt64(), buttonLocation);
         };
 
         var arr = new Tween[buttons.Count];
@@ -310,7 +310,7 @@ public partial class MapSelect : OpenUi
         SelectedButtonLocation = buttonLocation;
         SelectedSeedNetworked = seed;
         MapSelected = true;
-        UpdateMapInfo(worldMapSelect);
+        UpdateMapInfo(WorldMapSelect);
     }
 
     private static void UpdateMapInfo(MapSelect mapSelect)

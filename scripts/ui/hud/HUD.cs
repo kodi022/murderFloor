@@ -104,7 +104,7 @@ public partial class Hud : ScreenScaleLimiter
     {
         base._Process(delta);
 
-        if (!hookedGameEvents && Game.Current is not null)
+        if (!hookedGameEvents && IsInstanceValid(Game.Current))
         {
             Game.Current.GameWaveStart += AnimateNewRound;
             Game.Current.GameWaveEnd += AnimateRoundTimer;
@@ -121,7 +121,7 @@ public partial class Hud : ScreenScaleLimiter
             GenerateToolLists();
         }
 
-        if (Game.Current is not null)
+        if (IsInstanceValid(Game.Current))
         {
             ProcessGame();
         }
@@ -130,7 +130,7 @@ public partial class Hud : ScreenScaleLimiter
             waveInfoPanel.Visible = false;
         }
 
-        if (GameLobby.Current is not null)
+        if (IsInstanceValid(GameLobby.Current))
         {
             ProcessGameLobby();
         }
@@ -324,7 +324,7 @@ public partial class Hud : ScreenScaleLimiter
             armorTween.TweenProperty(armorBarChange, "position", newArmorBarPos, 0.3d);
         }
 
-        if (GameLobby.Current is not null)
+        if (IsInstanceValid(GameLobby.Current))
         {
             var ready = kvp.Value.Panel.GetChild<TextureRect>(3);
             ready.Visible = true;

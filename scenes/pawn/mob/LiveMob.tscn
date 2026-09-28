@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://pqbd3i4lbv5o"]
 
-[ext_resource type="Script" uid="uid://rpfwvykhmjjm" path="res://scripts/pawn/mob/LiveMob.cs" id="1_ex06h"]
+[ext_resource type="Script" uid="uid://rpfwvykhmjjm" path="res://scripts/game/pawn/mob/Mob.cs" id="1_ex06h"]
 [ext_resource type="PackedScene" uid="uid://ipy7m42gxqrm" path="res://scenes/pawn/mob/KincheePlayerMob.blend" id="2_hhn42"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jrfuh"]
@@ -138,7 +138,7 @@ parameters/Blend2/blend_amount = 1.0
 
 [node name="UpperLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1453147456]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.0023195397, 0.07492937, -0.9971862, -0.09687272, -0.99251556, -0.074353084, -0.9952977, 0.096427344, 0.009560766, 0.097630955, 0.8252041, -0.030339027)
+transform = Transform3D(-0.0023188705, 0.07492887, -0.9971863, -0.7105425, -0.7018002, -0.051081207, -0.7036554, 0.7084222, 0.054867327, 0.097630955, 0.8252041, -0.030339027)
 bone_name = "UpperLeg.L"
 bone_idx = 43
 use_external_skeleton = true
@@ -153,10 +153,11 @@ input_ray_pickable = false
 transform = Transform3D(1, 1.8626454e-09, -6.7762607e-18, -1.8626454e-09, 1, -2.4519977e-09, 2.2090586e-18, 2.4519977e-09, 1, 0, 0.153, 0)
 shape = SubResource("CapsuleShape3D_drloa")
 debug_color = Color(0, 0.6, 0.69803923, 1)
+metadata/decal = "res://images/decal/bodyblooddecal1.png"
 
 [node name="UpperLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1118039744]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.0025674503, -0.061293855, 0.9981167, 0.59425, -0.80286086, -0.047774762, 0.80427814, 0.5930072, 0.03848499, -0.097630955, 0.8252041, -0.030339023)
+transform = Transform3D(-0.0025677292, -0.061294924, 0.99811643, -0.08446124, -0.99453986, -0.061292578, 0.9964249, -0.0844594, -0.0026233739, -0.097630955, 0.8252041, -0.030339023)
 bone_name = "UpperLeg.R"
 bone_idx = 46
 use_external_skeleton = true
@@ -174,7 +175,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=871783084]
 physics_interpolation_mode = 0
-transform = Transform3D(0.003084311, -0.019038124, -0.9998141, 0.27355477, -0.96166563, 0.019155592, -0.9618546, -0.27356467, 0.002241903, 0.12412561, 0.474256, 0.0037571543)
+transform = Transform3D(0.0030855683, -0.019038012, -0.9998141, 0.2273693, -0.9736203, 0.019240908, -0.97380465, -0.22738977, 0.0013245232, 0.12412542, 0.5770513, 0.22015516)
 bone_name = "LowerLeg.L"
 bone_idx = 44
 use_external_skeleton = true
@@ -192,7 +193,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=519781593]
 physics_interpolation_mode = 0
-transform = Transform3D(0.0029752476, 0.032701515, 0.9994609, -0.23783204, -0.97076404, 0.03247049, 0.97130233, -0.23780183, 0.004889115, -0.119304135, 0.54131687, 0.17934507)
+transform = Transform3D(0.0029746608, 0.03270142, 0.9994608, -0.29977798, -0.95346916, 0.032088835, 0.9540057, -0.29971197, 0.006966867, -0.119304515, 0.4735402, -0.060203403)
 bone_name = "LowerLeg.R"
 bone_idx = 47
 use_external_skeleton = true
@@ -408,7 +409,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=731315567]
 physics_interpolation_mode = 0
-transform = Transform3D(0.090662636, 0.2529086, -0.96323276, -0.8352704, -0.5073919, -0.2118404, -0.5423153, 0.8237686, 0.165246, 0.11615393, 0.07158747, -0.11078979)
+transform = Transform3D(0.090662874, 0.2529076, -0.9632331, -0.9398171, -0.29822445, -0.1667611, -0.32943803, 0.920381, 0.21064837, 0.1161538, 0.16937718, 0.12494256)
 bone_name = "Foot.L"
 bone_idx = 45
 use_external_skeleton = true
@@ -426,7 +427,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=180640536]
 physics_interpolation_mode = 0
-transform = Transform3D(0.072536066, -0.24316297, 0.9672696, 0.9218848, -0.35375866, -0.15806447, 0.3806168, 0.90317625, 0.19850765, -0.10561136, 0.13483855, 0.07977268)
+transform = Transform3D(0.072536096, -0.24316354, 0.9672693, 0.83290225, -0.51872677, -0.1928635, 0.5486465, 0.8196316, 0.16490531, -0.10561178, 0.07430356, -0.18569879)
 bone_name = "Foot.R"
 bone_idx = 48
 use_external_skeleton = true

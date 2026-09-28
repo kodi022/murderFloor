@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://ca4idm5s2lbss"]
+
+[ext_resource type="ArrayMesh" uid="uid://dlr1lav0dfar3" path="res://models/bullet.obj" id="1_hgrea"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hw4xs"]
+spread = 0.0
+initial_velocity_min = 150.0
+initial_velocity_max = 150.0
+gravity = Vector3(0, 0, 0)
+scale_min = 1.25
+scale_max = 1.25
+
+[node name="GunBullet" type="Node3D" unique_id=970765272]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=2092305726]
+emitting = false
+amount = 1
+one_shot = true
+fixed_fps = 240
+fract_delta = false
+visibility_aabb = AABB(-0.1, -0.5, -0.5, 150, 1, 1)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_hw4xs")
+draw_pass_1 = ExtResource("1_hgrea")

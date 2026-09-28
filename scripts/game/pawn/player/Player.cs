@@ -162,7 +162,12 @@ public partial class Player : Pawn
 
             if (eventKey.Keycode == Key.F5 && eventKey.Pressed)
             {
-                Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, "res://scenes/map/barnyard/barnyard.tscn");
+                if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
+                {
+                    var diff = new DifficultyConfig() { Difficulty = Game.DifficultyEnum.Easy, MapDifficultyScale = 0.8f };
+                    Ui.MapSelect.WorldMapSelect.Rpc(Ui.MapSelect.MethodName.MapInfoRpc, "base:barnyard", diff.Serialize(), Random.Shared.NextInt64(), Vector2.Zero);
+                    Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, Ui.MapSelect.SelectedMapNetworked.MeshScene.ResourcePath);
+                }
             }
 
             if (eventKey.Keycode == Key.F7 && eventKey.Pressed)

@@ -58,12 +58,35 @@ public partial class ToolFirearmHitscan : ToolFirearm
             var space = fi.Player.GetWorld3D().DirectSpaceState;
             var query = PhysicsRayQueryParameters3D.Create(fi.ViewTransform.Origin, fi.ViewTransform.Origin + dir * MaxRange, 5);
             var ray = space.IntersectRay(query);
+
+            var bulletPitch = Mathf.Atan2(dir.Y, Mathf.Sqrt(dir.X * dir.X + dir.Z * dir.Z));
+            var bullettYaw = Mathf.Atan2(dir.X, dir.Z);
+            fi.Tool.BulletParticles[i].GlobalPosition = fi.Tool.MuzzleFlashParticle.GlobalPosition;
+            fi.Tool.BulletParticles[i].GlobalRotation = new Vector3(0, bullettYaw - Mathf.DegToRad(90f), bulletPitch);
+            fi.Tool.BulletParticles[i].Lifetime = 10d;
+            fi.Tool.BulletParticles[i].Restart();
+
             if (!ray.ContainsKey("collider")) continue;
 
-            Debug.Rendering.Point((Vector3)ray["position"], color: new Color(0, 0, 0));
+            var pos = (Vector3)ray["position"];
+            var distanceSqr = pos.DistanceSquaredTo(fi.ViewTransform.Origin);
+            fi.Tool.BulletParticles[i].Lifetime = Mathf.Sqrt(distanceSqr) / 150f - 0.0065f;
 
             Game.Pawn pawn = null;
             var currentNode = (Node)(GodotObject)ray["collider"];
+
+            var normal = (Vector3)ray["normal"];
+            var decalRotPitch = Mathf.Acos(normal.Y);
+            var decalRotYaw = Mathf.Atan2(normal.X, normal.Z);
+            var decalRot = new Vector3(decalRotPitch, decalRotYaw, 0f);
+            Global.DecalManager.UpdateNext(
+                currentNode,
+                (Vector3)ray["position"],
+                decalRot,
+                (string)currentNode.GetMeta("decal", "res://images/decal/bulletdecal.png"),
+                new Vector3(0.25f, 0.25f, 0.25f)
+            );
+
             for (int j = 0; j < 5; j++)
             {
                 currentNode = currentNode.GetParent();
@@ -78,8 +101,6 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
             if (pawn is null) continue;
 
-            var pos = (Vector3)ray["position"];
-            var distanceSqr = pos.DistanceSquaredTo(fi.ViewTransform.Origin);
             var nearSqr = FalloffRanges.X * FalloffRanges.X;
             var farSqr = FalloffRanges.Y * FalloffRanges.Y;
             var damage = Damages.X;

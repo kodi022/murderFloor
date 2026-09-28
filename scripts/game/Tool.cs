@@ -2,6 +2,7 @@ namespace Shooter.Game;
 
 using Resource;
 
+// Node because this is just data, the viewmodel contains the 3d stuff
 public partial class Tool : Node
 {
     private const string ToolAnimLibraryKey = "a";
@@ -32,8 +33,6 @@ public partial class Tool : Node
     // public Godot.Collections.Dictionary<string, string> AttachmentConfig { get; set; }
     // public Godot.Collections.Dictionary<string, string> ModifierConfig { get; set; }
 
-    private bool equipped = false;
-
     // toolfirearm
     public Vector2 CurrentSpread { get; private set; }
     public Vector2 MinSpread { get; private set; }
@@ -41,6 +40,16 @@ public partial class Tool : Node
 
     [Export]
     public int CurrentMag { get; private set; } = 0;
+
+    public bool Aiming { get; private set; } = false;
+    public float OpticZoom => BuiltTool.OpticZoom == 0f ? 1.1f : BuiltTool.OpticZoom;
+
+    public GameResource.BuiltToolData BuiltTool { get; private set; }
+
+    // public so ToolFirearm can set rotations
+    public List<GpuParticles3D> BulletParticles { get; private set; }
+    // public to get global position
+    public GpuParticles3D MuzzleFlashParticle { get; private set; }
 
     public int CurrentReserve { get; private set; } = 0;
     public bool Reloading { get; private set; } = false;
@@ -50,18 +59,13 @@ public partial class Tool : Node
     private bool shotSemi = false;
     private bool shotBolt = false;
 
-    public bool Aiming { get; private set; } = false;
-    public float OpticZoom => builtTool.OpticZoom == 0f ? 1.1f : builtTool.OpticZoom;
+    private bool equipped = false;
 
     private float currentAimingPositionLerp;
-
-    private GameResource.BuiltToolData builtTool;
 
     private Node3D viewmodelScene;
     private Vector3 viewmodelSceneStartPos;
     private Vector3 viewmodelSceneSightPosition;
-
-    private GpuParticles3D muzzleFlash;
 
     public override void _Ready()
     {
@@ -85,7 +89,7 @@ public partial class Tool : Node
 
         currentAimingPositionLerp += Aiming ? (float)delta * 4f : -(float)delta * 4f;
         currentAimingPositionLerp = Mathf.Clamp(currentAimingPositionLerp, 0f, 1f);
-        viewmodelScene.Position = viewmodelSceneStartPos.Lerp(viewmodelSceneSightPosition + builtTool.SightPositionOffset, currentAimingPositionLerp);
+        viewmodelScene.Position = viewmodelSceneStartPos.Lerp(viewmodelSceneSightPosition + BuiltTool.SightPositionOffset, currentAimingPositionLerp);
 
         if (ToolResource is ToolFirearm firearm)
         {
@@ -163,24 +167,40 @@ public partial class Tool : Node
 
         if (ToolResource.FullId != "base:fists")
         {
-            var oldGun = (Node3D)viewmodelScene.FindChild("Armature*");
-            var oldGunPos = oldGun.Position;
-            var oldGunRot = oldGun.Rotation;
-            oldGun.Free();
+            var oldTool = (Node3D)viewmodelScene.FindChild("Armature*");
+            var oldToolPos = oldTool.Position;
+            var oldToolRot = oldTool.Rotation;
+            oldTool.Free();
 
-            builtTool = ToolResource.BuildToolScene(ToolConfig);
-            var newGun = builtTool.Tool.GetChild<Node3D>(0);
-            newGun.Owner = null;
-            newGun.Position = oldGunPos;
-            newGun.Rotation = oldGunRot;
-            newGun.Reparent(viewmodelScene, false);
-            viewmodelSceneSightPosition = new Vector3(-oldGunPos.Z, -oldGunPos.Y, 0);
+            BuiltTool = ToolResource.BuildToolScene(ToolConfig);
+            var newTool = BuiltTool.Tool.GetChild<Node3D>(0);
+            newTool.Owner = null;
+            newTool.Position = oldToolPos;
+            newTool.Rotation = oldToolRot;
+            newTool.Reparent(viewmodelScene, false);
 
-            var flash = GD.Load<PackedScene>("res://scenes/particle/GunFlash.tscn");
-            var inst = flash.Instantiate<Node3D>();
-            inst.Position = builtTool.MuzzlePosition;
-            newGun.AddChild(inst);
-            muzzleFlash = inst.GetChild<GpuParticles3D>(0);
+            if (ToolResource is ToolFirearm tf)
+            {
+                viewmodelSceneSightPosition = new Vector3(-oldToolPos.Z, -oldToolPos.Y, 0);
+
+                var flash = GD.Load<PackedScene>("res://scenes/particle/GunFlash.tscn");
+                var flashInst = flash.Instantiate<Node3D>();
+                flashInst.Position = BuiltTool.MuzzlePosition;
+                newTool.AddChild(flashInst);
+                MuzzleFlashParticle = flashInst.GetChild<GpuParticles3D>(0);
+
+                BulletParticles = [];
+                for (int i = 0; i < tf.PelletCount; i++)
+                {
+                    var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
+                    var bulletInst = bullet.Instantiate<Node3D>();
+                    bulletInst.Position = BuiltTool.MuzzlePosition;
+                    var farticles = bulletInst.GetChild<GpuParticles3D>(0);
+                    farticles.MaterialOverride = GD.Load<StandardMaterial3D>("res://materials/particle/bullet.tres");
+                    Global.GameManager.ClearOnLoad.AddChild(bulletInst);
+                    BulletParticles.Add(farticles);
+                }
+            }
         }
 
         Player.Viewmodel.AddChild(viewmodelScene);
@@ -201,13 +221,32 @@ public partial class Tool : Node
 
         if (ToolResource.FullId != "base:fists")
         {
-            builtTool = ToolResource.BuildToolScene(ToolConfig);
-            var armature = builtTool.Tool.GetChild<Node3D>(0);
-            armature.Owner = null;
-            armature.Reparent(Player.WorldModels.GetChild(0), false);
+            BuiltTool = ToolResource.BuildToolScene(ToolConfig);
+            var armature = BuiltTool.Tool.GetChild<Node3D>(0);
             var boneIndex = Player.WorldSkeleton.FindBone("Hand.R");
             var pos = Player.WorldSkeleton.GetBonePose(boneIndex);
             armature.Transform = pos;
+
+            if (ToolResource is ToolFirearm tf)
+            {
+                var flash = GD.Load<PackedScene>("res://scenes/particle/GunFlash.tscn");
+                var flashInst = flash.Instantiate<Node3D>();
+                flashInst.Position = BuiltTool.MuzzlePosition;
+                BuiltTool.Tool.AddChild(flashInst);
+                MuzzleFlashParticle = flashInst.GetChild<GpuParticles3D>(0);
+
+                BulletParticles = [];
+                for (int i = 0; i < tf.PelletCount; i++)
+                {
+                    var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
+                    var bulletInst = bullet.Instantiate<Node3D>();
+                    bulletInst.Position = BuiltTool.MuzzlePosition;
+                    var farticles = bulletInst.GetChild<GpuParticles3D>(0);
+                    farticles.MaterialOverride = GD.Load<StandardMaterial3D>("res://materials/particle/bullet.tres");
+                    Global.GameManager.ClearOnLoad.AddChild(bulletInst);
+                    BulletParticles.Add(farticles);
+                }
+            }
         }
 
         var ap = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
@@ -229,8 +268,9 @@ public partial class Tool : Node
             }
         }
 
+        foreach (var bullet in BulletParticles) bullet.Free();
         Player.WorldAnimationTree.RemoveAnimationLibrary(ToolAnimLibraryKey);
-        builtTool.Tool?.Free();
+        BuiltTool.Tool?.Free();
         viewmodelScene?.Free();
         viewmodelScene = null;
         equipped = false;
@@ -318,8 +358,7 @@ public partial class Tool : Node
             var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
             poly.PlayStream(firearm.FireSound, bus: "Effects");
 
-            muzzleFlash.Restart();
-            // muzzle effect
+            MuzzleFlashParticle.Restart();
 
             shotSemi = true;
             shotBolt = true;

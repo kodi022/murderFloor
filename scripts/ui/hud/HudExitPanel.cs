@@ -38,7 +38,7 @@ public partial class HudExitPanel : Control
             return;
         }
 
-        if (GameLobby.Current is not null)
+        if (IsInstanceValid(GameLobby.Current))
         {
             if (MapSelect.SelectedMapNetworked is not null)
             {

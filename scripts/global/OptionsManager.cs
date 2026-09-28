@@ -178,6 +178,8 @@ public static class OptionsManager
         public string SDFGI { get; set; } = "High";
         [OptionString("Graphics", ["16x", "8x", "4x", "2x", "Off"], "")]
         public string AntisotropicFiltering { get; set; } = "8x";
+        [OptionFloat("Graphics", 200f, 5000f, 200f, "")]
+        public float DecalMaximum { get; set; } = 2000f;
 
         [OptionFloat("Sound", 0f, 1f, 0.05f, "")]
         public float MasterVolume { get; set; } = 0.5f;
@@ -193,33 +195,34 @@ public static class OptionsManager
         {
         }
 
-        public Options(Options other)
+        public Options(Options o)
         {
-            Sensitivity = other.Sensitivity;
-            SensitivityFieldOfViewScaling = other.SensitivityFieldOfViewScaling;
+            Sensitivity = o.Sensitivity;
+            SensitivityFieldOfViewScaling = o.SensitivityFieldOfViewScaling;
 
-            WindowMode = other.WindowMode;
-            // FullscreenResolution = other.FullscreenResolution;
-            VSync = other.VSync;
-            UseFramerateLimit = other.UseFramerateLimit;
-            FramerateLimit = other.FramerateLimit;
-            DisplayFramerate = other.DisplayFramerate;
+            WindowMode = o.WindowMode;
+            // FullscreenResolution = o.FullscreenResolution;
+            VSync = o.VSync;
+            UseFramerateLimit = o.UseFramerateLimit;
+            FramerateLimit = o.FramerateLimit;
+            DisplayFramerate = o.DisplayFramerate;
 
-            FieldOfView = other.FieldOfView;
-            ViewmodelFieldOfViewScale = other.ViewmodelFieldOfViewScale;
-            AimingViewmodelFieldOfViewScale = other.AimingViewmodelFieldOfViewScale;
-            Scaling = other.Scaling;
-            ScalingRenderScale = other.ScalingRenderScale;
-            ScalingSharpness = other.ScalingSharpness;
-            AntiAliasing = other.AntiAliasing;
-            SDFGI = other.SDFGI;
-            AntisotropicFiltering = other.AntisotropicFiltering;
+            FieldOfView = o.FieldOfView;
+            ViewmodelFieldOfViewScale = o.ViewmodelFieldOfViewScale;
+            AimingViewmodelFieldOfViewScale = o.AimingViewmodelFieldOfViewScale;
+            Scaling = o.Scaling;
+            ScalingRenderScale = o.ScalingRenderScale;
+            ScalingSharpness = o.ScalingSharpness;
+            AntiAliasing = o.AntiAliasing;
+            SDFGI = o.SDFGI;
+            AntisotropicFiltering = o.AntisotropicFiltering;
+            DecalMaximum = o.DecalMaximum;
 
-            MasterVolume = other.MasterVolume;
+            MasterVolume = o.MasterVolume;
 
-            CrosshairOpacity = other.CrosshairOpacity;
-            AimCrosshairOpacity = other.AimCrosshairOpacity;
-            ScalingCrosshair = other.ScalingCrosshair;
+            CrosshairOpacity = o.CrosshairOpacity;
+            AimCrosshairOpacity = o.AimCrosshairOpacity;
+            ScalingCrosshair = o.ScalingCrosshair;
         }
     }
 

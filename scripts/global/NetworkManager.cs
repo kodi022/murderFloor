@@ -25,7 +25,7 @@ public partial class NetworkManager : Node
 
     // This will contain player info for every player,
     // with the keys being each player's unique IDs.
-    public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>> _players = new Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>>();
+    public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>> _players = [];
 
     // This is the local player info. This should be modified locally
     // before the connection is made. It will be passed to every other peer.
@@ -101,7 +101,7 @@ public partial class NetworkManager : Node
     public void LoadGameRpc(string gameScenePath)
     {
         _playersLoaded = 0;
-        //GameManager.Clear_ClearOnLoad();
+        GameManager.Clear_ClearOnLoad();
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 
@@ -116,11 +116,11 @@ public partial class NetworkManager : Node
         RpcId(id, MethodName.SendInfoToPeerRpc, _playerInfo);
 
         _players[id] = _playerInfo;
-        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
-        player.Name = "plr_" + id.ToString();
-        player.Position = new Vector3(0, 0.3f, 0);
-        player.SetMultiplayerAuthority((int)id);
-        GameManager.ClearOnLoad.AddChild(player);
+        // var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
+        // player.Name = "plr_" + id.ToString();
+        // player.Position = new Vector3(0, 0.3f, 0);
+        // player.SetMultiplayerAuthority((int)id);
+        // GameManager.ClearOnLoad.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
@@ -131,11 +131,11 @@ public partial class NetworkManager : Node
 
         int id = Multiplayer.GetUniqueId();
         _players[id] = _playerInfo;
-        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
-        player.Name = "plr_" + id.ToString();
-        player.Position = new Vector3(0, 0.3f, 0);
-        player.SetMultiplayerAuthority((int)id);
-        GameManager.ClearOnLoad.AddChild(player);
+        // var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
+        // player.Name = "plr_" + id.ToString();
+        // player.Position = new Vector3(0, 0.3f, 0);
+        // player.SetMultiplayerAuthority((int)id);
+        // GameManager.ClearOnLoad.AddChild(player);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
@@ -183,15 +183,27 @@ public partial class NetworkManager : Node
     }
 
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-    private async void PlayerLoadedRpc()
+    private async void PlayerLoadedRpc(int id)
     {
+        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
+        player.Name = "plr_" + id.ToString();
+        player.Position = new Vector3(0, 0.3f, 0);
+        player.SetMultiplayerAuthority((int)id);
+        GameManager.ClearOnLoad.AddChild(player);
+
         if (Multiplayer.IsServer())
         {
             _playersLoaded += 1;
             if (_playersLoaded == _players.Count)
             {
-                await Task.Delay(2000);
-                Game.Game.Current?.Rpc(Game.Game.MethodName.StartGameRpc);
+                if (IsInstanceValid(Game.GameLobby.Current)) Game.GameLobby.Current.Rpc(Game.GameLobby.MethodName.AllLoadedRpc);
+
+                if (IsInstanceValid(Game.Game.Current))
+                {
+                    Game.Game.Current.Rpc(Game.Game.MethodName.AllLoadedRpc);
+                    await Task.Delay(5000);
+                    Game.Game.Current.Rpc(Game.Game.MethodName.StartGameRpc);
+                }
                 _playersLoaded = 0;
             }
         }

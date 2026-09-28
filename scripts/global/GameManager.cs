@@ -32,5 +32,6 @@ public partial class GameManager : Node
     public static void Clear_ClearOnLoad()
     {
         foreach (var child in ClearOnLoad.GetChildren()) child.QueueFree();
+        DecalManager.Clear();
     }
 }

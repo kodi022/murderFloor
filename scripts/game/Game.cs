@@ -16,6 +16,7 @@ public partial class Game : Node
         Extreme = 4,
         Ludicrous = 5,
     }
+
     public enum StateEnum
     {
         Prepare,
@@ -73,8 +74,8 @@ public partial class Game : Node
     private RandomNumberGenerator rngSpawning = new();
     private RandomNumberGenerator rngLoot = new();
 
-    private Node mobPoolNode;
     private Node lootNode;
+    private Node mobPoolNode;
 
     private readonly List<Resource.Loot.LootState> allLoot = [];
     private readonly List<Resource.Loot.LootState> unpickedLoot = [];
@@ -94,7 +95,7 @@ public partial class Game : Node
 
     public override void _Ready()
     {
-        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc);
+        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
         DifficultyConfig = Ui.MapSelect.DifficultyConfigNetworked;
         ExitArea.BodyEntered += OnBodyEntered;
         ExitArea.BodyExited += OnBodyExited;
@@ -112,8 +113,10 @@ public partial class Game : Node
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void StartGameRpc()
+    public void AllLoadedRpc()
     {
+        GameSeed = Ui.MapSelect.SelectedSeedNetworked;
+
         foreach (var child in GetChildren())
         {
             if (child is MobSpawnArea a)
@@ -122,11 +125,11 @@ public partial class Game : Node
             }
         }
 
-        mobPoolNode = new Node() { Name = "MobPool" };
-        Global.GameManager.ClearOnLoad.AddChild(mobPoolNode);
         lootNode = new Node() { Name = "Loot" };
         Global.GameManager.ClearOnLoad.AddChild(lootNode);
 
+        mobPoolNode = new Node() { Name = "MobPool" };
+        Global.GameManager.ClearOnLoad.AddChild(mobPoolNode);
         var mobScene = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
         for (int i = 0; i < 200; i++)
         {
@@ -138,8 +141,14 @@ public partial class Game : Node
             MobPool.Add(mob);
             mob.SetMultiplayerAuthority(1);
         }
-        EmitSignal(SignalName.GameStart);
 
+        Global.DecalManager.Ready();
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    public void StartGameRpc()
+    {
+        EmitSignal(SignalName.GameStart);
         NextWave();
     }
 

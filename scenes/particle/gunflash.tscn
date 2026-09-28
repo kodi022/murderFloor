@@ -11,7 +11,8 @@ initial_velocity_max = 0.099999994
 cull_mode = 2
 albedo_color = Color(1, 0.4275363, 0, 1)
 emission_enabled = true
-emission = Color(3.2616873, 1.7421938, 0, 1)
+emission = Color(1.353256, 0.70939213, 0, 1)
+emission_energy_multiplier = 5.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_vvryi"]
 material = SubResource("StandardMaterial3D_gjbu8")
