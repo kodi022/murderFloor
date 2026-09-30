@@ -101,6 +101,7 @@ public partial class NetworkManager : Node
     public void LoadGameRpc(string gameScenePath)
     {
         _playersLoaded = 0;
+        Game.Player.Self?.CloseUI(); // needed or cursor may stay unlocked
         GameManager.Clear_ClearOnLoad();
         GetTree().ChangeSceneToFile(gameScenePath);
     }

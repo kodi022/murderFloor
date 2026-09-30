@@ -23,6 +23,7 @@ public partial class Game : Node
         Break,
         Wave,
         Ended,
+        Debrief
     }
 
     public static Game Current { get; private set; }
@@ -43,7 +44,7 @@ public partial class Game : Node
     [Export]
     public ulong GameSeed { get; private set; } = 12345678;
 
-    public static DifficultyConfig DifficultyConfig { get; set; }
+    public static DifficultyConfig DifficultyConfig => Ui.MapSelect.DifficultyConfigNetworked;
 
     public int MobGroupSize => DifficultyConfig.GetGroupSize(Wave);
     public int MobMaxActive => DifficultyConfig.GetMaxActive(Wave);
@@ -52,7 +53,7 @@ public partial class Game : Node
     public ulong TimeMsBetweenWaves => DifficultyConfig.GetTimeBetweenWaves(Wave);
 
     [Export]
-    public int MaxWave { get; private set; } = 5;
+    public int MaxWave { get; private set; } = 1;
     [Export]
     public int Wave { get; private set; } = 0;
     [Export]
@@ -64,6 +65,10 @@ public partial class Game : Node
 
     [Export]
     public Area3D ExitArea { get; private set; }
+
+    public List<Player> ExitPlayers { get; private set; } = [];
+    public double ExitTimer { get; private set; } = 999f;
+    private bool startedLoading = false;
 
     private ulong lastGroupTime = 0ul;
 
@@ -80,11 +85,13 @@ public partial class Game : Node
     private readonly List<Resource.Loot.LootState> allLoot = [];
     private readonly List<Resource.Loot.LootState> unpickedLoot = [];
 
+    // huge lagspike when loaded
+    private PackedScene ammoBoxPreload;
+
     public override void _EnterTree()
     {
         Current = this;
-        rngSpawning.Seed = GameSeed;
-        rngLoot.Seed = GameSeed;
+        ammoBoxPreload = GD.Load<PackedScene>("res://scenes/pickup/Ammobox.tscn");
     }
 
     public override void _ExitTree()
@@ -96,7 +103,6 @@ public partial class Game : Node
     public override void _Ready()
     {
         Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
-        DifficultyConfig = Ui.MapSelect.DifficultyConfigNetworked;
         ExitArea.BodyEntered += OnBodyEntered;
         ExitArea.BodyExited += OnBodyExited;
     }
@@ -110,12 +116,29 @@ public partial class Game : Node
                 SpawnMobGroup();
             }
         }
+
+        if (GameState == StateEnum.Ended && ExitTimer != 999f)
+        {
+            ExitTimer -= delta;
+
+            if (ExitTimer <= 0f && !startedLoading)
+            {
+                Debrief();
+            }
+        }
+
+        if (GameState == StateEnum.Debrief)
+        {
+            ExitTimer -= delta;
+        }
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     public void AllLoadedRpc()
     {
         GameSeed = Ui.MapSelect.SelectedSeedNetworked;
+        rngSpawning.Seed = GameSeed;
+        rngLoot.Seed = GameSeed;
 
         foreach (var child in GetChildren())
         {
@@ -156,7 +179,7 @@ public partial class Game : Node
     {
         ActiveMobs--;
         WaveMobsLeft--;
-        ProcessLoot(damageInfo, mobPoolId);
+        ProcessLoot(damageInfo);
 
         if (WaveMobsLeft <= 0)
         {
@@ -166,14 +189,41 @@ public partial class Game : Node
                 return;
             }
 
+            SpawnAmmo(damageInfo);
             TimerToNextWave();
             return;
         }
     }
 
-    private void ProcessLoot(DamageInfo damageInfo, int mobPoolId)
+    public void OnBodyEntered(Node3D body)
     {
-        if (rngLoot.Randf() > 0.96f)
+        if (body is not Player player) return;
+
+        ExitPlayers.Add(player);
+
+        if (ExitPlayers.Count == Player.AllPlayers.Count)
+            ExitTimer = Mathf.Min(ExitTimer, 5f);
+        else if (ExitPlayers.Count == 1)
+            ExitTimer = Mathf.Min(ExitTimer, 60f);
+        else if (ExitPlayers.Count == 2)
+            ExitTimer = Mathf.Min(ExitTimer, 30f);
+        else if (ExitPlayers.Count > 2)
+            ExitTimer = Mathf.Min(ExitTimer, 20f);
+    }
+
+    public void OnBodyExited(Node3D body)
+    {
+        if (body is not Player player) return;
+
+        ExitPlayers.Remove(player);
+
+        if (ExitPlayers.Count == 0)
+            ExitTimer = 999f;
+    }
+
+    private void ProcessLoot(DamageInfo damageInfo)
+    {
+        if (rngLoot.Randf() > 0.98f)
         {
             // mapdifficulty > 1.33 on Ludicrous allows for easy 100s
             var map = Ui.MapSelect.SelectedMapNetworked;
@@ -191,6 +241,15 @@ public partial class Game : Node
             unpickedLoot.Add(lootState);
             lootNode3d.OnUse += () => { unpickedLoot.Remove(lootState); };
         }
+    }
+
+    private void SpawnAmmo(DamageInfo damageInfo)
+    {
+        var ammobox = (Node3D)ammoBoxPreload.Instantiate();
+        Global.GameManager.ClearOnLoad.AddChild(ammobox);
+        ammobox.GlobalPosition = damageInfo.HitPosition;
+        ((RigidBody3D)ammobox.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
+        ((RigidBody3D)ammobox.GetChild(0).GetChild(0)).AngularVelocity = Vector3.One * rngLoot.RandfRange(-2f, 2f);
     }
 
     public async void TimerToNextWave()
@@ -217,11 +276,6 @@ public partial class Game : Node
     {
         GameState = StateEnum.Ended;
 
-        Ui.HudDebrief.EarnedXp = 100f * ((int)DifficultyConfig.Difficulty + 1) * DifficultyConfig.MapDifficultyScale;
-        Ui.HudDebrief.AllEarnedLoot = allLoot;
-        Ui.HudDebrief.UnpickedEarnedLoot = unpickedLoot;
-        Player.Self.OpenUI("res://scenes/ui/hud/HudDebrief.tscn");
-
         // allow final processing on final mob death before deletion
         await Task.Delay(100);
         foreach (var mob in MobPool) mob?.Free();
@@ -230,6 +284,22 @@ public partial class Game : Node
         Wave = 0;
         WaveMobsLeft = 0;
         ActiveMobs = 0;
+    }
+
+    private async void Debrief()
+    {
+        ExitTimer = 15f;
+        GameState = StateEnum.Debrief;
+        Ui.HudDebrief.EarnedXp = 100f * ((int)DifficultyConfig.Difficulty + 1) * DifficultyConfig.MapDifficultyScale;
+        Ui.HudDebrief.AllEarnedLoot = allLoot;
+        Ui.HudDebrief.UnpickedEarnedLoot = unpickedLoot;
+        Player.Self.OpenUI("res://scenes/ui/hud/HudDebrief.tscn");
+
+        await Task.Delay(15000);
+
+        startedLoading = true;
+        if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
+            Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, "res://scenes/map/lobby/Lobby.tscn");
     }
 
     private void SpawnMobGroup()
@@ -263,16 +333,5 @@ public partial class Game : Node
             ActiveMobs++;
             spawned++;
         }
-    }
-
-    public void OnBodyEntered(Node3D body)
-    {
-        if (body is not Player player) return;
-        GD.Print(body);
-    }
-
-    public void OnBodyExited(Node3D body)
-    {
-        if (body is not Player player) return;
     }
 }

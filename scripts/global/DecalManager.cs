@@ -27,7 +27,8 @@ public static class DecalManager
 
     public static void Clear()
     {
-        foreach (var decal in Decals) decal?.Free();
+        foreach (var decal in Decals)
+            if (GodotObject.IsInstanceValid(decal)) decal.Free();
         Decals = [];
         decalIndex = 0;
     }
@@ -53,6 +54,7 @@ public static class DecalManager
         var decal = Decals[decalIndex];
         decal.Owner = null;
         decal.Reparent(newParent);
+        decal.Owner = newParent;
         decal.ResetPhysicsInterpolation();
         decal.GlobalPosition = position;
         decal.GlobalRotation = rotation;

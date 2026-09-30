@@ -153,6 +153,7 @@ size = Vector2(5.6, 3.5)
 size = Vector3(5.505, 3.411, 0.06)
 
 [node name="Lobby" type="Node3D" unique_id=1921642241]
+metadata/_edit_lock_ = true
 
 [node name="GameLobby" type="Node" parent="." unique_id=1440190689 node_paths=PackedStringArray("ExitArea")]
 script = ExtResource("1_wt7li")

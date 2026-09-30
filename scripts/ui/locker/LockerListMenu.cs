@@ -221,7 +221,7 @@ public partial class LockerListMenu : Control
         var simplePanel = toolStatsPanel.GetChild<Panel>(4);
 
         var str = "";
-        foreach (var stat in selectedToolLootState.ModifiedStats)
+        foreach (var stat in selectedToolLootState.StatMultipliers)
         {
             str += $"{stat.Key} {stat.Value:0.00}x" + "\n";
         }

@@ -51,7 +51,8 @@ public partial class Tool : Node
     // public to get global position
     public GpuParticles3D MuzzleFlashParticle { get; private set; }
 
-    public int CurrentReserve { get; private set; } = 0;
+    public int CurrentReserve { get; set; } = 0;
+
     public bool Reloading { get; private set; } = false;
     private ulong rpmAsMs = 0;
     private ulong msSinceFire = 0;
@@ -75,7 +76,7 @@ public partial class Tool : Node
         if (ToolResource is ToolFirearm firearm)
         {
             rpmAsMs = (ulong)(60f / firearm.RPM * 1000f);
-            CurrentMag = firearm.MagSize;
+            CurrentMag = (int)(firearm.MagSize * ToolConfig.LootState.GetStatMultiplier(Resource.Loot.PossibleStats.MagSize));
             CurrentSpread = firearm.InitialDegreeSpread;
             CurrentReserve = firearm.MagSize * firearm.MagsReserve;
         }
@@ -268,7 +269,11 @@ public partial class Tool : Node
             }
         }
 
-        foreach (var bullet in BulletParticles) bullet.Free();
+        if (ToolResource is ToolFirearm)
+        {
+            foreach (var bullet in BulletParticles) if (IsInstanceValid(bullet)) bullet.Free();
+        }
+
         Player.WorldAnimationTree.RemoveAnimationLibrary(ToolAnimLibraryKey);
         BuiltTool.Tool?.Free();
         viewmodelScene?.Free();

@@ -27,4 +27,9 @@ public partial class Mob : GameResource
     public float EnragementDamageThreshold { get; private set; }
     [Export]
     public float EnragementLength { get; private set; }
+
+    [Export, ExportSubgroup("Ragdoll")]
+    public PackedScene Ragdoll { get; private set; }
+    [Export]
+    public Godot.Collections.Dictionary<string, string> RagdollColliderRemaps { get; private set; }
 }

@@ -1,0 +1,22 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bfbr265c5r7xs"]
+
+[ext_resource type="Texture2D" uid="uid://b5655pfxxqbky" path="res://materials/model/ammobox/ammobox.png" id="1_gyt1s"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gyt1s"]
+render_priority = 1
+transparency = 1
+shading_mode = 0
+grow = true
+grow_amount = 0.01
+stencil_mode = 3
+stencil_flags = 1
+stencil_compare = 5
+metadata/_stencil_owned = true
+
+[resource]
+next_pass = SubResource("StandardMaterial3D_gyt1s")
+albedo_texture = ExtResource("1_gyt1s")
+texture_filter = 0
+stencil_mode = 1
+stencil_flags = 2
+stencil_color = Color(1, 1, 1, 1)

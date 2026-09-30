@@ -422,7 +422,7 @@ public partial class Player : Pawn
 
     public void CloseUI()
     {
-        if (openUi is null) return;
+        if (!IsInstanceValid(openUi)) return;
 
         openUi.Close();
         openUi = null;
@@ -434,6 +434,7 @@ public partial class Player : Pawn
         if (IsInstanceValid(openUi)) return true;
         if (IsDead) return true;
         if (IsInstanceValid(outerController)) return true;
+        if (IsInstanceValid(Game.Current) && Game.Current.GameState == Game.StateEnum.Debrief) return true;
 
         return false;
     }

@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://maaa2vogvn7d"]
+
+[ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="1_bp6ww"]
+[ext_resource type="Script" uid="uid://c548uabsopakt" path="res://scripts/game/Ammobox.cs" id="1_s6s4r"]
+[ext_resource type="PackedScene" uid="uid://bs2h5c2qwvurs" path="res://models/prop/ammobox/ammobox.blend" id="2_s6s4r"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jpvv8"]
+bounce = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ged77"]
+size = Vector3(0.26, 0.3, 0.43)
+
+[node name="Ammobox" type="Node3D" unique_id=1482782829]
+script = ExtResource("1_s6s4r")
+
+[node name="Usable" type="Node3D" parent="." unique_id=820160440]
+script = ExtResource("1_bp6ww")
+UseInfoText = "Refill Ammo"
+metadata/_custom_type_script = "uid://bwlrm48k447kp"
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Usable" unique_id=1637303327]
+collision_layer = 32
+mass = 10.0
+physics_material_override = SubResource("PhysicsMaterial_jpvv8")
+gravity_scale = 0.8
+
+[node name="ammobox" parent="Usable/RigidBody3D" unique_id=1288850559 instance=ExtResource("2_s6s4r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14344841, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Usable/RigidBody3D" unique_id=1920579808]
+shape = SubResource("BoxShape3D_ged77")

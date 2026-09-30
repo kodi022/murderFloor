@@ -68,7 +68,6 @@ public static class Tiers
         public float StatChance { get; private set; }
 
         // ! abilities?
-        // ! additional attachments?
         // ! special stats?
 
         public TierInfo(string locKey, Color color, float powerScale, int tierValue, float statChance)

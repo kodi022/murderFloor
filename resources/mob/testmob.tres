@@ -2,9 +2,16 @@
 
 [ext_resource type="PackedScene" uid="uid://pqbd3i4lbv5o" path="res://scenes/pawn/mob/LiveMob.tscn" id="1_7n26w"]
 [ext_resource type="Script" uid="uid://c4nkwdo5lew66" path="res://scripts/resource/mob/Mob.cs" id="1_woa5v"]
+[ext_resource type="PackedScene" uid="uid://b4xtbuquui7g7" path="res://scenes/pawn/mob/LiveMobRagdoll.tscn" id="2_5yrqu"]
 
 [resource]
 script = ExtResource("1_woa5v")
+Ragdoll = ExtResource("2_5yrqu")
+RagdollColliderRemaps = Dictionary[String, String]({
+"Foot_L": "LowerLeg_L",
+"Foot_R": "LowerLeg_R",
+"Head": "Neck"
+})
 ResourceId = "testmob"
 MeshScene = ExtResource("1_7n26w")
 metadata/_custom_type_script = "uid://c4nkwdo5lew66"

@@ -3,23 +3,23 @@ namespace Shooter.Resource.Loot;
 [Flags]
 public enum PossibleStats
 {
-    Damages,
-    FalloffRanges,
-    RPM,
-    PelletCount,
-    HoldingSpeed,
-    ReloadDelayMs,
-    MagSize,
-    MagsReserve,
-    InitialDegreeSpread,
-    MaxDegreeSpread,
-    SpreadRecoveryRate,
-    SpreadIncreasePerShot,
-    SlowWalkSpreadMult,
-    FastWalkSpreadMult,
-    AimSpreadMult,
-    AimShiftRangeVertical,
-    AimShiftRangeHorizontal,
+    Damages = 1,
+    FalloffRanges = 2,
+    RPM = 3,
+    PelletCount = 4,
+    HoldingSpeed = 5,
+    ReloadDelayMs = -1,
+    MagSize = 6,
+    MagsReserve = 7,
+    InitialDegreeSpread = -2,
+    MaxDegreeSpread = -3,
+    SpreadRecoveryRate = 8,
+    SpreadIncreasePerShot = -4,
+    SlowWalkSpreadMult = -5,
+    FastWalkSpreadMult = -6,
+    AimSpreadMult = -7,
+    AimShiftRangeVertical = -8,
+    AimShiftRangeHorizontal = -9,
 }
 
 /// LootState CustomData basegame mapping
@@ -48,7 +48,7 @@ public struct LootState
     private Dictionary<string, string> CustomData { get; set; } // needs to be property
 
     // generated values on creation
-    public Dictionary<PossibleStats, float> ModifiedStats { get; private set; } = [];
+    public Dictionary<PossibleStats, float> StatMultipliers { get; private set; } = [];
 
     public LootState() { }
 
@@ -84,7 +84,16 @@ public struct LootState
             {
                 if (rng.Randf() < tier.StatChance)
                 {
-                    ModifiedStats.Add(val, tier.PowerScale * wear.PowerScale);
+                    var add = val switch
+                    {
+                        PossibleStats.PelletCount => (rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale), // ! WIP
+                        _ => rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale,
+                    };
+
+                    if (Math.Sign((int)val) == 1)
+                        StatMultipliers.Add(val, 1f + add);
+                    else
+                        StatMultipliers.Add(val, 1f - add);
                 }
             }
         }
@@ -97,6 +106,18 @@ public struct LootState
         var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
         if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({ResourceHashId})");
         return loot;
+    }
+
+    /// <summary>
+    /// Gets stat multiplier or 1.0f if not found
+    /// </summary>
+    /// <returns></returns>
+    public readonly float GetStatMultiplier(PossibleStats stat)
+    {
+        if (StatMultipliers.TryGetValue(stat, out float val))
+            return val;
+        else
+            return 1.0f;
     }
 
     private readonly int GetLootHashId()

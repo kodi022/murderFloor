@@ -114,20 +114,17 @@ public partial class Mob : Pawn
         base.OnDeath(damageInfo);
         Game.Current.MobDeath(damageInfo, MobPoolId);
 
-        var ragdoll = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMobRagdoll.tscn").Instantiate<Node3D>();
-        var hitCollider = damageInfo.HitboxName;
-        if (hitCollider == "Head") hitCollider = "Neck";
-        if (hitCollider == "Foot_R") hitCollider = "LowerLeg_R";
-        if (hitCollider == "Foot_L") hitCollider = "LowerLeg_L";
+        var ragdoll = MobResource.Ragdoll.Instantiate<Node3D>();
+        var hitCollider = RemapCollider(damageInfo.HitboxName);
 
-        GD.Print(GetChild(0).GetChild(0).FindChildren("*").Count);
-        foreach (var decal in FindChildren("Decal_*"))
+        foreach (var decal in GetChild(0).GetChild(0).FindChildren("Decal_*"))
         {
             var decalPos = ((Decal)decal).Position;
-            var parentName = decal.GetParent().Name;
-            GD.Print(parentName);
-            var ragdollParentBone = FindChild($"Physical Bone {parentName}");
+            var parentName = decal.GetParent().GetParent().Name;
+            var ragdollParentBone = ragdoll.FindChild($"Physical Bone {RemapCollider(parentName)}");
+            decal.Owner = null;
             decal.Reparent(ragdollParentBone);
+            decal.Owner = ragdollParentBone;
             ((Decal)decal).Position = decalPos;
         }
 
@@ -146,5 +143,13 @@ public partial class Mob : Pawn
         }
 
         Global.GameManager.ClearOnLoad.AddChild(ragdoll);
+    }
+
+    private string RemapCollider(string collider)
+    {
+        if (MobResource.RagdollColliderRemaps.TryGetValue(collider, out string value))
+            return value;
+        else
+            return collider;
     }
 }

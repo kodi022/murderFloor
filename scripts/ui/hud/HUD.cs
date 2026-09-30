@@ -121,23 +121,8 @@ public partial class Hud : ScreenScaleLimiter
             GenerateToolLists();
         }
 
-        if (IsInstanceValid(Game.Current))
-        {
-            ProcessGame();
-        }
-        else
-        {
-            waveInfoPanel.Visible = false;
-        }
-
-        if (IsInstanceValid(GameLobby.Current))
-        {
-            ProcessGameLobby();
-        }
-        else
-        {
-            lobbyTimerPanel.Visible = false;
-        }
+        if (IsInstanceValid(Game.Current)) ProcessGame();
+        if (IsInstanceValid(GameLobby.Current)) ProcessGameLobby();
 
         CheckNextPlayerOnList();
     }
@@ -147,10 +132,25 @@ public partial class Hud : ScreenScaleLimiter
         waveInfoPanel.Visible = true;
         waveInfoWave.Text = $"Wave {Game.Current.Wave}/{Game.Current.MaxWave}";
         waveInfoLeft.Text = $"{Game.Current.WaveMobsLeft} Left";
+
+        if (Game.Current.ExitTimer != 999f)
+        {
+            lobbyTimerPanel.Visible = true;
+            if (Game.Current.ExitTimer > 0)
+                lobbyTimerPanel.GetChild<Label>(1).Text = $"{Game.Current.ExitTimer:0.0}";
+            else
+                lobbyTimerPanel.GetChild<Label>(1).Text = $"Exiting";
+        }
+        else
+        {
+            lobbyTimerPanel.Visible = false;
+        }
     }
 
     private void ProcessGameLobby()
     {
+        waveInfoPanel.Visible = false;
+
         if (GameLobby.Current.ExitTimer != 999f)
         {
             lobbyTimerPanel.Visible = true;
