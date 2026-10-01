@@ -17,21 +17,18 @@ public partial class Tool : Node
     // reference to tool
     public Resource.Tool ToolResource { get; private set; }
 
+    // contains all the completed data for the tool with everything on it
     public ToolConfig ToolConfig { get; set; }
 
-    public List<int> AttachmentHashes { get; set; }
-
+    // 0 is no, 1 is yes, 2 is just released
     [Export]
-    public int PrimaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is just released
+    public int PrimaryInputState { get; set; } = 0;
     [Export]
-    public int SecondaryInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is just released
+    public int SecondaryInputState { get; set; } = 0;
     [Export]
-    public int ReloadInputState { get; set; } = 0; // 0 is no, 1 is yes, 2 is just released
+    public int ReloadInputState { get; set; } = 0;
 
     public AnimationPlayer AnimationPlayer { get; private set; }
-
-    // public Godot.Collections.Dictionary<string, string> AttachmentConfig { get; set; }
-    // public Godot.Collections.Dictionary<string, string> ModifierConfig { get; set; }
 
     // toolfirearm
     public Vector2 CurrentSpread { get; private set; }
@@ -76,7 +73,7 @@ public partial class Tool : Node
         if (ToolResource is ToolFirearm firearm)
         {
             rpmAsMs = (ulong)(60f / firearm.RPM * 1000f);
-            CurrentMag = (int)(firearm.MagSize * ToolConfig.LootState.GetStatMultiplier(Resource.Loot.PossibleStats.MagSize));
+            CurrentMag = (int)(firearm.MagSize * ToolConfig.GetStatMultiplier(Resource.Loot.PossibleStatEnum.MagSize));
             CurrentSpread = firearm.InitialDegreeSpread;
             CurrentReserve = firearm.MagSize * firearm.MagsReserve;
         }

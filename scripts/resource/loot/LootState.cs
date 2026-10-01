@@ -1,7 +1,8 @@
 namespace Shooter.Resource.Loot;
 
+// sign determines buff direction
 [Flags]
-public enum PossibleStats
+public enum PossibleStatEnum
 {
     Damages = 1,
     FalloffRanges = 2,
@@ -22,9 +23,10 @@ public enum PossibleStats
     AimShiftRangeHorizontal = -9,
 }
 
-/// LootState CustomData basegame mapping
+/// LootState CustomData base mapping
 /// attachment:
 ///     g = Gun LootState HashId
+/// -- optic:
 ///     r = reticle image uid
 ///     c = reticle color
 
@@ -48,7 +50,7 @@ public struct LootState
     private Dictionary<string, string> CustomData { get; set; } // needs to be property
 
     // generated values on creation
-    public Dictionary<PossibleStats, float> StatMultipliers { get; private set; } = [];
+    public Dictionary<PossibleStatEnum, float> StatMultipliers { get; private set; } = [];
 
     public LootState() { }
 
@@ -80,13 +82,13 @@ public struct LootState
         if (loot is ToolFirearm firearm)
         {
             // cast speeds up iteration
-            foreach (var val in (PossibleStats[])Enum.GetValues(typeof(PossibleStats)))
+            foreach (var val in (PossibleStatEnum[])Enum.GetValues(typeof(PossibleStatEnum)))
             {
                 if (rng.Randf() < tier.StatChance)
                 {
                     var add = val switch
                     {
-                        PossibleStats.PelletCount => (rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale), // ! WIP
+                        PossibleStatEnum.PelletCount => (rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale), // ! WIP
                         _ => rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale,
                     };
 
@@ -106,18 +108,6 @@ public struct LootState
         var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
         if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({ResourceHashId})");
         return loot;
-    }
-
-    /// <summary>
-    /// Gets stat multiplier or 1.0f if not found
-    /// </summary>
-    /// <returns></returns>
-    public readonly float GetStatMultiplier(PossibleStats stat)
-    {
-        if (StatMultipliers.TryGetValue(stat, out float val))
-            return val;
-        else
-            return 1.0f;
     }
 
     private readonly int GetLootHashId()

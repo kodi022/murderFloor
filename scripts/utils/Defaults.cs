@@ -6,7 +6,10 @@ public static class Defaults
     public static readonly ImageTexture MissingTextureImage = ImageTexture.CreateFromImage(GD.Load<Texture2D>("res://images/missing.png").GetImage());
 
     public static System.Text.Json.JsonSerializerOptions JsonOptions { get; private set; } = new()
-    { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = false };
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        WriteIndented = false
+    };
 
     // i cant find a better location for this
     public static string ButtonName(string actionName)

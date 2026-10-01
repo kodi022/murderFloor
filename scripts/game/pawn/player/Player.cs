@@ -157,7 +157,7 @@ public partial class Player : Pawn
             if (eventKey.Keycode == Key.F3 && eventKey.Pressed && OS.HasFeature("editor"))
             {
                 Ui.HudDebrief.EarnedXp = 250f;
-                Ui.HudDebrief.AllEarnedLoot = [];
+                Ui.HudDebrief.AllEarnedLoot = [Resource.Loot.LootState.Deserialize("0,-xBbc/,0,0.1.0,0,0,0,0,"), Resource.Loot.LootState.Deserialize("0,-xBbc/,0,0.1.0,0,0,0,0,"), Resource.Loot.LootState.Deserialize("0,-xBbc/,0,0.1.0,0,0,0,0,")];
                 Ui.HudDebrief.UnpickedEarnedLoot = [];
                 Player.Self.OpenUI("res://scenes/ui/hud/HudDebrief.tscn");
             }

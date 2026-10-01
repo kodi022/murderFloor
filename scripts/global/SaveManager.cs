@@ -61,9 +61,10 @@ public static class SaveManager
 
     public class SaveData
     {
+        // JSON requires public
         public int Level { get; set; } = 0;
-        public float Xp { get; internal set; } = 0f;
-        public double TotalXp { get; internal set; } = 0d;
+        public float Xp { get; set; } = 0f;
+        public double TotalXp { get; set; } = 0d;
 
         // both should only be directly used inside this class
         public List<string> Loot { get; set; } = []; // Serialized LootStates

@@ -4,14 +4,34 @@ using Resource.Loot;
 
 public struct ToolConfig
 {
-    public LootState LootState { get; set; }
-    public List<LootState> AttachmentLootStates { get; set; } = [];
-    // extra data
+    public LootState LootState { get; private set; }
+    public List<LootState> AttachmentLootStates { get; private set; } = [];
+
+    public Dictionary<PossibleStatEnum, float> SummedStatMultipliers { get; private set; } = [];
 
     public ToolConfig(LootState lootState, List<LootState> attachmentLootStates = null)
     {
         LootState = lootState;
         AttachmentLootStates = attachmentLootStates ?? [];
+        SummedStatMultipliers = LootState.StatMultipliers;
+
+        foreach (var att in AttachmentLootStates)
+        {
+            foreach (var stat in att.StatMultipliers)
+            {
+                if (!SummedStatMultipliers.TryAdd(stat.Key, stat.Value))
+                    SummedStatMultipliers[stat.Key] += stat.Value;
+            }
+        }
+    }
+
+    /// <summary>Gets stat multiplier or 1.0f if not found</summary>
+    public readonly float GetStatMultiplier(PossibleStatEnum stat)
+    {
+        if (SummedStatMultipliers.TryGetValue(stat, out float val))
+            return val;
+        else
+            return 1f;
     }
 
     // use Layer2Delimiter first because these fit in arrays using Layer1Delimiter
