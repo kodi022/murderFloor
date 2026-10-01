@@ -8,9 +8,9 @@ public partial class HudDebrief : OpenUi
 
     public override async void _Ready()
     {
-        SaveManager.CurrentSave.AddXp(EarnedXp);
-        foreach (var loot in UnpickedEarnedLoot) SaveManager.CurrentSave.Loot.Add(loot.Serialize());
-        SaveManager.Save(SaveManager.CurrentSave);
+        // SaveManager.CurrentSave.AddXp(EarnedXp);
+        // foreach (var loot in UnpickedEarnedLoot) SaveManager.CurrentSave.Loot.Add(loot.Serialize());
+        // SaveManager.Save(SaveManager.CurrentSave);
 
         Modulate = new Color(0, 0, 0);
         ((Panel)FindChild("XpPanel")).Modulate = new Color(0, 0, 0, 0);

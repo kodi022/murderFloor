@@ -54,11 +54,11 @@ public partial class HudDebugMenus : OpenUi
             {
                 var child = newItem.CreateChild();
                 child.SetText(0, item.Value.FullId);
-                if (hasFunction) child.AddButton(0, GD.Load<Texture2D>("res://images/ui/TablerPlus24.png"));
+                if (hasFunction) child.AddButton(0, GD.Load<Texture2D>("res://images/ui/icon/TablerPlus24.png"));
                 child.SetText(1, Compression.IntToAB64(item.Value.HashId));
-                child.AddButton(1, GD.Load<Texture2D>("res://images/ui/TablerClipboard24.png"));
+                child.AddButton(1, GD.Load<Texture2D>("res://images/ui/icon/TablerClipboard24.png"));
                 child.SetText(2, item.Value.HashId.ToString());
-                child.AddButton(2, GD.Load<Texture2D>("res://images/ui/TablerClipboard24.png"));
+                child.AddButton(2, GD.Load<Texture2D>("res://images/ui/icon/TablerClipboard24.png"));
                 child.SetText(3, item.Value.IsRandomLoot.ToString());
             }
         }

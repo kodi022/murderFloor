@@ -1,0 +1,66 @@
+{
+	"categories": [
+		{
+			"uuid": "1445bd5f-c403-463e-8798-f88f9f95eb0e",
+			"title": "Task",
+			"color": "569eff"
+		}
+	],
+	"stages": [
+		{
+			"uuid": "74b5f34c-a2ff-486e-9b31-7acaf6fff534",
+			"title": "Todo",
+			"tasks": [
+				"165db4f1-0b2f-4019-b5d8-5ded8fb831d7",
+				"70751567-9831-474e-a8a1-24766e66b402",
+				"4582eea1-579e-4015-a772-e881a0eae85e"
+			]
+		},
+		{
+			"uuid": "cb4d1860-e798-4f92-a020-652bc3b75dbe",
+			"title": "Doing",
+			"tasks": []
+		},
+		{
+			"uuid": "55f78ed3-0468-4780-899c-05339e0d0e03",
+			"title": "Done",
+			"tasks": []
+		}
+	],
+	"tasks": [
+		{
+			"uuid": "165db4f1-0b2f-4019-b5d8-5ded8fb831d7",
+			"title": "fix tool selects 2nd one first",
+			"description": "",
+			"category": "1445bd5f-c403-463e-8798-f88f9f95eb0e",
+			"steps": []
+		},
+		{
+			"uuid": "70751567-9831-474e-a8a1-24766e66b402",
+			"title": "fix tool hud order after 4.8",
+			"description": "",
+			"category": "1445bd5f-c403-463e-8798-f88f9f95eb0e",
+			"steps": []
+		},
+		{
+			"uuid": "4582eea1-579e-4015-a772-e881a0eae85e",
+			"title": "consider a new solution for filling ammo",
+			"description": "",
+			"category": "1445bd5f-c403-463e-8798-f88f9f95eb0e",
+			"steps": []
+		}
+	],
+	"layout": {
+		"columns": [
+			[
+				"74b5f34c-a2ff-486e-9b31-7acaf6fff534"
+			],
+			[
+				"cb4d1860-e798-4f92-a020-652bc3b75dbe"
+			],
+			[
+				"55f78ed3-0468-4780-899c-05339e0d0e03"
+			]
+		]
+	}
+}

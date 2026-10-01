@@ -130,12 +130,6 @@ public partial class Player : Pawn
         {
             if (eventKey.Keycode == Key.F1 && eventKey.Pressed)
             {
-                var index = (AllPlayers.IndexOf(Viewing) + 1) % AllPlayers.Count;
-                ViewPlayer(AllPlayers[index]);
-            }
-
-            if (eventKey.Keycode == Key.F3 && eventKey.Pressed && OS.HasFeature("editor"))
-            {
                 if (!IsInstanceValid(debugUi))
                 {
                     debugUi = GD.Load<PackedScene>("res://scenes/ui/hud/debug/HudDebug.tscn").Instantiate<Control>();
@@ -148,7 +142,7 @@ public partial class Player : Pawn
                 }
             }
 
-            if (eventKey.Keycode == Key.F4 && eventKey.Pressed && OS.HasFeature("editor"))
+            if (eventKey.Keycode == Key.F2 && eventKey.Pressed && OS.HasFeature("editor"))
             {
                 if (!IsInstanceValid(openUi))
                 {
@@ -160,7 +154,15 @@ public partial class Player : Pawn
                 }
             }
 
-            if (eventKey.Keycode == Key.F5 && eventKey.Pressed)
+            if (eventKey.Keycode == Key.F3 && eventKey.Pressed && OS.HasFeature("editor"))
+            {
+                Ui.HudDebrief.EarnedXp = 250f;
+                Ui.HudDebrief.AllEarnedLoot = [];
+                Ui.HudDebrief.UnpickedEarnedLoot = [];
+                Player.Self.OpenUI("res://scenes/ui/hud/HudDebrief.tscn");
+            }
+
+            if (eventKey.Keycode == Key.F5 && eventKey.Pressed && OS.HasFeature("editor"))
             {
                 if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
                 {
@@ -170,7 +172,7 @@ public partial class Player : Pawn
                 }
             }
 
-            if (eventKey.Keycode == Key.F7 && eventKey.Pressed)
+            if (eventKey.Keycode == Key.F7 && eventKey.Pressed && OS.HasFeature("editor"))
             {
                 var di = new DamageInfo()
                 {
