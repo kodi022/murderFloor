@@ -1,28 +1,5 @@
 namespace Shooter.Resource.Loot;
 
-// sign determines buff direction
-[Flags]
-public enum PossibleStatEnum
-{
-    Damages = 1,
-    FalloffRanges = 2,
-    RPM = 3,
-    PelletCount = 4,
-    HoldingSpeed = 5,
-    ReloadDelayMs = -1,
-    MagSize = 6,
-    MagsReserve = 7,
-    InitialDegreeSpread = -2,
-    MaxDegreeSpread = -3,
-    SpreadRecoveryRate = 8,
-    SpreadIncreasePerShot = -4,
-    SlowWalkSpreadMult = -5,
-    FastWalkSpreadMult = -6,
-    AimSpreadMult = -7,
-    AimShiftRangeVertical = -8,
-    AimShiftRangeHorizontal = -9,
-}
-
 /// LootState CustomData base mapping
 /// attachment:
 ///     g = Gun LootState HashId
@@ -49,8 +26,8 @@ public struct LootState
     // custom set data
     private Dictionary<string, string> CustomData { get; set; } // needs to be property
 
-    // generated values on creation
-    public Dictionary<PossibleStatEnum, float> StatMultipliers { get; private set; } = [];
+    // generated values on creation. string of property name and value
+    public Dictionary<string, float> StatMultipliers { get; private set; } = [];
 
     public LootState() { }
 
@@ -74,29 +51,28 @@ public struct LootState
         var loot = GetLootRef();
         if (loot is null) return;
 
+        var itemResource = (ItemResource)loot;
+        var toolStatsEnumStringified = itemResource.GetStatsEnum();
+
         var rarity = new LootRarity(this);
         var rng = new RandomNumberGenerator { Seed = Seed };
         var tier = Tiers.TierInfos[rarity.Tier];
         var wear = Wears.WearInfos[rarity.Wear];
 
-        if (loot is ToolFirearm firearm)
+        foreach (var stat in toolStatsEnumStringified)
         {
-            // cast speeds up iteration
-            foreach (var val in (PossibleStatEnum[])Enum.GetValues(typeof(PossibleStatEnum)))
+            if (rng.Randf() < tier.StatChance)
             {
-                if (rng.Randf() < tier.StatChance)
+                var add = stat switch
                 {
-                    var add = val switch
-                    {
-                        PossibleStatEnum.PelletCount => (rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale), // ! WIP
-                        _ => rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale,
-                    };
+                    "PelletCount" => (rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale), // ! WIP
+                    _ => rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale,
+                };
 
-                    if (Math.Sign((int)val) == 1)
-                        StatMultipliers.Add(val, 1f + add);
-                    else
-                        StatMultipliers.Add(val, 1f - add);
-                }
+                if (itemResource.GetStatSign(stat) == 1)
+                    StatMultipliers.Add(stat, 1f + add);
+                else
+                    StatMultipliers.Add(stat, 1f - add);
             }
         }
     }

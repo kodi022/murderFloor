@@ -3,6 +3,67 @@ namespace Shooter.Resource;
 [GlobalClass]
 public partial class ToolFirearmHitscan : ToolFirearm
 {
+    // sign determines buff direction
+    public enum AllStatsEnum
+    {
+        Damages = 1,
+        FalloffRanges = 2,
+        RPM = 3,
+        HoldingSpeed = 5,
+        FloatDamage = 9,
+        PelletCount = 4,
+        ReloadDelayMs = -1,
+        MagSize = 6,
+        MagsReserve = 7,
+        InitialDegreeSpread = -2,
+        MaxDegreeSpread = -3,
+        SpreadRecoveryRate = 8,
+        SpreadIncreasePerShot = -4,
+        SlowWalkSpreadMult = -5,
+        FastWalkSpreadMult = -6,
+        AimSpreadMult = -7,
+        AimShiftRangeVertical = -8,
+        AimShiftRangeHorizontal = -9,
+    }
+
+    /// <summary>Gets stat or -1.0f if not found</summary>
+    public override Variant GetStat(string statName, float mult)
+    {
+        return (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+        {
+            AllStatsEnum.Damages => Damages * mult,
+            AllStatsEnum.FalloffRanges => FalloffRanges * mult,
+            AllStatsEnum.RPM => RPM * mult,
+            AllStatsEnum.PelletCount => PelletCount * mult,
+            AllStatsEnum.HoldingSpeed => HoldingSpeed * mult,
+            AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
+            AllStatsEnum.MagSize => MagSize * mult,
+            AllStatsEnum.MagsReserve => MagsReserve * mult,
+            AllStatsEnum.InitialDegreeSpread => InitialDegreeSpread * mult,
+            AllStatsEnum.MaxDegreeSpread => MaxDegreeSpread * mult,
+            AllStatsEnum.SpreadRecoveryRate => SpreadRecoveryRate * mult,
+            AllStatsEnum.SpreadIncreasePerShot => SpreadIncreasePerShot * mult,
+            AllStatsEnum.SlowWalkSpreadMult => SlowWalkSpreadMult * mult,
+            AllStatsEnum.FastWalkSpreadMult => FastWalkSpreadMult * mult,
+            AllStatsEnum.AimSpreadMult => AimSpreadMult * mult,
+            AllStatsEnum.AimShiftRangeVertical => AimShiftRangeVertical * mult,
+            AllStatsEnum.AimShiftRangeHorizontal => AimShiftRangeHorizontal * mult,
+            _ => -1f,
+        };
+    }
+
+    /// <summary>Gets names of all stats or empty array if none</summary>
+    public override string[] GetStatsEnum()
+    {
+        return Enum.GetNames(typeof(AllStatsEnum));
+    }
+
+    /// <summary>Gets sign of stat based on its enum</summary>
+    public override int GetStatSign(string statName)
+    {
+        return Math.Sign((int)Enum.Parse(typeof(AllStatsEnum), statName));
+    }
+
     [Export]
     public Vector2 Damages { get; private set; } = new Vector2(10f, 4f);
     [Export]
@@ -44,10 +105,11 @@ public partial class ToolFirearmHitscan : ToolFirearm
             Rng.RandfRange(AimShiftRangeVertical.X, AimShiftRangeVertical.Y)
         );
 
+        var firearmBehavior = (Game.ToolBehaviorFirearm)fi.Tool.ToolBehavior;
         for (int i = 0; i < PelletCount; i++)
         {
-            float yaw = Mathf.DegToRad(Rng.RandfRange(-fi.Tool.CurrentSpread.X, fi.Tool.CurrentSpread.X));
-            float pitch = Mathf.DegToRad(Rng.RandfRange(-fi.Tool.CurrentSpread.Y, fi.Tool.CurrentSpread.Y));
+            float yaw = Mathf.DegToRad(Rng.RandfRange(-firearmBehavior.CurrentSpread.X, firearmBehavior.CurrentSpread.X));
+            float pitch = Mathf.DegToRad(Rng.RandfRange(-firearmBehavior.CurrentSpread.Y, firearmBehavior.CurrentSpread.Y));
 
             // normalize then scale back down to make circular
             Vector3 angle = new Vector3(Mathf.Abs(pitch), Mathf.Abs(yaw), 0).Normalized();
@@ -79,6 +141,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             var decalRotPitch = Mathf.Acos(normal.Y);
             var decalRotYaw = Mathf.Atan2(normal.X, normal.Z);
             var decalRot = new Vector3(decalRotPitch, decalRotYaw, 0f);
+            // roll Random.Shared.NextSingle() * Mathf.Pi
             Global.DecalManager.UpdateNext(
                 currentNode,
                 (Vector3)ray["position"],

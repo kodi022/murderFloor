@@ -183,10 +183,12 @@ public partial class Hud : ScreenScaleLimiter
 
         if (selectedTool.ToolResource is Resource.ToolFirearm firearm)
         {
+
             if (OptionsManager.CurrentOptions.ScalingCrosshair)
             {
-                float yaw = Mathf.DegToRad(selectedTool.CurrentSpread.X);
-                float pitch = Mathf.DegToRad(selectedTool.CurrentSpread.Y);
+                var firearmBehavior = (ToolBehaviorFirearm)selectedTool.ToolBehavior;
+                float yaw = Mathf.DegToRad(firearmBehavior.CurrentSpread.X);
+                float pitch = Mathf.DegToRad(firearmBehavior.CurrentSpread.Y);
 
                 // this does not need normalized to a circle, its just for crosshair movement
                 Vector3 dir = Vector3.Forward.Rotated(Vector3.Up, Mathf.Abs(yaw));

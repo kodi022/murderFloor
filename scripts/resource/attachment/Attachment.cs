@@ -1,7 +1,7 @@
 namespace Shooter.Resource;
 
 [GlobalClass]
-public partial class Attachment : GameResource
+public partial class Attachment : ItemResource
 {
     public enum AttachmentTypeEnum
     {

@@ -1,7 +1,7 @@
 namespace Shooter.Resource;
 
 [GlobalClass]
-public partial class Tool : GameResource
+public partial class Tool : ItemResource
 {
     [Export]
     public int CarryWeight { get; private set; } = 2;

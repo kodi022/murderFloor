@@ -1,5 +1,6 @@
 namespace Shooter;
 
+using Resource;
 using Resource.Loot;
 
 public struct ToolConfig
@@ -7,7 +8,7 @@ public struct ToolConfig
     public LootState LootState { get; private set; }
     public List<LootState> AttachmentLootStates { get; private set; } = [];
 
-    public Dictionary<PossibleStatEnum, float> SummedStatMultipliers { get; private set; } = [];
+    public Dictionary<string, float> SummedStatMultipliers { get; private set; } = [];
 
     public ToolConfig(LootState lootState, List<LootState> attachmentLootStates = null)
     {
@@ -25,16 +26,43 @@ public struct ToolConfig
         }
     }
 
-    /// <summary>Gets stat multiplier or 1.0f if not found</summary>
-    public readonly float GetStatMultiplier(PossibleStatEnum stat)
+    /// <summary>Gets stat or -1.0f if not found</summary>
+    public readonly Variant GetStat(string propertyName)
     {
-        if (SummedStatMultipliers.TryGetValue(stat, out float val))
+        return ((Tool)LootState.GetLootRef()).GetStat(propertyName, GetStatMultiplier(propertyName));
+    }
+
+    /// <summary>Gets stat multiplier or 1.0f if not found</summary>
+    public readonly float GetStatMultiplier(string propertyName)
+    {
+        if (SummedStatMultipliers.TryGetValue(propertyName, out float val))
             return val;
         else
             return 1f;
     }
 
-    // use Layer2Delimiter first because these fit in arrays using Layer1Delimiter
+    /// <summary>Gets stat multiplier for tool only</summary>
+    public readonly float GetStatToolMultipliers(string propertyName)
+    {
+        // GD.Print(SummedStatMultipliers);
+        // if (SummedStatMultipliers.TryGetValue(propertyName, out float val))
+        //     return val;
+        // else
+        //     return 1f;
+        return 1f;
+    }
+
+    /// <summary>Gets stat multiplier for attachments combined</summary>
+    public readonly float GetStatAttachmentMultipliers(string propertyName)
+    {
+        // GD.Print(SummedStatMultipliers);
+        // if (SummedStatMultipliers.TryGetValue(propertyName, out float val))
+        //     return val;
+        // else
+        //     return 1f;
+        return 1f;
+    }
+
     public readonly string Serialize()
     {
         var obj = new Stringified { State = LootState.Serialize(), Atts = [] };
@@ -50,15 +78,14 @@ public struct ToolConfig
     public static ToolConfig Deserialize(string toolConfigSerialized)
     {
         var obj = System.Text.Json.JsonSerializer.Deserialize<Stringified>(toolConfigSerialized, Utils.Defaults.JsonOptions);
-        var toolConfig = new ToolConfig { LootState = LootState.Deserialize(obj.State) };
-        toolConfig.AttachmentLootStates ??= [];
 
+        List<LootState> states = [];
         foreach (var att in obj.Atts)
         {
-            toolConfig.AttachmentLootStates.Add(LootState.Deserialize(att));
+            states.Add(LootState.Deserialize(att));
         }
 
-        return toolConfig;
+        return new ToolConfig(LootState.Deserialize(obj.State), states); ;
     }
 
     private struct Stringified

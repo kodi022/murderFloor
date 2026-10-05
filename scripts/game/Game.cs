@@ -225,9 +225,8 @@ public partial class Game : Node
     {
         if (rngLoot.Randf() > 0.98f)
         {
-            // mapdifficulty > 1.33 on Ludicrous allows for easy 100s
             var map = Ui.MapSelect.SelectedMapNetworked;
-            var levelFloat = (int)DifficultyConfig.Difficulty * 15f * map.MapDifficultyScale * rngLoot.Randfn(1, 0.05f);
+            var levelFloat = (int)DifficultyConfig.Difficulty * 15f + (5f * map.MapDifficultyScale * rngLoot.Randfn(1, 0.05f));
             var level = (int)Mathf.Clamp(levelFloat, 0, 100);
             var challengeBitmask = (DifficultyConfig.C1 ? 1 : 0) + (DifficultyConfig.C2 ? 2 : 0); // next would be ? 4 : 0
             var lootState = new Resource.Loot.LootState(GameSeed + rngLoot.Randi(), map.HashId, level, DifficultyConfig.Difficulty, challengeBitmask, DifficultyConfig.Overscaling);
