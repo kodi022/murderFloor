@@ -79,7 +79,7 @@ public struct LootState
 
     public readonly GameResource GetLootRef()
     {
-        if (ResourceHashId == 184465471) return null; // fists
+        if (ResourceHashId == 184465471) return GD.Load<GameResource>("res://resources/tool/melee/fists.tres"); // fists
 
         var loot = ResourceManager.LootRegistry.GetResourceRef(ResourceHashId);
         if (loot is null) GD.PushWarning($"LootState.GetLootRef: GetResourceRef returned null. ({ResourceHashId})");

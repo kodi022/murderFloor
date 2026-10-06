@@ -8,17 +8,34 @@ public class ToolBehaviorFirearm : ToolBehavior
     public bool Bolting { get; set; } = false;
     public bool ShotSemi { get; set; } = false;
     public bool ShotBolt { get; set; } = false;
-    // toolfirearm
     public Vector2 CurrentSpread { get; private set; }
     public Vector2 MinSpread { get; private set; }
     public Vector2 MaxSpread { get; private set; }
+    public int CurrentReserve { get; set; } = 0;
 
     private Resource.ToolFirearm Firearm => ParentTool.ToolResource as Resource.ToolFirearm;
 
+    private int magSize;
+    private Vector2 fastWalkMult;
+    private Vector2 slowWalkMult;
+    private Vector2 aimSpreadMult;
+    private Vector2 initialDegSpread;
+    private Vector2 maxDegSpread;
+    private float spreadRecoveryRate;
+
     public override void Ready()
     {
-        RpmAsMs = (ulong)(60f / (float)tc.GetStat(Resource.ToolFirearm.PropertyName.RPM) * 1000f);
-        CurrentSpread = (Vector2)tc.GetStat(Resource.ToolFirearm.PropertyName.InitialDegreeSpread);
+        RpmAsMs = (ulong)(60f / (float)Tc.GetStat(Resource.ToolFirearm.PropertyName.RPM) * 1000f);
+        CurrentSpread = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.InitialDegreeSpread);
+        initialDegSpread = CurrentSpread;
+
+        magSize = (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.MagSize);
+        fastWalkMult = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.FastWalkSpreadMult);
+        slowWalkMult = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.SlowWalkSpreadMult);
+        aimSpreadMult = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.AimSpreadMult);
+        maxDegSpread = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.MaxDegreeSpread);
+        spreadRecoveryRate = (float)Tc.GetStat(Resource.ToolFirearm.PropertyName.SpreadRecoveryRate);
+        FillReserve();
     }
 
     public override void Process(double delta)
@@ -26,16 +43,16 @@ public class ToolBehaviorFirearm : ToolBehavior
         var plrVel = ParentTool.Player.Velocity.LengthSquared();
         var movementPenalty = Vector2.One;
         if (plrVel > 8f)
-            movementPenalty = (Vector2)tc.GetStat(Resource.ToolFirearm.PropertyName.FastWalkSpreadMult);
+            movementPenalty = fastWalkMult;
         else if (plrVel > 1f)
-            movementPenalty = (Vector2)tc.GetStat(Resource.ToolFirearm.PropertyName.SlowWalkSpreadMult);
+            movementPenalty = slowWalkMult;
 
-        var aimBuff = ParentTool.Aiming ? (Vector2)tc.GetStat(Resource.ToolFirearm.PropertyName.AimSpreadMult) : Vector2.One;
+        var aimBuff = ParentTool.Aiming ? aimSpreadMult : Vector2.One;
 
-        MinSpread = (Vector2)tc.GetStat(Resource.ToolFirearm.PropertyName.InitialDegreeSpread) * aimBuff * movementPenalty;
-        MaxSpread = Firearm.MaxDegreeSpread * movementPenalty;
+        MinSpread = initialDegSpread * aimBuff * movementPenalty;
+        MaxSpread = maxDegSpread * movementPenalty;
 
-        var recoveryRate = Vector2.One * Firearm.SpreadRecoveryRate * (float)delta;
+        var recoveryRate = Vector2.One * spreadRecoveryRate * (float)delta;
 
         if (CurrentSpread < MinSpread)
             CurrentSpread += (Vector2.One * (float)delta * 50f).Min(MinSpread);
@@ -76,7 +93,7 @@ public class ToolBehaviorFirearm : ToolBehavior
 
             ShotSemi = true;
             ShotBolt = true;
-            CurrentSpread = (CurrentSpread + Firearm.SpreadIncreasePerShot).Min(MaxSpread);
+            CurrentSpread = (CurrentSpread + (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.SpreadIncreasePerShot)).Min(MaxSpread);
             ParentTool.CurrentMag--;
         }
     }
@@ -105,12 +122,12 @@ public class ToolBehaviorFirearm : ToolBehavior
 
         if (ParentTool.AnimationPlayer.HasAnimation("bolt"))
         {
-            await ParentTool.TaskAnimation("bolt", (int)tc.GetStat(Resource.ToolFirearm.PropertyName.ManualFireDelayMs));
+            await ParentTool.TaskAnimation("bolt", (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ManualFireDelayMs));
         }
         else
         {
             fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, 0.1f), 2);
-            await Task.Delay((int)tc.GetStat(Resource.ToolFirearm.PropertyName.ManualFireDelayMs) - 200);
+            await Task.Delay((int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ManualFireDelayMs) - 200);
             fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, -0.05f), 2);
             await Task.Delay(200);
         }
@@ -126,18 +143,18 @@ public class ToolBehaviorFirearm : ToolBehavior
     {
         if (Bolting) return;
         if (Reloading) return;
-        if (ParentTool.CurrentMag >= (int)tc.GetStat(Resource.ToolFirearm.PropertyName.MagSize)) return;
-        if (ParentTool.CurrentReserve <= 0) return;
+        if (ParentTool.CurrentMag >= magSize) return;
+        if (CurrentReserve <= 0) return;
         Reloading = true;
 
         if (ParentTool.AnimationPlayer.HasAnimation("reload"))
         {
-            await ParentTool.TaskAnimation("reload", Firearm.ReloadDelayMs);
+            await ParentTool.TaskAnimation("reload", (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ReloadDelayMs));
         }
         else
         {
             fi.Player.AddViewmodelRotationKick(new Vector3(-1f, 0.5f, 0));
-            await Task.Delay(Firearm.ReloadDelayMs - 200);
+            await Task.Delay((int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ReloadDelayMs) - 200);
             fi.Player.AddViewmodelPositionKick(new Vector3(0, 0, 0.1f));
             fi.Player.AddViewmodelRotationKick(new Vector3(0.2f, 0, 0));
             await Task.Delay(200);
@@ -150,24 +167,29 @@ public class ToolBehaviorFirearm : ToolBehavior
 
         if (Firearm.EndlessReserve)
         {
-            ParentTool.CurrentMag = Firearm.MagSize;
+            ParentTool.CurrentMag = magSize;
             Reloading = false;
             return;
         }
 
-        var diff = Firearm.MagSize - ParentTool.CurrentMag;
-        if (diff >= ParentTool.CurrentReserve)
+        var diff = magSize - ParentTool.CurrentMag;
+        if (diff >= CurrentReserve)
         {
-            ParentTool.CurrentMag += ParentTool.CurrentReserve;
-            ParentTool.CurrentReserve = 0;
+            ParentTool.CurrentMag += CurrentReserve;
+            CurrentReserve = 0;
         }
         else
         {
-            ParentTool.CurrentMag = Firearm.MagSize;
-            ParentTool.CurrentReserve -= diff;
+            ParentTool.CurrentMag = magSize;
+            CurrentReserve -= diff;
         }
 
         Reloading = false;
         ShotBolt = false;
+    }
+
+    public void FillReserve()
+    {
+        CurrentReserve = magSize * (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.MagsReserve);
     }
 }

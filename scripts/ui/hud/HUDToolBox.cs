@@ -1,7 +1,5 @@
 namespace Shooter.Ui;
 
-using Game;
-
 public partial class HudToolBox : Panel
 {
     [Export]
@@ -11,7 +9,7 @@ public partial class HudToolBox : Panel
     [Export]
     public Label Label { get; private set; }
 
-    public Tool Tool { get; set; }
+    public Game.Tool Tool { get; set; }
 
     public bool Equipped { get; set; } = true;
 
@@ -23,7 +21,10 @@ public partial class HudToolBox : Panel
         if (!IsInstanceValid(TextureRect)) return;
         TextureRect.Texture = texture;
 
-        Label.Text = $"{Tool.CurrentMag} / {Tool.CurrentReserve}";
+        if (Tool.ToolBehavior is Game.ToolBehaviorFirearm tbf)
+            Label.Text = $"{Tool.CurrentMag} / {tbf.CurrentReserve}";
+        else
+            Label.Text = "";
 
         if (Equipped)
         {
@@ -38,6 +39,10 @@ public partial class HudToolBox : Panel
         NinePatchRect.Visible = Equipped;
         if (!Equipped) return;
 
-        Label.Text = $"{Tool.CurrentMag} / {Tool.CurrentReserve}";
+
+        if (Tool.ToolBehavior is Game.ToolBehaviorFirearm tbf)
+            Label.Text = $"{Tool.CurrentMag} / {tbf.CurrentReserve}";
+        else
+            Label.Text = "";
     }
 }

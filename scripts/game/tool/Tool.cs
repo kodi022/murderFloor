@@ -31,7 +31,6 @@ public partial class Tool : Node
 
     [Export]
     public int CurrentMag { get; set; } = 0;
-    public int CurrentReserve { get; set; } = 0;
 
     public AnimationPlayer AnimationPlayer { get; private set; }
 
@@ -60,10 +59,15 @@ public partial class Tool : Node
 
         if (ToolResource is ToolFirearm)
         {
+            CurrentMag = (int)ToolConfig.GetStat(ToolFirearm.PropertyName.MagSize);
             ToolBehavior = new ToolBehaviorFirearm() { ParentTool = this };
             ToolBehavior.Ready();
-            CurrentMag = (int)ToolConfig.GetStat(ToolFirearm.PropertyName.MagSize);
-            CurrentReserve = (int)ToolConfig.GetStat(ToolFirearm.PropertyName.MagSize) * (int)ToolConfig.GetStat(ToolFirearm.PropertyName.MagsReserve);
+        }
+
+        if (ToolResource is ToolMelee)
+        {
+            ToolBehavior = new ToolBehaviorMelee() { ParentTool = this };
+            ToolBehavior.Ready();
         }
     }
 
@@ -220,6 +224,9 @@ public partial class Tool : Node
 
     public async Task Unequip(bool viewing = false)
     {
+        equipped = false;
+        Aiming = false;
+
         if (!viewing)
         {
             if (AnimationPlayer.HasAnimation("unequip"))
@@ -233,16 +240,16 @@ public partial class Tool : Node
             }
         }
 
+        Player.WorldAnimationTree.RemoveAnimationLibrary(ToolAnimLibraryKey);
+
         if (ToolResource is ToolFirearm)
         {
             foreach (var bullet in BulletParticles) if (IsInstanceValid(bullet)) bullet.Free();
         }
 
-        Player.WorldAnimationTree.RemoveAnimationLibrary(ToolAnimLibraryKey);
         BuiltTool.Tool?.Free();
         viewmodelScene?.Free();
         viewmodelScene = null;
-        equipped = false;
     }
 
     public void FirePrimary()

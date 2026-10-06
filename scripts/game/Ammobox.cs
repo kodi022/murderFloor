@@ -8,8 +8,8 @@ public partial class Ammobox : Node3D
         {
             foreach (var tool in Player.Self.GetAllTools())
             {
-                if (tool.ToolResource is Resource.ToolFirearm tf)
-                    tool.CurrentReserve = tf.MagSize * tf.MagsReserve;
+                if (tool.ToolBehavior is ToolBehaviorFirearm tbf)
+                    tbf.FillReserve();
             }
 
             Free();

@@ -3,63 +3,6 @@ namespace Shooter.Resource;
 [GlobalClass]
 public partial class ToolMelee : Tool
 {
-    // sign determines buff direction
-    public enum AllStatsEnum
-    {
-        RPM = 3,
-        HoldingSpeed = 5,
-        Damages = 1,
-        FloatDamage = 9,
-        FalloffRanges = 2,
-        PelletCount = 4,
-        ReloadDelayMs = -1,
-        MagSize = 6,
-        MagsReserve = 7,
-        InitialDegreeSpread = -2,
-        MaxDegreeSpread = -3,
-        SpreadRecoveryRate = 8,
-        SpreadIncreasePerShot = -4,
-        SlowWalkSpreadMult = -5,
-        FastWalkSpreadMult = -6,
-        AimSpreadMult = -7,
-        AimShiftRangeVertical = -8,
-        AimShiftRangeHorizontal = -9,
-    }
-
-    /// <summary>Gets stat or -1.0f if not found</summary>
-    public override Variant GetStat(string statName, float mult)
-    {
-        // return (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
-        // {
-        //     AllStatsEnum.Damages => Damages * mult,
-        //     AllStatsEnum.FalloffRanges => FalloffRanges * mult,
-        //     AllStatsEnum.RPM => RPM * mult,
-        //     AllStatsEnum.PelletCount => PelletCount * mult,
-        //     AllStatsEnum.HoldingSpeed => HoldingSpeed * mult,
-        //     AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
-        //     AllStatsEnum.MagSize => MagSize * mult,
-        //     AllStatsEnum.MagsReserve => MagsReserve * mult,
-        //     AllStatsEnum.InitialDegreeSpread => InitialDegreeSpread * mult,
-        //     AllStatsEnum.MaxDegreeSpread => MaxDegreeSpread * mult,
-        //     AllStatsEnum.SpreadRecoveryRate => SpreadRecoveryRate * mult,
-        //     AllStatsEnum.SpreadIncreasePerShot => SpreadIncreasePerShot * mult,
-        //     AllStatsEnum.SlowWalkSpreadMult => SlowWalkSpreadMult * mult,
-        //     AllStatsEnum.FastWalkSpreadMult => FastWalkSpreadMult * mult,
-        //     AllStatsEnum.AimSpreadMult => AimSpreadMult * mult,
-        //     AllStatsEnum.AimShiftRangeVertical => AimShiftRangeVertical * mult,
-        //     AllStatsEnum.AimShiftRangeHorizontal => AimShiftRangeHorizontal * mult,
-        //     _ => -1f,
-        // };
-
-        return -1f;
-    }
-
-    /// <summary>Gets names of all stats or empty array if none</summary>
-    public override string[] GetStatsEnum()
-    {
-        return Enum.GetNames(typeof(AllStatsEnum));
-    }
-
     [Export]
     public float RPM { get; private set; }
     [Export]
@@ -132,6 +75,38 @@ public partial class ToolMelee : Tool
         }
 
         return 1f;
+    }
+
+    // sign determines buff direction
+    public enum AllStatsEnum
+    {
+        Damage = 1,
+        RPM = 2,
+        MaxRange = 3,
+    }
+
+    /// <summary>Gets stat or -1.0f if not found</summary>
+    public override Variant GetStat(string statName, float mult)
+    {
+        return (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+        {
+            AllStatsEnum.Damage => Damage * mult,
+            AllStatsEnum.RPM => RPM * mult,
+            AllStatsEnum.MaxRange => MaxRange * mult,
+            _ => -1f,
+        };
+    }
+
+    /// <summary>Gets names of all stats or empty array if none</summary>
+    public override string[] GetStatsEnum()
+    {
+        return Enum.GetNames(typeof(AllStatsEnum));
+    }
+
+    /// <summary>Gets sign of stat based on its enum</summary>
+    public override int GetStatSign(string statName)
+    {
+        return Math.Sign((int)Enum.Parse(typeof(AllStatsEnum), statName));
     }
 
     public override BuiltToolData BuildToolScene(ToolConfig toolConfig)

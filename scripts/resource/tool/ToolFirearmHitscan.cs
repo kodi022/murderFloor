@@ -3,67 +3,6 @@ namespace Shooter.Resource;
 [GlobalClass]
 public partial class ToolFirearmHitscan : ToolFirearm
 {
-    // sign determines buff direction
-    public enum AllStatsEnum
-    {
-        Damages = 1,
-        FalloffRanges = 2,
-        RPM = 3,
-        HoldingSpeed = 5,
-        FloatDamage = 9,
-        PelletCount = 4,
-        ReloadDelayMs = -1,
-        MagSize = 6,
-        MagsReserve = 7,
-        InitialDegreeSpread = -2,
-        MaxDegreeSpread = -3,
-        SpreadRecoveryRate = 8,
-        SpreadIncreasePerShot = -4,
-        SlowWalkSpreadMult = -5,
-        FastWalkSpreadMult = -6,
-        AimSpreadMult = -7,
-        AimShiftRangeVertical = -8,
-        AimShiftRangeHorizontal = -9,
-    }
-
-    /// <summary>Gets stat or -1.0f if not found</summary>
-    public override Variant GetStat(string statName, float mult)
-    {
-        return (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
-        {
-            AllStatsEnum.Damages => Damages * mult,
-            AllStatsEnum.FalloffRanges => FalloffRanges * mult,
-            AllStatsEnum.RPM => RPM * mult,
-            AllStatsEnum.PelletCount => PelletCount * mult,
-            AllStatsEnum.HoldingSpeed => HoldingSpeed * mult,
-            AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
-            AllStatsEnum.MagSize => MagSize * mult,
-            AllStatsEnum.MagsReserve => MagsReserve * mult,
-            AllStatsEnum.InitialDegreeSpread => InitialDegreeSpread * mult,
-            AllStatsEnum.MaxDegreeSpread => MaxDegreeSpread * mult,
-            AllStatsEnum.SpreadRecoveryRate => SpreadRecoveryRate * mult,
-            AllStatsEnum.SpreadIncreasePerShot => SpreadIncreasePerShot * mult,
-            AllStatsEnum.SlowWalkSpreadMult => SlowWalkSpreadMult * mult,
-            AllStatsEnum.FastWalkSpreadMult => FastWalkSpreadMult * mult,
-            AllStatsEnum.AimSpreadMult => AimSpreadMult * mult,
-            AllStatsEnum.AimShiftRangeVertical => AimShiftRangeVertical * mult,
-            AllStatsEnum.AimShiftRangeHorizontal => AimShiftRangeHorizontal * mult,
-            _ => -1f,
-        };
-    }
-
-    /// <summary>Gets names of all stats or empty array if none</summary>
-    public override string[] GetStatsEnum()
-    {
-        return Enum.GetNames(typeof(AllStatsEnum));
-    }
-
-    /// <summary>Gets sign of stat based on its enum</summary>
-    public override int GetStatSign(string statName)
-    {
-        return Math.Sign((int)Enum.Parse(typeof(AllStatsEnum), statName));
-    }
-
     [Export]
     public Vector2 Damages { get; private set; } = new Vector2(10f, 4f);
     [Export]
@@ -122,9 +61,9 @@ public partial class ToolFirearmHitscan : ToolFirearm
             var ray = space.IntersectRay(query);
 
             var bulletPitch = Mathf.Atan2(dir.Y, Mathf.Sqrt(dir.X * dir.X + dir.Z * dir.Z));
-            var bullettYaw = Mathf.Atan2(dir.X, dir.Z);
+            var bulletYaw = Mathf.Atan2(dir.X, dir.Z);
             fi.Tool.BulletParticles[i].GlobalPosition = fi.Tool.MuzzleFlashParticle.GlobalPosition;
-            fi.Tool.BulletParticles[i].GlobalRotation = new Vector3(0, bullettYaw - Mathf.DegToRad(90f), bulletPitch);
+            fi.Tool.BulletParticles[i].GlobalRotation = new Vector3(0, bulletYaw - Mathf.DegToRad(90f), bulletPitch);
             fi.Tool.BulletParticles[i].Lifetime = 10d;
             fi.Tool.BulletParticles[i].Restart();
 
@@ -208,5 +147,66 @@ public partial class ToolFirearmHitscan : ToolFirearm
         }
 
         return 1f;
+    }
+
+    // sign determines buff direction
+    public enum AllStatsEnum
+    {
+        Damages = 1,
+        FalloffRanges = 2,
+        RPM = 3,
+        HoldingSpeed = 5,
+        FloatDamage = 9,
+        PelletCount = 4,
+        ReloadDelayMs = -1,
+        MagSize = 6,
+        MagsReserve = 7,
+        InitialDegreeSpread = -2,
+        MaxDegreeSpread = -3,
+        SpreadRecoveryRate = 8,
+        SpreadIncreasePerShot = -4,
+        SlowWalkSpreadMult = -5,
+        FastWalkSpreadMult = -6,
+        AimSpreadMult = -7,
+        AimShiftRangeVertical = -8,
+        AimShiftRangeHorizontal = -9,
+    }
+
+    /// <summary>Gets stat or -1.0f if not found</summary>
+    public override Variant GetStat(string statName, float mult)
+    {
+        return (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+        {
+            AllStatsEnum.Damages => Damages * mult,
+            AllStatsEnum.FalloffRanges => FalloffRanges * mult,
+            AllStatsEnum.RPM => RPM * mult,
+            AllStatsEnum.PelletCount => PelletCount * mult,
+            AllStatsEnum.HoldingSpeed => HoldingSpeed * mult,
+            AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
+            AllStatsEnum.MagSize => MagSize * mult,
+            AllStatsEnum.MagsReserve => MagsReserve * mult,
+            AllStatsEnum.InitialDegreeSpread => InitialDegreeSpread * mult,
+            AllStatsEnum.MaxDegreeSpread => MaxDegreeSpread * mult,
+            AllStatsEnum.SpreadRecoveryRate => SpreadRecoveryRate * mult,
+            AllStatsEnum.SpreadIncreasePerShot => SpreadIncreasePerShot * mult,
+            AllStatsEnum.SlowWalkSpreadMult => SlowWalkSpreadMult * mult,
+            AllStatsEnum.FastWalkSpreadMult => FastWalkSpreadMult * mult,
+            AllStatsEnum.AimSpreadMult => AimSpreadMult * mult,
+            AllStatsEnum.AimShiftRangeVertical => AimShiftRangeVertical * mult,
+            AllStatsEnum.AimShiftRangeHorizontal => AimShiftRangeHorizontal * mult,
+            _ => -1f,
+        };
+    }
+
+    /// <summary>Gets names of all stats or empty array if none</summary>
+    public override string[] GetStatsEnum()
+    {
+        return Enum.GetNames(typeof(AllStatsEnum));
+    }
+
+    /// <summary>Gets sign of stat based on its enum</summary>
+    public override int GetStatSign(string statName)
+    {
+        return Math.Sign((int)Enum.Parse(typeof(AllStatsEnum), statName));
     }
 }

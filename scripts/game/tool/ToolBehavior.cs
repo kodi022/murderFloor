@@ -3,8 +3,7 @@ namespace Shooter.Game;
 public class ToolBehavior
 {
     public Tool ParentTool { get; set; }
-
-    private protected ToolConfig tc => ParentTool.ToolConfig;
+    private protected ToolConfig Tc => ParentTool.ToolConfig;
 
     public virtual void Ready()
     {
@@ -36,7 +35,7 @@ public class ToolBehavior
 
     }
 
-    public virtual async void Bolt(Resource.Tool.FireInfo fi)
+    public virtual void Bolt(Resource.Tool.FireInfo fi)
     {
 
     }
