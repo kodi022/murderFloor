@@ -528,6 +528,23 @@ text = "4"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="HBoxContainer5" type="HBoxContainer" parent="Bottom - Right/Offset/VBoxContainer" unique_id=217360121]
+layout_mode = 2
+alignment = 2
+
+[node name="Panel" type="Panel" parent="Bottom - Right/Offset/VBoxContainer/HBoxContainer5" unique_id=1487315679]
+custom_minimum_size = Vector2(20, 54)
+custom_maximum_size = Vector2(20, 54)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Bottom - Right/Offset/VBoxContainer/HBoxContainer5/Panel" unique_id=1903077405]
+layout_mode = 0
+offset_right = 20.0
+offset_bottom = 54.0
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="WeightPanel" type="Panel" parent="Bottom - Right/Offset" unique_id=1038518463]
 clip_children = 1
 clip_contents = true

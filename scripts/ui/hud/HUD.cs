@@ -90,8 +90,9 @@ public partial class Hud : ScreenScaleLimiter
 
         weaponsContainer.GetChild(0).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectprimary");
         weaponsContainer.GetChild(1).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectsecondary");
-        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectspecial");
-        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectmelee");
+        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectgadget");
+        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectspecial");
+        weaponsContainer.GetChild(4).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectmelee");
 
         var p = playerListVBox.GetChild(0);
         playerPanelRef = (Panel)p.Duplicate();
@@ -264,8 +265,9 @@ public partial class Hud : ScreenScaleLimiter
 
         await ListWeapons(0, Player.Self.ToolsPrimary);
         await ListWeapons(1, Player.Self.ToolsSecondary);
-        await ListWeapons(2, Player.Self.ToolsSpecial);
-        await ListWeapons(3, Player.Self.ToolsMelee);
+        await ListWeapons(2, Player.Self.ToolsGadget);
+        await ListWeapons(3, Player.Self.ToolsSpecial);
+        await ListWeapons(4, Player.Self.ToolsMelee);
     }
 
     private void ChangeCrosshair(int select)

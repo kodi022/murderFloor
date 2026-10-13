@@ -14,6 +14,7 @@ public partial class Tool : ItemResource
     {
         Primary,
         Secondary,
+        Gadget,
         Special,
         Melee
     }

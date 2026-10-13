@@ -37,6 +37,8 @@ public partial class ToolFirearm : Tool
     [Export]
     public AudioStreamMP3 FireSound { get; private set; }
     [Export]
+    public AudioStreamMP3 FireSoundSuppressed { get; private set; }
+    [Export]
     public AudioStreamMP3 DryFireSound { get; private set; }
 
     [Export]
@@ -212,10 +214,21 @@ public partial class ToolFirearm : Tool
                 case Attachment.AttachmentTypeEnum.Optic:
                     var opticModelScene = attachment.MeshScene.Instantiate<Node3D>();
                     sightAttachmentNode.AddChild(opticModelScene);
-                    var attachSightNode = (Node3D)opticModelScene.FindChildren("Sight").FirstOrDefault(new Node3D());
+                    var attachSightNode = (Node3D)opticModelScene.FindChildren("Point-Sight").FirstOrDefault(new Node3D());
                     builtToolData.SightPositionOffset = new Vector3(-sightAttachmentNode.Position.Z, -sightAttachmentNode.Position.Y, 0);
                     builtToolData.SightPositionOffset += new Vector3(-attachSightNode.Position.Z, -attachSightNode.Position.Y, 0);
                     builtToolData.OpticZoom = ((AttachmentOptic)attachment).OpticZoom;
+                    break;
+                case Attachment.AttachmentTypeEnum.Muzzle:
+                case Attachment.AttachmentTypeEnum.MuzzleSuppressor:
+                    var muzzleModelScene = attachment.MeshScene.Instantiate<Node3D>();
+                    muzzleNode.AddChild(muzzleModelScene);
+                    var attachMuzzleNode = (Node3D)muzzleModelScene.FindChildren("Point-Muzzle").FirstOrDefault(new Node3D());
+                    builtToolData.MuzzlePosition += attachMuzzleNode.Position;
+
+                    if (attachment.AttachmentType is Attachment.AttachmentTypeEnum.MuzzleSuppressor)
+                        builtToolData.Suppressed = true;
+
                     break;
             }
         }

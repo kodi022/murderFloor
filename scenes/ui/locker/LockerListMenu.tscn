@@ -3,11 +3,12 @@
 [ext_resource type="Script" uid="uid://bnjls7s41ytxt" path="res://scripts/ui/locker/LockerListMenu.cs" id="1_8cb7a"]
 [ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_xff2p"]
 [ext_resource type="Texture2D" uid="uid://dq6cv60egwkq0" path="res://images/ui/ninepatch/ninepatch-minimal.png" id="3_ml1l3"]
+[ext_resource type="PackedScene" uid="uid://cuko3lrlt3d28" path="res://scenes/ui/tool/ToolInfo.tscn" id="4_ml1l3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6eor5"]
 bg_color = Color(0.16575891, 0.17362446, 0.19090384, 1)
 
-[node name="LockerListMenu" type="Control" unique_id=864099879 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "returnButton", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel", "toolStatsPanel")]
+[node name="LockerListMenu" type="Control" unique_id=864099879 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "returnButton", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel", "toolIntoPanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,7 +25,7 @@ equipToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxC
 modifyToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button2")
 advancedToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button3")
 totalWeightLabel = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer2/RichTextLabel")
-toolStatsPanel = NodePath("Panel/BottomRightMarginContainerStats/ToolStatsPanel")
+toolIntoPanel = NodePath("Panel/BottomRightMarginContainerStats/ToolInfo")
 
 [node name="Panel" type="Panel" parent="." unique_id=1279919527]
 layout_mode = 0
@@ -162,7 +163,7 @@ size_flags_vertical = 0
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 bbcode_enabled = true
-text = "[img=32]res://images/ui/TablerWeight.png[/img]6 / 20"
+text = "[img=32]res://images/ui/icon/TablerWeight.png[/img]6 / 20"
 
 [node name="BottomRightMarginContainerStats" type="MarginContainer" parent="Panel" unique_id=1928899341]
 layout_mode = 1
@@ -171,121 +172,14 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -540.0
-offset_top = -360.0
+offset_left = -280.0
+offset_top = -320.0
 offset_bottom = 0.00048828125
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="ToolStatsPanel" type="Panel" parent="Panel/BottomRightMarginContainerStats" unique_id=185527768]
+[node name="ToolInfo" parent="Panel/BottomRightMarginContainerStats" unique_id=1586650967 instance=ExtResource("4_ml1l3")]
 layout_mode = 2
-
-[node name="NinePatchRect2" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1859671204]
-texture_filter = 2
-layout_mode = 0
-offset_right = 520.0
-offset_bottom = 340.0
-texture = ExtResource("3_ml1l3")
-patch_margin_left = 32
-patch_margin_top = 32
-patch_margin_right = 32
-patch_margin_bottom = 32
-
-[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=410363790]
-layout_mode = 0
-offset_right = 520.0
-offset_bottom = 36.0
-theme_override_font_sizes/font_size = 20
-text = "_coolgun_"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1609849874]
-layout_mode = 0
-offset_top = 34.0
-offset_right = 255.0
-offset_bottom = 58.0
-bbcode_enabled = true
-text = "[color=#AAAAAA]_tarnished_"
-autowrap_mode = 0
-tab_size = 0
-shortcut_keys_enabled = false
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="RichTextLabel2" type="RichTextLabel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=325479833]
-layout_mode = 0
-offset_left = 265.0
-offset_top = 34.0
-offset_right = 520.0
-offset_bottom = 58.0
-bbcode_enabled = true
-text = "[color=#AACAAA]_uncommon_"
-autowrap_mode = 0
-tab_size = 0
-shortcut_keys_enabled = false
-vertical_alignment = 1
-
-[node name="PanelSimple" type="Panel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1189076697]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 65.0
-offset_right = 510.0
-offset_bottom = 330.0
-
-[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelSimple" unique_id=1423052811]
-texture_filter = 2
-layout_mode = 0
-offset_right = 500.0
-offset_bottom = 265.0
-texture = ExtResource("3_ml1l3")
-patch_margin_left = 32
-patch_margin_top = 32
-patch_margin_right = 32
-patch_margin_bottom = 32
-
-[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelSimple" unique_id=2032936145]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 104.0
-offset_bottom = 28.0
-text = "COOL STATS:"
-
-[node name="Label1" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelSimple" unique_id=123602544]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 28.0
-offset_right = 123.0
-offset_bottom = 51.0
-text = "the stats in question"
-
-[node name="PanelAdvanced" type="Panel" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel" unique_id=1322578164]
-visible = false
-layout_mode = 0
-offset_left = 10.0
-offset_top = 65.0
-offset_right = 510.0
-offset_bottom = 330.0
-
-[node name="NinePatchRect" type="NinePatchRect" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelAdvanced" unique_id=1576658535]
-texture_filter = 2
-layout_mode = 0
-offset_right = 500.0
-offset_bottom = 265.0
-texture = ExtResource("3_ml1l3")
-patch_margin_left = 32
-patch_margin_top = 32
-patch_margin_right = 32
-patch_margin_bottom = 32
-
-[node name="Label" type="Label" parent="Panel/BottomRightMarginContainerStats/ToolStatsPanel/PanelAdvanced" unique_id=348121466]
-layout_mode = 0
-offset_left = 103.0
-offset_top = 41.0
-offset_right = 269.0
-offset_bottom = 144.0
-text = "wip"
 
 [node name="ReturnButton" type="Button" parent="Panel" unique_id=663384655]
 layout_mode = 0

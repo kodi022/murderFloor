@@ -7,6 +7,7 @@ public partial class Attachment : ItemResource
     {
         Optic,
         Muzzle,
+        MuzzleSuppressor,
         Barrel,
         Gadget,
     }

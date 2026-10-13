@@ -18,6 +18,7 @@ public partial class Mob : Pawn
             worldModels.Visible = value;
             collisionShape3D.SetDeferred("disabled", !value);
             Visible = value;
+            ResetPhysicsInterpolation();
         }
     }
 
@@ -94,8 +95,8 @@ public partial class Mob : Pawn
             body.SetMeta("decal", "res://images/decal/bodyblooddecal1.png");
         }
 
-        GlobalPosition = pos;
         ResetPhysicsInterpolation();
+        GlobalPosition = pos;
         MobResource = ResourceManager.MobRegistry.GetResourceRef(MobResourceFullId);
         MaxHealth = MobResource.MaxHealth;
         Health = MaxHealth;
@@ -111,6 +112,7 @@ public partial class Mob : Pawn
         if (!Active) return;
         Active = false;
 
+        ResetPhysicsInterpolation();
         base.OnDeath(damageInfo);
         Game.Current.MobDeath(damageInfo, MobPoolId);
 

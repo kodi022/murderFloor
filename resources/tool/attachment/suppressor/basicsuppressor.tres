@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Attachment" format=3 uid="uid://v8wnjus2ujdm"]
+
+[ext_resource type="PackedScene" uid="uid://3qr8ly3ldnku" path="res://scenes/tool/attachment/suppressor/basicsuppressor.blend" id="1_bed2x"]
+[ext_resource type="Script" uid="uid://bo8dgn78441mc" path="res://scripts/resource/attachment/Attachment.cs" id="1_hxqb2"]
+
+[resource]
+script = ExtResource("1_hxqb2")
+AttachmentType = 2
+ResourceId = "basicsuppressor"
+MeshScene = ExtResource("1_bed2x")
+IsRandomLoot = true
+metadata/_custom_type_script = "uid://bo8dgn78441mc"

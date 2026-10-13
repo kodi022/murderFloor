@@ -22,10 +22,14 @@ public partial class ToolFirearmHitscan : ToolFirearm
     {
         Rng.Randomize();
 
-        fi.Player.AddCameraRotationKick(new Vector3(CameraRotationKick.X, 0, CameraRotationKick.Y));
+        var camKick = CameraRotationKick;
+        fi.Player.AddCameraRotationKick(new Vector3(camKick.X, 0, camKick.Y));
 
-        var viewPosKick = new Vector3(0, ViewmodelPositionKick.X, ViewmodelPositionKick.Y);
-        var viewRotKick = new Vector3(ViewmodelRotationKick.X, 0, ViewmodelRotationKick.Y);
+        var posKick = ViewmodelPositionKick;
+        var viewPosKick = new Vector3(0, posKick.X, posKick.Y);
+        var rotKick = ViewmodelRotationKick;
+        var viewRotKick = new Vector3(rotKick.X, 0, rotKick.Y);
+
         if (fi.Tool.Aiming)
         {
             fi.Player.AddViewmodelPositionKick(viewPosKick * 0.5f, 6f);
@@ -39,13 +43,16 @@ public partial class ToolFirearmHitscan : ToolFirearm
             fi.Player.AddCameraShake(ScreenShakeAmount);
         }
 
+        var aimShiftV = (Vector2)fi.Tool.ToolConfig.GetStat(ToolFirearm.PropertyName.AimShiftRangeVertical);
+        var aimShiftH = (Vector2)fi.Tool.ToolConfig.GetStat(ToolFirearm.PropertyName.AimShiftRangeHorizontal);
+
         fi.Player.ViewAngle += new Vector2(
-            Rng.RandfRange(AimShiftRangeHorizontal.X, AimShiftRangeHorizontal.Y),
-            Rng.RandfRange(AimShiftRangeVertical.X, AimShiftRangeVertical.Y)
+            Rng.RandfRange(aimShiftH.X, aimShiftH.Y),
+            Rng.RandfRange(aimShiftV.X, aimShiftV.Y)
         );
 
         var firearmBehavior = (Game.ToolBehaviorFirearm)fi.Tool.ToolBehavior;
-        for (int i = 0; i < PelletCount; i++)
+        for (int i = 0; i < (int)fi.Tool.ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
         {
             float yaw = Mathf.DegToRad(Rng.RandfRange(-firearmBehavior.CurrentSpread.X, firearmBehavior.CurrentSpread.X));
             float pitch = Mathf.DegToRad(Rng.RandfRange(-firearmBehavior.CurrentSpread.Y, firearmBehavior.CurrentSpread.Y));
@@ -103,20 +110,22 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
             if (pawn is null) continue;
 
-            var nearSqr = FalloffRanges.X * FalloffRanges.X;
-            var farSqr = FalloffRanges.Y * FalloffRanges.Y;
-            var damage = Damages.X;
+            var dmg = (Vector2)fi.Tool.ToolConfig.GetStat(PropertyName.Damages);
+            var falloff = (Vector2)fi.Tool.ToolConfig.GetStat(PropertyName.FalloffRanges);
+            var nearSqr = falloff.X * falloff.X;
+            var farSqr = falloff.Y * falloff.Y;
+            var damage = dmg.X;
 
             if (distanceSqr > nearSqr)
             {
                 if (distanceSqr > farSqr)
                 {
-                    damage = Damages.Y;
+                    damage = dmg.Y;
                 }
                 else
                 {
                     var rangeFalloffNormalized = 1 - ((nearSqr - distanceSqr) / (nearSqr - farSqr));
-                    damage = Damages.Y + (Damages.X - Damages.Y) * rangeFalloffNormalized;
+                    damage = dmg.Y + (dmg.X - dmg.Y) * rangeFalloffNormalized;
                 }
             }
 
@@ -149,16 +158,17 @@ public partial class ToolFirearmHitscan : ToolFirearm
         return 1f;
     }
 
+    // * IF CHANGING, remember to change in ui/tool/ToolInfo
     // sign determines buff direction
     public enum AllStatsEnum
     {
         Damages = 1,
         FalloffRanges = 2,
         RPM = 3,
-        HoldingSpeed = 5,
-        FloatDamage = 9,
         PelletCount = 4,
+        HoldingSpeed = 5,
         ReloadDelayMs = -1,
+        ManualFireDelayMs = -10,
         MagSize = 6,
         MagsReserve = 7,
         InitialDegreeSpread = -2,
@@ -183,6 +193,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             AllStatsEnum.PelletCount => PelletCount * mult,
             AllStatsEnum.HoldingSpeed => HoldingSpeed * mult,
             AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
+            AllStatsEnum.ManualFireDelayMs => ManualFireDelayMs * mult,
             AllStatsEnum.MagSize => MagSize * mult,
             AllStatsEnum.MagsReserve => MagsReserve * mult,
             AllStatsEnum.InitialDegreeSpread => InitialDegreeSpread * mult,

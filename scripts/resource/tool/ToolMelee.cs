@@ -77,6 +77,7 @@ public partial class ToolMelee : Tool
         return 1f;
     }
 
+    // * IF CHANGING, remember to change in ui/tool/ToolInfo
     // sign determines buff direction
     public enum AllStatsEnum
     {

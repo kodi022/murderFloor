@@ -59,15 +59,37 @@ public struct LootState
         var tier = Tiers.TierInfos[rarity.Tier];
         var wear = Wears.WearInfos[rarity.Wear];
 
+        float ScaleForInt(int count, float value)
+        {
+            return Mathf.Floor(value * count) / count;
+        }
+
+        float MakeFloat(int level, float overScale, float rngScale)
+        {
+            var a = rng.Randf() * rngScale;
+            var b = tier.PowerScale * wear.PowerScale;
+            var c = 1 + level * 0.01f;
+            var d = overScale * 0.01f;
+            return a * b * c + d;
+        }
+
         foreach (var stat in toolStatsEnumStringified)
         {
             if (rng.Randf() < tier.StatChance)
             {
+                if (stat == "ManualFireDelayMs" && loot is ToolFirearm tf && tf.FireMode != ToolFirearm.FireModeEnum.Manual) continue;
+
+                // ! special logic for damage
+                // ! support rare chance of negative, less common for higher tiers
+
                 var add = stat switch
                 {
-                    "PelletCount" => (rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale), // ! WIP
-                    _ => rng.Randf() * 0.15f * tier.PowerScale * wear.PowerScale,
+                    "PelletCount" => ScaleForInt(((ToolFirearm)loot).PelletCount, MakeFloat(Level, OverScaling, 0.2f)),
+                    "MagSize" => ScaleForInt(((ToolFirearm)loot).MagsReserve, MakeFloat(Level, OverScaling, 0.2f)),
+                    _ => MakeFloat(Level, OverScaling, 0.1f),
                 };
+
+                if (add == 0f) continue;
 
                 if (itemResource.GetStatSign(stat) == 1)
                     StatMultipliers.Add(stat, 1f + add);
@@ -96,7 +118,7 @@ public struct LootState
 
     public readonly Game.Loot MakeLootNode()
     {
-        var newLoot = GD.Load<PackedScene>("res://scenes/Loot.tscn").Instantiate<Game.Loot>();
+        var newLoot = GD.Load<PackedScene>("res://scenes/pickup/Loot.tscn").Instantiate<Game.Loot>();
         newLoot.Position = Vector3.Up * 0.1f;
         newLoot.StateInfo = this;
         var importYaw = 0f;

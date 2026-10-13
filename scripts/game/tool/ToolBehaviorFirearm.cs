@@ -87,7 +87,10 @@ public class ToolBehaviorFirearm : ToolBehavior
             ParentTool.AnimationPlayer.Stop();
             ParentTool.AnimationPlayer.Play("fire");
             var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
-            poly.PlayStream(Firearm.FireSound, bus: "Effects");
+            if (fi.Tool.BuiltTool.Suppressed)
+                poly.PlayStream(Firearm.FireSoundSuppressed, bus: "Effects");
+            else
+                poly.PlayStream(Firearm.FireSound, bus: "Effects");
 
             ParentTool.MuzzleFlashParticle.Restart();
 

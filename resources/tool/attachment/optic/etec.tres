@@ -1,10 +1,11 @@
 [gd_resource type="Resource" script_class="AttachmentOptic" format=3 uid="uid://d4cruwaoa7i05"]
 
-[ext_resource type="PackedScene" uid="uid://3f3btq20l0k4" path="res://scenes/tool/attachment/optic/etec/etec.blend" id="1_joe86"]
+[ext_resource type="PackedScene" uid="uid://3f3btq20l0k4" path="res://scenes/tool/attachment/optic/etec.blend" id="1_joe86"]
 [ext_resource type="Script" uid="uid://cfv7bnfuln0a" path="res://scripts/resource/attachment/AttachmentOptic.cs" id="1_mxsou"]
 
 [resource]
 script = ExtResource("1_mxsou")
+OpticZoom = 1.25
 ResourceId = "etec"
 MeshScene = ExtResource("1_joe86")
 IsRandomLoot = true

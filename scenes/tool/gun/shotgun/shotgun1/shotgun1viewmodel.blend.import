@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cyhvbxh36ux6t"
+uid="uid://ceybcwubon1fx"
 path="res://.godot/imported/shotgun1viewmodel.blend-78339cccb5a399e793ec5c80e168d02d.scn"
 
 [deps]
@@ -32,22 +32,14 @@ meshes/force_disable_compression=false
 skins/use_named_skins=true
 animation/import=true
 animation/fps=30
-animation/trimming=true
+animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={
-"materials": {
-"Gunmetal": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://materials/surface/metal/metal061a/metal061a.tres",
-"use_external/path": "uid://b2imlf1d430sx"
-}
-}
-}
+_subresources={}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true

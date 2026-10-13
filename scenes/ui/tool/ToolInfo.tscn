@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://cuko3lrlt3d28"]
+
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_j4smu"]
+[ext_resource type="Texture2D" uid="uid://c85wq0g572wis" path="res://images/ui/ninepatch/ninepatch-greyscale.png" id="2_2st4w"]
+[ext_resource type="Script" uid="uid://bfphifg030hcx" path="res://scripts/ui/tool/ToolInfo.cs" id="2_ha8df"]
+[ext_resource type="Texture2D" uid="uid://dq6cv60egwkq0" path="res://images/ui/ninepatch/ninepatch-minimal.png" id="3_ha8df"]
+
+[node name="ToolInfo" type="Control" unique_id=1586650967 node_paths=PackedStringArray("title", "tierLabel", "wearLabel", "statsLabel")]
+layout_mode = 3
+anchors_preset = 0
+theme = ExtResource("1_j4smu")
+script = ExtResource("2_ha8df")
+title = NodePath("ToolStatsPanel/Label")
+tierLabel = NodePath("ToolStatsPanel/RichTextLabel2")
+wearLabel = NodePath("ToolStatsPanel/RichTextLabel")
+statsLabel = NodePath("ToolStatsPanel/Stats/Label1")
+
+[node name="ToolStatsPanel" type="Panel" parent="." unique_id=280253631]
+layout_mode = 0
+offset_right = 260.0
+offset_bottom = 300.0
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="ToolStatsPanel" unique_id=1442101538]
+modulate = Color(0.5483482, 0.5943874, 0.6315303, 1)
+texture_filter = 2
+layout_mode = 0
+offset_right = 260.0
+offset_bottom = 300.0
+texture = ExtResource("2_2st4w")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="Label" type="RichTextLabel" parent="ToolStatsPanel" unique_id=2010975266]
+layout_mode = 0
+offset_right = 260.0
+offset_bottom = 36.0
+theme_override_font_sizes/normal_font_size = 16
+text = "_coolgun_"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ToolStatsPanel" unique_id=1936280974]
+layout_mode = 0
+offset_top = 34.0
+offset_right = 128.0
+offset_bottom = 53.0
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "[color=aaaaaa]_tarnished_"
+autowrap_mode = 0
+tab_size = 0
+shortcut_keys_enabled = false
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="ToolStatsPanel" unique_id=1751142396]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 34.0
+offset_right = 260.0
+offset_bottom = 53.0
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "[color=aacaaa]_uncommon_"
+autowrap_mode = 0
+tab_size = 0
+shortcut_keys_enabled = false
+vertical_alignment = 1
+
+[node name="Stats" type="Panel" parent="ToolStatsPanel" unique_id=1479413190]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 56.0
+offset_right = 253.0
+offset_bottom = 293.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="ToolStatsPanel/Stats" unique_id=1432958133]
+texture_filter = 2
+layout_mode = 0
+offset_right = 246.0
+offset_bottom = 237.0
+texture = ExtResource("3_ha8df")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="Label1" type="RichTextLabel" parent="ToolStatsPanel/Stats" unique_id=1642302899]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 241.0
+offset_bottom = 232.0
+theme_override_constants/line_separation = -5
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "cool:
+5.15      x1.12"
+scroll_active = false
+autowrap_mode = 0
+autowrap_trim_flags = 0
+shortcut_keys_enabled = false
+justification_flags = 0

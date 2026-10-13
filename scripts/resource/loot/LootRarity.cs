@@ -11,8 +11,6 @@ public struct LootRarity
     public Wears.WearEnum Wear { get; private set; }
     public double SuperScale { get; private set; }
 
-    // loot drop algorithm must depend on difficulty settings and player level
-    // no high level loot on low difficulty
     public LootRarity(LootState lootState)
     {
         Seed = lootState.Seed;

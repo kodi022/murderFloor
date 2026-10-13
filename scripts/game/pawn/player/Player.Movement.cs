@@ -57,6 +57,7 @@ public partial class Player : Pawn
         else
         {
             lastVel *= new Vector3(0.992f, 0.95f, 0.992f);
+            lastVel += wishVel * 0.05f;
         }
 
         Gravity();

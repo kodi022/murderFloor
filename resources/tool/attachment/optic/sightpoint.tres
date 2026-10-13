@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AttachmentOptic" format=3 uid="uid://cxck4o0mit1rh"]
+
+[ext_resource type="PackedScene" uid="uid://cpib6er4xsr7q" path="res://scenes/tool/attachment/optic/sightpoint.blend" id="1_cform"]
+[ext_resource type="Script" uid="uid://cfv7bnfuln0a" path="res://scripts/resource/attachment/AttachmentOptic.cs" id="2_s7e34"]
+
+[resource]
+script = ExtResource("2_s7e34")
+OpticZoom = 1.1
+ResourceId = "sightpoint"
+MeshScene = ExtResource("1_cform")
+IsRandomLoot = true
+NameLocalizationGroup = "attachment"
+metadata/_custom_type_script = "uid://bo8dgn78441mc"

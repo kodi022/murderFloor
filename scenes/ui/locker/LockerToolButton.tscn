@@ -83,7 +83,7 @@ offset_top = 57.0
 offset_right = 128.0
 offset_bottom = 78.0
 bbcode_enabled = true
-text = "[img=16]res://images/ui/TablerWeight.png[/img]2"
+text = "[img=16]res://images/ui/icon/TablerWeight.png[/img]2"
 scroll_active = false
 autowrap_mode = 0
 

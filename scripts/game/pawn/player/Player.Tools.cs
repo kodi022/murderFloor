@@ -7,15 +7,16 @@ public partial class Player : Pawn
 
     public List<Tool> ToolsPrimary { get; private set; } = [];
     public List<Tool> ToolsSecondary { get; private set; } = [];
+    public List<Tool> ToolsGadget { get; private set; } = [];
     public List<Tool> ToolsSpecial { get; private set; } = [];
     public List<Tool> ToolsMelee { get; private set; } = [];
 
     // reference from tool list
     public Tool SelectedTool = null;
     public Resource.Tool.SlotEnum SelectedSlot { get; private set; } = Resource.Tool.SlotEnum.Primary;
-    public int SelectedToolIndex { get; private set; } = 0;
+    public int SelectedToolIndex { get; private set; } = -1;
 
-    public int ToolCount => ToolsPrimary.Count + ToolsSecondary.Count + ToolsSpecial.Count + ToolsMelee.Count;
+    public int ToolCount => ToolsPrimary.Count + ToolsSecondary.Count + ToolsGadget.Count + ToolsSpecial.Count + ToolsMelee.Count;
 
     public int MaxWeight { get; set; } = 20;
     public int ToolWeight => GetToolsWeight();
@@ -269,6 +270,7 @@ public partial class Player : Pawn
 
         AddTools(ToolsPrimary);
         AddTools(ToolsSecondary);
+        AddTools(ToolsGadget);
         AddTools(ToolsSpecial);
         AddTools(ToolsMelee);
         return allTools;
@@ -293,6 +295,7 @@ public partial class Player : Pawn
         }
         AddTools(ToolsPrimary);
         AddTools(ToolsSecondary);
+        AddTools(ToolsGadget);
         AddTools(ToolsSpecial);
         AddTools(ToolsMelee);
         return allTools;
@@ -309,27 +312,21 @@ public partial class Player : Pawn
         return weight;
     }
 
-    private List<Tool> GetToolListFromTool(string toolId)
-    {
-        return ResourceManager.ToolRegistry.GetResourceRef(toolId).GetSlot() switch
-        {
-            Resource.Tool.SlotEnum.Primary => ToolsPrimary,
-            Resource.Tool.SlotEnum.Secondary => ToolsSecondary,
-            Resource.Tool.SlotEnum.Special => ToolsSpecial,
-            Resource.Tool.SlotEnum.Melee => ToolsMelee,
-            _ => ToolsPrimary,
-        };
-    }
-
     private List<Tool> GetToolListFromSlot(Resource.Tool.SlotEnum slot)
     {
         return slot switch
         {
             Resource.Tool.SlotEnum.Primary => ToolsPrimary,
             Resource.Tool.SlotEnum.Secondary => ToolsSecondary,
+            Resource.Tool.SlotEnum.Gadget => ToolsGadget,
             Resource.Tool.SlotEnum.Special => ToolsSpecial,
             Resource.Tool.SlotEnum.Melee => ToolsMelee,
             _ => ToolsPrimary,
         };
+    }
+
+    private List<Tool> GetToolListFromTool(string toolId)
+    {
+        return GetToolListFromSlot(ResourceManager.ToolRegistry.GetResourceRef(toolId).GetSlot());
     }
 }

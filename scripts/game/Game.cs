@@ -53,7 +53,7 @@ public partial class Game : Node
     public ulong TimeMsBetweenWaves => DifficultyConfig.GetTimeBetweenWaves(Wave);
 
     [Export]
-    public int MaxWave { get; private set; } = 1;
+    public int MaxWave { get; private set; } = 5;
     [Export]
     public int Wave { get; private set; } = 0;
     [Export]
@@ -223,11 +223,12 @@ public partial class Game : Node
 
     private void ProcessLoot(DamageInfo damageInfo)
     {
-        if (rngLoot.Randf() > 0.98f)
+        if (rngLoot.Randf() > 0.9f) // 98? 96?
         {
             var map = Ui.MapSelect.SelectedMapNetworked;
-            var levelFloat = (int)DifficultyConfig.Difficulty * 15f + (5f * map.MapDifficultyScale * rngLoot.Randfn(1, 0.05f));
+            var levelFloat = (int)DifficultyConfig.Difficulty * 15f + (5f * map.MapDifficultyScale + rngLoot.Randfn(0f, 2f));
             var level = (int)Mathf.Clamp(levelFloat, 0, 100);
+            GD.Print(level);
             var challengeBitmask = (DifficultyConfig.C1 ? 1 : 0) + (DifficultyConfig.C2 ? 2 : 0); // next would be ? 4 : 0
             var lootState = new Resource.Loot.LootState(GameSeed + rngLoot.Randi(), map.HashId, level, DifficultyConfig.Difficulty, challengeBitmask, DifficultyConfig.Overscaling);
 

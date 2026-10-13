@@ -27,7 +27,7 @@ public partial class LockerListMenu : Control
     [Export]
     private RichTextLabel totalWeightLabel;
     [Export]
-    private Panel toolStatsPanel;
+    private ToolInfo toolInfoPanel;
 
     private bool previewSceneCreated;
     private Camera3D cam;
@@ -200,7 +200,7 @@ public partial class LockerListMenu : Control
         isSelectedToolEquipped = Game.Player.Self.HasTool(selectedToolLootState);
         selectedToolLockerToolButton.CheckState(selectedToolLootState);
 
-        var strIcon = "[img=32]res://images/ui/TablerWeight.png[/img]";
+        var strIcon = "[img=32]res://images/ui/icon/TablerWeight.png[/img]";
         if (Game.Player.Self.HasTool(selectedToolLootState))
         {
             totalWeightLabel.Text = strIcon + $"{Game.Player.Self.ToolWeight} / {Game.Player.Self.MaxWeight} (-{selectedTool.CarryWeight})";
@@ -212,21 +212,9 @@ public partial class LockerListMenu : Control
             equipToolButton.Disabled = Game.Player.Self.ToolWeight + selectedTool.CarryWeight > Game.Player.Self.MaxWeight;
         }
 
-        var lootRef = selectedToolLootState.GetLootRef();
-        var lootRarity = new LootRarity(selectedToolLootState);
-        toolStatsPanel.GetChild<Label>(1).Text = lootRef.FullId;
-        toolStatsPanel.GetChild<RichTextLabel>(2).Text = $"[color={Wears.WearInfos[lootRarity.Wear]}]{lootRarity.Wear}";
-        toolStatsPanel.GetChild<RichTextLabel>(3).Text = $"[color={Tiers.TierInfos[lootRarity.Tier].Color.ToHtml()}]{lootRarity.Tier}";
-
-        var simplePanel = toolStatsPanel.GetChild<Panel>(4);
-
-        var str = "";
-        foreach (var stat in selectedToolLootState.StatMultipliers)
-        {
-            str += $"{stat.Key} {stat.Value:0.00}x" + "\n";
-        }
-
-        simplePanel.GetChild<Label>(2).Text = str;
+        var atts = SaveManager.CurrentSave.GetAttachmentsOnTool(selectedToolLootState);
+        var t = new ToolConfig(selectedToolLootState, atts);
+        toolInfoPanel.Build(t);
 
         BuildToolViewport();
     }

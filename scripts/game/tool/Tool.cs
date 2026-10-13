@@ -73,13 +73,16 @@ public partial class Tool : Node
 
     public override void _Process(double delta)
     {
-        if (!equipped) return;
-
         //AnimationPlayer?.Play(ToolResource.HoldTypeAnimation);
 
-        currentAimingPositionLerp += Aiming ? (float)delta * 4f : -(float)delta * 4f;
-        currentAimingPositionLerp = Mathf.Clamp(currentAimingPositionLerp, 0f, 1f);
-        viewmodelScene.Position = viewmodelSceneStartPos.Lerp(viewmodelSceneSightPosition + BuiltTool.SightPositionOffset, currentAimingPositionLerp);
+        if (IsInstanceValid(viewmodelScene))
+        {
+            currentAimingPositionLerp += Aiming ? (float)delta * 4f : -(float)delta * 4f;
+            currentAimingPositionLerp = Mathf.Clamp(currentAimingPositionLerp, 0f, 1f);
+            viewmodelScene.Position = viewmodelSceneStartPos.Lerp(viewmodelSceneSightPosition + BuiltTool.SightPositionOffset, currentAimingPositionLerp);
+        }
+
+        if (!equipped) return;
 
         ToolBehavior.Process(delta);
 
@@ -159,7 +162,7 @@ public partial class Tool : Node
                 MuzzleFlashParticle = flashInst.GetChild<GpuParticles3D>(0);
 
                 BulletParticles = [];
-                for (int i = 0; i < tf.PelletCount; i++)
+                for (int i = 0; i < (int)ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
                 {
                     var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
                     var bulletInst = bullet.Instantiate<Node3D>();
@@ -239,7 +242,6 @@ public partial class Tool : Node
                 await Task.Delay(400);
             }
         }
-
         Player.WorldAnimationTree.RemoveAnimationLibrary(ToolAnimLibraryKey);
 
         if (ToolResource is ToolFirearm)

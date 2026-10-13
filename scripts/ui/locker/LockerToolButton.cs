@@ -34,7 +34,7 @@ public partial class LockerToolButton : Panel
 
         if (isTool)
         {
-            weightLabel.Text = $"[img=16]res://images/ui/TablerWeight.png[/img]{((Resource.Tool)lootResource).CarryWeight}";
+            weightLabel.Text = $"[img=16]res://images/ui/icon/TablerWeight.png[/img]{((Resource.Tool)lootResource).CarryWeight}";
         }
         else
         {

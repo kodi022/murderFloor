@@ -135,7 +135,7 @@ offset_left = 10.0
 offset_top = 10.0
 offset_right = 81.0
 offset_bottom = 33.0
-text = "Exp +100"
+text = "bing ---"
 
 [node name="Panel" type="Panel" parent="Panel/LevelPanel?" unique_id=443904391]
 clip_contents = true
