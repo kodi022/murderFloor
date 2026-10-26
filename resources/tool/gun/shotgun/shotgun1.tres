@@ -10,10 +10,10 @@
 
 [resource]
 script = ExtResource("1_mub5q")
-Damages = Vector2(25, 5)
+Damages = Vector2(13, 6)
 FalloffRanges = Vector2(8, 20)
 MaxRange = 70.0
-FirearmType = 6
+FirearmType = 3
 RPM = 300.0
 FireSound = ExtResource("2_nh8lw")
 FireSoundSuppressed = ExtResource("3_tdjou")
@@ -23,7 +23,6 @@ ReloadDelayMs = 2000
 ReloadSound = ExtResource("3_g1vac")
 PartialReloadAnimationNames = null
 MagSize = 10
-MagsReserve = 5
 InitialDegreeSpread = Vector2(8, 8)
 MaxDegreeSpread = Vector2(14, 14)
 SpreadRecoveryRate = 4.5

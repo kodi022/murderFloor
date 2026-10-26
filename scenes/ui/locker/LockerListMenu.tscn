@@ -8,7 +8,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6eor5"]
 bg_color = Color(0.16575891, 0.17362446, 0.19090384, 1)
 
-[node name="LockerListMenu" type="Control" unique_id=864099879 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "returnButton", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel", "toolIntoPanel")]
+[node name="LockerListMenu" type="Control" unique_id=864099879 node_paths=PackedStringArray("grid", "rect", "rectDragControl", "returnButton", "equipToolButton", "modifyToolButton", "advancedToolButton", "totalWeightLabel", "toolInfoPanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,7 +25,7 @@ equipToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxC
 modifyToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button2")
 advancedToolButton = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer/Button3")
 totalWeightLabel = NodePath("Panel/BottomRightMarginContainerControls/Panel/VBoxContainer/PanelContainer2/RichTextLabel")
-toolIntoPanel = NodePath("Panel/BottomRightMarginContainerStats/ToolInfo")
+toolInfoPanel = NodePath("Panel/BottomRightMarginContainerStats/ToolInfo")
 
 [node name="Panel" type="Panel" parent="." unique_id=1279919527]
 layout_mode = 0

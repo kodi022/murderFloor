@@ -9,6 +9,7 @@ public partial class Mob : Pawn
 
     private bool verticalAction;
     private ulong verticalActionStartTime;
+    private ulong verticalActionLengthMs;
     private Curve3D verticalActionMovementCurve;
 
     private int startPosHash;
@@ -43,8 +44,8 @@ public partial class Mob : Pawn
         {
             var pointCount = verticalActionMovementCurve.PointCount;
             var timeOffset = Time.GetTicksMsec() - verticalActionStartTime;
-            Position = verticalActionMovementCurve.Samplef(timeOffset / 2000f * (pointCount - 1));
-            if (timeOffset >= 2000ul)
+            Position = verticalActionMovementCurve.Samplef(timeOffset / (float)verticalActionLengthMs * (pointCount - 1));
+            if (timeOffset >= verticalActionLengthMs)
             {
                 verticalAction = false;
                 Position = verticalActionMovementCurve.Samplef(1f * pointCount);
@@ -103,7 +104,7 @@ public partial class Mob : Pawn
         var distSqr = targetPos.DistanceSquaredTo(targetPawn.Position);
         targetPos += rand * distSqr * 0.05f;
 
-        velocityNoGravity = GlobalPosition.DirectionTo(targetPos) * MobResource.MovementSpeedScale * 2.9f;
+        velocityNoGravity = GlobalPosition.DirectionTo(targetPos) * MobResource.MovementSpeedScale * 2.8f * levelSpeedBuff;
 
         if (velocityNoGravity.Y > 0.05f)
             Velocity = velocityNoGravity + Vector3.Down * 0.2f;
@@ -141,31 +142,32 @@ public partial class Mob : Pawn
         {
             verticalAction = true;
             verticalActionStartTime = Time.GetTicksMsec();
+            verticalActionLengthMs = (ulong)(-exitHeightDiff * 450f * levelVerticalActionBuff);
             verticalActionMovementCurve = new();
 
-            var centerPos = (exitPos + entryPos) * 0.5f;
-            var jumpApexPos = new Vector3(centerPos.X, exitPos.Y + 0.5f, centerPos.Z);
+            var climbHeight = -exitHeightDiff + 0.1f;
+            var wallTopPos = entryPos + Vector3.Up * climbHeight;
+            var travelDirection = entryPos.DirectionTo(exitPos);
+            var horizontalDirection = new Vector3(travelDirection.X, 0f, travelDirection.Z).Normalized();
+            var climbHandleLength = climbHeight * 0.5f;
+            var travelHandleLength = entryPos.DistanceTo(exitPos) * 0.35f;
+            var wallTopOut = horizontalDirection * travelHandleLength;
 
-            var startHandleLength = (entryPos - jumpApexPos).Length() * 0.25f;
-            var entryOut = (jumpApexPos - entryPos).Normalized() * startHandleLength + Vector3.Up * 0.2f;
-            var centerIn = -entryOut + Vector3.Up * 0.4f;
-
-            var endHandleLength = (exitPos - jumpApexPos).Length() * 0.25f;
-            var centerOut = (exitPos - jumpApexPos).Normalized() * endHandleLength + Vector3.Up * 0.2f;
-            var exitIn = -centerOut + Vector3.Up * 0.4f;
-
-            verticalActionMovementCurve.AddPoint(entryPos, @out: entryOut);
-            verticalActionMovementCurve.AddPoint(jumpApexPos, centerIn, centerOut);
-            verticalActionMovementCurve.AddPoint(exitPos, @in: exitIn);
+            verticalActionMovementCurve.AddPoint(entryPos, @out: Vector3.Up * climbHandleLength);
+            verticalActionMovementCurve.AddPoint(
+                wallTopPos,
+                @in: Vector3.Down * climbHandleLength,
+                @out: wallTopOut);
+            verticalActionMovementCurve.AddPoint(exitPos, @in: -wallTopOut);
 
             int pointDotSize = 6, handleDotSize = 4;
             Color pointColor = new(1, 1, 0), handleColor = new(0, 1, 0);
             Debug.Rendering.Point(entryPos, pointDotSize, pointColor);
-            Debug.Rendering.Point(entryPos + entryOut, handleDotSize, handleColor);
-            Debug.Rendering.Point(jumpApexPos + centerIn, handleDotSize, handleColor);
-            Debug.Rendering.Point(jumpApexPos, pointDotSize, pointColor);
-            Debug.Rendering.Point(jumpApexPos + centerOut, handleDotSize, handleColor);
-            Debug.Rendering.Point(exitPos + exitIn, handleDotSize, handleColor);
+            Debug.Rendering.Point(entryPos + Vector3.Up * climbHandleLength, handleDotSize, handleColor);
+            Debug.Rendering.Point(wallTopPos + Vector3.Down * climbHandleLength, handleDotSize, handleColor);
+            Debug.Rendering.Point(wallTopPos, pointDotSize, pointColor);
+            Debug.Rendering.Point(wallTopPos + wallTopOut, handleDotSize, handleColor);
+            Debug.Rendering.Point(exitPos - wallTopOut, handleDotSize, handleColor);
             Debug.Rendering.Point(exitPos, pointDotSize, pointColor);
         }
 
@@ -174,9 +176,14 @@ public partial class Mob : Pawn
         {
             verticalAction = true;
             verticalActionStartTime = Time.GetTicksMsec();
+            verticalActionLengthMs = (ulong)(exitHeightDiff * 250f * levelVerticalActionBuff);
             verticalActionMovementCurve = new();
-            verticalActionMovementCurve.AddPoint(entryPos);
-            verticalActionMovementCurve.AddPoint(exitPos);
+            var dropHeight = exitHeightDiff;
+            var travelDirection = entryPos.DirectionTo(exitPos);
+            var horizontalDirection = new Vector3(travelDirection.X, 0f, travelDirection.Z).Normalized();
+            var launchHandle = horizontalDirection * entryPos.DistanceTo(exitPos) * 0.35f;
+            verticalActionMovementCurve.AddPoint(entryPos, @out: launchHandle);
+            verticalActionMovementCurve.AddPoint(exitPos, @in: Vector3.Up * dropHeight * 0.65f);
 
             for (int i = 0; i < 10; i++)
             {

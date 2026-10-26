@@ -112,6 +112,23 @@ public partial class Tool : Node
         if (!viewing)
         {
             AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
+            if (!IsInstanceValid(AnimationPlayer))
+            {
+                GD.PushWarning("ap not found");
+                AnimationPlayer = new();
+                equipped = true;
+                return;
+            }
+
+            foreach (var anim in AnimationPlayer.GetAnimationList())
+            {
+                GD.Print("--" + anim + "  " + AnimationPlayer.GetAnimation("fire").GetTrackCount());
+                for (int i = 0; i < AnimationPlayer.GetAnimation("fire").GetTrackCount(); i++)
+                {
+                    GD.Print(AnimationPlayer.GetAnimation(anim).TrackGetPath(i));
+                }
+            }
+
             if (AnimationPlayer.HasAnimation("equip"))
             {
                 await TaskAnimation("equip", 400);
@@ -124,7 +141,6 @@ public partial class Tool : Node
         }
 
         AnimationPlayer.Play("idle");
-        GD.Print(string.Join(',', AnimationPlayer.GetAnimationList()));
         equipped = true;
     }
 
@@ -185,7 +201,7 @@ public partial class Tool : Node
         bool armatures = false;
         foreach (var child in Player.WorldModels.GetChild(0).GetChildren())
         {
-            if (child.Name == "Armature") armatures = true;
+            if (child.Name.ToString().Contains("Armature")) armatures = true;
             if (armatures) child.Free();
         }
 
@@ -208,7 +224,7 @@ public partial class Tool : Node
                 MuzzleFlashParticle = flashInst.GetChild<GpuParticles3D>(0);
 
                 BulletParticles = [];
-                for (int i = 0; i < tf.PelletCount; i++)
+                for (int i = 0; i < (int)ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
                 {
                     var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
                     var bulletInst = bullet.Instantiate<Node3D>();

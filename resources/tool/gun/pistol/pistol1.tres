@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ToolFirearmHitscan" format=3 uid="uid://cui4lbfi0ydta"]
+
+[ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_ml1ao"]
+[ext_resource type="AudioStream" uid="uid://covia2704nuhb" path="res://sounds/tool/gun/dryfire/freesound_community-gun-dry-firing-7-39792.mp3" id="1_qvu0i"]
+[ext_resource type="AudioStream" uid="uid://bahyivwmamwls" path="res://sounds/tool/gun/fire/pistol-shot.mp3" id="2_xey72"]
+[ext_resource type="AudioStream" uid="uid://i8nmbame1cvb" path="res://sounds/tool/gun/fire/gunshotjbudden.mp3" id="3_7yw8d"]
+[ext_resource type="PackedScene" uid="uid://bdgg6rxm052hi" path="res://scenes/tool/gun/pistol/pistol1/pistol1.blend" id="4_7yw8d"]
+[ext_resource type="PackedScene" uid="uid://7nyu3vmhb3v" path="res://scenes/tool/gun/pistol/pistol1/pistol1viewmodel.blend" id="5_bf20o"]
+
+[resource]
+script = ExtResource("1_ml1ao")
+Damages = Vector2(12, 5)
+FireSound = ExtResource("2_xey72")
+FireSoundSuppressed = ExtResource("3_7yw8d")
+DryFireSound = ExtResource("1_qvu0i")
+PartialReloadAnimationNames = null
+MagSize = 10
+CarryWeight = 3
+ViewmodelScene = ExtResource("5_bf20o")
+ResourceId = "pistol1"
+MeshScene = ExtResource("4_7yw8d")
+IsRandomLoot = true
+metadata/_custom_type_script = "uid://dh0saosikvolb"

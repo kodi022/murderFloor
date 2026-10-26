@@ -46,8 +46,6 @@ public partial class Hud : ScreenScaleLimiter
 
     private bool hookedGameEvents = false;
 
-    private Tool selectedTool;
-
     private int activeCrosshairIndex = -1;
     private Panel activeCrosshair;
 
@@ -67,7 +65,7 @@ public partial class Hud : ScreenScaleLimiter
 
         Player.Self.PlayerOnDamage += HurtAndUpdateHealth;
         Player.Self.PlayerOnHeal += HealAndUpdateHealth;
-        Player.Self.PlayerToolChange += GenerateToolLists;
+        Player.Self.PlayerToolChange += UpdateToolLists;
         Global.NetworkManager.Singleton.PlayerConnected += OnPlayerConnected;
         Global.NetworkManager.Singleton.PlayerDisconnected += OnPlayerDisconnected;
         lobbyTimerPanel.Visible = false;
@@ -90,8 +88,8 @@ public partial class Hud : ScreenScaleLimiter
 
         weaponsContainer.GetChild(0).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectprimary");
         weaponsContainer.GetChild(1).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectsecondary");
-        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectgadget");
-        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectspecial");
+        weaponsContainer.GetChild(2).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectspecial");
+        weaponsContainer.GetChild(3).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectgadget");
         weaponsContainer.GetChild(4).GetChild(0).GetChild<Label>(0).Text = Utils.Defaults.ButtonName("selectmelee");
 
         var p = playerListVBox.GetChild(0);
@@ -115,12 +113,6 @@ public partial class Hud : ScreenScaleLimiter
         ProcessCrosshairs();
 
         useInfoLabel.Text = Player.Self.UseInfoText;
-
-        if (selectedTool != Player.Self.SelectedTool)
-        {
-            selectedTool = Player.Self.SelectedTool;
-            GenerateToolLists();
-        }
 
         if (IsInstanceValid(Game.Current)) ProcessGame();
         if (IsInstanceValid(GameLobby.Current)) ProcessGameLobby();
@@ -230,7 +222,7 @@ public partial class Hud : ScreenScaleLimiter
         }
     }
 
-    private async void GenerateToolLists()
+    private async void UpdateToolLists()
     {
         var weightMove = (float)Player.Self.ToolWeight / Player.Self.MaxWeight;
         var newWeightBarPos = new Vector2(2 + (weightBar.Size.X * weightMove) - weightBar.Size.X, 2);
@@ -258,7 +250,7 @@ public partial class Hud : ScreenScaleLimiter
                 var scene = GD.Load<PackedScene>("res://scenes/ui/hud/HudToolBox.tscn");
                 var hudToolBox = scene.Instantiate<HudToolBox>();
                 hudToolBox.Tool = tool;
-                hudToolBox.Equipped = tool == selectedTool;
+                hudToolBox.Equipped = tool == Player.Self.SelectedTool;
                 container.AddChild(hudToolBox);
             }
         }

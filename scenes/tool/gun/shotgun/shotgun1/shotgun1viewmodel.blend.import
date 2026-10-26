@@ -39,7 +39,24 @@ import_script/path=""
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
+_subresources={
+"nodes": {
+"PATH:AnimationPlayer": {
+"optimizer/enabled": false
+},
+"PATH:Armature/Skeleton3D": {
+"retarget/bone_map": null
+},
+"PATH:Player/Skeleton3D": {
+"rest_pose/load_pose": 1,
+"rest_pose/selected_animation": "idle",
+"retarget/bone_map": null
+},
+"PATH:Player/Skeleton3D/Retop": {
+"mesh_instance/cast_shadow": 0
+}
+}
+}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true

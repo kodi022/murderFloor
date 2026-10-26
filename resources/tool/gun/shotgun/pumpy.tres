@@ -10,10 +10,10 @@
 
 [resource]
 script = ExtResource("7_qmj6c")
-Damages = Vector2(25, 8)
+Damages = Vector2(16, 8)
 FalloffRanges = Vector2(10, 40)
 MaxRange = 100.0
-FirearmType = 6
+FirearmType = 3
 RPM = 150.0
 FireSound = ExtResource("2_87qvv")
 DryFireSound = ExtResource("1_ilw18")

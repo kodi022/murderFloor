@@ -9,13 +9,15 @@ public partial class Tool : ItemResource
     public PackedScene ViewmodelScene { get; private set; }
     [Export]
     public float ViewmodelImportYaw { get; private set; }
+    [Export]
+    public float HoldingSpeed { get; private set; } = 1f;
 
     public enum SlotEnum
     {
         Primary,
         Secondary,
-        Gadget,
         Special,
+        Gadget,
         Melee
     }
 

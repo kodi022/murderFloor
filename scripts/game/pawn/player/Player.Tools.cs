@@ -7,8 +7,8 @@ public partial class Player : Pawn
 
     public List<Tool> ToolsPrimary { get; private set; } = [];
     public List<Tool> ToolsSecondary { get; private set; } = [];
-    public List<Tool> ToolsGadget { get; private set; } = [];
     public List<Tool> ToolsSpecial { get; private set; } = [];
+    public List<Tool> ToolsGadget { get; private set; } = [];
     public List<Tool> ToolsMelee { get; private set; } = [];
 
     // reference from tool list
@@ -16,7 +16,7 @@ public partial class Player : Pawn
     public Resource.Tool.SlotEnum SelectedSlot { get; private set; } = Resource.Tool.SlotEnum.Primary;
     public int SelectedToolIndex { get; private set; } = -1;
 
-    public int ToolCount => ToolsPrimary.Count + ToolsSecondary.Count + ToolsGadget.Count + ToolsSpecial.Count + ToolsMelee.Count;
+    public int ToolCount => ToolsPrimary.Count + ToolsSecondary.Count + ToolsSpecial.Count + ToolsGadget.Count + ToolsMelee.Count;
 
     public int MaxWeight { get; set; } = 20;
     public int ToolWeight => GetToolsWeight();
@@ -150,7 +150,9 @@ public partial class Player : Pawn
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
             await SelectedTool.Equip();
+
             SwappingWeapon = false;
+            EmitSignal(SignalName.PlayerToolChange);
             return;
         }
         if (SelectedTool is not null && SelectedTool == list[SelectedToolIndex])
@@ -160,14 +162,18 @@ public partial class Player : Pawn
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
             await SelectedTool.Equip();
+
             SwappingWeapon = false;
+            EmitSignal(SignalName.PlayerToolChange);
             return;
         }
 
         SelectedTool = list[SelectedToolIndex];
 
         await SelectedTool.Equip();
+
         SwappingWeapon = false;
+        EmitSignal(SignalName.PlayerToolChange);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false)]
@@ -270,8 +276,8 @@ public partial class Player : Pawn
 
         AddTools(ToolsPrimary);
         AddTools(ToolsSecondary);
-        AddTools(ToolsGadget);
         AddTools(ToolsSpecial);
+        AddTools(ToolsGadget);
         AddTools(ToolsMelee);
         return allTools;
     }
@@ -295,8 +301,8 @@ public partial class Player : Pawn
         }
         AddTools(ToolsPrimary);
         AddTools(ToolsSecondary);
-        AddTools(ToolsGadget);
         AddTools(ToolsSpecial);
+        AddTools(ToolsGadget);
         AddTools(ToolsMelee);
         return allTools;
     }
@@ -318,8 +324,8 @@ public partial class Player : Pawn
         {
             Resource.Tool.SlotEnum.Primary => ToolsPrimary,
             Resource.Tool.SlotEnum.Secondary => ToolsSecondary,
-            Resource.Tool.SlotEnum.Gadget => ToolsGadget,
             Resource.Tool.SlotEnum.Special => ToolsSpecial,
+            Resource.Tool.SlotEnum.Gadget => ToolsGadget,
             Resource.Tool.SlotEnum.Melee => ToolsMelee,
             _ => ToolsPrimary,
         };

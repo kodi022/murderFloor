@@ -226,9 +226,7 @@ public partial class Game : Node
         if (rngLoot.Randf() > 0.9f) // 98? 96?
         {
             var map = Ui.MapSelect.SelectedMapNetworked;
-            var levelFloat = (int)DifficultyConfig.Difficulty * 15f + (5f * map.MapDifficultyScale + rngLoot.Randfn(0f, 2f));
-            var level = (int)Mathf.Clamp(levelFloat, 0, 100);
-            GD.Print(level);
+            var level = (int)Mathf.Clamp(GetLevel() + rngLoot.Randfn(0f, 2f), 0, 100);
             var challengeBitmask = (DifficultyConfig.C1 ? 1 : 0) + (DifficultyConfig.C2 ? 2 : 0); // next would be ? 4 : 0
             var lootState = new Resource.Loot.LootState(GameSeed + rngLoot.Randi(), map.HashId, level, DifficultyConfig.Difficulty, challengeBitmask, DifficultyConfig.Overscaling);
 
@@ -286,20 +284,11 @@ public partial class Game : Node
         ActiveMobs = 0;
     }
 
-    private async void Debrief()
+    public static int GetLevel()
     {
-        ExitTimer = 15f;
-        GameState = StateEnum.Debrief;
-        Ui.HudDebrief.EarnedXp = 100f * ((int)DifficultyConfig.Difficulty + 1) * DifficultyConfig.MapDifficultyScale;
-        Ui.HudDebrief.AllEarnedLoot = allLoot;
-        Ui.HudDebrief.UnpickedEarnedLoot = unpickedLoot;
-        Player.Self.OpenUI("res://scenes/ui/hud/HudDebrief.tscn");
-
-        await Task.Delay(15000);
-
-        startedLoading = true;
-        if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
-            Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, "res://scenes/map/lobby/Lobby.tscn");
+        var map = Ui.MapSelect.SelectedMapNetworked;
+        var levelFloat = (int)DifficultyConfig.Difficulty * 15f + (5f * map.MapDifficultyScale);
+        return (int)Mathf.Clamp(levelFloat, 0, 100);
     }
 
     private void SpawnMobGroup()
@@ -329,9 +318,26 @@ public partial class Game : Node
 
             var mob = MobPool[i];
             mob.MobResourceFullId = mobResource.Value.FullId;
+            mob.Level = GetLevel();
             mob.OnSpawn(spawns[spawned]);
             ActiveMobs++;
             spawned++;
         }
+    }
+
+    private async void Debrief()
+    {
+        ExitTimer = 15f;
+        GameState = StateEnum.Debrief;
+        Ui.HudDebrief.EarnedXp = 100f * ((int)DifficultyConfig.Difficulty + 1) * DifficultyConfig.MapDifficultyScale;
+        Ui.HudDebrief.AllEarnedLoot = allLoot;
+        Ui.HudDebrief.UnpickedEarnedLoot = unpickedLoot;
+        Player.Self.OpenUI("res://scenes/ui/hud/HudDebrief.tscn");
+
+        await Task.Delay(15000);
+
+        startedLoading = true;
+        if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
+            Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, "res://scenes/map/lobby/Lobby.tscn");
     }
 }

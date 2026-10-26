@@ -89,13 +89,16 @@ public partial class ToolMelee : Tool
     /// <summary>Gets stat or -1.0f if not found</summary>
     public override Variant GetStat(string statName, float mult)
     {
-        return (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+        Variant val = (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
         {
             AllStatsEnum.Damage => Damage * mult,
             AllStatsEnum.RPM => RPM * mult,
             AllStatsEnum.MaxRange => MaxRange * mult,
             _ => -1f,
         };
+
+        if (val.VariantType == Variant.Type.Float && (float)val == -1f) GD.PushWarning($"{this.GetType().Name} does not have stat {statName}. Returning -1");
+        return val;
     }
 
     /// <summary>Gets names of all stats or empty array if none</summary>

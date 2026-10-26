@@ -16,11 +16,9 @@ public partial class ToolFirearm : Tool
         Pistol,
         Revolver,
         SMG,
-        PDW,
-        Carbine,
-        AR,
         Shotgun,
-        DMR,
+        AR,
+        Sniper,
     }
 
     public enum CasingSpawnEventEnum
@@ -43,8 +41,6 @@ public partial class ToolFirearm : Tool
 
     [Export]
     public int PelletCount { get; private set; } = 1;
-    [Export]
-    public float HoldingSpeed { get; private set; } = 1f;
 
     [Export]
     public string IdleAnimationName { get; private set; } = "idle";
@@ -63,7 +59,7 @@ public partial class ToolFirearm : Tool
     [Export, ExportSubgroup("Ammo")]
     public int MagSize { get; private set; } = 8;
     [Export]
-    public int MagsReserve { get; private set; } = 6;
+    public int MagsReserve { get; private set; } = 5;
     [Export]
     public bool EndlessReserve { get; private set; } = false;
 
@@ -183,28 +179,39 @@ public partial class ToolFirearm : Tool
         var toolResource = ResourceManager.ToolRegistry.GetResourceRef(HashId);
         builtToolData.Tool = toolResource.MeshScene.Instantiate<Node3D>();
 
-        Node3D FindNode(string name)
+        Node3D FindNode(string name, out Vector3 offset)
         {
-            var path = "Armature/Skeleton3D/body/" + name;
-            var thing = builtToolData.Tool.GetNode<Node3D>(path);
+            var armature = builtToolData.Tool.FindChild("Armature*");
+            var thing = (Node3D)armature.FindChild(name);
             if (thing is null)
             {
-                GD.PrintErr($"Warning: {toolResource.FullId} has no attachment point at \"{path}\"");
+                GD.PushError($"Warning: {toolResource.FullId}'s Armature has no child named \"{name}\"");
+                offset = Vector3.Zero;
                 return new Node3D();
+            }
+
+            offset = thing.Position;
+            Node3D node = (Node3D)thing.GetParent();
+            while (true)
+            {
+                if (!IsInstanceValid(node) || node == armature) break;
+                offset += node.Position;
+                node = (Node3D)node.GetParent();
             }
 
             return thing;
         }
 
-        var muzzleNode = FindNode("Point-Muzzle");
-        var sightNode = FindNode("Point-Sight");
-        var sightAttachmentNode = FindNode("Point-SightAttachment");
-        var ejectionNode = FindNode("Point-Ejection");
-        var foregripNode = FindNode("Point-Foregrip");
-        var gadgetNode = FindNode("Point-Gadget");
+        // ! DO THIS SHIT
+        var muzzleNode = FindNode("Point-Muzzle", out Vector3 muzzlePos);
+        var sightNode = FindNode("Point-Sight", out Vector3 sightPos);
+        var sightAttachmentNode = FindNode("Point-SightAttachment", out Vector3 sightAttachPos);
+        var ejectionNode = FindNode("Point-Ejection", out _);
+        var foregripNode = FindNode("Point-Foregrip", out _);
+        var gadgetNode = FindNode("Point-Gadget", out _);
 
-        builtToolData.SightPositionOffset = new Vector3(-sightNode.Position.Z, -sightNode.Position.Y, 0);
-        builtToolData.MuzzlePosition = new Vector3(-muzzleNode.Position.X, muzzleNode.Position.Y, -muzzleNode.Position.Z);
+        builtToolData.SightPositionOffset = new Vector3(-sightPos.Z, -sightPos.Y, 0);
+        builtToolData.MuzzlePosition = new Vector3(-muzzlePos.X, muzzlePos.Y, -muzzlePos.Z);
 
         foreach (var attLootState in toolConfig.AttachmentLootStates)
         {
@@ -215,7 +222,7 @@ public partial class ToolFirearm : Tool
                     var opticModelScene = attachment.MeshScene.Instantiate<Node3D>();
                     sightAttachmentNode.AddChild(opticModelScene);
                     var attachSightNode = (Node3D)opticModelScene.FindChildren("Point-Sight").FirstOrDefault(new Node3D());
-                    builtToolData.SightPositionOffset = new Vector3(-sightAttachmentNode.Position.Z, -sightAttachmentNode.Position.Y, 0);
+                    builtToolData.SightPositionOffset = new Vector3(-sightAttachPos.Z, -sightAttachPos.Y, 0);
                     builtToolData.SightPositionOffset += new Vector3(-attachSightNode.Position.Z, -attachSightNode.Position.Y, 0);
                     builtToolData.OpticZoom = ((AttachmentOptic)attachment).OpticZoom;
                     break;

@@ -12,7 +12,6 @@ public partial class GameManager : Node
 
     public static Version GameVersion { get; private set; } = Version.FromString("0.1.0");
 
-    public static Node KeepOnLoad { get; private set; }
     public static Node ClearOnLoad { get; private set; }
 
     public override void _EnterTree()
@@ -21,9 +20,6 @@ public partial class GameManager : Node
         Singleton = this;
 
         ResourceManager.Ready();
-
-        KeepOnLoad = new Node() { Name = "KeepOnLoad" };
-        GetTree().Root.CallDeferred("add_child", KeepOnLoad);
 
         ClearOnLoad = new Node() { Name = "ClearOnLoad" };
         GetTree().Root.CallDeferred("add_child", ClearOnLoad);

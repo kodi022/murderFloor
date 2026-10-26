@@ -15,26 +15,19 @@ public class ToolBehaviorFirearm : ToolBehavior
 
     private Resource.ToolFirearm Firearm => ParentTool.ToolResource as Resource.ToolFirearm;
 
-    private int magSize;
-    private Vector2 fastWalkMult;
-    private Vector2 slowWalkMult;
-    private Vector2 aimSpreadMult;
     private Vector2 initialDegSpread;
     private Vector2 maxDegSpread;
     private float spreadRecoveryRate;
+    private int magSize;
 
     public override void Ready()
     {
         RpmAsMs = (ulong)(60f / (float)Tc.GetStat(Resource.ToolFirearm.PropertyName.RPM) * 1000f);
         CurrentSpread = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.InitialDegreeSpread);
         initialDegSpread = CurrentSpread;
-
-        magSize = (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.MagSize);
-        fastWalkMult = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.FastWalkSpreadMult);
-        slowWalkMult = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.SlowWalkSpreadMult);
-        aimSpreadMult = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.AimSpreadMult);
         maxDegSpread = (Vector2)Tc.GetStat(Resource.ToolFirearm.PropertyName.MaxDegreeSpread);
         spreadRecoveryRate = (float)Tc.GetStat(Resource.ToolFirearm.PropertyName.SpreadRecoveryRate);
+        magSize = (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.MagSize);
         FillReserve();
     }
 
@@ -43,11 +36,11 @@ public class ToolBehaviorFirearm : ToolBehavior
         var plrVel = ParentTool.Player.Velocity.LengthSquared();
         var movementPenalty = Vector2.One;
         if (plrVel > 8f)
-            movementPenalty = fastWalkMult;
+            movementPenalty = Firearm.FastWalkSpreadMult;
         else if (plrVel > 1f)
-            movementPenalty = slowWalkMult;
+            movementPenalty = Firearm.SlowWalkSpreadMult;
 
-        var aimBuff = ParentTool.Aiming ? aimSpreadMult : Vector2.One;
+        var aimBuff = ParentTool.Aiming ? Firearm.AimSpreadMult : Vector2.One;
 
         MinSpread = initialDegSpread * aimBuff * movementPenalty;
         MaxSpread = maxDegSpread * movementPenalty;

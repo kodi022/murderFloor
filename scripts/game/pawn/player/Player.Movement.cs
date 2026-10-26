@@ -28,6 +28,7 @@ public partial class Player : Pawn
                 wishVel.X *= 0.78f;
             }
             wishVel *= 0.65f;
+            if (IsInstanceValid(SelectedTool)) wishVel *= SelectedTool.ToolResource.HoldingSpeed;
         }
 
         wishVel.X *= MathF.Abs(strafe);
@@ -85,7 +86,7 @@ public partial class Player : Pawn
 
     private bool IsAiming()
     {
-        if (SelectedTool is not null && SelectedTool.Aiming) return true;
+        if (IsInstanceValid(SelectedTool) && SelectedTool.Aiming) return true;
 
         return false;
     }

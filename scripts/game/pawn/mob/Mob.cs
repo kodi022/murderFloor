@@ -4,6 +4,7 @@ public partial class Mob : Pawn
 {
     public const float MinimumDistanceToTarget = 1.2f;
 
+    public int Level { get; set; }
     public string MobResourceFullId { get; set; }
     public Resource.Mob MobResource { get; private set; }
 
@@ -41,6 +42,10 @@ public partial class Mob : Pawn
     private int processTick;
     private ulong lastAttackTime;
 
+    private float levelSpeedBuff;
+    private float levelDamageBuff;
+    private float levelVerticalActionBuff;
+
     private ulong ticksMs;
     private float distToTarget;
 
@@ -73,7 +78,7 @@ public partial class Mob : Pawn
 
             var di = new DamageInfo()
             {
-                Damage = MobResource.AttackDamage,
+                Damage = MobResource.AttackDamage * levelDamageBuff,
                 DamageType = DamageInfo.DamageTypeEnum.Physical,
                 AttackerId = 0,
                 AttackerName = "Mob",
@@ -98,10 +103,13 @@ public partial class Mob : Pawn
         ResetPhysicsInterpolation();
         GlobalPosition = pos;
         MobResource = ResourceManager.MobRegistry.GetResourceRef(MobResourceFullId);
-        MaxHealth = MobResource.MaxHealth;
+        MaxHealth = MobResource.MaxHealth * (1 + (Level * 0.015f));
         Health = MaxHealth;
         Armor = MobResource.Armor;
         Scale = Vector3.One * MobResource.Scale;
+        levelSpeedBuff = 1 + Level * 0.002f;
+        levelDamageBuff = 1 + Level * 0.01f;
+        levelVerticalActionBuff = 1 - Level * 0.005f;
         startPosHash = Utils.Hashing.StableHash(pos);
         Active = true;
         ChangeNavigationTarget();

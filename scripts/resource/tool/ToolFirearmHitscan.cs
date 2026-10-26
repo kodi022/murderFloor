@@ -166,7 +166,6 @@ public partial class ToolFirearmHitscan : ToolFirearm
         FalloffRanges = 2,
         RPM = 3,
         PelletCount = 4,
-        HoldingSpeed = 5,
         ReloadDelayMs = -1,
         ManualFireDelayMs = -10,
         MagSize = 6,
@@ -175,9 +174,6 @@ public partial class ToolFirearmHitscan : ToolFirearm
         MaxDegreeSpread = -3,
         SpreadRecoveryRate = 8,
         SpreadIncreasePerShot = -4,
-        SlowWalkSpreadMult = -5,
-        FastWalkSpreadMult = -6,
-        AimSpreadMult = -7,
         AimShiftRangeVertical = -8,
         AimShiftRangeHorizontal = -9,
     }
@@ -185,13 +181,12 @@ public partial class ToolFirearmHitscan : ToolFirearm
     /// <summary>Gets stat or -1.0f if not found</summary>
     public override Variant GetStat(string statName, float mult)
     {
-        return (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+        Variant val = (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
         {
             AllStatsEnum.Damages => Damages * mult,
             AllStatsEnum.FalloffRanges => FalloffRanges * mult,
             AllStatsEnum.RPM => RPM * mult,
             AllStatsEnum.PelletCount => PelletCount * mult,
-            AllStatsEnum.HoldingSpeed => HoldingSpeed * mult,
             AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
             AllStatsEnum.ManualFireDelayMs => ManualFireDelayMs * mult,
             AllStatsEnum.MagSize => MagSize * mult,
@@ -200,13 +195,13 @@ public partial class ToolFirearmHitscan : ToolFirearm
             AllStatsEnum.MaxDegreeSpread => MaxDegreeSpread * mult,
             AllStatsEnum.SpreadRecoveryRate => SpreadRecoveryRate * mult,
             AllStatsEnum.SpreadIncreasePerShot => SpreadIncreasePerShot * mult,
-            AllStatsEnum.SlowWalkSpreadMult => SlowWalkSpreadMult * mult,
-            AllStatsEnum.FastWalkSpreadMult => FastWalkSpreadMult * mult,
-            AllStatsEnum.AimSpreadMult => AimSpreadMult * mult,
             AllStatsEnum.AimShiftRangeVertical => AimShiftRangeVertical * mult,
             AllStatsEnum.AimShiftRangeHorizontal => AimShiftRangeHorizontal * mult,
             _ => -1f,
         };
+
+        if (val.VariantType == Variant.Type.Float && (float)val == -1f) GD.PushWarning($"{this.GetType().Name} does not have stat {statName}. Returning -1");
+        return val;
     }
 
     /// <summary>Gets names of all stats or empty array if none</summary>

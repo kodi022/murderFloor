@@ -280,8 +280,8 @@ public partial class Player : Pawn
 
         if (Input.IsActionJustPressed("selectprimary")) SelectToolBySlot(Resource.Tool.SlotEnum.Primary);
         if (Input.IsActionJustPressed("selectsecondary")) SelectToolBySlot(Resource.Tool.SlotEnum.Secondary);
-        if (Input.IsActionJustPressed("selectgadget")) SelectToolBySlot(Resource.Tool.SlotEnum.Gadget);
         if (Input.IsActionJustPressed("selectspecial")) SelectToolBySlot(Resource.Tool.SlotEnum.Special);
+        if (Input.IsActionJustPressed("selectgadget")) SelectToolBySlot(Resource.Tool.SlotEnum.Gadget);
         if (Input.IsActionJustPressed("selectmelee")) SelectToolBySlot(Resource.Tool.SlotEnum.Melee);
 
         if (cameraRaycast.GetCollider() is Node3D node)

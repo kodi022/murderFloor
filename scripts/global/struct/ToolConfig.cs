@@ -29,7 +29,7 @@ public struct ToolConfig
     /// <summary>Gets stat or -1.0f if not found</summary>
     public readonly Variant GetStat(string propertyName)
     {
-        return ((Tool)LootState.GetLootRef()).GetStat(propertyName, GetStatMultiplier(propertyName));
+        return ((Tool)LootState.GetLootRef())?.GetStat(propertyName, GetStatMultiplier(propertyName)) ?? -1f;
     }
 
     /// <summary>Gets stat multiplier or 1.0f if not found</summary>

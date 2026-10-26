@@ -5,14 +5,13 @@
 [ext_resource type="Script" uid="uid://dh0saosikvolb" path="res://scripts/resource/tool/ToolFirearmHitscan.cs" id="1_jtlsn"]
 [ext_resource type="AudioStream" uid="uid://b07pstsuwjx6s" path="res://sounds/tool/gun/fire/freesound_community-single-gunshot-54-40780.mp3" id="2_bo1an"]
 [ext_resource type="AudioStream" uid="uid://d3pifbarhna81" path="res://sounds/tool/gun/reload/gunreload.mp3" id="3_12rvs"]
-[ext_resource type="PackedScene" uid="uid://cec4drtl6kw8" path="res://scenes/tool/gun/rifle/testassaultrifle/testassaultrifleviewmodel.tscn" id="4_ahqv6"]
 
 [resource]
 script = ExtResource("1_jtlsn")
 Damages = Vector2(30, 10)
 FalloffRanges = Vector2(20, 40)
 MaxRange = 140.0
-FirearmType = 5
+FirearmType = 4
 RPM = 700.0
 FireSound = ExtResource("2_bo1an")
 DryFireSound = ExtResource("1_12rvs")
@@ -26,10 +25,7 @@ SpreadIncreasePerShot = Vector2(0.45, 0.45)
 CameraRotationKick = Vector2(-0.02, 0)
 ViewmodelPositionKick = Vector2(0, 0.04)
 ViewmodelRotationKick = Vector2(0.015, 0)
-MeshSceneViewmodel = ExtResource("4_ahqv6")
-HoldTypeAnimation = "holdtype_rifle"
 ResourceId = "testassaultrifle"
 MeshScene = ExtResource("1_8qbw4")
-UseInGame = false
 NameLocalizationGroup = "tool"
 metadata/_custom_type_script = "uid://dh0saosikvolb"

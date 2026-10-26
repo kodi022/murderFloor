@@ -10,6 +10,8 @@ public partial class Ammobox : Node3D
             {
                 if (tool.ToolBehavior is ToolBehaviorFirearm tbf)
                     tbf.FillReserve();
+
+                Player.Self.EmitSignal(Player.SignalName.PlayerToolChange);
             }
 
             Free();
