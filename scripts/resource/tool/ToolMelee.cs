@@ -77,40 +77,31 @@ public partial class ToolMelee : Tool
         return 1f;
     }
 
-    // * IF CHANGING, remember to change in ui/tool/ToolInfo
-    // sign determines buff direction
-    public enum AllStatsEnum
-    {
-        Damage = 1,
-        RPM = 2,
-        MaxRange = 3,
-    }
+    public override Dictionary<string, StatInfo> ModifiableStats { get; set; } = new() {
+        {"Damages", new(1)},
+        {"RPM", new(1, "rpm", "0")},
+        {"MaxRange", new(1)},
+    };
 
     /// <summary>Gets stat or -1.0f if not found</summary>
     public override Variant GetStat(string statName, float mult)
     {
-        Variant val = (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+        if (!ModifiableStats.ContainsKey(statName))
         {
-            AllStatsEnum.Damage => Damage * mult,
-            AllStatsEnum.RPM => RPM * mult,
-            AllStatsEnum.MaxRange => MaxRange * mult,
+            GD.PushWarning($"{GetType().Name} does not have stat {statName}. Returning -1f");
+            return -1f;
+        }
+
+        Variant val = statName switch
+        {
+            nameof(Damage) => Damage * mult,
+            nameof(RPM) => RPM * mult,
+            nameof(MaxRange) => MaxRange * mult,
             _ => -1f,
         };
 
-        if (val.VariantType == Variant.Type.Float && (float)val == -1f) GD.PushWarning($"{this.GetType().Name} does not have stat {statName}. Returning -1");
+        if (val.VariantType == Variant.Type.Float && (float)val == -1f) GD.PushWarning($"{this.GetType().Name} does not have stat {statName}. Returning -1f");
         return val;
-    }
-
-    /// <summary>Gets names of all stats or empty array if none</summary>
-    public override string[] GetStatsEnum()
-    {
-        return Enum.GetNames(typeof(AllStatsEnum));
-    }
-
-    /// <summary>Gets sign of stat based on its enum</summary>
-    public override int GetStatSign(string statName)
-    {
-        return Math.Sign((int)Enum.Parse(typeof(AllStatsEnum), statName));
     }
 
     public override BuiltToolData BuildToolScene(ToolConfig toolConfig)

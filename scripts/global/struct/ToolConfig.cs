@@ -32,6 +32,7 @@ public struct ToolConfig
         return ((Tool)LootState.GetLootRef())?.GetStat(propertyName, GetStatMultiplier(propertyName)) ?? -1f;
     }
 
+    // ! process attachments mults during, so we can have states affect stats like "aiming"
     /// <summary>Gets stat multiplier or 1.0f if not found</summary>
     public readonly float GetStatMultiplier(string propertyName)
     {

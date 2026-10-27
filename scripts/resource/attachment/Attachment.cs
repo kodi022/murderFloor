@@ -56,4 +56,55 @@ public partial class Attachment : ItemResource
             generatedThumbnails.Add(GetDictKey(resX, resY), imgTex);
         return imgTex;
     }
+
+    // // * IF CHANGING, remember to change in ui/tool/ToolInfo
+    // // sign determines buff direction
+    // public enum AllStatsEnum
+    // {
+    //     FalloffRanges = 2,
+    //     InitialDegreeSpread = -2,
+    //     MaxDegreeSpread = -3,
+    //     SpreadRecoveryRate = 8,
+    //     SpreadIncreasePerShot = -4,
+    //     AimShiftRangeVertical = -8,
+    //     AimShiftRangeHorizontal = -9,
+    // }
+
+    // /// <summary>Gets stat or -1.0f if not found</summary>
+    // public override Variant GetStat(string statName, float mult)
+    // {
+    //     Variant val = (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+    //     {
+    //         AllStatsEnum.Damages => Damages * mult,
+    //         AllStatsEnum.FalloffRanges => FalloffRanges * mult,
+    //         AllStatsEnum.RPM => RPM * mult,
+    //         AllStatsEnum.PelletCount => PelletCount * mult,
+    //         AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
+    //         AllStatsEnum.ManualFireDelayMs => ManualFireDelayMs * mult,
+    //         AllStatsEnum.MagSize => MagSize * mult,
+    //         AllStatsEnum.MagsReserve => MagsReserve * mult,
+    //         AllStatsEnum.InitialDegreeSpread => InitialDegreeSpread * mult,
+    //         AllStatsEnum.MaxDegreeSpread => MaxDegreeSpread * mult,
+    //         AllStatsEnum.SpreadRecoveryRate => SpreadRecoveryRate * mult,
+    //         AllStatsEnum.SpreadIncreasePerShot => SpreadIncreasePerShot * mult,
+    //         AllStatsEnum.AimShiftRangeVertical => AimShiftRangeVertical * mult,
+    //         AllStatsEnum.AimShiftRangeHorizontal => AimShiftRangeHorizontal * mult,
+    //         _ => -1f,
+    //     };
+
+    //     if (val.VariantType == Variant.Type.Float && (float)val == -1f) GD.PushWarning($"{this.GetType().Name} does not have stat {statName}. Returning -1");
+    //     return val;
+    // }
+
+    // /// <summary>Gets names of all stats or empty array if none</summary>
+    // public override string[] GetStatsEnum()
+    // {
+    //     return Enum.GetNames(typeof(AllStatsEnum));
+    // }
+
+    // /// <summary>Gets sign of stat based on its enum</summary>
+    // public override int GetStatSign(string statName)
+    // {
+    //     return Math.Sign((int)Enum.Parse(typeof(AllStatsEnum), statName));
+    // }
 }

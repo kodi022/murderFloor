@@ -53,7 +53,7 @@ public partial class Game : Node
     public ulong TimeMsBetweenWaves => DifficultyConfig.GetTimeBetweenWaves(Wave);
 
     [Export]
-    public int MaxWave { get; private set; } = 5;
+    public int MaxWave { get; private set; } = 8;
     [Export]
     public int Wave { get; private set; } = 0;
     [Export]

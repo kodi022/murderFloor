@@ -10,10 +10,11 @@ public partial class ToolFirearmHitscan : ToolFirearm
     [Export]
     public float MaxRange { get; private set; } = 80f;
 
+    // ! put on mob resource to modify per mob, find
     private static readonly Dictionary<string, float> HitboxDamageMultipliers = new()
     {
-        ["Head"] = 1.4f,
-        ["Neck"] = 1.25f,
+        ["Head"] = 1.3f,
+        ["Neck"] = 1.2f,
         ["Hand"] = 0.8f,
         ["Foot"] = 0.8f,
     };
@@ -158,61 +159,51 @@ public partial class ToolFirearmHitscan : ToolFirearm
         return 1f;
     }
 
-    // * IF CHANGING, remember to change in ui/tool/ToolInfo
-    // sign determines buff direction
-    public enum AllStatsEnum
-    {
-        Damages = 1,
-        FalloffRanges = 2,
-        RPM = 3,
-        PelletCount = 4,
-        ReloadDelayMs = -1,
-        ManualFireDelayMs = -10,
-        MagSize = 6,
-        MagsReserve = 7,
-        InitialDegreeSpread = -2,
-        MaxDegreeSpread = -3,
-        SpreadRecoveryRate = 8,
-        SpreadIncreasePerShot = -4,
-        AimShiftRangeVertical = -8,
-        AimShiftRangeHorizontal = -9,
-    }
+    public override Dictionary<string, StatInfo> ModifiableStats { get; set; } = new() {
+        {"Damages", new(1)},
+        {"FalloffRanges",  new(1)},
+        {"RPM", new(1, "rpm", "0")},
+        {"PelletCount", new(1)},
+        {"ReloadDelayMs", new(-1, "ms", "0")},
+        {"ManualFireDelayMs", new(-1, "ms", "0")},
+        {"MagSize", new(1, "0")},
+        {"MagsReserve", new(1, "0")},
+        {"InitialDegreeSpread", new(-1, "°")},
+        {"MaxDegreeSpread", new(-1, "°")},
+        {"SpreadRecoveryRate", new(1)},
+        {"SpreadIncreasePerShot", new(1)},
+        {"AimShiftRangeVertical", new(-1)},
+        {"AimShiftRangeHorizontal", new(-1)},
+    };
 
-    /// <summary>Gets stat or -1.0f if not found</summary>
     public override Variant GetStat(string statName, float mult)
     {
-        Variant val = (AllStatsEnum)Enum.Parse(typeof(AllStatsEnum), statName) switch
+        if (!ModifiableStats.ContainsKey(statName))
         {
-            AllStatsEnum.Damages => Damages * mult,
-            AllStatsEnum.FalloffRanges => FalloffRanges * mult,
-            AllStatsEnum.RPM => RPM * mult,
-            AllStatsEnum.PelletCount => PelletCount * mult,
-            AllStatsEnum.ReloadDelayMs => ReloadDelayMs * mult,
-            AllStatsEnum.ManualFireDelayMs => ManualFireDelayMs * mult,
-            AllStatsEnum.MagSize => MagSize * mult,
-            AllStatsEnum.MagsReserve => MagsReserve * mult,
-            AllStatsEnum.InitialDegreeSpread => InitialDegreeSpread * mult,
-            AllStatsEnum.MaxDegreeSpread => MaxDegreeSpread * mult,
-            AllStatsEnum.SpreadRecoveryRate => SpreadRecoveryRate * mult,
-            AllStatsEnum.SpreadIncreasePerShot => SpreadIncreasePerShot * mult,
-            AllStatsEnum.AimShiftRangeVertical => AimShiftRangeVertical * mult,
-            AllStatsEnum.AimShiftRangeHorizontal => AimShiftRangeHorizontal * mult,
+            GD.PushWarning($"{GetType().Name} does not have stat {statName}. Returning -1f");
+            return -1f;
+        }
+
+        Variant val = statName switch
+        {
+            nameof(Damages) => Damages * mult,
+            nameof(FalloffRanges) => FalloffRanges * mult,
+            nameof(RPM) => RPM * mult,
+            nameof(PelletCount) => PelletCount * mult,
+            nameof(ReloadDelayMs) => ReloadDelayMs * mult,
+            nameof(ManualFireDelayMs) => ManualFireDelayMs * mult,
+            nameof(MagSize) => MagSize * mult,
+            nameof(MagsReserve) => MagsReserve * mult,
+            nameof(InitialDegreeSpread) => InitialDegreeSpread * mult,
+            nameof(MaxDegreeSpread) => MaxDegreeSpread * mult,
+            nameof(SpreadRecoveryRate) => SpreadRecoveryRate * mult,
+            nameof(SpreadIncreasePerShot) => SpreadIncreasePerShot * mult,
+            nameof(AimShiftRangeVertical) => AimShiftRangeVertical * mult,
+            nameof(AimShiftRangeHorizontal) => AimShiftRangeHorizontal * mult,
             _ => -1f,
         };
 
-        if (val.VariantType == Variant.Type.Float && (float)val == -1f) GD.PushWarning($"{this.GetType().Name} does not have stat {statName}. Returning -1");
+        if (val.VariantType == Variant.Type.Float && (float)val == -1f) GD.PushWarning($"{GetType().Name} does not have stat {statName}. Returning -1f");
         return val;
-    }
-
-    /// <summary>Gets names of all stats or empty array if none</summary>
-    public override string[] GetStatsEnum()
-    {
-        return Enum.GetNames(typeof(AllStatsEnum));
-    }
-
-    /// <summary>Gets sign of stat based on its enum</summary>
-    public override int GetStatSign(string statName)
-    {
-        return Math.Sign((int)Enum.Parse(typeof(AllStatsEnum), statName));
     }
 }

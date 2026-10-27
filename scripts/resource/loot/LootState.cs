@@ -52,7 +52,7 @@ public struct LootState
         if (loot is null) return;
 
         var itemResource = (ItemResource)loot;
-        var toolStatsEnumStringified = itemResource.GetStatsEnum();
+        var toolStatsStringified = itemResource.GetStatsNames();
 
         var rarity = new LootRarity(this);
         var rng = new RandomNumberGenerator { Seed = Seed };
@@ -64,37 +64,58 @@ public struct LootState
             return Mathf.Floor(value * count) / count;
         }
 
-        float MakeFloat(int level, float overScale, float rngScale)
+        float MakeF(int level, float overScale, float rngMin, float rngMax)
         {
-            var a = rng.Randf() * rngScale;
+            var a = rng.RandfRange(rngMin, rngMax);
             var b = tier.PowerScale * wear.PowerScale;
             var c = 1 + level * 0.01f;
             var d = overScale * 0.01f;
             return a * b * c + d;
         }
 
-        foreach (var stat in toolStatsEnumStringified)
+        float MakeFn(int level, float overScale, float mean, float deviation)
         {
+            var a = rng.Randfn(mean, deviation);
+            var b = tier.PowerScale * wear.PowerScale;
+            var c = 1 + level * 0.01f;
+            var d = overScale * 0.01f;
+            return a * b * c + d;
+        }
+
+        foreach (var stat in toolStatsStringified)
+        {
+            if (stat == "Damages" || stat == "Damage")
+            {
+                if (rng.Randf() < tier.StatChance * 3f)
+                {
+                    var add = MakeFn(Level, OverScaling, 0.1f, 0.05f);
+
+                    if (add < 0.01f) continue;
+                    if (itemResource.GetStatInfo(stat).Sign == 1)
+                        StatMultipliers.Add(stat, 1f + add);
+                    else
+                        StatMultipliers.Add(stat, 1f - add);
+                }
+                continue;
+            }
+
+            // ! support rare chance of negative, less common for higher tiers
             if (rng.Randf() < tier.StatChance)
             {
                 if (stat == "ManualFireDelayMs" && loot is ToolFirearm tf && tf.FireMode != ToolFirearm.FireModeEnum.Manual) continue;
 
-                // ! special logic for damage
-                // ! support rare chance of negative, less common for higher tiers
-
                 var add = stat switch
                 {
-                    "PelletCount" => ScaleForInt(((ToolFirearm)loot).PelletCount, MakeFloat(Level, OverScaling, 0.2f)),
-                    "MagSize" => ScaleForInt(((ToolFirearm)loot).MagsReserve, MakeFloat(Level, OverScaling, 0.2f)),
-                    _ => MakeFloat(Level, OverScaling, 0.1f),
+                    "PelletCount" => ScaleForInt(((ToolFirearm)loot).PelletCount, MakeF(Level, OverScaling, 0.1f, 0.2f)),
+                    "MagSize" => ScaleForInt(((ToolFirearm)loot).MagsReserve, MakeF(Level, OverScaling, 0.1f, 0.2f)),
+                    _ => MakeF(Level, OverScaling, 0.05f, 0.1f),
                 };
 
-                if (add == 0f) continue;
-
-                if (itemResource.GetStatSign(stat) == 1)
+                if (add < 0.01f) continue;
+                if (itemResource.GetStatInfo(stat).Sign == 1)
                     StatMultipliers.Add(stat, 1f + add);
                 else
-                    StatMultipliers.Add(stat, 1f - add);
+                    StatMultipliers.Add(stat, 1f / (1f + add));
             }
         }
     }

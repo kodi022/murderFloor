@@ -19,17 +19,6 @@ public partial class ToolInfo : Control
         public string ModifierPrefix = ModifierPrefix;
     }
 
-    private static readonly Dictionary<string, StatDisplay> StatDisplays = new()
-    {
-        ["RPM"] = new("rpm", "0"),
-        ["ReloadDelayMs"] = new("ms", "0"),
-        ["ManualFireDelayMs"] = new("ms", "0"),
-        ["PelletCount"] = new(""),
-        ["InitialDegreeSpread"] = new("°"),
-        ["MaxDegreeSpread"] = new("°"),
-        ["..."] = new(""),
-    };
-
     public void Build(ToolConfig toolConfig)
     {
         var ls = toolConfig.LootState;
@@ -54,30 +43,25 @@ public partial class ToolInfo : Control
 
     private static string FormatStat(string statName, float modifier, Resource.ItemResource res)
     {
-        StatDisplay sd;
-        string FmtFlt(float number) => number.ToString(sd.NumberFormat);
-
         var rawVal = res.GetStat(statName, modifier);
+        var statInfo = res.GetStatInfo(statName);
 
-        if (StatDisplays.TryGetValue(statName, out var d))
-            sd = d;
-        else
-            sd = StatDisplays["..."];
+        string FmtFlt(float number) => number.ToString(statInfo.NumberFormat);
 
         var formattedVal = rawVal.VariantType switch
         {
             Variant.Type.Vector2 => string.Join(
-                sd.RangeSeparator,
+                statInfo.RangeSeparator,
                 FmtFlt(((Vector2)rawVal).X),
                 FmtFlt(((Vector2)rawVal).Y)
             ),
             Variant.Type.Float => FmtFlt((float)rawVal),
-            Variant.Type.Int => ((int)rawVal).ToString(sd.NumberFormat),
+            Variant.Type.Int => ((int)rawVal).ToString(statInfo.NumberFormat),
             _ => rawVal.ToString(),
         };
 
-        var val = $"{formattedVal}{sd.Postfix}".PadRight(20);
-        var mod = $"[color=afa][font_size=10]{sd.ModifierPrefix}{modifier:0.##}[/font_size][/color]";
+        var val = $"{formattedVal}{statInfo.Postfix}".PadRight(20);
+        var mod = $"[color=afa][font_size=10]{statInfo.ModifierPrefix}{modifier:0.##}[/font_size][/color]";
 
         return val + mod;
     }

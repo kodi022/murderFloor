@@ -6,12 +6,13 @@
 
 [resource]
 script = ExtResource("1_woa5v")
+AttackDamage = 7.5
 Ragdoll = ExtResource("2_5yrqu")
 RagdollColliderRemaps = Dictionary[String, String]({
 "Foot_L": "LowerLeg_L",
 "Foot_R": "LowerLeg_R",
 "Head": "Neck"
 })
-ResourceId = "testmob"
+ResourceId = "normal"
 MeshScene = ExtResource("1_7n26w")
 metadata/_custom_type_script = "uid://c4nkwdo5lew66"
