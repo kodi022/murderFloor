@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://dyo8qn6aiiqx8"]
+
+[ext_resource type="Script" uid="uid://bwlrm48k447kp" path="res://scripts/game/Usable.cs" id="1_q1xbd"]
+[ext_resource type="Script" uid="uid://cx8nu840a0qsc" path="res://scripts/game/Resupply.cs" id="1_yh5p1"]
+[ext_resource type="PackedScene" uid="uid://bs2h5c2qwvurs" path="res://models/prop/ammobox/ammobox.blend" id="2_yh5p1"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_b3li0"]
+bounce = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oytaf"]
+size = Vector3(1.5, 0.8, 1.5)
+
+[node name="Resupply" type="Node3D" unique_id=2078482625]
+script = ExtResource("1_yh5p1")
+
+[node name="Usable" type="Node3D" parent="." unique_id=254805760]
+script = ExtResource("1_q1xbd")
+UseInfoText = "Use Resupply"
+metadata/_custom_type_script = "uid://bwlrm48k447kp"
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Usable" unique_id=1240384414]
+collision_layer = 33
+mass = 200.0
+physics_material_override = SubResource("PhysicsMaterial_b3li0")
+gravity_scale = 0.8
+
+[node name="ammobox" parent="Usable/RigidBody3D" unique_id=28453234 instance=ExtResource("2_yh5p1")]
+transform = Transform3D(6.02, 0, 0, 0, 2.775, 0, 0, 0, 3.665, 0, -0.3881054, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Usable/RigidBody3D" unique_id=735407111]
+shape = SubResource("BoxShape3D_oytaf")

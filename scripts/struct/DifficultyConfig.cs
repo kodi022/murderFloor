@@ -33,14 +33,14 @@ public struct DifficultyConfig
     public readonly ulong GetTimeBetweenGroups(int wave)
     {
         var ms = 5000ul;
-        ms -= (ulong)wave * 250ul;
+        ms -= (ulong)Difficulty * 200ul;
         return ms;
     }
 
-    public readonly ulong GetTimeBetweenWaves(int wave)
+    public readonly ulong GetTimeBetweenWaves(int _)
     {
-        var ms = 14000ul;
-        ms -= (ulong)Difficulty * 2000ul;
+        var ms = 30000ul;
+        ms -= (ulong)Difficulty * 4000ul;
         return ms;
     }
 

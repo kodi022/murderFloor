@@ -65,6 +65,12 @@ public partial class Game : Node
 
     [Export]
     public Area3D ExitArea { get; private set; }
+    [Export]
+    public MobSpawnArea[] MobSpawnAreas { get; private set; }
+    [Export]
+    public Node3D[] PlayerSpawns { get; private set; }
+    [Export]
+    public ResupplySpawn[] ResupplySpawns { get; private set; }
 
     public List<Player> ExitPlayers { get; private set; } = [];
     public double ExitTimer { get; private set; } = 999f;
@@ -74,7 +80,6 @@ public partial class Game : Node
 
     public ulong LastWaveEndTime { get; private set; } = 0ul;
 
-    private readonly List<MobSpawnArea> spawnAreas = [];
     private int lastSpawnAreaIndex = -1;
     private RandomNumberGenerator rngSpawning = new();
     private RandomNumberGenerator rngLoot = new();
@@ -86,12 +91,13 @@ public partial class Game : Node
     private readonly List<Resource.Loot.LootState> unpickedLoot = [];
 
     // huge lagspike when loaded
-    private PackedScene ammoBoxPreload;
+
+    private PackedScene mobPreload;
 
     public override void _EnterTree()
     {
         Current = this;
-        ammoBoxPreload = GD.Load<PackedScene>("res://scenes/pickup/Ammobox.tscn");
+        mobPreload = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
     }
 
     public override void _ExitTree()
@@ -102,9 +108,10 @@ public partial class Game : Node
 
     public override void _Ready()
     {
-        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
         ExitArea.BodyEntered += OnBodyEntered;
         ExitArea.BodyExited += OnBodyExited;
+
+        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
     }
 
     public override void _Process(double delta)
@@ -140,23 +147,14 @@ public partial class Game : Node
         rngSpawning.Seed = GameSeed;
         rngLoot.Seed = GameSeed;
 
-        foreach (var child in GetChildren())
-        {
-            if (child is MobSpawnArea a)
-            {
-                spawnAreas.Add(a);
-            }
-        }
-
         lootNode = new Node() { Name = "Loot" };
         Global.GameManager.ClearOnLoad.AddChild(lootNode);
 
         mobPoolNode = new Node() { Name = "MobPool" };
         Global.GameManager.ClearOnLoad.AddChild(mobPoolNode);
-        var mobScene = GD.Load<PackedScene>("res://scenes/pawn/mob/LiveMob.tscn");
         for (int i = 0; i < 200; i++)
         {
-            var mob = mobScene.Instantiate<Mob>();
+            var mob = mobPreload.Instantiate<Mob>();
             mob.Name = "mob_" + i;
             mob.MobPoolId = i;
             mob.MobProcessOffset = MobPool.Count % 20;
@@ -189,7 +187,7 @@ public partial class Game : Node
                 return;
             }
 
-            SpawnAmmo(damageInfo);
+            SpawnResupply();
             TimerToNextWave();
             return;
         }
@@ -241,13 +239,10 @@ public partial class Game : Node
         }
     }
 
-    private void SpawnAmmo(DamageInfo damageInfo)
+    private void SpawnResupply()
     {
-        var ammobox = (Node3D)ammoBoxPreload.Instantiate();
-        Global.GameManager.ClearOnLoad.AddChild(ammobox);
-        ammobox.GlobalPosition = damageInfo.HitPosition;
-        ((RigidBody3D)ammobox.GetChild(0).GetChild(0)).LinearVelocity = new Vector3(rngLoot.RandfRange(-2f, 2f), 3f, rngLoot.RandfRange(-2f, 2f));
-        ((RigidBody3D)ammobox.GetChild(0).GetChild(0)).AngularVelocity = Vector3.One * rngLoot.RandfRange(-2f, 2f);
+        var index = rngSpawning.RandiRange(0, ResupplySpawns.Length - 1);
+        ResupplySpawns[index].SpawnResupply();
     }
 
     public async void TimerToNextWave()
@@ -299,15 +294,15 @@ public partial class Game : Node
         if (groupSize + ActiveMobs > MaxActiveMobs) groupSize = MaxActiveMobs - ActiveMobs;
         if (groupSize + ActiveMobs > WaveMobsLeft) groupSize = WaveMobsLeft - ActiveMobs;
 
-        var spawnAreaIndex = rngSpawning.RandiRange(0, spawnAreas.Count - 1);
+        var spawnAreaIndex = rngSpawning.RandiRange(0, MobSpawnAreas.Length - 1);
 
         if (spawnAreaIndex == lastSpawnAreaIndex)
-            spawnAreaIndex = rngSpawning.RandiRange(0, spawnAreas.Count - 1);
+            spawnAreaIndex = rngSpawning.RandiRange(0, MobSpawnAreas.Length - 1);
 
         lastSpawnAreaIndex = spawnAreaIndex;
 
         var spawned = 0;
-        var spawns = spawnAreas[spawnAreaIndex].GetSpawnVectorList(groupSize);
+        var spawns = MobSpawnAreas[spawnAreaIndex].GetSpawnVectorList(groupSize);
         for (int i = 0; i < MobPool.Count; i++)
         {
             if (MobPool[i].Active) continue;

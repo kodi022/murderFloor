@@ -3,7 +3,7 @@ namespace Shooter.Game;
 public partial class Usable : Node3D
 {
     [Export]
-    public string UseInfoText { get; private set; }
+    public string UseInfoText { get; set; }
     [Export]
     public string UiSceneToOpen { get; private set; }
 

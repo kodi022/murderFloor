@@ -1,12 +1,21 @@
 [gd_scene format=3 uid="uid://d1oh4hfgqd4q7"]
 
 [ext_resource type="Script" uid="uid://cs6apgj13gp1a" path="res://scripts/game/Game.cs" id="1_waklt"]
-[ext_resource type="Script" uid="uid://bf7fcaaevianx" path="res://scripts/game/gamescripts/MobSpawnArea.cs" id="3_phb26"]
+[ext_resource type="Script" uid="uid://bf7fcaaevianx" path="res://scripts/game/area/MobSpawnArea.cs" id="3_phb26"]
 [ext_resource type="Material" uid="uid://bx6mpnesdxait" path="res://materials/surface/concrete/concrete017/Concrete017.tres" id="3_qs4vn"]
 [ext_resource type="Material" uid="uid://s3n0bhfr6o0j" path="res://materials/surface/wood/wood095/Wood095.tres" id="4_h3xxs"]
 [ext_resource type="PackedScene" uid="uid://q2xs38ym4gvf" path="res://models/structure/tunneltileset/tunnelstraight.blend" id="7_saqid"]
 [ext_resource type="Texture2D" uid="uid://377f7pij0g2o" path="res://materials/surface/rock/rock023/Rock023_1K-PNG_Color.png" id="8_0jy5d"]
 [ext_resource type="PackedScene" uid="uid://iuy4myjesh7" path="res://models/structure/store/shop_test.blend" id="8_h3xxs"]
+[ext_resource type="Material" uid="uid://e5b8snlyaqsp" path="res://materials/debug/debugscalingground.tres" id="8_y4u1i"]
+[ext_resource type="Texture2D" uid="uid://b3vxakkpxu068" path="res://images/decal/bulletdecal.png" id="9_vujko"]
+[ext_resource type="Texture2D" uid="uid://cj1cs8xm7liyg" path="res://images/debug/ruler2.png" id="10_ny3yv"]
+[ext_resource type="FontFile" uid="uid://d0k2lrfxrv5c2" path="res://fonts/Quantico-Regular.ttf" id="11_7lnjd"]
+[ext_resource type="PackedScene" uid="uid://bysve08qsh4kt" path="res://models/prop/street/newsbox/newsbox.blend" id="12_a2qgv"]
+[ext_resource type="PackedScene" uid="uid://bjoee86wrlqky" path="res://models/prop/trash/newspaper.blend" id="13_ny3yv"]
+[ext_resource type="PackedScene" uid="uid://djjye1tim1ht3" path="res://models/prop/trash/newspaper2.blend" id="14_7lnjd"]
+[ext_resource type="PackedScene" uid="uid://cwajw2atnyuc" path="res://models/prop/trash/soda_1_a.blend" id="15_a2qgv"]
+[ext_resource type="PackedScene" uid="uid://bdbomw5lkp48y" path="res://models/prop/trash/soda_2_a.blend" id="16_o521o"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_p8y1m"]
 size = Vector3(2.6032104, 1.8391113, 4.0531006)
@@ -81,10 +90,19 @@ albedo_texture = ExtResource("8_0jy5d")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_de5x5"]
 albedo_texture = ExtResource("8_0jy5d")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o521o"]
+albedo_texture = ExtResource("10_ny3yv")
+
+[sub_resource type="QuadMesh" id="QuadMesh_nymd4"]
+size = Vector2(2.002, 0.4)
+
 [node name="Dev" type="Node3D" unique_id=2094419847]
 
-[node name="Game" type="Node3D" parent="." unique_id=189801316]
+[node name="Game" type="Node3D" parent="." unique_id=189801316 node_paths=PackedStringArray("MobSpawnAreas", "PlayerSpawns", "ResupplySpawns")]
 script = ExtResource("1_waklt")
+MobSpawnAreas = []
+PlayerSpawns = []
+ResupplySpawns = []
 
 [node name="MobSpawnArea" type="Node3D" parent="Game" unique_id=712887205]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.954743, 0.18710554, 13.433266)
@@ -344,3 +362,105 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2068227031]
 transform = Transform3D(0.73122287, -0.5771171, 0.36366075, -0.022016406, 0.5128736, 0.8581818, -0.6817833, -0.6355285, 0.3623188, 0, 14.932693, 0)
 shadow_enabled = true
+
+[node name="DevGround" type="CSGBox3D" parent="." unique_id=96186437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.046353817, -32)
+material_override = ExtResource("8_y4u1i")
+size = Vector3(32, 0.1, 32)
+material = ExtResource("3_qs4vn")
+
+[node name="Decal" type="Decal" parent="DevGround" unique_id=27362744]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.058, 4)
+size = Vector3(0.25, 0.1, 0.25)
+texture_albedo = ExtResource("9_vujko")
+
+[node name="tunnelstraight" parent="DevGround" unique_id=1782914737 instance=ExtResource("7_saqid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6087971, -0.12512493, -2.275957)
+
+[node name="tunnelstraight" parent="DevGround/tunnelstraight" unique_id=459112119 instance=ExtResource("7_saqid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+
+[node name="tunnelstraight" parent="DevGround/tunnelstraight/tunnelstraight" unique_id=831030066 instance=ExtResource("7_saqid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+
+[node name="CSGScale" type="CSGBox3D" parent="DevGround" unique_id=342074064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.999987, 0.048374653, -11.786388)
+size = Vector3(1, 0.05, 0.01)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale" unique_id=506992005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.501, 0.22265625, 0)
+material_override = SubResource("StandardMaterial3D_o521o")
+mesh = SubResource("QuadMesh_nymd4")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2" unique_id=1895670191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_o521o")
+mesh = SubResource("QuadMesh_nymd4")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2/MeshInstance3D2" unique_id=291177211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_o521o")
+mesh = SubResource("QuadMesh_nymd4")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=1044766952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
+material_override = SubResource("StandardMaterial3D_o521o")
+mesh = SubResource("QuadMesh_nymd4")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGScale" unique_id=1373222180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.2, 0)
+size = Vector3(0.1, 0.45, 0.1)
+
+[node name="Label3D" type="Label3D" parent="DevGround/CSGScale" unique_id=76223573]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8744254, 0.6467638, -0.04206848)
+pixel_size = 0.006
+text = "Put models here for scaling
+Textures should scale 16px/m (same as ground plane)"
+font = ExtResource("11_7lnjd")
+outline_size = 10
+line_spacing = -8.0
+
+[node name="CSGramps" type="CSGBox3D" parent="DevGround" unique_id=2091481693]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, -7.843754, 0.16409242, -13.059757)
+material_override = ExtResource("3_qs4vn")
+calculate_tangents = false
+use_collision = true
+size = Vector3(2, 1, 5)
+material = ExtResource("4_h3xxs")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps" unique_id=139923759]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D" unique_id=1766945288]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D/CSGBox3D" unique_id=3326573]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D/CSGBox3D/CSGBox3D" unique_id=346766289]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
+size = Vector3(2, 1, 5)
+
+[node name="CSGPlayer" type="CSGCylinder3D" parent="DevGround" unique_id=306256853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.875281, 0.9533652, -11.893618)
+radius = 0.4
+height = 1.8
+sides = 16
+
+[node name="newsbox" parent="DevGround" unique_id=1728973855 instance=ExtResource("12_a2qgv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.04453636, -10.000002)
+
+[node name="newspaper" parent="." unique_id=153513013 instance=ExtResource("13_ny3yv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.159878, 0.15601364, -40.959595)
+
+[node name="newspaper2" parent="." unique_id=2032952077 instance=ExtResource("14_7lnjd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.543697, 0.0969466, -40.96615)
+
+[node name="soda_1_a" parent="." unique_id=1074684300 instance=ExtResource("15_a2qgv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.789104, 0.113747716, -40.994213)
+
+[node name="soda_2_a" parent="." unique_id=1707030146 instance=ExtResource("16_o521o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7831907, 0.10469884, -40.774548)

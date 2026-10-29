@@ -6,15 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_NormalGL.png" id="4_eksbt"]
 [ext_resource type="Texture2D" uid="uid://cke3r1f0hqyq8" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_Color.png" id="5_4ryty"]
 [ext_resource type="Texture2D" uid="uid://cgil4svjqswf5" path="res://materials/surface/rock/rocks011/Rocks011_1K-PNG_NormalGL.png" id="6_t5wx4"]
-[ext_resource type="Material" uid="uid://e5b8snlyaqsp" path="res://materials/debug/debugscalingground.tres" id="7_jnte4"]
 [ext_resource type="Material" uid="uid://bx6mpnesdxait" path="res://materials/surface/concrete/concrete017/Concrete017.tres" id="7_t5wx4"]
-[ext_resource type="Texture2D" uid="uid://cj1cs8xm7liyg" path="res://images/debug/ruler2.png" id="8_ootgo"]
-[ext_resource type="FontFile" uid="uid://d0k2lrfxrv5c2" path="res://fonts/Quantico-Regular.ttf" id="9_ootgo"]
-[ext_resource type="Material" uid="uid://s3n0bhfr6o0j" path="res://materials/surface/wood/wood095/Wood095.tres" id="11_k7gih"]
-[ext_resource type="PackedScene" uid="uid://bysve08qsh4kt" path="res://models/prop/street/newsbox/newsbox.blend" id="12_2mlpq"]
-[ext_resource type="PackedScene" uid="uid://q2xs38ym4gvf" path="res://models/structure/tunneltileset/tunnelstraight.blend" id="13_2u80r"]
 [ext_resource type="PackedScene" uid="uid://d86jfkuss0wx" path="res://scenes/ui/mapselect/MapSelect.tscn" id="14_wt7li"]
-[ext_resource type="Texture2D" uid="uid://b3vxakkpxu068" path="res://images/decal/bulletdecal.png" id="15_v3qr3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0sitp"]
 size = Vector3(3.9231415, 2.7662354, 6.182312)
@@ -118,12 +111,6 @@ uv_scale = 0.061
 [sub_resource type="Terrain3DAssets" id="Terrain3DAssets_t5wx4"]
 mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_4ryty")])
 texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_eksbt"), SubResource("Terrain3DTextureAsset_2mlpq")])
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jnte4"]
-albedo_texture = ExtResource("8_ootgo")
-
-[sub_resource type="QuadMesh" id="QuadMesh_k7gih"]
-size = Vector2(2.002, 0.4)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_iy75m"]
 viewport_path = NodePath("SubViewport")
@@ -362,91 +349,6 @@ free_editor_textures = false
 top_level = true
 metadata/_edit_lock_ = true
 
-[node name="DevGround" type="CSGBox3D" parent="." unique_id=1366096514]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.046353817, -24.717268)
-material_override = ExtResource("7_jnte4")
-size = Vector3(32, 0.1, 32)
-material = ExtResource("7_t5wx4")
-
-[node name="tunnelstraight" parent="DevGround" unique_id=1868503491 instance=ExtResource("13_2u80r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6087971, -0.12512493, -2.275957)
-
-[node name="tunnelstraight" parent="DevGround/tunnelstraight" unique_id=369675900 instance=ExtResource("13_2u80r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-
-[node name="tunnelstraight" parent="DevGround/tunnelstraight/tunnelstraight" unique_id=1507552423 instance=ExtResource("13_2u80r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
-
-[node name="CSGScale" type="CSGBox3D" parent="DevGround" unique_id=13628808]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.999987, 0.048374653, -11.786388)
-size = Vector3(1, 0.05, 0.01)
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale" unique_id=600775593]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.501, 0.22265625, 0)
-material_override = SubResource("StandardMaterial3D_jnte4")
-mesh = SubResource("QuadMesh_k7gih")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2" unique_id=2102641634]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
-material_override = SubResource("StandardMaterial3D_jnte4")
-mesh = SubResource("QuadMesh_k7gih")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2/MeshInstance3D2" unique_id=230729896]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
-material_override = SubResource("StandardMaterial3D_jnte4")
-mesh = SubResource("QuadMesh_k7gih")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="DevGround/CSGScale/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=78648720]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.998, 0, 0)
-material_override = SubResource("StandardMaterial3D_jnte4")
-mesh = SubResource("QuadMesh_k7gih")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGScale" unique_id=1993321887]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.2, 0)
-size = Vector3(0.1, 0.45, 0.1)
-
-[node name="Label3D" type="Label3D" parent="DevGround/CSGScale" unique_id=982360536]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8744254, 0.6467638, -0.04206848)
-pixel_size = 0.006
-text = "Put models here for scaling
-Textures should scale 16px/m (same as ground plane)"
-font = ExtResource("9_ootgo")
-outline_size = 10
-line_spacing = -8.0
-
-[node name="CSGramps" type="CSGBox3D" parent="DevGround" unique_id=723167262]
-transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, -7.843754, 0.16409242, -13.059757)
-material_override = ExtResource("7_t5wx4")
-calculate_tangents = false
-use_collision = true
-size = Vector3(2, 1, 5)
-material = ExtResource("11_k7gih")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps" unique_id=2145138724]
-transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
-size = Vector3(2, 1, 5)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D" unique_id=1093574532]
-transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
-size = Vector3(2, 1, 5)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D/CSGBox3D" unique_id=221857999]
-transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
-size = Vector3(2, 1, 5)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="DevGround/CSGramps/CSGBox3D/CSGBox3D/CSGBox3D" unique_id=1778352330]
-transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 2, 0, 0)
-size = Vector3(2, 1, 5)
-
-[node name="CSGPlayer" type="CSGCylinder3D" parent="DevGround" unique_id=1466864108]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.875281, 0.9533652, -11.893618)
-radius = 0.4
-height = 1.8
-sides = 16
-
-[node name="newsbox" parent="DevGround" unique_id=1714770627 instance=ExtResource("12_2mlpq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.04453636, -10.000002)
-
 [node name="MapScreen" type="Node3D" parent="." unique_id=22849170]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.324935, 2.5822277, -7.461064)
 
@@ -475,8 +377,3 @@ size_2d_override = Vector2i(1600, 1000)
 
 [node name="MapSelect" parent="SubViewport" unique_id=834133945 instance=ExtResource("14_wt7li")]
 OnScreen = false
-
-[node name="Decal" type="Decal" parent="." unique_id=944611291]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.104084656, -19.967602)
-size = Vector3(0.25, 0.1, 0.25)
-texture_albedo = ExtResource("15_v3qr3")
