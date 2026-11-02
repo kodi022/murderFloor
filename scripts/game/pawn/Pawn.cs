@@ -23,7 +23,7 @@ public partial class Pawn : CharacterBody3D
     [Export]
     public float MaxArmor { get; set; } = 100;
     [Export]
-    public float Armor { get; set; } = 0;
+    public float Armor { get; set; } = 50;
 
     public bool IsDead => Health <= 0;
 

@@ -37,10 +37,10 @@ public partial class Hud : ScreenScaleLimiter
     private RichTextLabel waveInfoWave, waveInfoLeft;
 
     private Panel healthBar, healthBarChange;
-    private float lastHealthMove;
+    private float lastHealthMove = -1f;
 
     private Panel armorBar, armorBarChange;
-    private float lastArmorMove;
+    private float lastArmorMove = -1f;
 
     private Panel weightBar, weightBarChange;
 

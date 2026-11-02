@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://dc0n627m5c35x"]
+
+[ext_resource type="Script" uid="uid://bniej7cq3qhpa" path="res://scripts/game/ParticleDespawner.cs" id="1_12fnj"]
+[ext_resource type="Texture2D" uid="uid://cfrycrunmyqc" path="res://images/particle/bloodparticle.png" id="2_djm3d"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ntcgh"]
+angle_min = 1.0728835e-05
+angle_max = 360.00003
+use_rotation_3d = true
+rotation_3d_min = Vector3(0, 0, 0)
+rotation_3d_max = Vector3(360, 360, 360)
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 2.0
+scale_min = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2v3k"]
+transparency = 1
+cull_mode = 2
+albedo_texture = ExtResource("2_djm3d")
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_gyt1s"]
+material = SubResource("StandardMaterial3D_e2v3k")
+size = Vector2(1, 1)
+
+[node name="HitBlood" type="Node3D" unique_id=938467155]
+script = ExtResource("1_12fnj")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1618018024]
+emitting = false
+amount = 3
+one_shot = true
+explosiveness = 0.85
+visibility_aabb = AABB(-1, -1, -1, 2, 2, 2)
+process_material = SubResource("ParticleProcessMaterial_ntcgh")
+draw_pass_1 = SubResource("PlaneMesh_gyt1s")

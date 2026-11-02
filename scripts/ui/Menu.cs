@@ -48,7 +48,6 @@ public partial class Menu : OpenUi
             GetChild<Control>(0).Modulate = new Color(1, 1, 1, 1);
     }
 
-
     private void OptionButton()
     {
         openMenu = GD.Load<PackedScene>("res://scenes/ui/options/OptionsMenu.tscn").Instantiate<Control>();

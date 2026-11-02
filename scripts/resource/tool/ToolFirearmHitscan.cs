@@ -46,7 +46,6 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
         var aimShiftV = (Vector2)fi.Tool.ToolConfig.GetStat(ToolFirearm.PropertyName.AimShiftRangeVertical);
         var aimShiftH = (Vector2)fi.Tool.ToolConfig.GetStat(ToolFirearm.PropertyName.AimShiftRangeHorizontal);
-
         fi.Player.ViewAngle += new Vector2(
             Rng.RandfRange(aimShiftH.X, aimShiftH.Y),
             Rng.RandfRange(aimShiftV.X, aimShiftV.Y)
@@ -93,9 +92,19 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 currentNode,
                 (Vector3)ray["position"],
                 decalRot,
-                (string)currentNode.GetMeta("decal", "res://images/decal/bulletdecal.png"),
+                (string)currentNode.GetMeta("hitdecal", "res://images/decal/bulletdecal.png"),
                 new Vector3(0.25f, 0.25f, 0.25f)
             );
+
+            var partic = (string)currentNode.GetMeta("hitparticle", "res://scenes/particle/hiteffect/HitRock.tscn");
+            if (partic != "")
+            {
+                var sc = GD.Load<PackedScene>(partic);
+                var inst = (Node3D)sc.Instantiate();
+                Global.GameManager.ClearOnLoad.AddChild(inst);
+                inst.GlobalPosition = pos;
+                inst.GlobalRotation = decalRot;
+            }
 
             for (int j = 0; j < 5; j++)
             {
