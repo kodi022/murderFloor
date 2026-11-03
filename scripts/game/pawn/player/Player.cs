@@ -94,6 +94,7 @@ public partial class Player : Pawn
         if (!IsMultiplayerAuthority())
         {
             cameraRaycast.Free();
+            Ui.HudFloatingText.AddFloatingText(this, "player", Vector3.Up * 1.8f);
             Global.NetworkManager.Singleton.RpcId(Id, Global.NetworkManager.MethodName.ClientPlayerReadyRpc);
             return;
         }

@@ -74,7 +74,7 @@ public partial class NetworkManager : Node
         return Error.Ok;
     }
 
-    public Error CreateServer(bool lan = false)
+    public Error CreateServer(bool lan = true)
     {
         var peer = new ENetMultiplayerPeer();
         Error error = peer.CreateServer(Port, lan ? 1 : MaxConnections);
@@ -103,6 +103,7 @@ public partial class NetworkManager : Node
         _playersLoaded = 0;
         Game.Player.Self?.CloseUI(); // needed or cursor may stay unlocked
         GameManager.Clear_ClearOnLoad();
+        Ui.HudFloatingText.ClearFloatingTexts();
         GetTree().ChangeSceneToFile(gameScenePath);
     }
 

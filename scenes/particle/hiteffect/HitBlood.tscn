@@ -10,8 +10,9 @@ use_rotation_3d = true
 rotation_3d_min = Vector3(0, 0, 0)
 rotation_3d_max = Vector3(360, 360, 360)
 direction = Vector3(0, 1, 0)
-initial_velocity_min = 2.0
-initial_velocity_max = 2.0
+spread = 40.0
+initial_velocity_min = 1.5
+initial_velocity_max = 3.0
 scale_min = 0.7
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2v3k"]

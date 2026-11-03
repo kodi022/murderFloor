@@ -61,7 +61,7 @@ public partial class MainMenu : ScreenScaleLimiter
 							i++;
 							var name = args[i];
 							Global.NetworkManager.Singleton._playerInfo["name"] = name;
-							var error = Global.NetworkManager.Singleton.CreateServer();
+							var error = Global.NetworkManager.Singleton.CreateServer(false);
 							if (error == Error.Ok)
 							{
 								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");

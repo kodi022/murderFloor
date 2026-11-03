@@ -490,6 +490,8 @@ transform = Transform3D(0.9999982, 0, 0, 0, 1, 0, 0, 0, 0.9999982, -11.405749, 0
 
 [node name="Boundary1" type="StaticBody3D" parent="NavigationRegion3D" unique_id=599711630]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.37597, 8.384057, 0)
+collision_layer = 2
+collision_mask = 0
 input_ray_pickable = false
 metadata/_edit_lock_ = true
 
@@ -499,6 +501,8 @@ metadata/_edit_lock_ = true
 
 [node name="Boundary2" type="StaticBody3D" parent="NavigationRegion3D" unique_id=884327486]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.384, 50.12)
+collision_layer = 2
+collision_mask = 0
 input_ray_pickable = false
 metadata/_edit_lock_ = true
 
@@ -508,6 +512,8 @@ metadata/_edit_lock_ = true
 
 [node name="Boundary3" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1550755002]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -50.12)
+collision_layer = 2
+collision_mask = 0
 input_ray_pickable = false
 metadata/_edit_lock_ = true
 
@@ -519,6 +525,8 @@ metadata/_edit_lock_ = true
 
 [node name="Boundary4" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1066564844]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.758827, 0, 9)
+collision_layer = 2
+collision_mask = 0
 input_ray_pickable = false
 metadata/_edit_lock_ = true
 

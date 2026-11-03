@@ -2,7 +2,7 @@ namespace Shooter.Game;
 
 public partial class Mob : Pawn
 {
-    public const float MinimumDistanceToTarget = 1.2f;
+    public const float MinimumDistanceToTarget = 1f;
 
     public int Level { get; set; }
     public string MobResourceFullId { get; set; }

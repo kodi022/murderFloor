@@ -32,7 +32,7 @@ public partial class MainMenuOnline : Panel
 		hostButton.ButtonDown += () =>
 		{
 			ParseText();
-			var error = Global.NetworkManager.Singleton.CreateServer();
+			var error = Global.NetworkManager.Singleton.CreateServer(false);
 			if (error == Error.Ok)
 			{
 				GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");

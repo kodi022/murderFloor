@@ -78,7 +78,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
 
             var pos = (Vector3)ray["position"];
             var distanceSqr = pos.DistanceSquaredTo(fi.ViewTransform.Origin);
-            fi.Tool.BulletParticles[i].Lifetime = Mathf.Sqrt(distanceSqr) / 150f - 0.0065f;
+            fi.Tool.BulletParticles[i].Lifetime = Mathf.Max(0.1f, Mathf.Sqrt(distanceSqr) / 150f - 0.0065f);
 
             Game.Pawn pawn = null;
             var currentNode = (Node)(GodotObject)ray["collider"];

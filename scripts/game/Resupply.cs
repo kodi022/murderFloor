@@ -14,6 +14,7 @@ public partial class Resupply : Node3D
             if (used) return;
             used = true;
             GetChild<Usable>(0).UseInfoText = "";
+            Ui.HudFloatingText.RemoveFloatingText((Node3D)GetChild(0).GetChild(0));
 
             var ammobox = (Node3D)ammoBoxPreload.Instantiate();
             Global.GameManager.ClearOnLoad.AddChild(ammobox);

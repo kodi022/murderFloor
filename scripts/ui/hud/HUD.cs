@@ -126,6 +126,11 @@ public partial class Hud : ScreenScaleLimiter
         waveInfoWave.Text = $"Wave {Game.Current.Wave}/{Game.Current.MaxWave}";
         waveInfoLeft.Text = $"{Game.Current.WaveMobsLeft} Left";
 
+        if (Game.Current.GameState == Game.StateEnum.Ended)
+        {
+            HudFloatingText.AddFloatingText(Game.Current.ExitArea, "Exit", Vector3.Up * 2f);
+        }
+
         if (Game.Current.ExitTimer != 999f)
         {
             lobbyTimerPanel.Visible = true;
@@ -143,6 +148,11 @@ public partial class Hud : ScreenScaleLimiter
     private void ProcessGameLobby()
     {
         waveInfoPanel.Visible = false;
+
+        if (MapSelect.SelectedMapNetworked is not null)
+        {
+            HudFloatingText.AddFloatingText(GameLobby.Current.ExitArea, "Depart", Vector3.Up * 2f);
+        }
 
         if (GameLobby.Current.ExitTimer != 999f)
         {
@@ -176,7 +186,6 @@ public partial class Hud : ScreenScaleLimiter
 
         if (selectedTool.ToolResource is Resource.ToolFirearm firearm)
         {
-
             if (OptionsManager.CurrentOptions.ScalingCrosshair)
             {
                 var firearmBehavior = (ToolBehaviorFirearm)selectedTool.ToolBehavior;
