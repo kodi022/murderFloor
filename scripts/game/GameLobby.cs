@@ -1,5 +1,7 @@
 namespace Shooter.Game;
 
+using Global;
+
 // - terminology help
 // Game is multiple Waves
 // Wave is multiple Groups until a wave spawn count is reached
@@ -21,11 +23,14 @@ public partial class GameLobby : Node
         Current = this;
     }
 
-    public override void _Ready()
+    public override async void _Ready()
     {
-        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
+        DecalManager.Ready();
         ExitArea.BodyEntered += OnBodyEntered;
         ExitArea.BodyExited += OnBodyExited;
+
+        await Task.Delay(500);
+        NetworkManager.Singleton.RpcId(1, NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
     }
 
     public override void _Process(double delta)
@@ -36,15 +41,9 @@ public partial class GameLobby : Node
         if (ExitTimer <= 0f && !startedLoading)
         {
             startedLoading = true;
-            if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
-                Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, Ui.MapSelect.SelectedMapNetworked.MeshScene.ResourcePath);
+            if (NetworkManager.Singleton.IsMultiplayerAuthority())
+                NetworkManager.Singleton.Rpc(NetworkManager.MethodName.LoadGameRpc, Ui.MapSelect.SelectedMapNetworked.MeshScene.ResourcePath);
         }
-    }
-
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
-    public void AllLoadedRpc()
-    {
-        Global.DecalManager.Ready();
     }
 
     public void OnBodyEntered(Node3D body)

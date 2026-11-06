@@ -25,7 +25,7 @@ public partial class MainMenuOnline : Panel
 			var error = Global.NetworkManager.Singleton.JoinServer();
 			if (error == Error.Ok)
 			{
-				GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
+				Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
 			}
 		};
 
@@ -35,7 +35,7 @@ public partial class MainMenuOnline : Panel
 			var error = Global.NetworkManager.Singleton.CreateServer(false);
 			if (error == Error.Ok)
 			{
-				GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
+				Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
 			}
 		};
 	}
@@ -50,7 +50,7 @@ public partial class MainMenuOnline : Panel
 
 		Global.NetworkManager.Singleton.ServerIP = PickText(IPline);
 		Global.NetworkManager.Singleton.Port = PickText(portLine).ToInt();
-		Global.NetworkManager.Singleton._playerInfo["name"] = PickText(nameLine);
-		Global.NetworkManager.Singleton._playerInfo["coolness"] = PickText(coolLine);
+		Global.NetworkManager.Singleton.PlayerInfo["name"] = PickText(nameLine);
+		Global.NetworkManager.Singleton.PlayerInfo["coolness"] = PickText(coolLine);
 	}
 }

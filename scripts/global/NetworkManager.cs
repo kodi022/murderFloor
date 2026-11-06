@@ -25,13 +25,13 @@ public partial class NetworkManager : Node
 
     // This will contain player info for every player,
     // with the keys being each player's unique IDs.
-    public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>> _players = [];
+    public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, string>> Players = [];
 
     // This is the local player info. This should be modified locally
     // before the connection is made. It will be passed to every other peer.
     // For example, the value of "name" can be set to something the player
     // entered in a UI scene.
-    public Godot.Collections.Dictionary<string, string> _playerInfo = new()
+    public Godot.Collections.Dictionary<string, string> PlayerInfo = new()
     {
         { "name", "Convict" },
         { "coolness", "1" },
@@ -82,7 +82,7 @@ public partial class NetworkManager : Node
         if (error != Error.Ok) return error;
 
         Multiplayer.MultiplayerPeer = peer;
-        _players[1] = _playerInfo;
+        Players[1] = PlayerInfo;
         OnConnectedToServer();
 
         return Error.Ok;
@@ -92,7 +92,7 @@ public partial class NetworkManager : Node
     public void CloseServer()
     {
         Multiplayer.MultiplayerPeer = null;
-        _players.Clear();
+        Players.Clear();
     }
 
     // When the server decides to start the game from a UI scene,
@@ -115,14 +115,10 @@ public partial class NetworkManager : Node
     {
         GD.Print("OnPeerConnected " + id);
 
-        RpcId(id, MethodName.SendInfoToPeerRpc, _playerInfo);
+        RpcId(id, MethodName.SendInfoToPeerRpc, PlayerInfo);
 
-        _players[id] = _playerInfo;
-        // var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
-        // player.Name = "plr_" + id.ToString();
-        // player.Position = new Vector3(0, 0.3f, 0);
-        // player.SetMultiplayerAuthority((int)id);
-        // GameManager.ClearOnLoad.AddChild(player);
+        Players[id] = PlayerInfo;
+        SpawnPlayer(id);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
@@ -132,12 +128,8 @@ public partial class NetworkManager : Node
         GD.Print("OnConnectedToServer");
 
         int id = Multiplayer.GetUniqueId();
-        _players[id] = _playerInfo;
-        // var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
-        // player.Name = "plr_" + id.ToString();
-        // player.Position = new Vector3(0, 0.3f, 0);
-        // player.SetMultiplayerAuthority((int)id);
-        // GameManager.ClearOnLoad.AddChild(player);
+        Players[id] = PlayerInfo;
+        SpawnPlayer(id);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from a peer. 
@@ -152,7 +144,7 @@ public partial class NetworkManager : Node
                 p.QueueFree();
             }
         }
-        _players.Remove(id);
+        Players.Remove(id);
         EmitSignal(SignalName.PlayerDisconnected, id);
     }
 
@@ -171,7 +163,7 @@ public partial class NetworkManager : Node
     {
         GD.Print("OnServerDisconnected");
         Multiplayer.MultiplayerPeer = null;
-        _players.Clear();
+        Players.Clear();
         Rpc(MethodName.LoadGameRpc, "res://scenes/MainMenu.tscn");
         EmitSignal(SignalName.ServerDisconnected);
     }
@@ -180,26 +172,34 @@ public partial class NetworkManager : Node
     private void SendInfoToPeerRpc(Godot.Collections.Dictionary<string, string> playerInfo)
     {
         int playerId = Multiplayer.GetRemoteSenderId();
-        _players[playerId] = playerInfo;
+        Players[playerId] = playerInfo;
         EmitSignal(SignalName.PlayerConnected, playerId, playerInfo);
     }
 
+    // CallLocal required, because host is usually a player
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
     private async void PlayerLoadedRpc(int id)
     {
-        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
-        player.Name = "plr_" + id.ToString();
-        player.Position = new Vector3(0, 0.3f, 0);
-        player.SetMultiplayerAuthority((int)id);
-        GameManager.ClearOnLoad.AddChild(player);
-
         if (Multiplayer.IsServer())
         {
-            _playersLoaded += 1;
-            if (_playersLoaded == _players.Count)
+            if (IsInstanceValid(Game.GameLobby.Current))
             {
-                if (IsInstanceValid(Game.GameLobby.Current)) Game.GameLobby.Current.Rpc(Game.GameLobby.MethodName.AllLoadedRpc);
+                if (Ui.MapSelect.SelectedMapNetworked is not null)
+                {
+                    Ui.MapSelect.WorldMapSelect.RpcId(
+                        id,
+                        Ui.MapSelect.MethodName.MapInfoRpc,
+                        Ui.MapSelect.SelectedMapNetworked.FullId,
+                        Ui.MapSelect.DifficultyConfigNetworked.Serialize(),
+                        Ui.MapSelect.SelectedSeedNetworked,
+                        Ui.MapSelect.SelectedButtonLocation
+                    );
+                }
+            }
 
+            _playersLoaded += 1;
+            if (_playersLoaded == Players.Count)
+            {
                 if (IsInstanceValid(Game.Game.Current))
                 {
                     Game.Game.Current.Rpc(Game.Game.MethodName.AllLoadedRpc);
@@ -215,5 +215,14 @@ public partial class NetworkManager : Node
     private void ClientPlayerReadyRpc()
     {
         Game.Player.Self.RpcId(Multiplayer.GetRemoteSenderId(), Game.Player.MethodName.ToolsSyncRpc, Game.Player.Self.GetAllTools(1));
+    }
+
+    private static void SpawnPlayer(long id)
+    {
+        var player = GD.Load<PackedScene>("res://scenes/pawn/player/Player.tscn").Instantiate<Node3D>();
+        player.Name = "plr_" + id.ToString();
+        player.Position = new Vector3(0, 0.3f, 0);
+        player.SetMultiplayerAuthority((int)id);
+        GameManager.ClearOnLoad.CallDeferred("add_child", player); // requires calldeferred, no idea why
     }
 }

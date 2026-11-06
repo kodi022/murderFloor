@@ -94,7 +94,8 @@ public partial class Player : Pawn
         if (!IsMultiplayerAuthority())
         {
             cameraRaycast.Free();
-            Ui.HudFloatingText.AddFloatingText(this, "player", Vector3.Up * 1.8f);
+            // ! using wrong name
+            Ui.HudFloatingText.AddFloatingText(this, Global.NetworkManager.Singleton.Players[Id]["name"], Vector3.Up * 2f);
             Global.NetworkManager.Singleton.RpcId(Id, Global.NetworkManager.MethodName.ClientPlayerReadyRpc);
             return;
         }
@@ -180,7 +181,7 @@ public partial class Player : Pawn
                     Damage = 25,
                     DamageType = DamageInfo.DamageTypeEnum.Physical,
                     AttackerId = Id,
-                    AttackerName = Global.NetworkManager.Singleton._players[Id]["Name"],
+                    AttackerName = Global.NetworkManager.Singleton.Players[Id]["name"],
                     HitboxName = "Neck"
                 };
                 Rpc(Pawn.MethodName.OnDamageRpc, di.ToVariant());

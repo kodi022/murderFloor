@@ -1,5 +1,7 @@
 namespace Shooter.Game;
 
+using Global;
+
 // - terminology help
 // Game is multiple Waves
 // Wave is multiple Groups until a wave spawn count is reached
@@ -57,8 +59,6 @@ public partial class Game : Node
     [Export]
     public int Wave { get; private set; } = 0;
     [Export]
-    public int MaxActiveMobs { get; private set; } = 25;
-    [Export]
     public int WaveMobsLeft { get; private set; } = 0;
     [Export]
     public int ActiveMobs { get; private set; } = 0;
@@ -106,19 +106,21 @@ public partial class Game : Node
         lootNode.Free();
     }
 
-    public override void _Ready()
+    public override async void _Ready()
     {
+        DecalManager.Ready();
         ExitArea.BodyEntered += OnBodyEntered;
         ExitArea.BodyExited += OnBodyExited;
 
-        Global.NetworkManager.Singleton.RpcId(1, Global.NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
+        await Task.Delay(500);
+        NetworkManager.Singleton.RpcId(1, NetworkManager.MethodName.PlayerLoadedRpc, Multiplayer.MultiplayerPeer.GetUniqueId());
     }
 
     public override void _Process(double delta)
     {
         if (GameState == StateEnum.Wave)
         {
-            if (TimeMsBetweenGroups < Time.GetTicksMsec() - lastGroupTime && ActiveMobs < MaxActiveMobs)
+            if (TimeMsBetweenGroups < Time.GetTicksMsec() - lastGroupTime && ActiveMobs < MobMaxActive)
             {
                 SpawnMobGroup();
             }
@@ -148,10 +150,10 @@ public partial class Game : Node
         rngLoot.Seed = GameSeed;
 
         lootNode = new Node() { Name = "Loot" };
-        Global.GameManager.ClearOnLoad.AddChild(lootNode);
+        GameManager.ClearOnLoad.AddChild(lootNode);
 
         mobPoolNode = new Node() { Name = "MobPool" };
-        Global.GameManager.ClearOnLoad.AddChild(mobPoolNode);
+        GameManager.ClearOnLoad.AddChild(mobPoolNode);
         for (int i = 0; i < 200; i++)
         {
             var mob = mobPreload.Instantiate<Mob>();
@@ -162,8 +164,6 @@ public partial class Game : Node
             MobPool.Add(mob);
             mob.SetMultiplayerAuthority(1);
         }
-
-        Global.DecalManager.Ready();
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
@@ -259,7 +259,6 @@ public partial class Game : Node
     {
         Wave++;
         GameState = StateEnum.Wave;
-        MaxActiveMobs = MobMaxActive;
         WaveMobsLeft = MobWaveAmount;
         EmitSignal(SignalName.GameWaveStart, Wave);
         SpawnMobGroup();
@@ -291,7 +290,7 @@ public partial class Game : Node
         lastGroupTime = Time.GetTicksMsec();
 
         var groupSize = MobGroupSize;
-        if (groupSize + ActiveMobs > MaxActiveMobs) groupSize = MaxActiveMobs - ActiveMobs;
+        if (groupSize + ActiveMobs > MobMaxActive) groupSize = MobMaxActive - ActiveMobs;
         if (groupSize + ActiveMobs > WaveMobsLeft) groupSize = WaveMobsLeft - ActiveMobs;
 
         var spawnAreaIndex = rngSpawning.RandiRange(0, MobSpawnAreas.Length - 1);
@@ -332,7 +331,7 @@ public partial class Game : Node
         await Task.Delay(15000);
 
         startedLoading = true;
-        if (Global.NetworkManager.Singleton.IsMultiplayerAuthority())
-            Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, "res://scenes/map/lobby/Lobby.tscn");
+        if (NetworkManager.Singleton.IsMultiplayerAuthority())
+            NetworkManager.Singleton.Rpc(NetworkManager.MethodName.LoadGameRpc, "res://scenes/map/lobby/Lobby.tscn");
     }
 }

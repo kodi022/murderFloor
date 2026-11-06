@@ -57,7 +57,7 @@ public partial class ToolMelee : Tool
             Damage = damage,
             DamageType = DamageInfo.DamageTypeEnum.Physical,
             AttackerId = fi.Player.Id,
-            AttackerName = Global.NetworkManager.Singleton._players[fi.Player.Id]["name"],
+            AttackerName = Global.NetworkManager.Singleton.Players[fi.Player.Id]["name"],
             WeaponId = HashId,
             HitboxName = hitObjName,
             HitPosition = pos,

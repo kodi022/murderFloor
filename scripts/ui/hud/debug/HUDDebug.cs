@@ -23,6 +23,6 @@ public partial class HudDebug : Control
         labels[0].Text = $"game state:{Game.Game.Current.GameState}";
         labels[1].Text = $"game maxwave:{Game.Game.Current.MaxWave} wave:{Game.Game.Current.Wave}";
         labels[2].Text = $"game wavemobleft:{Game.Game.Current.WaveMobsLeft}";
-        labels[3].Text = $"game mobmax:{Game.Game.Current.MaxActiveMobs} mobactive:{Game.Game.Current.ActiveMobs}";
+        labels[3].Text = $"game mobmax:{Game.Game.Current.MobMaxActive} mobactive:{Game.Game.Current.ActiveMobs}";
     }
 }

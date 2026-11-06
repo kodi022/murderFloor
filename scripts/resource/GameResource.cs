@@ -21,7 +21,7 @@ public partial class GameResource : Godot.Resource
     public int LootMinimumSpawnLevel { get; private set; } = 0;
 
     [Export, ExportSubgroup("")]
-    public string InclusionVersion { get; private set; } = "0.1.0"; // see also: Version
+    public string InclusionVersion { get; private set; } = "0.1.0"; // see also: Shooter.Version
 
     [Export]
     public string NameLocalizationGroup { get; private set; } = "";

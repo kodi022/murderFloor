@@ -11,7 +11,7 @@ public static class DecalManager
     {
         if (!GodotObject.IsInstanceValid(parent))
         {
-            parent = new Node() { Name = "NodePool" };
+            parent = new Node() { Name = "DecalPool" };
             GameManager.ClearOnLoad.AddChild(parent);
         }
 

@@ -3,11 +3,7 @@ namespace Shooter.Ui;
 public partial class HudFloatingText : Control
 {
     private static HudFloatingText current;
-
-    private static Dictionary<Node3D, FloatingTextInfo> floatingTexts = [];
-
-    [Export]
-    private Control control;
+    private static readonly Dictionary<Node3D, FloatingTextInfo> floatingTexts = [];
 
     public static bool HasFloatingText(Node3D node) => floatingTexts.ContainsKey(node);
 
@@ -15,7 +11,7 @@ public partial class HudFloatingText : Control
     {
         if (HasFloatingText(node)) return false;
 
-        var info = new FloatingTextInfo(text, offset, (Control)current.control.Duplicate());
+        var info = new FloatingTextInfo(text, offset, (Control)GD.Load<PackedScene>("res://scenes/ui/hud/HudFloatingText.tscn").Instantiate());
         Global.GameManager.ClearOnLoad.AddChild(info.Control);
         return floatingTexts.TryAdd(node, info);
     }
@@ -44,11 +40,6 @@ public partial class HudFloatingText : Control
     public override void _EnterTree()
     {
         current = this;
-    }
-
-    public override void _Ready()
-    {
-        control.Visible = false;
     }
 
     public override void _Process(double delta)

@@ -60,11 +60,11 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							Global.NetworkManager.Singleton._playerInfo["name"] = name;
+							Global.NetworkManager.Singleton.PlayerInfo["name"] = name;
 							var error = Global.NetworkManager.Singleton.CreateServer(false);
 							if (error == Error.Ok)
 							{
-								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
+								Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
 							}
 							return;
 						}
@@ -74,11 +74,11 @@ public partial class MainMenu : ScreenScaleLimiter
 						{
 							i++;
 							var name = args[i];
-							Global.NetworkManager.Singleton._playerInfo["name"] = name;
+							Global.NetworkManager.Singleton.PlayerInfo["name"] = name;
 							var error = Global.NetworkManager.Singleton.JoinServer();
 							if (error == Error.Ok)
 							{
-								GetTree().ChangeSceneToFile("res://scenes/map/lobby/Lobby.tscn");
+								Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
 							}
 						}
 						break;

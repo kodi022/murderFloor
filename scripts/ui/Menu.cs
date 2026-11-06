@@ -57,8 +57,7 @@ public partial class Menu : OpenUi
     private void ExitButton()
     {
         Global.NetworkManager.Singleton.CloseServer();
-        GetTree().ChangeSceneToFile("res://scenes/MainMenu.tscn");
-        foreach (var player in Game.Player.AllPlayers) player.QueueFree();
+        Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/MainMenu.tscn");
     }
 
     private void ExitDesktopButton()

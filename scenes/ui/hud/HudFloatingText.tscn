@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://btkcoccjvxkkg"]
+
+[ext_resource type="Texture2D" uid="uid://qd8m0k6wdfmr" path="res://images/ui/icon/TablerArrowBadgeDown.png" id="1_scqqd"]
+[ext_resource type="Theme" uid="uid://da3qohe7cgkmn" path="res://theme/ui_theme_dark.tres" id="1_uhxik"]
+
+[node name="HudFloatingText" type="Control" unique_id=267442037]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_uhxik")
+
+[node name="Label" type="Label" parent="." unique_id=1237366258]
+modulate = Color(1, 1, 1, 0.78431374)
+layout_mode = 0
+offset_left = -150.0
+offset_top = -20.0
+offset_right = 150.0
+offset_bottom = 3.0
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "Exit"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=659461687]
+modulate = Color(1, 1, 1, 0.78431374)
+texture_filter = 4
+layout_mode = 0
+offset_left = -14.0
+offset_top = -5.0
+offset_right = 14.0
+offset_bottom = 23.0
+texture = ExtResource("1_scqqd")
+expand_mode = 4
+stretch_mode = 5

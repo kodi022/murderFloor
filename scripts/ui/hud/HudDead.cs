@@ -22,7 +22,7 @@ public partial class HudDead : Control
 
     public override void _Process(double delta)
     {
-        viewingLabel.Text = Global.NetworkManager.Singleton._players[Target.Id]["name"];
+        viewingLabel.Text = Global.NetworkManager.Singleton.Players[Target.Id]["name"];
     }
 
     private void LastViewingPressed()
