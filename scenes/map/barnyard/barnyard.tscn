@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dp4jd0ipg1xs6"]
 
-[ext_resource type="Script" uid="uid://cs6apgj13gp1a" path="res://scripts/game/Game.cs" id="1_0h0p1"]
+[ext_resource type="Script" uid="uid://dhw6au183mede" path="res://scripts/game/GameSurvival.cs" id="1_pjovs"]
 [ext_resource type="Script" uid="uid://bf7fcaaevianx" path="res://scripts/game/area/MobSpawnArea.cs" id="2_cvsvl"]
 [ext_resource type="Texture2D" uid="uid://bdt3yv61ivu5e" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_Color.png" id="3_exmcb"]
 [ext_resource type="Script" uid="uid://caj3pdrkuvhiu" path="res://scripts/game/ResupplySpawn.cs" id="3_pjovs"]
@@ -186,12 +186,12 @@ size = Vector2(512, 512)
 [node name="Barnyard" type="Node3D" unique_id=30355578]
 metadata/_edit_lock_ = true
 
-[node name="Game" type="Node" parent="." unique_id=1276688028 node_paths=PackedStringArray("ExitArea", "MobSpawnAreas", "PlayerSpawns", "ResupplySpawns")]
-script = ExtResource("1_0h0p1")
-ExitArea = NodePath("Exit")
+[node name="Game" type="Node" parent="." unique_id=1276688028 node_paths=PackedStringArray("MobSpawnAreas", "ResupplySpawns", "PlayerSpawns", "ExitArea")]
+script = ExtResource("1_pjovs")
 MobSpawnAreas = [NodePath("MobSpawnArea"), NodePath("MobSpawnArea2"), NodePath("MobSpawnArea3"), NodePath("MobSpawnArea4")]
-PlayerSpawns = [NodePath("PlayerSpawn"), NodePath("PlayerSpawn2"), NodePath("PlayerSpawn3"), NodePath("PlayerSpawn4")]
-ResupplySpawns = [NodePath("ResupplySpawn")]
+ResupplySpawns = [NodePath("ResupplySpawn"), NodePath("ResupplySpawn2"), NodePath("ResupplySpawn3")]
+PlayerSpawns = []
+ExitArea = NodePath("Exit")
 metadata/_edit_lock_ = true
 
 [node name="MobSpawnArea" type="Node3D" parent="Game" unique_id=28401381]
@@ -242,7 +242,15 @@ gravity_point = true
 shape = SubResource("BoxShape3D_7puk8")
 
 [node name="ResupplySpawn" type="Node3D" parent="Game" unique_id=690627235]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.10431, 7.90609, -14.523683)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.10431, 7.4426517, -14.523683)
+script = ExtResource("3_pjovs")
+
+[node name="ResupplySpawn2" type="Node3D" parent="Game" unique_id=694006720]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5097036, 7.3244286, -18.61367)
+script = ExtResource("3_pjovs")
+
+[node name="ResupplySpawn3" type="Node3D" parent="Game" unique_id=1930908594]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6014314, 7.343519, 23.757)
 script = ExtResource("3_pjovs")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=192583391]

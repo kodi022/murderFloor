@@ -25,7 +25,7 @@ public partial class MainMenuOnline : Panel
 			var error = Global.NetworkManager.Singleton.JoinServer();
 			if (error == Error.Ok)
 			{
-				Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
+				Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn", true);
 			}
 		};
 
@@ -35,7 +35,7 @@ public partial class MainMenuOnline : Panel
 			var error = Global.NetworkManager.Singleton.CreateServer(false);
 			if (error == Error.Ok)
 			{
-				Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
+				Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn", true);
 			}
 		};
 	}

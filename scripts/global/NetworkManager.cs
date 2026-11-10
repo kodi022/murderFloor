@@ -20,6 +20,8 @@ public partial class NetworkManager : Node
     [Signal]
     public delegate void ServerDisconnectedEventHandler();
 
+    public static bool AllPlayersLoaded => Singleton._playersLoaded == Singleton.Players.Count;
+
     // servers ID is always 1
     // server is at Multiplayer.MultiplayerPeer
 
@@ -44,9 +46,9 @@ public partial class NetworkManager : Node
         if (IsInstanceValid(Singleton)) return;
         Singleton = this;
 
+        Multiplayer.ConnectedToServer += OnConnectedToServer;
         Multiplayer.PeerConnected += OnPeerConnected;
         Multiplayer.PeerDisconnected += OnPeerDisconnected;
-        Multiplayer.ConnectedToServer += OnConnectedToServer;
         Multiplayer.ConnectionFailed += OnConnectionFailed;
         Multiplayer.ServerDisconnected += OnServerDisconnected;
     }
@@ -96,15 +98,35 @@ public partial class NetworkManager : Node
     }
 
     // When the server decides to start the game from a UI scene,
-    // do Rpc(Lobby.MethodName.LoadGameRpc, filePath);
+    // do Rpc(Lobby.MethodName.LoadGameRpc, filePath, false);
     [Rpc(CallLocal = true)]
-    public void LoadGameRpc(string gameScenePath)
+    public async void LoadGameRpc(string gameScenePath, bool joiningServer)
     {
         _playersLoaded = 0;
         Game.Player.Self?.CloseUI(); // needed or cursor may stay unlocked
         GameManager.Clear_ClearOnLoad();
         Ui.HudFloatingText.ClearFloatingTexts();
         GetTree().ChangeSceneToFile(gameScenePath);
+
+        if (!joiningServer)
+        {
+            await Task.Delay(200);
+            foreach (var player in Players)
+            {
+                SpawnPlayer(player.Key);
+            }
+        }
+    }
+
+    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
+    // Only emitted on clients.
+    private void OnConnectedToServer()
+    {
+        GD.Print("OnConnectedToServer");
+
+        int id = Multiplayer.GetUniqueId();
+        Players[id] = PlayerInfo;
+        SpawnPlayer(id);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer connects with a new peer. 
@@ -117,17 +139,6 @@ public partial class NetworkManager : Node
 
         RpcId(id, MethodName.SendInfoToPeerRpc, PlayerInfo);
 
-        Players[id] = PlayerInfo;
-        SpawnPlayer(id);
-    }
-
-    // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer successfully connected to a server. 
-    // Only emitted on clients.
-    private void OnConnectedToServer()
-    {
-        GD.Print("OnConnectedToServer");
-
-        int id = Multiplayer.GetUniqueId();
         Players[id] = PlayerInfo;
         SpawnPlayer(id);
     }
@@ -154,7 +165,7 @@ public partial class NetworkManager : Node
     {
         GD.Print("OnConnectionFailed");
         Multiplayer.MultiplayerPeer = null;
-        Rpc(MethodName.LoadGameRpc, "res://scenes/MainMenu.tscn");
+        Rpc(MethodName.LoadGameRpc, "res://scenes/MainMenu.tscn", false);
     }
 
     // Emitted when this MultiplayerAPI's MultiplayerApi.MultiplayerPeer disconnects from server. 
@@ -164,7 +175,7 @@ public partial class NetworkManager : Node
         GD.Print("OnServerDisconnected");
         Multiplayer.MultiplayerPeer = null;
         Players.Clear();
-        Rpc(MethodName.LoadGameRpc, "res://scenes/MainMenu.tscn");
+        Rpc(MethodName.LoadGameRpc, "res://scenes/MainMenu.tscn", false);
         EmitSignal(SignalName.ServerDisconnected);
     }
 
@@ -182,7 +193,7 @@ public partial class NetworkManager : Node
     {
         if (Multiplayer.IsServer())
         {
-            if (IsInstanceValid(Game.GameLobby.Current))
+            if (Game.Game.IsValidAndOfType(out Game.GameLobby _))
             {
                 if (Ui.MapSelect.SelectedMapNetworked is not null)
                 {
@@ -198,7 +209,7 @@ public partial class NetworkManager : Node
             }
 
             _playersLoaded += 1;
-            if (_playersLoaded == Players.Count)
+            if (AllPlayersLoaded)
             {
                 if (IsInstanceValid(Game.Game.Current))
                 {

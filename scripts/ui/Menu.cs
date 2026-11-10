@@ -57,7 +57,7 @@ public partial class Menu : OpenUi
     private void ExitButton()
     {
         Global.NetworkManager.Singleton.CloseServer();
-        Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/MainMenu.tscn");
+        Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/MainMenu.tscn", false);
     }
 
     private void ExitDesktopButton()

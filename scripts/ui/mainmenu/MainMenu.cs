@@ -64,7 +64,7 @@ public partial class MainMenu : ScreenScaleLimiter
 							var error = Global.NetworkManager.Singleton.CreateServer(false);
 							if (error == Error.Ok)
 							{
-								Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
+								Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn", true);
 							}
 							return;
 						}
@@ -78,7 +78,7 @@ public partial class MainMenu : ScreenScaleLimiter
 							var error = Global.NetworkManager.Singleton.JoinServer();
 							if (error == Error.Ok)
 							{
-								Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn");
+								Global.NetworkManager.Singleton.LoadGameRpc("res://scenes/map/lobby/Lobby.tscn", true);
 							}
 						}
 						break;

@@ -19,7 +19,7 @@ public struct LootState
     public int ResourceHashId { get; private set; }
     public Version Version { get; private set; }
     public int Level { get; private set; }
-    public Game.Game.DifficultyEnum Difficulty { get; private set; }
+    public Game.GameSurvival.DifficultyEnum Difficulty { get; private set; }
     public int ChallengeBitmask { get; private set; }
     public int OverScaling { get; private set; }
 
@@ -32,7 +32,7 @@ public struct LootState
     public LootState() { }
 
     /// <summary> Constructor only for newly generated loot </summary>
-    public LootState(ulong seed, int mapHashId, int level, Game.Game.DifficultyEnum difficulty, int challengeBitmask, float overscaling)
+    public LootState(ulong seed, int mapHashId, int level, Game.GameSurvival.DifficultyEnum difficulty, int challengeBitmask, float overscaling)
     {
         Seed = seed;
         ResourceHashId = GetLootHashId();
@@ -242,7 +242,7 @@ public struct LootState
             MapHashId = Utils.Compression.AB64ToInt(strs[2]),
             Version = Version.FromString(strs[3]),
             Level = strs[4].ToInt(),
-            Difficulty = (Game.Game.DifficultyEnum)strs[5].ToInt(),
+            Difficulty = (Game.GameSurvival.DifficultyEnum)strs[5].ToInt(),
             ChallengeBitmask = Utils.Compression.AB64ToInt(strs[6]),
             OverScaling = Utils.Compression.AB64ToInt(strs[7]),
             CustomData = DeserializeCustomData(strs[8]),

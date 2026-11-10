@@ -201,10 +201,14 @@ public partial class Mob : Pawn
 
         // else find teammate pawns
 
+        // add support for finding player teamed pawns like sentries
+
         var nearestDist = 999999f;
         Player nearestPlr = null;
         foreach (var plr in Player.AllPlayers)
         {
+            if (plr.IsDead) continue;
+
             var dist = (GlobalPosition - plr.GlobalPosition).LengthSquared();
 
             if (dist < nearestDist)

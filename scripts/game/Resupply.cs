@@ -24,7 +24,7 @@ public partial class Resupply : Node3D
             ((RigidBody3D)ammobox.GetChild(0).GetChild(0)).AngularVelocity = Vector3.One * MakeRand(2f);
         };
 
-        Game.Current.GameWaveStart += (a) => { QueueFree(); };
+        ((GameSurvival)Game.Current).GameWaveStart += (a) => { QueueFree(); };
     }
 
     private static float MakeRand(float scale) => Random.Shared.NextSingle() * scale - (scale / 2);

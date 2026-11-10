@@ -83,8 +83,7 @@ public static class OptionsManager
                 {
                     if (child2 is WorldEnvironment worldEnvironment && worldEnvironment.Environment != null)
                     {
-                        var sdfgiEnabled = options.SDFGI != "Off";
-                        worldEnvironment.Environment.SdfgiEnabled = sdfgiEnabled;
+                        worldEnvironment.Environment.SdfgiEnabled = options.SDFGI != "Off";
 
                         switch (options.SDFGI)
                         {

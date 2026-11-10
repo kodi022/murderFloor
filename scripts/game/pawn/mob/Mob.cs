@@ -122,7 +122,6 @@ public partial class Mob : Pawn
 
         ResetPhysicsInterpolation();
         base.OnDeath(damageInfo);
-        Game.Current.MobDeath(damageInfo, MobPoolId);
 
         var ragdoll = MobResource.Ragdoll.Instantiate<Node3D>();
         var hitCollider = RemapCollider(damageInfo.HitboxName);

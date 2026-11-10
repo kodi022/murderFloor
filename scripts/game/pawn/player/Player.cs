@@ -170,7 +170,7 @@ public partial class Player : Pawn
                 {
                     var diff = new DifficultyConfig() { Difficulty = Game.DifficultyEnum.Easy, MapDifficultyScale = 0.8f };
                     Ui.MapSelect.WorldMapSelect.Rpc(Ui.MapSelect.MethodName.MapInfoRpc, "base:barnyard", diff.Serialize(), Random.Shared.NextInt64(), Vector2.Zero);
-                    Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, Ui.MapSelect.SelectedMapNetworked.MeshScene.ResourcePath);
+                    Global.NetworkManager.Singleton.Rpc(Global.NetworkManager.MethodName.LoadGameRpc, Ui.MapSelect.SelectedMapNetworked.MeshScene.ResourcePath, false);
                 }
             }
 
@@ -178,7 +178,7 @@ public partial class Player : Pawn
             {
                 var di = new DamageInfo()
                 {
-                    Damage = 25,
+                    Damage = 5,
                     DamageType = DamageInfo.DamageTypeEnum.Physical,
                     AttackerId = Id,
                     AttackerName = Global.NetworkManager.Singleton.Players[Id]["name"],
@@ -439,8 +439,7 @@ public partial class Player : Pawn
         if (IsInstanceValid(openUi)) return true;
         if (IsDead) return true;
         if (IsInstanceValid(outerController)) return true;
-        if (IsInstanceValid(Game.Current) && Game.Current.GameState == Game.StateEnum.Debrief) return true;
-
+        if (IsInstanceValid(Game.Current) && Game.Current.BlockPlayerInput()) return true;
         return false;
     }
 

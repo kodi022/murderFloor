@@ -103,10 +103,10 @@ public partial class Hud : ScreenScaleLimiter
     {
         base._Process(delta);
 
-        if (!hookedGameEvents && IsInstanceValid(Game.Current))
+        if (!hookedGameEvents && Game.IsValidAndOfType(out GameSurvival gs))
         {
-            Game.Current.GameWaveStart += AnimateNewRound;
-            Game.Current.GameWaveEnd += AnimateRoundTimer;
+            gs.GameWaveStart += AnimateNewRound;
+            gs.GameWaveEnd += AnimateRoundTimer;
             hookedGameEvents = true;
         }
 
@@ -114,19 +114,19 @@ public partial class Hud : ScreenScaleLimiter
 
         useInfoLabel.Text = Player.Self.UseInfoText;
 
-        if (IsInstanceValid(Game.Current)) ProcessGame();
-        if (IsInstanceValid(GameLobby.Current)) ProcessGameLobby();
+        if (Game.IsValidAndOfType(out GameSurvival sv)) ProcessGameSurvival(sv);
+        if (Game.IsValidAndOfType(out GameLobby _)) ProcessGameLobby();
 
         CheckNextPlayerOnList();
     }
 
-    private void ProcessGame()
+    private void ProcessGameSurvival(GameSurvival sv)
     {
         waveInfoPanel.Visible = true;
-        waveInfoWave.Text = $"Wave {Game.Current.Wave}/{Game.Current.MaxWave}";
-        waveInfoLeft.Text = $"{Game.Current.WaveMobsLeft} Left";
+        waveInfoWave.Text = $"Wave {sv.Wave}/{sv.MaxWave}";
+        waveInfoLeft.Text = $"{sv.WaveMobsLeft} Left";
 
-        if (Game.Current.GameState == Game.StateEnum.Ended)
+        if (sv.GameState == GameSurvival.StateEnum.Ended)
         {
             HudFloatingText.AddFloatingText(Game.Current.ExitArea, "Exit", Vector3.Up * 2f);
         }
@@ -151,14 +151,14 @@ public partial class Hud : ScreenScaleLimiter
 
         if (MapSelect.SelectedMapNetworked is not null)
         {
-            HudFloatingText.AddFloatingText(GameLobby.Current.ExitArea, "Depart", Vector3.Up * 2f);
+            HudFloatingText.AddFloatingText(Game.Current.ExitArea, "Depart", Vector3.Up * 2f);
         }
 
-        if (GameLobby.Current.ExitTimer != 999f)
+        if (Game.Current.ExitTimer != 999f)
         {
             lobbyTimerPanel.Visible = true;
-            if (GameLobby.Current.ExitTimer > 0)
-                lobbyTimerPanel.GetChild<Label>(1).Text = $"{GameLobby.Current.ExitTimer:0.0}";
+            if (Game.Current.ExitTimer > 0)
+                lobbyTimerPanel.GetChild<Label>(1).Text = $"{Game.Current.ExitTimer:0.0}";
             else
                 lobbyTimerPanel.GetChild<Label>(1).Text = $"Starting";
         }
@@ -428,7 +428,7 @@ public partial class Hud : ScreenScaleLimiter
 
         roundTimerPanel.Visible = true;
 
-        var time = Game.Current.TimeMsBetweenWaves / 1000;
+        var time = ((GameSurvival)Game.Current).TimeMsBetweenWaves / 1000;
         while (time > 0)
         {
             numberLabel.Text = time.ToString();

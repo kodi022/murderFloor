@@ -11,11 +11,6 @@ public partial class Pawn : CharacterBody3D
     [Signal]
     public delegate void PlayerOnSpawnEventHandler(Vector3 position);
 
-    [Signal]
-    public delegate void MobOnDamageEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfoVariant);
-    [Signal]
-    public delegate void MobOnDeathEventHandler(Godot.Collections.Dictionary<string, Variant> damageInfoVariant);
-
     [Export]
     public float MaxHealth { get; set; } = 100;
     [Export]
@@ -38,9 +33,9 @@ public partial class Pawn : CharacterBody3D
 
         if (Armor > 0)
         {
-            if (damage * 2 > Armor)
+            if (damage * 0.5f > Armor)
             {
-                damage -= Armor * 0.5f;
+                damage -= Armor;
                 Armor = 0;
             }
             else
@@ -59,13 +54,12 @@ public partial class Pawn : CharacterBody3D
 
         Health -= damage;
 
-        // gore
         // sounds
 
-        bool attackerIsSelf = damageInfo.AttackerId == Player.Self.Id;
-        if (attackerIsSelf && this is Mob)
+        bool attackerIsLocalPlayer = damageInfo.AttackerId == Player.Self.Id;
+        if (attackerIsLocalPlayer && this is Mob mob)
         {
-            EmitSignal(SignalName.MobOnDamage, damageInfo.ToVariant());
+            Global.GameManager.Singleton.EmitSignal(Global.GameManager.SignalName.MobOnDamage, damageInfo.ToVariant(), mob.MobPoolId);
         }
 
         if (Player.Self == this)
@@ -95,9 +89,9 @@ public partial class Pawn : CharacterBody3D
 
     public virtual void OnDeath(DamageInfo damageInfo)
     {
-        if (this is Mob)
+        if (this is Mob mob)
         {
-            EmitSignal(SignalName.MobOnDeath, damageInfo.ToVariant());
+            Global.GameManager.Singleton.EmitSignal(Global.GameManager.SignalName.MobOnDeath, damageInfo.ToVariant(), mob.MobPoolId);
         }
 
         if (Player.Self == this)
