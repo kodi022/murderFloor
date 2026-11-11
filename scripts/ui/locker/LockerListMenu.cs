@@ -3,7 +3,6 @@ namespace Shooter.Ui;
 using Resource;
 using Resource.Loot;
 
-// ! rework to support other types
 public partial class LockerListMenu : Control
 {
     public bool LMShowModifyButton { get; set; }

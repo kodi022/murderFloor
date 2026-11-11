@@ -10,15 +10,6 @@ public partial class ToolFirearmHitscan : ToolFirearm
     [Export]
     public float MaxRange { get; private set; } = 80f;
 
-    // ! put on mob resource to modify per mob, find
-    private static readonly Dictionary<string, float> HitboxDamageMultipliers = new()
-    {
-        ["Head"] = 1.3f,
-        ["Neck"] = 1.2f,
-        ["Hand"] = 0.8f,
-        ["Foot"] = 0.8f,
-    };
-
     public override void FireBullet(FireInfo fi)
     {
         Rng.Randomize();
@@ -140,7 +131,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             }
 
             var hitObjName = ((Node)(GodotObject)ray["collider"]).GetParent().Name;
-            damage *= GetHitDamageMultiplier(hitObjName);
+            if (pawn is Game.Mob m) damage *= m.MobResource.GetHitDamageMultiplier(hitObjName);
 
             var di = new DamageInfo()
             {
@@ -155,17 +146,6 @@ public partial class ToolFirearmHitscan : ToolFirearm
             };
             pawn.Rpc(Game.Pawn.MethodName.OnDamageRpc, di.ToVariant());
         }
-    }
-
-    private static float GetHitDamageMultiplier(string colliderName)
-    {
-        foreach (var kvp in HitboxDamageMultipliers)
-        {
-            if (colliderName.Contains(kvp.Key, StringComparison.OrdinalIgnoreCase))
-                return kvp.Value;
-        }
-
-        return 1f;
     }
 
     public override Dictionary<string, StatInfo> ModifiableStats { get; set; } = new() {

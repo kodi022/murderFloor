@@ -100,7 +100,7 @@ public partial class ToolFirearm : Tool
     [Export]
     public AudioStreamMP3 ManualFireSound { get; private set; }
 
-    // ! implement
+    // ! implement later
     [Export, ExportSubgroup("ShellCasings")]
     public bool SpawnCasings { get; private set; } = true;
     [Export]
@@ -202,7 +202,7 @@ public partial class ToolFirearm : Tool
             return thing;
         }
 
-        // ! DO THIS SHIT
+        // ! implement later
         var muzzleNode = FindNode("Point-Muzzle", out Vector3 muzzlePos);
         var sightNode = FindNode("Point-Sight", out Vector3 sightPos);
         var sightAttachmentNode = FindNode("Point-SightAttachment", out Vector3 sightAttachPos);

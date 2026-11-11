@@ -120,7 +120,7 @@ public partial class HudDebugMenus : OpenUi
             var level = genPanel.GetChild<LineEdit>(1).Text.ToInt();
 
             var outputLine = genPanel.GetChild<TextEdit>(3);
-            var generationTask = Shooter.Debug.Rendering.DebugGenerateLoot(amount, level);
+            var generationTask = Resource.Loot.LootState.DebugGenerateLoot(amount, level);
 
             outputLine.Text = "running";
             var tick = 0;

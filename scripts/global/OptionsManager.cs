@@ -7,8 +7,6 @@ public static class OptionsManager
 
     private static Control framerateDisplay;
 
-    // ! DisplayServer.WindowRequestAttention use for round start or finished loading or something
-
     public static void Save(Options options)
     {
         var json = System.Text.Json.JsonSerializer.Serialize(options);
@@ -110,7 +108,7 @@ public static class OptionsManager
                 }
             }
 
-            // ! pretty sure this isn't working
+            // ! not working?
             viewport.AnisotropicFilteringLevel = options.AntisotropicFiltering switch
             {
                 "16x" => Viewport.AnisotropicFiltering.Anisotropy16X,

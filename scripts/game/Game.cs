@@ -63,6 +63,7 @@ public partial class Game : Node
     public virtual void StartGameRpc()
     {
         EmitSignal(SignalName.GameStart);
+        DisplayServer.WindowRequestAttention();
     }
 
     public virtual bool BlockPlayerInput()

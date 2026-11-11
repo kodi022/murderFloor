@@ -19,20 +19,22 @@ public struct LootState
     public int ResourceHashId { get; private set; }
     public Version Version { get; private set; }
     public int Level { get; private set; }
-    public Game.GameSurvival.DifficultyEnum Difficulty { get; private set; }
+    public Game.Game.DifficultyEnum Difficulty { get; private set; }
     public int ChallengeBitmask { get; private set; }
-    public int OverScaling { get; private set; }
+    public int Overscaling { get; private set; }
 
     // custom set data
     private Dictionary<string, string> CustomData { get; set; } // needs to be property
 
     // generated values on creation. string of property name and value
     public Dictionary<string, float> StatMultipliers { get; private set; } = [];
+    public float MapDifficultyScale { get; private set; }
+    public float Superscale { get; private set; }
 
     public LootState() { }
 
     /// <summary> Constructor only for newly generated loot </summary>
-    public LootState(ulong seed, int mapHashId, int level, Game.GameSurvival.DifficultyEnum difficulty, int challengeBitmask, float overscaling)
+    public LootState(ulong seed, int mapHashId, int level, Game.Game.DifficultyEnum difficulty, int challengeBitmask, float overscaling)
     {
         Seed = seed;
         ResourceHashId = GetLootHashId();
@@ -41,13 +43,16 @@ public struct LootState
         Level = level;
         Difficulty = difficulty;
         ChallengeBitmask = challengeBitmask;
-        OverScaling = (int)(overscaling * 100f);
+        Overscaling = (int)(overscaling * 100f);
         CustomData = [];
         GenerateStats();
     }
 
-    private readonly void GenerateStats()
+    private void GenerateStats()
     {
+        MapDifficultyScale = ResourceManager.MapRegistry.GetResourceRef(MapHashId)?.MapDifficultyScale ?? 0.5f;
+        Superscale = (1f + Mathf.Log(1f + (Overscaling / 100f))) * MapDifficultyScale;
+
         var loot = GetLootRef();
         if (loot is null) return;
 
@@ -86,9 +91,9 @@ public struct LootState
         {
             if (stat == "Damages" || stat == "Damage")
             {
-                if (rng.Randf() < tier.StatChance * 3f)
+                if (rng.Randf() < tier.StatChance * 4f)
                 {
-                    var add = MakeFn(Level, OverScaling, 0.1f, 0.05f);
+                    var add = MakeFn(Level, Overscaling, 0.1f, 0.05f);
 
                     if (add < 0.01f) continue;
                     if (itemResource.GetStatInfo(stat).Sign == 1)
@@ -106,9 +111,9 @@ public struct LootState
 
                 var add = stat switch
                 {
-                    "PelletCount" => ScaleForInt(((ToolFirearm)loot).PelletCount, MakeF(Level, OverScaling, 0.1f, 0.2f)),
-                    "MagSize" => ScaleForInt(((ToolFirearm)loot).MagsReserve, MakeF(Level, OverScaling, 0.1f, 0.2f)),
-                    _ => MakeF(Level, OverScaling, 0.05f, 0.1f),
+                    "PelletCount" => ScaleForInt(((ToolFirearm)loot).PelletCount, MakeF(Level, Superscale, 0.1f, 0.2f)),
+                    "MagSize" => ScaleForInt(((ToolFirearm)loot).MagsReserve, MakeF(Level, Superscale, 0.1f, 0.2f)),
+                    _ => MakeF(Level, Superscale, 0.05f, 0.1f),
                 };
 
                 if (add < 0.01f) continue;
@@ -227,7 +232,7 @@ public struct LootState
         str += Level + Layer1Delimiter;
         str += (int)Difficulty + Layer1Delimiter;
         str += Utils.Compression.IntToAB64(ChallengeBitmask) + Layer1Delimiter;
-        str += Utils.Compression.IntToAB64(OverScaling) + Layer1Delimiter;
+        str += Utils.Compression.IntToAB64(Overscaling) + Layer1Delimiter;
         str += SerializeCustomData(CustomData);
         return str;
     }
@@ -242,9 +247,9 @@ public struct LootState
             MapHashId = Utils.Compression.AB64ToInt(strs[2]),
             Version = Version.FromString(strs[3]),
             Level = strs[4].ToInt(),
-            Difficulty = (Game.GameSurvival.DifficultyEnum)strs[5].ToInt(),
+            Difficulty = (Game.Game.DifficultyEnum)strs[5].ToInt(),
             ChallengeBitmask = Utils.Compression.AB64ToInt(strs[6]),
-            OverScaling = Utils.Compression.AB64ToInt(strs[7]),
+            Overscaling = Utils.Compression.AB64ToInt(strs[7]),
             CustomData = DeserializeCustomData(strs[8]),
         };
         ls.GenerateStats();
@@ -293,7 +298,7 @@ public struct LootState
             hash = hash * 31 + Level;
             hash = hash * 31 + (int)Difficulty;
             hash = hash * 31 + ChallengeBitmask;
-            hash = hash * 31 + OverScaling;
+            hash = hash * 31 + Overscaling;
             return hash;
         }
     }
@@ -303,4 +308,78 @@ public struct LootState
     public readonly override bool Equals(object obj) => obj is LootState other && Equals(other);
     public static bool operator ==(LootState left, LootState right) => left.Equals(right);
     public static bool operator !=(LootState left, LootState right) => !left.Equals(right);
+
+    public static async Task<List<string>> DebugGenerateLoot(int count = 500000, int level = 80)
+    {
+        var allLootTier = new Dictionary<Game.Game.DifficultyEnum, Dictionary<Resource.Loot.Tiers.TierEnum, int>>();
+        var allLootWear = new Dictionary<Game.Game.DifficultyEnum, Dictionary<Resource.Loot.Wears.WearEnum, int>>();
+
+        void GenerateLoot(Game.Game.DifficultyEnum difficulty)
+        {
+            var tierCount = new Dictionary<Resource.Loot.Tiers.TierEnum, int>();
+            var wearCount = new Dictionary<Resource.Loot.Wears.WearEnum, int>();
+            for (int i = 0; i < count; i++)
+            {
+                var state = new Resource.Loot.LootState((ulong)Random.Shared.NextInt64(), 0, level, difficulty, 0, 0);
+                var e = new Resource.Loot.LootRarity(state);
+                if (!tierCount.TryAdd(e.Tier, 1))
+                    tierCount[e.Tier] += 1;
+
+                if (!wearCount.TryAdd(e.Wear, 1))
+                    wearCount[e.Wear] += 1;
+            }
+
+            allLootTier.Add(difficulty, tierCount);
+            allLootWear.Add(difficulty, wearCount);
+        }
+
+        var difficulties = Enum.GetValues<Game.Game.DifficultyEnum>();
+        var tasks = difficulties.Select(difficulty =>
+            Task.Run(() => GenerateLoot(difficulty))
+        );
+
+        await Task.WhenAll(tasks);
+
+        List<string> diffStrings = [];
+        diffStrings.Add($"CountPerDifficulty:{count}  Level:{level}  CSKnife:0.25");
+        diffStrings.Add("");
+
+        diffStrings.Add("Tiers");
+        foreach (var difficulty in allLootTier.OrderBy(c => c.Key))
+        {
+            var diff = $"{difficulty.Key.ToString()[..4]}: ";
+
+            var values = "";
+            foreach (var tier in difficulty.Value.OrderByDescending(t => (int)t.Key))
+            {
+                var name = tier.Key.ToString()[..4];
+                var perc = (float)tier.Value / (float)count * 100f;
+                values += $"{name}:{perc:0.00}, ";
+            }
+            values = values[..^2];
+
+            diffStrings.Add(diff + values);
+        }
+        diffStrings.Add("");
+
+        diffStrings.Add("Wears");
+        foreach (var difficulty in allLootWear.OrderBy(c => c.Key))
+        {
+            var diff = $"{difficulty.Key.ToString()[..4]}: ";
+
+            var values = "";
+            foreach (var wear in difficulty.Value.OrderBy(t => (int)t.Key))
+            {
+                var name = wear.Key.ToString();
+                name = name.Length > 3 ? name[..4] : name;
+                var perc = (float)wear.Value / (float)count * 100f;
+                values += $"{name}:{perc:0.00}, ";
+            }
+            values = values[..^2];
+
+            diffStrings.Add(diff + values);
+        }
+
+        return diffStrings;
+    }
 }

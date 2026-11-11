@@ -7,11 +7,11 @@ public partial class HudFloatingText : Control
 
     public static bool HasFloatingText(Node3D node) => floatingTexts.ContainsKey(node);
 
-    public static bool AddFloatingText(Node3D node, string text, Vector3 offset)
+    public static bool AddFloatingText(Node3D node, string text, Vector3 offset, bool player = false)
     {
         if (HasFloatingText(node)) return false;
 
-        var info = new FloatingTextInfo(text, offset, (Control)GD.Load<PackedScene>("res://scenes/ui/hud/HudFloatingText.tscn").Instantiate());
+        var info = new FloatingTextInfo(text, offset, (Control)GD.Load<PackedScene>("res://scenes/ui/hud/HudFloatingText.tscn").Instantiate(), player);
         Global.GameManager.ClearOnLoad.AddChild(info.Control);
         return floatingTexts.TryAdd(node, info);
     }
@@ -57,22 +57,27 @@ public partial class HudFloatingText : Control
             if (Game.Player.Self.Camera.IsPositionInFrustum(val.Key.GlobalPosition + val.Value.Offset))
             {
                 val.Value.Control.Visible = true;
-                val.Value.Control.GetChild<Label>(0).Text = val.Value.Text;
+                if (val.Value.Player)
+                    val.Value.Control.GetChild<Label>(0).Text = Global.NetworkManager.Singleton.Players[val.Value.Text.ToInt()]["name"];
+                else
+                    val.Value.Control.GetChild<Label>(0).Text = val.Value.Text;
+
                 var unproject = Game.Player.Self.Camera.UnprojectPosition(val.Key.GlobalPosition + val.Value.Offset);
                 val.Value.Control.Position = unproject.Clamp(margin, viewportSize - margin);
             }
             else
             {
-                // ! do later
+                // ! implement later
                 val.Value.Control.Visible = false;
             }
         }
     }
 
-    public struct FloatingTextInfo(string text, Vector3 offset, Control control)
+    public struct FloatingTextInfo(string text, Vector3 offset, Control control, bool player)
     {
         public string Text { get; set; } = text;
         public Vector3 Offset { get; set; } = offset;
         public Control Control { get; set; } = control;
+        public bool Player { get; set; } = player;
     }
 }

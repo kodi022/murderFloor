@@ -20,6 +20,14 @@ public partial class Mob : GameResource
     public float AttackRange { get; private set; } = 1.2f;
     [Export]
     public float AttackDamage { get; private set; } = 10f;
+    [Export]
+    public Godot.Collections.Dictionary<string, float> HitboxDamageMultipliers { get; private set; } = new()
+    {
+        ["Head"] = 1.3f,
+        ["Neck"] = 1.2f,
+        ["Hand"] = 0.8f,
+        ["Foot"] = 0.8f,
+    };
 
     [Export, ExportSubgroup("Enragement")]
     public bool Enragement { get; private set; }
@@ -32,4 +40,15 @@ public partial class Mob : GameResource
     public PackedScene Ragdoll { get; private set; }
     [Export]
     public Godot.Collections.Dictionary<string, string> RagdollColliderRemaps { get; private set; }
+
+    public float GetHitDamageMultiplier(string colliderName)
+    {
+        foreach (var kvp in HitboxDamageMultipliers)
+        {
+            if (colliderName.Contains(kvp.Key, StringComparison.OrdinalIgnoreCase))
+                return kvp.Value;
+        }
+
+        return 1f;
+    }
 }

@@ -12,5 +12,5 @@ public partial class Map : GameResource
     [Export]
     public int MapLevelRequirement { get; private set; } = 0;
     [Export]
-    public Godot.Collections.Dictionary<Game.GameSurvival.DifficultyEnum, GameResource[]> MapCompletionLoot { get; private set; }
+    public Godot.Collections.Dictionary<Game.Game.DifficultyEnum, GameResource[]> MapCompletionLoot { get; private set; }
 }

@@ -9,13 +9,13 @@ public struct LootRarity
     public int Level { get; private set; } = 0;
     public Tiers.TierEnum Tier { get; private set; }
     public Wears.WearEnum Wear { get; private set; }
-    public double SuperScale { get; private set; }
 
     public LootRarity(LootState lootState)
     {
         Seed = lootState.Seed;
         Level = lootState.Level;
 
+        var rng = new RandomNumberGenerator { Seed = Seed };
         var tierOffset = lootState.Difficulty switch
         {
             Game.Game.DifficultyEnum.Easy => -2.0f,
@@ -26,13 +26,9 @@ public struct LootRarity
             Game.Game.DifficultyEnum.Ludicrous => 1.7f,
             _ => -2.0f,
         };
-        var wearLevelOffset = ((int)lootState.Difficulty - 3) * 1.5f;
-
-        SuperScale += lootState.OverScaling;
-        // ! map affect Superscale
-
-        var rng = new RandomNumberGenerator { Seed = Seed };
         GenerateTier(rng, tierOffset);
+
+        var wearLevelOffset = ((int)lootState.Difficulty - 3) * 1.5f;
         GenerateWear(rng, wearLevelOffset);
     }
 
