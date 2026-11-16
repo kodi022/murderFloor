@@ -43,7 +43,7 @@ public class ToolBehaviorFirearm : ToolBehavior
         var aimBuff = ParentTool.Aiming ? Firearm.AimSpreadMult : Vector2.One;
 
         MinSpread = initialDegSpread * aimBuff * movementPenalty;
-        MaxSpread = maxDegSpread * movementPenalty;
+        MaxSpread = maxDegSpread * aimBuff * movementPenalty;
 
         var recoveryRate = Vector2.One * spreadRecoveryRate * (float)delta;
 
@@ -77,8 +77,8 @@ public class ToolBehaviorFirearm : ToolBehavior
             MsSinceFire = ticksMs;
             Firearm.FireBullet(fi);
 
-            ParentTool.AnimationPlayer.Stop();
-            ParentTool.AnimationPlayer.Play("fire");
+            ParentTool.StopAnimation();
+            ParentTool.PlayAnimation("fire");
             var poly = (AudioStreamPlaybackPolyphonic)fi.Player.AudioStreamPlayer3D.GetStreamPlayback();
             if (fi.Tool.BuiltTool.Suppressed)
                 poly.PlayStream(Firearm.FireSoundSuppressed, bus: "Effects");
@@ -116,9 +116,9 @@ public class ToolBehaviorFirearm : ToolBehavior
         if (ParentTool.CurrentMag <= 0) return;
         Bolting = true;
 
-        if (ParentTool.AnimationPlayer.HasAnimation("bolt"))
+        if (ParentTool.HasAnimation("bolt"))
         {
-            await ParentTool.TaskAnimation("bolt", (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ManualFireDelayMs));
+            await ParentTool.PlayAnimationTask("bolt", (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ManualFireDelayMs));
         }
         else
         {
@@ -143,9 +143,9 @@ public class ToolBehaviorFirearm : ToolBehavior
         if (CurrentReserve <= 0) return;
         Reloading = true;
 
-        if (ParentTool.AnimationPlayer.HasAnimation("reload"))
+        if (ParentTool.HasAnimation("reload"))
         {
-            await ParentTool.TaskAnimation("reload", (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ReloadDelayMs));
+            await ParentTool.PlayAnimationTask("reload", (int)Tc.GetStat(Resource.ToolFirearm.PropertyName.ReloadDelayMs));
         }
         else
         {

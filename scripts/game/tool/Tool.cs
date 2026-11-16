@@ -32,15 +32,17 @@ public partial class Tool : Node
     [Export]
     public int CurrentMag { get; set; } = 0;
 
-    public AnimationPlayer AnimationPlayer { get; private set; }
-
     public bool Aiming { get; set; } = false;
     public float OpticZoom => BuiltTool.OpticZoom == 0f ? 1.1f : BuiltTool.OpticZoom;
 
+    public bool Viewing { get; private set; } = false;
+
     public GameResource.BuiltToolData BuiltTool { get; private set; }
 
+    public AnimationPlayer ViewmodelAnimationPlayer { get; private set; }
+
     // public so ToolFirearm can set rotations
-    public List<GpuParticles3D> BulletParticles { get; private set; }
+    public List<GpuParticles3D> BulletParticles { get; private set; } = [];
     // public to get global position
     public GpuParticles3D MuzzleFlashParticle { get; private set; }
 
@@ -73,8 +75,6 @@ public partial class Tool : Node
 
     public override void _Process(double delta)
     {
-        //AnimationPlayer?.Play(ToolResource.HoldTypeAnimation);
-
         if (IsInstanceValid(viewmodelScene))
         {
             currentAimingPositionLerp += Aiming ? (float)delta * 4f : -(float)delta * 4f;
@@ -100,6 +100,8 @@ public partial class Tool : Node
 
     public async Task Equip(bool viewing = false)
     {
+        Viewing = viewing;
+
         if (IsMultiplayerAuthority() || viewing)
         {
             EquipViewing();
@@ -109,29 +111,28 @@ public partial class Tool : Node
             EquipWorld();
         }
 
+        if (!IsInstanceValid(ViewmodelAnimationPlayer))
+        {
+            GD.PushWarning("Tool.Equip AnimationPlayer not found");
+            ViewmodelAnimationPlayer = new();
+            equipped = true;
+            return;
+        }
+
         if (!viewing)
         {
-            AnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
-            if (!IsInstanceValid(AnimationPlayer))
-            {
-                GD.PushWarning("ap not found");
-                AnimationPlayer = new();
-                equipped = true;
-                return;
-            }
+            // foreach (var anim in AnimationPlayer.GetAnimationList())
+            // {
+            //     GD.Print("--" + anim + "  " + AnimationPlayer.GetAnimation("fire").GetTrackCount());
+            //     for (int i = 0; i < AnimationPlayer.GetAnimation("fire").GetTrackCount(); i++)
+            //     {
+            //         GD.Print(AnimationPlayer.GetAnimation(anim).TrackGetPath(i));
+            //     }
+            // }
 
-            foreach (var anim in AnimationPlayer.GetAnimationList())
+            if (ViewmodelAnimationPlayer.HasAnimation("equip"))
             {
-                GD.Print("--" + anim + "  " + AnimationPlayer.GetAnimation("fire").GetTrackCount());
-                for (int i = 0; i < AnimationPlayer.GetAnimation("fire").GetTrackCount(); i++)
-                {
-                    GD.Print(AnimationPlayer.GetAnimation(anim).TrackGetPath(i));
-                }
-            }
-
-            if (AnimationPlayer.HasAnimation("equip"))
-            {
-                await TaskAnimation("equip", 400);
+                await PlayAnimationTask("equip", 400);
             }
             else
             {
@@ -140,7 +141,7 @@ public partial class Tool : Node
             }
         }
 
-        AnimationPlayer.Play("idle");
+        PlayAnimation("idle");
         equipped = true;
     }
 
@@ -162,12 +163,12 @@ public partial class Tool : Node
 
             BuiltTool = ToolResource.BuildToolScene(ToolConfig);
             var newTool = BuiltTool.Tool.GetChild<Node3D>(0);
-            newTool.Owner = null;
             newTool.Position = oldToolPos;
             newTool.Rotation = oldToolRot;
+            newTool.Owner = null;
             newTool.Reparent(viewmodelScene, false);
 
-            if (ToolResource is ToolFirearm tf)
+            if (ToolResource is ToolFirearm)
             {
                 viewmodelSceneSightPosition = new Vector3(-oldToolPos.Z, -oldToolPos.Y, 0);
 
@@ -177,20 +178,21 @@ public partial class Tool : Node
                 newTool.AddChild(flashInst);
                 MuzzleFlashParticle = flashInst.GetChild<GpuParticles3D>(0);
 
-                BulletParticles = [];
-                for (int i = 0; i < (int)ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
-                {
-                    var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
-                    var bulletInst = bullet.Instantiate<Node3D>();
-                    bulletInst.Position = BuiltTool.MuzzlePosition;
-                    var farticles = bulletInst.GetChild<GpuParticles3D>(0);
-                    farticles.MaterialOverride = GD.Load<StandardMaterial3D>("res://materials/particle/bullet.tres");
-                    Global.GameManager.ClearOnLoad.AddChild(bulletInst);
-                    BulletParticles.Add(farticles);
-                }
+                if (BulletParticles.Count == 0)
+                    for (int i = 0; i < (int)ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
+                    {
+                        var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
+                        var bulletInst = bullet.Instantiate<Node3D>();
+                        bulletInst.Position = BuiltTool.MuzzlePosition;
+                        var farticles = bulletInst.GetChild<GpuParticles3D>(0);
+                        farticles.MaterialOverride = GD.Load<StandardMaterial3D>("res://materials/particle/bullet.tres");
+                        Global.GameManager.ClearOnLoad.AddChild(bulletInst);
+                        BulletParticles.Add(farticles);
+                    }
             }
         }
 
+        ViewmodelAnimationPlayer = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
         Player.Viewmodel.AddChild(viewmodelScene);
         viewmodelScene.Position = Vector3.Zero;
         viewmodelSceneStartPos = viewmodelScene.Position;
@@ -205,40 +207,42 @@ public partial class Tool : Node
             if (armatures) child.Free();
         }
 
-        viewmodelScene = ToolResource.ViewmodelScene.Instantiate<Node3D>();
-
         if (ToolResource.FullId != "base:fists")
         {
             BuiltTool = ToolResource.BuildToolScene(ToolConfig);
-            var armature = BuiltTool.Tool.GetChild<Node3D>(0);
-            var boneIndex = Player.WorldSkeleton.FindBone("Hand.R");
-            var pos = Player.WorldSkeleton.GetBonePose(boneIndex);
-            armature.Transform = pos;
+            var newTool = BuiltTool.Tool.GetChild<Node3D>(0);
+            newTool.Owner = null;
+            newTool.Reparent(Player.WorldModels.GetChild(0), false);
 
-            if (ToolResource is ToolFirearm tf)
+            // var boneIndex = Player.WorldSkeleton.FindBone("Hand.R");
+            // var pos = Player.WorldSkeleton.GetBonePose(boneIndex);
+            // newTool.Transform = pos;
+
+            if (ToolResource is ToolFirearm)
             {
                 var flash = GD.Load<PackedScene>("res://scenes/particle/GunFlash.tscn");
                 var flashInst = flash.Instantiate<Node3D>();
                 flashInst.Position = BuiltTool.MuzzlePosition;
-                BuiltTool.Tool.AddChild(flashInst);
+                newTool.AddChild(flashInst);
                 MuzzleFlashParticle = flashInst.GetChild<GpuParticles3D>(0);
 
-                BulletParticles = [];
-                for (int i = 0; i < (int)ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
-                {
-                    var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
-                    var bulletInst = bullet.Instantiate<Node3D>();
-                    bulletInst.Position = BuiltTool.MuzzlePosition;
-                    var farticles = bulletInst.GetChild<GpuParticles3D>(0);
-                    farticles.MaterialOverride = GD.Load<StandardMaterial3D>("res://materials/particle/bullet.tres");
-                    Global.GameManager.ClearOnLoad.AddChild(bulletInst);
-                    BulletParticles.Add(farticles);
-                }
+                if (BulletParticles.Count == 0)
+                    for (int i = 0; i < (int)ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
+                    {
+                        var bullet = GD.Load<PackedScene>("res://scenes/particle/GunBullet.tscn");
+                        var bulletInst = bullet.Instantiate<Node3D>();
+                        bulletInst.Position = BuiltTool.MuzzlePosition;
+                        var farticles = bulletInst.GetChild<GpuParticles3D>(0);
+                        farticles.MaterialOverride = GD.Load<StandardMaterial3D>("res://materials/particle/bullet.tres");
+                        Global.GameManager.ClearOnLoad.AddChild(bulletInst);
+                        BulletParticles.Add(farticles);
+                    }
             }
         }
 
-        var ap = (AnimationPlayer)viewmodelScene.FindChild("AnimationPlayer");
-        Player.WorldAnimationTree.AddAnimationLibrary(ToolAnimLibraryKey, ap.GetAnimationLibrary(""));
+        var vs = ToolResource.ViewmodelScene.Instantiate<Node3D>();
+        ViewmodelAnimationPlayer = (AnimationPlayer)vs.FindChild("AnimationPlayer");
+        Player.WorldAnimationTree.AddAnimationLibrary(ToolAnimLibraryKey, ViewmodelAnimationPlayer.GetAnimationLibrary(""));
     }
 
     public async Task Unequip(bool viewing = false)
@@ -248,9 +252,9 @@ public partial class Tool : Node
 
         if (!viewing)
         {
-            if (AnimationPlayer.HasAnimation("unequip"))
+            if (ViewmodelAnimationPlayer.HasAnimation("unequip"))
             {
-                await TaskAnimation("unequip", 400);
+                await PlayAnimationTask("unequip", 400);
             }
             else
             {
@@ -300,12 +304,45 @@ public partial class Tool : Node
         ToolBehavior.Reload(CreateFireInfo());
     }
 
-    public async Task TaskAnimation(string animation, int timeToTakeMs)
+    public bool HasAnimation(string animation)
     {
-        var length = (float)(AnimationPlayer.GetAnimation(animation).Length * 1000d);
-        var timeScale = timeToTakeMs / length;
-        AnimationPlayer.Play(animation, customSpeed: timeScale);
-        await ToSignal(AnimationPlayer, AnimationPlayer.SignalName.AnimationFinished);
+        var ap = Viewing ? ViewmodelAnimationPlayer : (AnimationPlayer)Player.WorldAnimationTree.GetParent().GetChild(1);
+        return ap.HasAnimation(animation);
+    }
+
+    public void StopAnimation()
+    {
+        var ap = Viewing ? ViewmodelAnimationPlayer : (AnimationPlayer)Player.WorldAnimationTree.GetParent().GetChild(1);
+        ap.Stop();
+    }
+
+    public void PlayAnimation(string animation, int timeToTakeMs = -1)
+    {
+        var ap = Viewing ? ViewmodelAnimationPlayer : (AnimationPlayer)Player.WorldAnimationTree.GetParent().GetChild(1);
+        if (!ap.HasAnimation(animation))
+        {
+            GD.PushWarning($"Tool.PlayAnimation tool does not have animation \"{animation}\"");
+            return;
+        }
+
+        var length = (float)(ap.GetAnimation(animation).Length * 1000d);
+        var timeScale = timeToTakeMs < 1 ? 1f : timeToTakeMs / length;
+        ap.Play(animation, customSpeed: timeScale);
+    }
+
+    public async Task PlayAnimationTask(string animation, int timeToTakeMs = -1)
+    {
+        var ap = Viewing ? ViewmodelAnimationPlayer : (AnimationPlayer)Player.WorldAnimationTree.GetParent().GetChild(1);
+        if (!ap.HasAnimation(animation))
+        {
+            GD.PushWarning($"Tool.PlayAnimationTask tool does not have animation \"{animation}\"");
+            return;
+        }
+
+        var length = (float)(ap.GetAnimation(animation).Length * 1000d);
+        var timeScale = timeToTakeMs < 1 ? 1f : timeToTakeMs / length;
+        ap.Play(animation, customSpeed: timeScale);
+        await ToSignal(ap, AnimationPlayer.SignalName.AnimationFinished);
     }
 
     private Resource.Tool.FireInfo CreateFireInfo()

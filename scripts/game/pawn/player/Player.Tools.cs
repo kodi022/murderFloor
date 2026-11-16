@@ -149,7 +149,7 @@ public partial class Player : Pawn
             list = GetToolListFromSlot(SelectedSlot);
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
-            await SelectedTool.Equip();
+            await SelectedTool.Equip(Viewing == this);
 
             SwappingWeapon = false;
             EmitSignal(SignalName.PlayerToolChange);
@@ -161,7 +161,7 @@ public partial class Player : Pawn
             list = GetToolListFromSlot(SelectedSlot);
             SelectedToolIndex = 0;
             SelectedTool = list[SelectedToolIndex];
-            await SelectedTool.Equip();
+            await SelectedTool.Equip(Viewing == this);
 
             SwappingWeapon = false;
             EmitSignal(SignalName.PlayerToolChange);
@@ -170,7 +170,7 @@ public partial class Player : Pawn
 
         SelectedTool = list[SelectedToolIndex];
 
-        await SelectedTool.Equip();
+        await SelectedTool.Equip(Viewing == this);
 
         SwappingWeapon = false;
         EmitSignal(SignalName.PlayerToolChange);
