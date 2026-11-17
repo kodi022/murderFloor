@@ -173,6 +173,7 @@ public partial class GameSurvival : Game
     public void OnBodyEntered(Node3D body)
     {
         if (body is not Player player) return;
+        if (GameState != StateEnum.Ended) return;
 
         ExitPlayers.Add(player);
 
@@ -189,6 +190,7 @@ public partial class GameSurvival : Game
     public void OnBodyExited(Node3D body)
     {
         if (body is not Player player) return;
+        if (GameState != StateEnum.Ended) return;
 
         ExitPlayers.Remove(player);
 

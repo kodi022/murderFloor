@@ -138,7 +138,7 @@ parameters/Blend2/blend_amount = 1.0
 
 [node name="UpperLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1453147456]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.0023196398, 0.074929714, -0.9971863, 0.0014194901, -0.9971876, -0.07493312, -0.9999998, -0.0015893073, 0.0022065665, 0.097630955, 0.8252041, -0.030339027)
+transform = Transform3D(-0.0023196337, 0.0749299, -0.9971862, 0.03567701, -0.99654776, -0.07496492, -0.9993642, -0.035750393, -0.00036149935, 0.097630955, 0.8252041, -0.030339027)
 bone_name = "UpperLeg.L"
 bone_idx = 43
 use_external_skeleton = true
@@ -150,6 +150,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperLeg_L/StaticBody3D" unique_id=1146053894]
 transform = Transform3D(1, 1.8626454e-09, -6.7762607e-18, -1.8626454e-09, 1, -2.4519977e-09, 2.2090586e-18, 2.4519977e-09, 1, 0, 0.153, 0)
@@ -158,7 +159,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="UpperLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=1118039744]
 physics_interpolation_mode = 0
-transform = Transform3D(-0.0025675434, -0.06129395, 0.99811655, 0.67323416, -0.73814374, -0.043597367, 0.7394268, 0.6718532, 0.043160263, -0.097630955, 0.8252041, -0.030339023)
+transform = Transform3D(-0.0025675343, -0.06129388, 0.9981167, 0.699095, -0.71379316, -0.042035427, 0.7150263, 0.69766927, 0.04468274, -0.097630955, 0.8252041, -0.030339023)
 bone_name = "UpperLeg.R"
 bone_idx = 46
 use_external_skeleton = true
@@ -170,6 +171,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperLeg_R/StaticBody3D" unique_id=1531352371]
 transform = Transform3D(1, 2.4462312e-18, -4.656613e-10, 0, 1, 5.2532414e-09, 4.656613e-10, -5.2532414e-09, 1, 0, 0.153, 0)
@@ -178,7 +180,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=871783084]
 physics_interpolation_mode = 0
-transform = Transform3D(0.003084069, -0.01903776, -0.9998142, 0.27988338, -0.95984334, 0.019140003, -0.96003246, -0.27989137, 0.0023679456, 0.12412572, 0.47260395, -0.030900996)
+transform = Transform3D(0.0030840186, -0.019037558, -0.9998141, 0.28204152, -0.9592113, 0.019134423, -0.9594006, -0.28204885, 0.002411292, 0.12412579, 0.47283027, -0.04298017)
 bone_name = "LowerLeg.L"
 bone_idx = 44
 use_external_skeleton = true
@@ -190,6 +192,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerLeg_L/StaticBody3D" unique_id=1824569290]
 transform = Transform3D(1, -3.8878812e-19, 2.3283064e-10, 0, 1, 1.6698323e-09, -2.3283064e-10, -1.6698323e-09, 1, 0, 0.178, 0)
@@ -198,7 +201,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="LowerLeg_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=519781593]
 physics_interpolation_mode = 0
-transform = Transform3D(0.0029750986, 0.032701403, 0.9994608, -0.22922176, -0.9728316, 0.03251238, 0.97336996, -0.22919641, 0.004601594, -0.11930416, 0.56420046, 0.20722458)
+transform = Transform3D(0.0029751172, 0.03270139, 0.9994609, -0.22628286, -0.97351915, 0.032526135, 0.9740574, -0.22625902, 0.0045033544, -0.119304135, 0.57281077, 0.216353)
 bone_name = "LowerLeg.R"
 bone_idx = 47
 use_external_skeleton = true
@@ -210,6 +213,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerLeg_R/StaticBody3D" unique_id=1181168680]
 transform = Transform3D(1, -3.8878812e-19, 2.3283064e-10, 0, 1, 1.6698323e-09, -2.3283064e-10, -1.6698323e-09, 1, 0, 0.178, 0)
@@ -230,6 +234,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Hip/StaticBody3D" unique_id=1781605290]
 transform = Transform3D(-4.3711395e-08, -1, 0, 1, -4.3711395e-08, 5.759824e-20, -5.9292306e-20, 0, 1, 0, 0.021, 0)
@@ -250,6 +255,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerSpine/StaticBody3D" unique_id=1446875631]
 transform = Transform3D(-4.371139e-08, -1, -2.0733992e-27, 1, -4.371139e-08, 4.7433848e-20, -4.7433848e-20, 1.92593e-34, 1, 0, 0.016, 0)
@@ -270,6 +276,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperSpine/StaticBody3D" unique_id=628477364]
 transform = Transform3D(-4.371139e-08, -1, -2.0733992e-27, 1, -4.371139e-08, 4.7433848e-20, -4.7433848e-20, 1.92593e-34, 1, 0, 0.023, 0)
@@ -290,6 +297,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Clavicle_L/StaticBody3D" unique_id=1843935373]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.004, 0.107, 0)
@@ -310,6 +318,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Clavicle_R/StaticBody3D" unique_id=723528956]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.004, 0.107, 0)
@@ -330,6 +339,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperArm_L/StaticBody3D" unique_id=1514812673]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.111, 0)
@@ -350,6 +360,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/UpperArm_R/StaticBody3D" unique_id=1829397316]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.111, 0)
@@ -370,6 +381,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerArm_L/StaticBody3D" unique_id=1210674114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.127, 0)
@@ -390,6 +402,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/LowerArm_R/StaticBody3D" unique_id=272891115]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.127, 0)
@@ -410,6 +423,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Hand_L/StaticBody3D" unique_id=1805380230]
 transform = Transform3D(1, 2.9802344e-08, -7.450583e-09, -2.9802344e-08, 1, -1.4901168e-08, 7.450582e-09, 1.4901168e-08, 1, 0, 0.071, 0)
@@ -430,6 +444,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Hand_R/StaticBody3D" unique_id=460281174]
 transform = Transform3D(1, -3.3527616e-08, 6.730261e-09, 3.3527616e-08, 1, -5.2386967e-10, -6.730261e-09, 5.238699e-10, 1, 0, 0.071, 0)
@@ -438,7 +453,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_L" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=731315567]
 physics_interpolation_mode = 0
-transform = Transform3D(0.0906629, 0.25290886, -0.96323276, -0.81629616, -0.53518116, -0.21735124, -0.57047606, 0.80599177, 0.15792781, 0.1161542, 0.07069849, -0.14809708)
+transform = Transform3D(0.09066307, 0.25290886, -0.96323264, -0.8083973, -0.54618186, -0.21949637, -0.5816147, 0.7985779, 0.15493307, 0.11615435, 0.07118943, -0.16107963)
 bone_name = "Foot.L"
 bone_idx = 45
 use_external_skeleton = true
@@ -450,6 +465,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Foot_L/StaticBody3D" unique_id=774812004]
 transform = Transform3D(0.9396926, -0.34202012, -1.1361894e-08, 0.34202012, 0.9396926, 1.1143476e-08, 6.865395e-09, -1.4357439e-08, 1, 0.014, 0.097, -0.009)
@@ -458,7 +474,7 @@ debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="Foot_R" type="BoneAttachment3D" parent="WorldModels/KincheePlayerMob" unique_id=180640536]
 physics_interpolation_mode = 0
-transform = Transform3D(0.072536126, -0.24316311, 0.96726954, 0.93186104, -0.32915214, -0.15262686, 0.35549355, 0.91243124, 0.2027185, -0.10561144, 0.15685643, 0.111255445)
+transform = Transform3D(0.07253613, -0.24316311, 0.9672697, 0.9355855, -0.31943932, -0.1504644, 0.34557262, 0.91587704, 0.20432861, -0.10561143, 0.1651788, 0.121613815)
 bone_name = "Foot.R"
 bone_idx = 48
 use_external_skeleton = true
@@ -470,6 +486,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Foot_R/StaticBody3D" unique_id=129971578]
 transform = Transform3D(0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 0, 0, 1, -0.014, 0.097, -0.009)
@@ -490,6 +507,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Neck/StaticBody3D" unique_id=435686837]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.002)
@@ -510,6 +528,7 @@ collision_mask = 0
 input_ray_pickable = false
 metadata/hitdecal = "res://images/decal/bodyblooddecal1.png"
 metadata/hitparticle = "res://scenes/particle/hiteffect/HitBlood.tscn"
+metadata/hitsounds = ["res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 B.mp3", "res://sounds/impact/flesh/EFX SD GORE Punch 02 C.mp3"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldModels/KincheePlayerMob/Head/StaticBody3D" unique_id=1285633759]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.064, 0.013)

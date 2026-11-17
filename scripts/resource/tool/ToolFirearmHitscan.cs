@@ -74,6 +74,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             Game.Pawn pawn = null;
             var currentNode = (Node)(GodotObject)ray["collider"];
 
+            // impact decal
             var normal = (Vector3)ray["normal"];
             var decalRotPitch = Mathf.Acos(normal.Y);
             var decalRotYaw = Mathf.Atan2(normal.X, normal.Z);
@@ -87,6 +88,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 new Vector3(0.25f, 0.25f, 0.25f)
             );
 
+            // impact particle
             var partic = (string)currentNode.GetMeta("hitparticle", "res://scenes/particle/hiteffect/HitRock.tscn");
             if (partic != "")
             {
@@ -96,6 +98,22 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 inst.GlobalPosition = pos;
                 inst.GlobalRotation = decalRot;
             }
+
+            // impact sounds
+            var sounds = currentNode.GetMeta("hitsounds", "res://sounds/impact/stone/hit-rock-02-266304.mp3");
+            string sound;
+            if (sounds.VariantType == Variant.Type.String)
+                sound = sounds.AsString();
+            else
+            {
+                var soundArr = sounds.AsStringArray();
+                sound = soundArr[Rng.RandiRange(0, soundArr.Length - 1)];
+            }
+            var audio = new AudioStreamPlayer3D { Stream = GD.Load<AudioStream>(sound), VolumeLinear = 0.15f };
+            Global.GameManager.ClearOnLoad.AddChild(audio);
+            audio.Position = pos;
+            audio.Finished += audio.QueueFree;
+            audio.Play();
 
             for (int j = 0; j < 5; j++)
             {

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dkyd1abackrml"
+path="res://.godot/imported/EFX SD GORE Punch 02 A.mp3-f99b716e33c0197589a2b93b85949f60.mp3str"
+
+[deps]
+
+source_file="res://sounds/impact/flesh/EFX SD GORE Punch 02 A.mp3"
+dest_files=["res://.godot/imported/EFX SD GORE Punch 02 A.mp3-f99b716e33c0197589a2b93b85949f60.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
