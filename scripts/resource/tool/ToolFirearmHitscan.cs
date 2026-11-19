@@ -42,6 +42,7 @@ public partial class ToolFirearmHitscan : ToolFirearm
             Rng.RandfRange(aimShiftV.X, aimShiftV.Y)
         );
 
+        List<string> playedSounds = [];
         var firearmBehavior = (Game.ToolBehaviorFirearm)fi.Tool.ToolBehavior;
         for (int i = 0; i < (int)fi.Tool.ToolConfig.GetStat(ToolFirearm.PropertyName.PelletCount); i++)
         {
@@ -109,11 +110,15 @@ public partial class ToolFirearmHitscan : ToolFirearm
                 var soundArr = sounds.AsStringArray();
                 sound = soundArr[Rng.RandiRange(0, soundArr.Length - 1)];
             }
-            var audio = new AudioStreamPlayer3D { Stream = GD.Load<AudioStream>(sound), VolumeLinear = 0.15f };
-            Global.GameManager.ClearOnLoad.AddChild(audio);
-            audio.Position = pos;
-            audio.Finished += audio.QueueFree;
-            audio.Play();
+            if (!playedSounds.Contains(sound))
+            {
+                playedSounds.Add(sound);
+                var audio = new AudioStreamPlayer3D { Stream = GD.Load<AudioStream>(sound), VolumeLinear = 0.7f };
+                Global.GameManager.ClearOnLoad.AddChild(audio);
+                audio.Position = pos;
+                audio.Finished += audio.QueueFree;
+                audio.Play();
+            }
 
             for (int j = 0; j < 5; j++)
             {

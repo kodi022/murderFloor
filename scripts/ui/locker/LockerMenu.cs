@@ -6,6 +6,8 @@ public partial class LockerMenu : ScreenScaleLimiter
     private Panel controlsRoot;
     [Export]
     private Panel toolsPanel;
+    [Export]
+    private VBoxContainer statsPanel;
 
     private Control openMenu;
 
@@ -25,6 +27,9 @@ public partial class LockerMenu : ScreenScaleLimiter
             toolsPanel.GetChild(0).AddChild(bref2);
         }
         bref.Free();
+
+        statsPanel.AddChild(new Label() { Text = "Level: " + SaveManager.CurrentSave.Level.ToString() });
+        statsPanel.AddChild(new Label() { Text = "Xp: " + SaveManager.CurrentSave.Xp.ToString() + "/" + SaveManager.CurrentSave.XpToNextLevel() });
     }
 
     public override void _Process(double delta)

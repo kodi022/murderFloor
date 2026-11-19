@@ -33,7 +33,7 @@ border_width_right = 4
 border_color = Color(0.21063334, 0.21063334, 0.21063334, 1)
 anti_aliasing = false
 
-[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("controlsRoot", "toolsPanel")]
+[node name="LockerMenu" type="Control" unique_id=467920677 node_paths=PackedStringArray("controlsRoot", "toolsPanel", "statsPanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,7 +43,8 @@ grow_vertical = 2
 theme = ExtResource("2_lj7te")
 script = ExtResource("1_1f3ys")
 controlsRoot = NodePath("Panel")
-toolsPanel = NodePath("Panel/CenterLeft/ToolsPanel")
+toolsPanel = NodePath("Panel/TopLeft/ToolsPanel")
+statsPanel = NodePath("Panel/TopRight/StatsPanel")
 
 [node name="Panel" type="Panel" parent="." unique_id=1043122632]
 layout_mode = 1
@@ -51,34 +52,28 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_lj7te")
 
-[node name="CenterLeft" type="Control" parent="Panel" unique_id=1560580185]
+[node name="TopLeft" type="Control" parent="Panel" unique_id=1560580185]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -20.0
-offset_right = 40.0
-offset_bottom = 20.0
-grow_vertical = 2
+anchors_preset = 0
 
-[node name="ToolsPanel" type="Panel" parent="Panel/CenterLeft" unique_id=103322304]
+[node name="ToolsPanel" type="Panel" parent="Panel/TopLeft" unique_id=103322304]
 layout_mode = 0
-offset_left = 62.0
-offset_top = -445.0
-offset_right = 517.0
-offset_bottom = -229.0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 505.0
+offset_bottom = 250.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/CenterLeft/ToolsPanel" unique_id=594869768]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/TopLeft/ToolsPanel" unique_id=594869768]
 layout_mode = 0
 offset_right = 79.0
 offset_bottom = 54.0
 
-[node name="ReferencePanel" type="Panel" parent="Panel/CenterLeft/ToolsPanel/HBoxContainer" unique_id=1607929812]
+[node name="ReferencePanel" type="Panel" parent="Panel/TopLeft/ToolsPanel/HBoxContainer" unique_id=1607929812]
 custom_minimum_size = Vector2(94, 64)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pbeot")
 
-[node name="Panel" type="Panel" parent="Panel/CenterLeft/ToolsPanel/HBoxContainer/ReferencePanel" unique_id=1244614751]
+[node name="Panel" type="Panel" parent="Panel/TopLeft/ToolsPanel/HBoxContainer/ReferencePanel" unique_id=1244614751]
 custom_minimum_size = Vector2(90, 60)
 layout_mode = 0
 offset_left = 2.0
@@ -86,7 +81,7 @@ offset_top = 2.0
 offset_right = 77.0
 offset_bottom = 52.0
 
-[node name="TextureRect" type="TextureRect" parent="Panel/CenterLeft/ToolsPanel/HBoxContainer/ReferencePanel/Panel" unique_id=866340239]
+[node name="TextureRect" type="TextureRect" parent="Panel/TopLeft/ToolsPanel/HBoxContainer/ReferencePanel/Panel" unique_id=866340239]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -97,7 +92,7 @@ texture = ExtResource("3_r4564")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Button" type="Button" parent="Panel/CenterLeft/ToolsPanel" unique_id=70021151]
+[node name="Button" type="Button" parent="Panel/TopLeft/ToolsPanel" unique_id=70021151]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -106,6 +101,74 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_dx04r")
 theme_override_styles/hover = SubResource("StyleBoxFlat_j4e7k")
+
+[node name="ArmorPanel" type="Panel" parent="Panel/TopLeft" unique_id=1362092245]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 300.0
+offset_right = 505.0
+offset_bottom = 500.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/TopLeft/ArmorPanel" unique_id=1467335935]
+layout_mode = 0
+offset_right = 79.0
+offset_bottom = 54.0
+
+[node name="ReferencePanel" type="Panel" parent="Panel/TopLeft/ArmorPanel/HBoxContainer" unique_id=1650475635]
+custom_minimum_size = Vector2(94, 64)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pbeot")
+
+[node name="Panel" type="Panel" parent="Panel/TopLeft/ArmorPanel/HBoxContainer/ReferencePanel" unique_id=1155619802]
+custom_minimum_size = Vector2(90, 60)
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 77.0
+offset_bottom = 52.0
+
+[node name="TextureRect" type="TextureRect" parent="Panel/TopLeft/ArmorPanel/HBoxContainer/ReferencePanel/Panel" unique_id=1709454474]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_r4564")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Button" type="Button" parent="Panel/TopLeft/ArmorPanel" unique_id=937234154]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dx04r")
+theme_override_styles/hover = SubResource("StyleBoxFlat_j4e7k")
+
+[node name="TopRight" type="Control" parent="Panel" unique_id=1043377234]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+
+[node name="Panel" type="Panel" parent="Panel/TopRight" unique_id=2006735513]
+propagate_maximum_size = true
+layout_mode = 0
+offset_left = -350.0
+offset_top = 50.0
+offset_right = -50.0
+offset_bottom = 650.0
+
+[node name="StatsPanel" type="VBoxContainer" parent="Panel/TopRight" unique_id=1667719638]
+layout_mode = 0
+offset_left = -350.0
+offset_top = 50.0
+offset_right = -50.0
+offset_bottom = 650.0
 
 [node name="ViewBlockRight" type="Panel" parent="." unique_id=752174968]
 layout_mode = 0

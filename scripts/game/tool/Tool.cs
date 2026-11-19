@@ -267,6 +267,7 @@ public partial class Tool : Node
         if (ToolResource is ToolFirearm)
         {
             foreach (var bullet in BulletParticles) if (IsInstanceValid(bullet)) bullet.Free();
+            BulletParticles.Clear();
         }
 
         BuiltTool.Tool?.Free();
