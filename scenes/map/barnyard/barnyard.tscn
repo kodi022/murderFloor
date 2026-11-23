@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://prvvlgy7gqnw" path="res://materials/surface/ground/grass005/Grass005_1K-PNG_NormalGL.png" id="4_n4870"]
 [ext_resource type="Texture2D" uid="uid://377f7pij0g2o" path="res://materials/surface/rock/rock023/Rock023_1K-PNG_Color.png" id="5_2srw0"]
 [ext_resource type="Texture2D" uid="uid://8hetg1kk8h1y" path="res://materials/surface/rock/rock023/Rock023_1K-PNG_NormalGL.png" id="6_5eh0v"]
+[ext_resource type="Material" uid="uid://ddniy1aybindp" path="res://materials/surface/foliage/leafset024/leafset024.tres" id="6_h607k"]
 [ext_resource type="Texture2D" uid="uid://bcp55twaywey7" path="res://materials/surface/ground/ground014/Ground014_1K-PNG_Color.png" id="7_qsi5w"]
 [ext_resource type="Texture2D" uid="uid://npc08xcjxgpv" path="res://materials/surface/ground/ground014/Ground014_1K-PNG_NormalGL.png" id="8_fut1s"]
 [ext_resource type="Texture2D" uid="uid://dbbpp8flo6dx8" path="res://materials/surface/ground/ground099/Ground099_1K-PNG_Color.png" id="9_deq3w"]
@@ -20,6 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://dlr52wsamyrvf" path="res://models/prop/rock/bigrock2.blend" id="16_gbvbh"]
 [ext_resource type="PackedScene" uid="uid://bovxnrvxvx1u2" path="res://models/prop/fence/crudelogfence.blend" id="17_7i6nc"]
 [ext_resource type="PackedScene" uid="uid://c43fefhdslnoi" path="res://models/structure/building/barnyard-cover1.blend" id="18_k4lod"]
+[ext_resource type="PackedScene" uid="uid://k3nl1hblof4r" path="res://models/foliage/foliage001.blend" id="20_bvoot"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7puk8"]
 size = Vector3(3.0613708, 2.7662354, 6.182312)
@@ -76,52 +78,33 @@ agent_radius = 0.55
 agent_max_climb = 0.33
 filter_baking_aabb = AABB(-50, -2, -50, 100, 40, 100)
 
-[sub_resource type="Gradient" id="Gradient_jkvmn"]
-offsets = PackedFloat32Array(0.2, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_olboh"]
-noise_type = 2
-frequency = 0.03
-cellular_jitter = 3.0
-cellular_return_type = 0
-domain_warp_enabled = true
-domain_warp_type = 1
-domain_warp_amplitude = 50.0
-domain_warp_fractal_type = 2
-domain_warp_fractal_lacunarity = 1.5
-domain_warp_fractal_gain = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0h0p1"]
-noise = SubResource("FastNoiseLite_olboh")
-color_ramp = SubResource("Gradient_jkvmn")
-seamless = true
-
 [sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_cvsvl"]
 _shader_parameters = {
 &"auto_base_texture": null,
 &"auto_height_reduction": null,
 &"auto_overlay_texture": null,
+&"auto_shader": null,
 &"auto_slope": null,
 &"bias_distance": null,
 &"blend_sharpness": null,
 &"depth_blur": null,
-&"enable_macro_variation": null,
-&"enable_projection": null,
+&"distant_normal_scale": null,
+&"dual_scale_far": 200.0000095,
+&"dual_scale_near": 10.000000475,
+&"dual_scale_reduction": 0.3,
+&"dual_scale_texture": 1,
+&"dual_scaling": null,
 &"flat_terrain_normals": null,
-&"macro_variation1": null,
-&"macro_variation2": null,
-&"macro_variation_slope": null,
+&"general_uniforms": null,
 &"mipmap_bias": null,
-&"noise1_angle": null,
-&"noise1_offset": null,
-&"noise1_scale": null,
-&"noise2_scale": null,
-&"noise_texture": SubResource("NoiseTexture2D_0h0p1"),
-&"projection_threshold": null
+&"mipmaps": null,
+&"private": null,
+&"tri_scale_reduction": 0.3
 }
-texture_filtering = 1
-auto_shader = true
+world_background = 0
+texture_filtering = 2
+auto_shader_enabled = true
+dual_scaling_enabled = true
 
 [sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_pbdt2"]
 name = "Player"
@@ -137,6 +120,17 @@ id = 1
 scene_file = ExtResource("15_bsd56")
 height_offset = -2.05
 density = 0.3
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_lr6vk"]
+id = 2
+generated_type = 1
+height_offset = 0.5
+density = 10.0
+material_override = ExtResource("6_h607k")
+generated_faces = 3
 last_lod = 0
 last_shadow_lod = 0
 lod0_range = 128.0
@@ -170,7 +164,7 @@ normal_depth = 1.5
 uv_scale = 0.06
 
 [sub_resource type="Terrain3DAssets" id="Terrain3DAssets_exmcb"]
-mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_pbdt2"), SubResource("Terrain3DMeshAsset_gbvbh")])
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_pbdt2"), SubResource("Terrain3DMeshAsset_gbvbh"), SubResource("Terrain3DMeshAsset_lr6vk")])
 texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_qsi5w"), SubResource("Terrain3DTextureAsset_fut1s"), SubResource("Terrain3DTextureAsset_deq3w"), SubResource("Terrain3DTextureAsset_n2vg6")])
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_dx04r"]
@@ -277,6 +271,7 @@ material = SubResource("Terrain3DMaterial_cvsvl")
 assets = SubResource("Terrain3DAssets_exmcb")
 save_16_bit = true
 collision_mode = 4
+displacement_sharpness = 0.5
 top_level = true
 metadata/_edit_lock_ = true
 
@@ -544,6 +539,9 @@ travel_cost = 0.2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.059803, 1.1576586, 9.3364315)
 end_position = Vector3(1.706, 4.26, 0.096)
 travel_cost = 0.2
+
+[node name="foliage001" parent="NavigationRegion3D" unique_id=1213206488 instance=ExtResource("20_bvoot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.6437654, 1.1094131, 32.384228)
 
 [node name="Water" type="MeshInstance3D" parent="." unique_id=413890576]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.017837524, -1.3922486, -0.029344559)

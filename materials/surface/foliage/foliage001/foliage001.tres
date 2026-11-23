@@ -1,0 +1,18 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://pt68ywi2vbo2"]
+
+[ext_resource type="Texture2D" uid="uid://b1f10gue8ebvc" path="res://materials/surface/foliage/foliage001/Foliage001_1K-PNG_Color.png" id="1_w4ebm"]
+[ext_resource type="Texture2D" uid="uid://bo3nkhk24eedr" path="res://materials/surface/foliage/foliage001/Foliage001_1K-PNG_NormalGL.png" id="2_m0xuk"]
+[ext_resource type="Texture2D" uid="uid://dsgqjjbj485fp" path="res://materials/surface/foliage/foliage001/Foliage001_1K-PNG_Roughness.png" id="3_7keyv"]
+
+[resource]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("1_w4ebm")
+roughness_texture = ExtResource("3_7keyv")
+roughness_texture_channel = 4
+normal_enabled = true
+normal_texture = ExtResource("2_m0xuk")
+texture_filter = 4
+texture_repeat = false
